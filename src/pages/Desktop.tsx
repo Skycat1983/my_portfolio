@@ -7,15 +7,16 @@ const Desktop = () => {
   const folders = [
     { label: "Projects" },
     { label: "Stack" },
+    { label: "Resume" },
+    { label: "References" },
     { label: "Contact" },
     { label: "About" },
-    { label: "Resume" },
   ];
 
   return (
     <div className="w-screen h-screen bg-gray-900 relative overflow-hidden">
       <MenuBar />
-      <div className="p-16 h-full">
+      <div className="p-10 h-full">
         <DirectoryLayout
           folders={folders}
           selectedFolder={selectedFolder}
