@@ -1,4 +1,4 @@
-import { GITHUB_IMG, LINKEDIN_IMG } from "../../node_constants";
+import { images } from "../../constants/images";
 import { DisplayDate } from "./DisplayDate";
 import { Social } from "./Social";
 
@@ -13,10 +13,10 @@ export const MenubarLayout = () => {
       </div>
       <div className="flex flex-row gap-4">
         <Social
-          imgPath={LINKEDIN_IMG}
+          imgPath={images.LINKEDIN}
           link="https://www.linkedin.com/in/heron-laoutaris/"
         />
-        <Social imgPath={GITHUB_IMG} link="https://github.com/skycat1983" />
+        <Social imgPath={images.GITHUB} link="https://github.com/skycat1983" />
         <DisplayDate />
       </div>
     </div>
