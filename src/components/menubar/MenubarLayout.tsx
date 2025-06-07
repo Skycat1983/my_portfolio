@@ -1,8 +1,8 @@
-import { GITHUB_IMG, LINKEDIN_IMG } from "../../constants";
+import { GITHUB_IMG, LINKEDIN_IMG } from "../../node_constants";
 import { DisplayDate } from "./DisplayDate";
 import { Social } from "./Social";
 
-export const MenuBar = () => {
+export const MenubarLayout = () => {
   return (
     <div className="w-full h-10 bg-gray-950 flex flex-row justify-between px-4 items-center">
       <div className="flex flex-row gap-4">
