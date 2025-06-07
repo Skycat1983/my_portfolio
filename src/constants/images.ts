@@ -6,7 +6,7 @@ const LINKEDIN = "src/assets/profile_icons/linked_in1.png";
 const ICON = "src/assets/icons/1.png";
 
 // FOLDERS
-const FOLDER = "src/assets/folder_icons/1.png";
+const FOLDER = "src/assets/folder_icons/folder1.png";
 const BIN_EMPTY = "src/assets/folder_icons/bin_empty.png";
 const BIN_FULL = "src/assets/folder_icons/bin_full.png";
 
