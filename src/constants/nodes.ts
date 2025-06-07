@@ -13,6 +13,10 @@ const {
   TAILWIND,
   FIREBASE,
   JAVASCRIPT,
+  EASTER_EGG1,
+  EASTER_EGG2,
+  EASTER_EGG3,
+  EASTER_EGG4,
 } = images;
 
 /**
@@ -38,6 +42,7 @@ export interface AppObject {
   type: "app";
   label: string;
   image: string;
+  action?: () => void;
 }
 
 export type NodeObject = DirectoryObject | AppObject;
@@ -50,6 +55,7 @@ export interface MapNode {
   type: "directory" | "app";
   label: string;
   image: string;
+  action?: () => void;
 }
 
 export interface NodeMap {
@@ -151,7 +157,17 @@ export const defaultNodes: DirectoryObject = {
       label: "Trash",
       image: BIN_EMPTY,
       type: "directory",
-      children: [],
+      children: [
+        {
+          id: "egg1",
+          label: "Egg 1",
+          image: EASTER_EGG1,
+          type: "app",
+          action: () => {
+            console.log("Egg 1");
+          },
+        },
+      ],
     },
     {
       id: "projects",

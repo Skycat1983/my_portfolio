@@ -25,6 +25,12 @@ const POSTMAN = "src/assets/stack_icons/postman.png";
 const TAILWIND = "src/assets/stack_icons/tailwind.png";
 const FIREBASE = "src/assets/stack_icons/firebase.png";
 
+// Easter Eggs
+const EASTER_EGG1 = "src/assets/eggs/egg1.png";
+const EASTER_EGG2 = "src/assets/eggs/egg2.png";
+const EASTER_EGG3 = "src/assets/eggs/egg3.png";
+const EASTER_EGG4 = "src/assets/eggs/egg4.png";
+
 export const images = {
   GITHUB,
   LINKEDIN,
@@ -42,4 +48,8 @@ export const images = {
   POSTMAN,
   TAILWIND,
   FIREBASE,
+  EASTER_EGG1,
+  EASTER_EGG2,
+  EASTER_EGG3,
+  EASTER_EGG4,
 };
