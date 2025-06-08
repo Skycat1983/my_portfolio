@@ -1,6 +1,7 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { DirectoryLayout } from "../components/DirectoryLayout";
 import { useStore } from "../hooks/useStore";
+import Window from "../components/window/Window";
 
 export const Desktop = () => {
   // Get what we need from the store
@@ -28,6 +29,7 @@ export const Desktop = () => {
     <div className="w-screen h-screen bg-gray-900 relative overflow-hidden">
       <MenubarLayout />
       <div className="p-10 h-full">
+        <Window />
         <DirectoryLayout
           nodes={desktopChildren}
           selectedNodeId={selectedNodeId}

@@ -71,6 +71,11 @@ export const useStore = create<DesktopStore>((set, get) => ({
     set({ selectedNodeId: null });
   },
 
+  openWindow: (nodeId: string) => {
+    console.log("Store: opening window", nodeId);
+    set({ selectedNodeId: nodeId });
+  },
+
   // Debug helper - converts current map back to object tree for visualization
   debugGetObjectTree: () => {
     const state = get();
