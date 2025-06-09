@@ -1,6 +1,8 @@
+import { convertObjectsToMap } from "../lib/objToMap";
 import { images } from "./images";
 
 const {
+  FIREFOX,
   FOLDER,
   BIN_EMPTY,
   TERMINAL,
@@ -14,9 +16,11 @@ const {
   FIREBASE,
   JAVASCRIPT,
   EASTER_EGG1,
-  EASTER_EGG2,
-  EASTER_EGG3,
-  EASTER_EGG4,
+  GITHUB,
+  PDF,
+  // EASTER_EGG2,
+  // EASTER_EGG3,
+  // EASTER_EGG4,
 } = images;
 
 /**
@@ -45,99 +49,62 @@ export interface AppObject {
   action?: () => void;
 }
 
-export type NodeObject = DirectoryObject | AppObject;
+export interface LinkObject {
+  id: string;
+  type: "link";
+  label: string;
+  image: string;
+  url: string;
+}
+
+export type NodeObject = DirectoryObject | AppObject | LinkObject;
 
 // OPERATIONAL MAP TYPES
+
+interface DirectoryEntry {
+  id: string;
+  parentId: string | null;
+  children: string[];
+  type: "directory";
+  label: string;
+  image: string;
+}
+
+interface AppEntry {
+  id: string;
+  parentId: string | null;
+  children: string[];
+  type: "app";
+  label: string;
+  image: string;
+}
+
+interface LinkEntry {
+  id: string;
+  parentId: string | null;
+  children: string[];
+  type: "link";
+  label: string;
+  image: string;
+  url: string;
+}
+
+export type MapEntry = DirectoryEntry | AppEntry | LinkEntry;
+
 export interface MapNode {
   id: string;
   parentId: string | null; // null only for desktop root
   children: string[]; // array of child IDs, empty for apps
-  type: "directory" | "app";
+  type: "directory" | "app" | "link";
   label: string;
   image: string;
   action?: () => void;
+  url?: string;
 }
 
 export interface NodeMap {
   [id: string]: MapNode;
 }
-
-// CONVERSION FUNCTION: Object Tree → Operational Map
-export const convertObjectsToMap = (
-  rootObject: DirectoryObject
-): { nodeMap: NodeMap; rootId: string } => {
-  const nodeMap: NodeMap = {};
-
-  const processNode = (nodeObj: NodeObject, parentId: string | null): void => {
-    // Create map node
-    const mapNode: MapNode = {
-      id: nodeObj.id,
-      parentId,
-      children: [],
-      type: nodeObj.type,
-      label: nodeObj.label,
-      image: nodeObj.image,
-    };
-
-    // Process children if directory
-    if (nodeObj.type === "directory") {
-      for (const child of nodeObj.children) {
-        processNode(child, nodeObj.id);
-        mapNode.children.push(child.id);
-      }
-    }
-
-    nodeMap[nodeObj.id] = mapNode;
-  };
-
-  processNode(rootObject, null);
-  return { nodeMap, rootId: rootObject.id };
-};
-
-// REVERSE CONVERSION: Operational Map → Human-readable Object (for debugging/visualization)
-export const convertMapToObjects = (
-  nodeMap: NodeMap,
-  rootId: string
-): DirectoryObject => {
-  const buildObject = (nodeId: string): NodeObject => {
-    const mapNode = nodeMap[nodeId];
-    if (!mapNode) {
-      throw new Error(`Node with id '${nodeId}' not found in map`);
-    }
-
-    if (mapNode.type === "app") {
-      // App nodes have no children
-      return {
-        id: mapNode.id,
-        type: "app",
-        label: mapNode.label,
-        image: mapNode.image,
-      };
-    } else {
-      // Directory nodes need to recursively build children
-      const children: NodeObject[] = mapNode.children.map((childId) =>
-        buildObject(childId)
-      );
-
-      return {
-        id: mapNode.id,
-        type: "directory",
-        label: mapNode.label,
-        image: mapNode.image,
-        children,
-      };
-    }
-  };
-
-  const rootObject = buildObject(rootId);
-
-  // Ensure root is a directory (should always be true)
-  if (rootObject.type !== "directory") {
-    throw new Error("Root node must be a directory");
-  }
-
-  return rootObject;
-};
 
 // HUMAN-READABLE DATA DEFINITION
 export const defaultNodes: DirectoryObject = {
@@ -164,7 +131,10 @@ export const defaultNodes: DirectoryObject = {
           image: EASTER_EGG1,
           type: "app",
           action: () => {
-            console.log("Egg 1");
+            console.log("Easter egg clicked!");
+            // This will be replaced with proper store integration
+            // For now, just log which image should be next
+            console.log("Next image should be EASTER_EGG2");
           },
         },
       ],
@@ -174,7 +144,67 @@ export const defaultNodes: DirectoryObject = {
       label: "Projects",
       image: FOLDER,
       type: "directory",
-      children: [],
+      children: [
+        {
+          id: "roboCrop",
+          label: "RoboCrop",
+          image: FOLDER,
+          type: "directory",
+          children: [
+            {
+              id: "roboCrop_code",
+              label: "Code",
+              image: GITHUB,
+              type: "link",
+              url: "https://github.com/Skycat1983/RoboCrop",
+            },
+            {
+              id: "roboCrop_download",
+              label: "Download",
+              image: FIREFOX,
+              type: "link",
+              url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
+            },
+          ],
+        },
+        {
+          id: "SkyNot",
+          label: "SkyNot",
+          image: FOLDER,
+          type: "directory",
+          children: [
+            {
+              id: "SkyNot_code",
+              label: "Code",
+              image: GITHUB,
+              type: "link",
+              url: "https://github.com/Skycat1983/SkyNot",
+            },
+            {
+              id: "SkyNot_download",
+              label: "Download",
+              image: FIREFOX,
+              type: "link",
+              url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
+            },
+          ],
+        },
+        {
+          id: "Dashboard",
+          label: "Dashboard",
+          image: FOLDER,
+          type: "directory",
+          children: [
+            {
+              id: "Dashboard_code",
+              label: "Code",
+              image: GITHUB,
+              type: "link",
+              url: "https://github.com/Skycat1983/Dashboard",
+            },
+          ],
+        },
+      ],
     },
     {
       id: "stack",
@@ -247,13 +277,13 @@ export const defaultNodes: DirectoryObject = {
         {
           id: "resume",
           label: "Resume",
-          image: FOLDER,
+          image: PDF,
           type: "app",
         },
         {
           id: "references",
           label: "References",
-          image: FOLDER,
+          image: PDF,
           type: "app",
         },
       ],

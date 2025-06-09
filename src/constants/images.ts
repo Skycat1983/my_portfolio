@@ -1,37 +1,45 @@
 // PROFILE ICONS
-const GITHUB = "src/assets/profile_icons/github_white.png";
-const LINKEDIN = "src/assets/profile_icons/linked_in1.png";
+const GITHUB = "src/assets/icons_m/github.png";
+const LINKEDIN = "src/assets/icons/linkedin.png";
+
+const LINKEDIN_SMALL = "src/assets/icons_s/linked_in1.png";
+const GITHUB_SMALL = "src/assets/icons_s/github_white.png";
 
 // ICONS
-const ICON = "src/assets/icons/1.png";
+const ICON = "src/assets/icons_m/1.png";
 
 // FOLDERS
-const FOLDER = "src/assets/folder_icons/folder1.png";
-const BIN_EMPTY = "src/assets/folder_icons/bin_empty.png";
-const BIN_FULL = "src/assets/folder_icons/bin_full.png";
+const FOLDER = "src/assets/icons_m/folder1.png";
+const BIN_EMPTY = "src/assets/icons_m/bin_empty.png";
+const BIN_FULL = "src/assets/icons_m/bin_full.png";
 
 // APPS
-const TERMINAL = "src/assets/app_icons/terminal.png";
+const TERMINAL = "src/assets/icons_m/terminal.png";
 
 // STACK ICONS
-const REACT = "src/assets/stack_icons/react.png";
-const TYPESCRIPT = "src/assets/stack_icons/typescript.png";
-const NODEJS = "src/assets/stack_icons/nodejs.png";
-const MONGODB = "src/assets/stack_icons/mongo_db.png";
-// export const EXPRESS_IMG = "src/assets/stack_icons/express.png";
-const JAVASCRIPT = "src/assets/stack_icons/javascript.png";
-const JEST = "src/assets/stack_icons/jest.png";
-const POSTMAN = "src/assets/stack_icons/postman.png";
-const TAILWIND = "src/assets/stack_icons/tailwind.png";
-const FIREBASE = "src/assets/stack_icons/firebase.png";
+const REACT = "src/assets/icons_m/react.png";
+const TYPESCRIPT = "src/assets/icons_m/typescript.png";
+const NODEJS = "src/assets/icons_m/nodejs.png";
+const MONGODB = "src/assets/icons_m/mongo_db.png";
+const EXPRESS = "src/assets/icons_m/express.png";
+const JAVASCRIPT = "src/assets/icons_m/javascript.png";
+const JEST = "src/assets/icons_m/jest.png";
+const POSTMAN = "src/assets/icons_m/postman.png";
+const TAILWIND = "src/assets/icons_m/tailwind.png";
+const FIREBASE = "src/assets/icons_m/firebase.png";
+const EASTER_EGG1 = "src/assets/icons_m/egg1.png";
 
-// Easter Eggs
-const EASTER_EGG1 = "src/assets/eggs/egg1.png";
-const EASTER_EGG2 = "src/assets/eggs/egg2.png";
-const EASTER_EGG3 = "src/assets/eggs/egg3.png";
-const EASTER_EGG4 = "src/assets/eggs/egg4.png";
+const EASTER_EGG2 = "src/assets/icons_m/egg2.png";
+const EASTER_EGG3 = "src/assets/icons_m/egg3.png";
+const EASTER_EGG4 = "src/assets/icons_m/egg4.png";
+
+const FIREFOX = "src/assets/icons_m/firefox.png";
+const PDF = "src/assets/icons_m/pdf.png";
 
 export const images = {
+  LINKEDIN_SMALL,
+  GITHUB_SMALL,
+  FIREFOX,
   GITHUB,
   LINKEDIN,
   ICON,
@@ -52,4 +60,6 @@ export const images = {
   EASTER_EGG2,
   EASTER_EGG3,
   EASTER_EGG4,
+  EXPRESS,
+  PDF,
 };
