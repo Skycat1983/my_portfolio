@@ -50,6 +50,14 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+.background-image {
+  /* background-image: url("/src/assets/wallpapers/windows.png"); */
+  background-image: url("/src/assets/wallpapers/fuji.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
