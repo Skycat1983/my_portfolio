@@ -14,9 +14,6 @@ export const WindowContent = ({ nodeId }: WindowContentProps) => {
     openWindow,
     getWindowByNodeId,
     navigateInWindow,
-    canGoBack,
-    goBack,
-    getParent,
   } = useStore();
 
   // Get the window state to see what we're currently viewing
@@ -59,44 +56,12 @@ export const WindowContent = ({ nodeId }: WindowContentProps) => {
     }
   };
 
-  const handleBackClick = () => {
-    console.log(
-      "handleBackClick in WindowContent: going back in window",
-      nodeId
-    );
-    goBack(nodeId);
-  };
-
-  // Check if back button should be enabled (parent is not root)
-  const parent = getParent(currentNodeId);
-  const { rootId } = useStore.getState();
-  const canShowBack = canGoBack(nodeId) && parent && parent.id !== rootId;
-
   // If it's a directory, show navigation and its children using DirectoryLayout
   if (node.type === "directory") {
     const children = getChildren(currentNodeId);
 
     return (
       <div className="h-full flex flex-col">
-        {/* Simple Navigation Bar */}
-        <div className="flex items-center gap-2 p-2 border-b border-gray-600 bg-gray-800">
-          {/* Back button */}
-          <button
-            onClick={handleBackClick}
-            disabled={!canShowBack}
-            className={`px-3 py-1 text-sm rounded ${
-              canShowBack
-                ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
-                : "bg-gray-800 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            ← Back
-          </button>
-
-          {/* Current folder name */}
-          <span className="text-gray-300 ml-2 font-medium">{node.label}</span>
-        </div>
-
         {/* Directory Content */}
         <div className="flex-1 overflow-auto">
           {children.length === 0 ? (
