@@ -13,10 +13,13 @@ export const MenubarLayout = () => {
       </div>
       <div className="flex flex-row gap-4">
         <Social
-          imgPath={images.LINKEDIN}
+          imgPath={images.LINKEDIN_SMALL}
           link="https://www.linkedin.com/in/heron-laoutaris/"
         />
-        <Social imgPath={images.GITHUB} link="https://github.com/skycat1983" />
+        <Social
+          imgPath={images.GITHUB_SMALL}
+          link="https://github.com/skycat1983"
+        />
         <DisplayDate />
       </div>
     </div>

@@ -4,32 +4,63 @@ import { useStore } from "../hooks/useStore";
 import Window from "../components/window/Window";
 
 export const Desktop = () => {
-  // Get what we need from the store
   const {
     rootId,
     getChildren,
     selectedNodeId,
     selectNode,
-    debugGetObjectTree,
+    openWindow,
+    openWindows,
+    isDirectChildOfRoot,
+    getNode,
   } = useStore();
 
   const desktopChildren = getChildren(rootId);
-  console.log("Desktop children (actual nodes):", desktopChildren);
-
-  // Test reverse conversion
-  console.log("Testing reverse conversion (map → object):");
-  debugGetObjectTree();
 
   const handleNodeDoubleClick = (nodeId: string) => {
-    console.log("Desktop: Double-clicked node", nodeId);
-    // TODO: Open window for directories, launch apps
+    console.log(
+      "handleNodeDoubleClick in Desktop: Double-clicked nodeId",
+      nodeId
+    );
+
+    const node = getNode(nodeId);
+    if (!node) return;
+
+    // Handle links - open URL in new tab
+    if (node.type === "link") {
+      console.log("handleNodeDoubleClick in Desktop: Opening link", node.url);
+      window.open(node.url, "_blank");
+      return;
+    }
+
+    // Always open apps in new windows
+    if (node.type === "app") {
+      openWindow(nodeId);
+      return;
+    }
+
+    // For directories: only open new window if it's a direct child of root (desktop)
+    if (node.type === "directory" && isDirectChildOfRoot(nodeId)) {
+      openWindow(nodeId);
+    }
+
+    // Note: We don't handle non-root directories here since they're not on desktop
   };
 
   return (
-    <div className="w-screen h-screen bg-gray-900 relative overflow-hidden">
+    <div className="w-screen h-screen bg-gray-900 relative overflow-hidden background-image">
       <MenubarLayout />
       <div className="p-10 h-full">
-        <Window />
+        {/* Render all open windows */}
+        {openWindows.map((windowState) => (
+          <Window
+            key={windowState.id}
+            nodeId={windowState.id}
+            zIndex={windowState.zIndex}
+            isMinimized={windowState.isMinimized}
+          />
+        ))}
+
         <DirectoryLayout
           nodes={desktopChildren}
           selectedNodeId={selectedNodeId}

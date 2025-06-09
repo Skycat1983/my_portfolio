@@ -2,10 +2,19 @@ import { create } from "zustand";
 import {
   defaultNodeMap,
   defaultRootId,
-  convertMapToObjects,
   type NodeMap,
   type MapNode,
 } from "../constants/nodes";
+
+// Window interface for better type safety and extensibility
+interface WindowState {
+  id: string; // original nodeId that opened the window
+  currentNodeId: string; // current folder being viewed (for navigation)
+  zIndex: number;
+  isMinimized?: boolean;
+  navigationHistory: string[]; // for back/forward navigation
+  currentHistoryIndex: number;
+}
 
 // BASIC STORE INTERFACE
 interface DesktopStore {
@@ -18,15 +27,27 @@ interface DesktopStore {
 
   // Basic getters
   getNode: (id: string) => MapNode | undefined;
-  getRootNode: () => MapNode | undefined;
   getChildren: (parentId: string) => MapNode[];
+  getParent: (nodeId: string) => MapNode | undefined;
+  isDirectChildOfRoot: (nodeId: string) => boolean;
 
   // Selection actions
   selectNode: (nodeId: string) => void;
-  clearSelection: () => void;
 
-  // Debug helper
-  debugGetObjectTree: () => void;
+  // Window state - now using WindowState objects
+  openWindows: WindowState[];
+  nextZIndex: number;
+
+  // Window actions
+  openWindow: (nodeId: string) => void;
+  closeWindow: (nodeId: string) => void;
+  focusWindow: (nodeId: string) => void;
+  getWindowByNodeId: (nodeId: string) => WindowState | undefined;
+
+  // Window navigation actions
+  navigateInWindow: (windowNodeId: string, targetNodeId: string) => void;
+  canGoBack: (windowNodeId: string) => boolean;
+  goBack: (windowNodeId: string) => void;
 }
 
 export const useStore = create<DesktopStore>((set, get) => ({
@@ -43,12 +64,6 @@ export const useStore = create<DesktopStore>((set, get) => ({
     return state.nodeMap[id];
   },
 
-  // Get root node
-  getRootNode: () => {
-    const state = get();
-    return state.nodeMap[state.rootId];
-  },
-
   // Get children of a parent node
   getChildren: (parentId: string) => {
     const state = get();
@@ -60,27 +75,159 @@ export const useStore = create<DesktopStore>((set, get) => ({
       .filter(Boolean); // Filter out any undefined nodes
   },
 
+  // Get parent of a node
+  getParent: (nodeId: string) => {
+    const state = get();
+    const node = state.nodeMap[nodeId];
+    if (!node || !node.parentId) return undefined;
+    return state.nodeMap[node.parentId];
+  },
+
+  // Check if node is direct child of root
+  isDirectChildOfRoot: (nodeId: string) => {
+    const state = get();
+    const node: MapNode | undefined = state.nodeMap[nodeId];
+    return node?.parentId === state.rootId;
+  },
+
   // Selection actions
   selectNode: (nodeId: string) => {
-    console.log("Store: selecting node", nodeId);
+    console.log("selectNode in useStore: selecting node", nodeId);
     set({ selectedNodeId: nodeId });
   },
 
-  clearSelection: () => {
-    console.log("Store: clearing selection");
-    set({ selectedNodeId: null });
-  },
+  // Window management
+  openWindows: [],
+  nextZIndex: 1000, // Start high to avoid conflicts with other elements
 
   openWindow: (nodeId: string) => {
-    console.log("Store: opening window", nodeId);
-    set({ selectedNodeId: nodeId });
+    console.log("openWindow in useStore: opening window for nodeId", nodeId);
+
+    const currentState = get();
+
+    // Check if window is already open
+    const existingWindow = currentState.openWindows.find(
+      (w) => w.id === nodeId
+    );
+    if (existingWindow) {
+      console.log(
+        "openWindow in useStore: window already open, focusing nodeId",
+        nodeId
+      );
+      // If already open, just focus it
+      get().focusWindow(nodeId);
+      return;
+    }
+
+    // Create new window with next available z-index and navigation state
+    const newWindow: WindowState = {
+      id: nodeId,
+      currentNodeId: nodeId,
+      zIndex: currentState.nextZIndex,
+      isMinimized: false,
+      navigationHistory: [nodeId],
+      currentHistoryIndex: 0,
+    };
+
+    set((state) => ({
+      openWindows: [...state.openWindows, newWindow],
+      nextZIndex: state.nextZIndex + 1,
+    }));
   },
 
-  // Debug helper - converts current map back to object tree for visualization
-  debugGetObjectTree: () => {
-    const state = get();
-    const objectTree = convertMapToObjects(state.nodeMap, state.rootId);
-    console.log("🔍 DEBUG: Current state as object tree:", objectTree);
-    return objectTree;
+  closeWindow: (nodeId: string) => {
+    console.log("closeWindow in useStore: closing window for nodeId", nodeId);
+
+    set((state) => ({
+      openWindows: state.openWindows.filter((window) => window.id !== nodeId),
+    }));
+  },
+
+  focusWindow: (nodeId: string) => {
+    console.log("focusWindow in useStore: focusing window for nodeId", nodeId);
+
+    const currentState = get();
+    const windowToFocus = currentState.openWindows.find((w) => w.id === nodeId);
+
+    if (!windowToFocus) {
+      console.log(
+        "focusWindow in useStore: window not found for nodeId",
+        nodeId
+      );
+      return;
+    }
+
+    // Update the focused window to have the highest z-index
+    set((state) => ({
+      openWindows: state.openWindows.map((window) =>
+        window.id === nodeId
+          ? { ...window, zIndex: state.nextZIndex, isMinimized: false }
+          : window
+      ),
+      nextZIndex: state.nextZIndex + 1,
+    }));
+  },
+
+  getWindowByNodeId: (nodeId: string) => {
+    const currentState = get();
+    return currentState.openWindows.find((window) => window.id === nodeId);
+  },
+
+  // Window navigation actions
+  navigateInWindow: (windowNodeId: string, targetNodeId: string) => {
+    console.log(
+      "navigateInWindow in useStore: navigating in window",
+      windowNodeId,
+      "to target",
+      targetNodeId
+    );
+
+    set((state) => ({
+      openWindows: state.openWindows.map((window) => {
+        if (window.id !== windowNodeId) return window;
+
+        // Trim history after current position (like browser navigation)
+        const newHistory = window.navigationHistory.slice(
+          0,
+          window.currentHistoryIndex + 1
+        );
+
+        // Add new target to history
+        newHistory.push(targetNodeId);
+
+        return {
+          ...window,
+          currentNodeId: targetNodeId,
+          navigationHistory: newHistory,
+          currentHistoryIndex: newHistory.length - 1,
+        };
+      }),
+    }));
+  },
+
+  canGoBack: (windowNodeId: string) => {
+    const currentState = get();
+    const window = currentState.openWindows.find((w) => w.id === windowNodeId);
+    return window ? window.currentHistoryIndex > 0 : false;
+  },
+
+  goBack: (windowNodeId: string) => {
+    console.log("goBack in useStore: going back in window", windowNodeId);
+
+    const currentState = get();
+    const window = currentState.openWindows.find((w) => w.id === windowNodeId);
+
+    if (!window || window.currentHistoryIndex <= 0) return;
+
+    const newIndex = window.currentHistoryIndex - 1;
+    const targetNodeId = window.navigationHistory[newIndex];
+
+    set((state) => ({
+      openWindows: state.openWindows.map((w) =>
+        w.id === windowNodeId
+          ? { ...w, currentNodeId: targetNodeId, currentHistoryIndex: newIndex }
+          : w
+      ),
+    }));
   },
 }));
