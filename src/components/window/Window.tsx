@@ -20,8 +20,25 @@ export const Window = ({
   const [size, setSize] = useState({ w: 400, h: 300 });
   const titleBarHeight = 28;
 
-  const { getNode, closeWindow, focusWindow } = useStore();
+  const {
+    getNode,
+    closeWindow,
+    focusWindow,
+    getWindowByNodeId,
+    canGoBack,
+    canGoForward,
+    goBack,
+    goForward,
+    getParent,
+    rootId,
+  } = useStore();
+
   const node = getNode(nodeId);
+  const windowState = getWindowByNodeId(nodeId);
+
+  // Get the current node being viewed (for title and navigation)
+  const currentNodeId = windowState?.currentNodeId || nodeId;
+  const currentNode = getNode(currentNodeId);
 
   if (!node) {
     console.log("Window: Node not found for nodeId", nodeId);
@@ -46,17 +63,28 @@ export const Window = ({
     focusWindow(nodeId);
   };
 
+  const handleBack = () => {
+    console.log("handleBack in Window: going back for nodeId", nodeId);
+    goBack(nodeId);
+  };
+
+  const handleForward = () => {
+    console.log("handleForward in Window: going forward for nodeId", nodeId);
+    goForward(nodeId);
+  };
+
+  // Check navigation availability with the same logic as WindowContent
+  const parent = getParent(currentNodeId);
+  const canShowBack = canGoBack(nodeId) && parent && parent.id !== rootId;
+  const canShowForward = canGoForward(nodeId);
+
   // Don't render minimized windows (for now)
   if (isMinimized) {
     return null;
   }
 
   return (
-    <div
-      style={{ zIndex }}
-      onClick={handleFocus}
-      className="absolute opacity-95"
-    >
+    <div style={{ zIndex }} onClick={handleFocus} className="absolute">
       <ResizeWrapper
         pos={pos}
         size={size}
@@ -67,9 +95,13 @@ export const Window = ({
         <WindowFrame
           pos={pos}
           size={size}
-          title={node.label}
+          title={currentNode?.label || node.label}
           onPositionChange={handlePositionChange}
           onClose={handleClose}
+          onBack={handleBack}
+          onForward={handleForward}
+          canGoBack={canShowBack}
+          canGoForward={canShowForward}
         >
           <WindowContent nodeId={nodeId} />
         </WindowFrame>
