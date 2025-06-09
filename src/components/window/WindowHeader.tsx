@@ -1,13 +1,17 @@
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+
 export const WindowHeader = ({
   title,
   isDragging,
   onPointerDown,
+  onClose,
 }: {
   title?: string;
   isDragging: boolean;
   onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
+  onClose?: () => void;
 }) => {
-  const titleBarHeight = 28;
+  const titleBarHeight = 42;
 
   const titleBarStyle: React.CSSProperties = {
     height: titleBarHeight,
@@ -16,17 +20,52 @@ export const WindowHeader = ({
     cursor: isDragging ? "move" : "default",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     fontFamily: "system-ui, -apple-system, sans-serif",
     fontSize: "13px",
     fontWeight: "500",
     color: "#f3f4f6", // gray-100
     userSelect: "none",
+    padding: "0 8px",
+  };
+
+  const closeButtonStyle: React.CSSProperties = {
+    height: "16px",
+    width: "16px",
+    marginRight: "16px",
+    marginLeft: "10px",
+    borderRadius: "50%",
+    padding: "2px",
+    background: "#ef4444", // red-500
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white",
+  };
+
+  const handleCloseClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering drag
+    onClose?.();
   };
 
   return (
     <div style={titleBarStyle} onPointerDown={onPointerDown}>
-      {title || "Window"}
+      {onClose && (
+        <X
+          style={closeButtonStyle}
+          onClick={handleCloseClick}
+          aria-label="Close window"
+        />
+      )}
+
+      {/* Left spacer */}
+      <div className="font-bold">{title || "Window"}</div>
+      <div className="flex items-center">
+        <ChevronLeft />
+        <ChevronRight />
+      </div>
     </div>
   );
 };

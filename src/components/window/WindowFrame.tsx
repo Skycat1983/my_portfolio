@@ -8,6 +8,7 @@ interface WindowFrameProps {
   onPositionChange?: (pos: { x: number; y: number }) => void;
   title?: string;
   children?: React.ReactNode;
+  onClose?: () => void;
 }
 
 // The visual window frame (header + content area)
@@ -17,6 +18,7 @@ export const WindowFrame = ({
   onPositionChange,
   title,
   children,
+  onClose,
 }: WindowFrameProps) => {
   const titleBarHeight = 28;
   const [hoverCursor, setHoverCursor] = useState<string>("default");
@@ -86,6 +88,7 @@ export const WindowFrame = ({
         title={title}
         isDragging={isDragging}
         onPointerDown={handleTitleBarPointerDown}
+        onClose={onClose}
       />
       <div style={contentStyle}>{children || "Window content area"}</div>
     </div>
