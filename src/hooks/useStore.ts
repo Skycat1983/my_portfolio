@@ -47,7 +47,9 @@ interface DesktopStore {
   // Window navigation actions
   navigateInWindow: (windowNodeId: string, targetNodeId: string) => void;
   canGoBack: (windowNodeId: string) => boolean;
+  canGoForward: (windowNodeId: string) => boolean;
   goBack: (windowNodeId: string) => void;
+  goForward: (windowNodeId: string) => void;
 }
 
 export const useStore = create<DesktopStore>((set, get) => ({
@@ -211,6 +213,14 @@ export const useStore = create<DesktopStore>((set, get) => ({
     return window ? window.currentHistoryIndex > 0 : false;
   },
 
+  canGoForward: (windowNodeId: string) => {
+    const currentState = get();
+    const window = currentState.openWindows.find((w) => w.id === windowNodeId);
+    return window
+      ? window.currentHistoryIndex < window.navigationHistory.length - 1
+      : false;
+  },
+
   goBack: (windowNodeId: string) => {
     console.log("goBack in useStore: going back in window", windowNodeId);
 
@@ -220,6 +230,30 @@ export const useStore = create<DesktopStore>((set, get) => ({
     if (!window || window.currentHistoryIndex <= 0) return;
 
     const newIndex = window.currentHistoryIndex - 1;
+    const targetNodeId = window.navigationHistory[newIndex];
+
+    set((state) => ({
+      openWindows: state.openWindows.map((w) =>
+        w.id === windowNodeId
+          ? { ...w, currentNodeId: targetNodeId, currentHistoryIndex: newIndex }
+          : w
+      ),
+    }));
+  },
+
+  goForward: (windowNodeId: string) => {
+    console.log("goForward in useStore: going forward in window", windowNodeId);
+
+    const currentState = get();
+    const window = currentState.openWindows.find((w) => w.id === windowNodeId);
+
+    if (
+      !window ||
+      window.currentHistoryIndex >= window.navigationHistory.length - 1
+    )
+      return;
+
+    const newIndex = window.currentHistoryIndex + 1;
     const targetNodeId = window.navigationHistory[newIndex];
 
     set((state) => ({

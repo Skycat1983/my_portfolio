@@ -18,17 +18,14 @@ const {
   EASTER_EGG1,
   GITHUB,
   PDF,
-  // EASTER_EGG2,
-  // EASTER_EGG3,
-  // EASTER_EGG4,
 } = images;
 
 /**
  * Design Decision: Dual Data Structure Approach
  *
- * NodeObject types: Human-readable nested structure for easy data definition
+ * NodeObject types: Human-readable nested structure for easy data definitions
  * NodeMap types: Flat ID-based map for efficient operations (drag/drop, moves, state management)
- *
+ 
  * Objects are intuitive to write/read, Maps enable advanced desktop functionality
  */
 
@@ -105,6 +102,9 @@ export interface MapNode {
 export interface NodeMap {
   [id: string]: MapNode;
 }
+
+const resumePath = "/documents/resume.pdf";
+const recommendationsPath = "/documents/recommendation.pdf";
 
 // HUMAN-READABLE DATA DEFINITION
 export const defaultNodes: DirectoryObject = {
@@ -278,13 +278,15 @@ export const defaultNodes: DirectoryObject = {
           id: "resume",
           label: "Resume",
           image: PDF,
-          type: "app",
+          type: "link",
+          url: resumePath,
         },
         {
-          id: "references",
-          label: "References",
+          id: "recommendation",
+          label: "Recommendation",
           image: PDF,
-          type: "app",
+          type: "link",
+          url: recommendationsPath,
         },
       ],
     },

@@ -5,11 +5,19 @@ export const WindowHeader = ({
   isDragging,
   onPointerDown,
   onClose,
+  onBack,
+  onForward,
+  canGoBack,
+  canGoForward,
 }: {
   title?: string;
   isDragging: boolean;
   onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
   onClose?: () => void;
+  onBack?: () => void;
+  onForward?: () => void;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
 }) => {
   const titleBarHeight = 42;
 
@@ -45,9 +53,34 @@ export const WindowHeader = ({
     color: "white",
   };
 
+  const navButtonStyle = (enabled: boolean): React.CSSProperties => ({
+    height: "20px",
+    width: "20px",
+    padding: "2px",
+    borderRadius: "4px",
+    background: enabled ? "#4b5563" : "transparent",
+    border: "none",
+    cursor: enabled ? "pointer" : "default",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: enabled ? "#f3f4f6" : "#6b7280",
+    marginLeft: "4px",
+  });
+
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering drag
     onClose?.();
+  };
+
+  const handleBackClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering drag
+    if (canGoBack) onBack?.();
+  };
+
+  const handleForwardClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering drag
+    if (canGoForward) onForward?.();
   };
 
   return (
@@ -60,11 +93,19 @@ export const WindowHeader = ({
         />
       )}
 
-      {/* Left spacer */}
+      {/* Title */}
       <div className="font-bold">{title || "Window"}</div>
+
+      {/* Navigation buttons */}
       <div className="flex items-center">
-        <ChevronLeft />
-        <ChevronRight />
+        <ChevronLeft
+          style={navButtonStyle(canGoBack || false)}
+          onClick={handleBackClick}
+        />
+        <ChevronRight
+          style={navButtonStyle(canGoForward || false)}
+          onClick={handleForwardClick}
+        />
       </div>
     </div>
   );

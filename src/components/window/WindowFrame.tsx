@@ -9,6 +9,10 @@ interface WindowFrameProps {
   title?: string;
   children?: React.ReactNode;
   onClose?: () => void;
+  onBack?: () => void;
+  onForward?: () => void;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
 }
 
 // The visual window frame (header + content area)
@@ -19,6 +23,10 @@ export const WindowFrame = ({
   title,
   children,
   onClose,
+  onBack,
+  onForward,
+  canGoBack,
+  canGoForward,
 }: WindowFrameProps) => {
   const titleBarHeight = 28;
   const [hoverCursor, setHoverCursor] = useState<string>("default");
@@ -89,6 +97,10 @@ export const WindowFrame = ({
         isDragging={isDragging}
         onPointerDown={handleTitleBarPointerDown}
         onClose={onClose}
+        onBack={onBack}
+        onForward={onForward}
+        canGoBack={canGoBack}
+        canGoForward={canGoForward}
       />
       <div style={contentStyle}>{children || "Window content area"}</div>
     </div>
