@@ -350,7 +350,16 @@ export const useStore = create<DesktopStore>((set, get) => ({
 
     // Can't move to same parent
     if (node.parentId === targetParentId) {
-      console.log("validateMove in useStore: same parent, no move needed");
+      console.log(
+        "validateMove in useStore: same parent, no move needed - node parent:",
+        node.parentId,
+        "target:",
+        targetParentId,
+        "node label:",
+        node.label,
+        "target label:",
+        targetParent.label
+      );
       return false;
     }
 

@@ -4,10 +4,24 @@ import { WindowFrame } from "./WindowFrame";
 import { WindowContent } from "./WindowContent";
 import { useStore } from "../../hooks/useStore";
 
+// Define the drag handlers type (same as in other components)
+interface DragHandlers {
+  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
+  handleDragEnd: () => void;
+  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
+  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
+  handleDragLeave: (e: React.DragEvent) => void;
+  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
+  currentDropTarget: string | null;
+  isValidDropTarget: () => boolean;
+  isDropTarget: (nodeId: string) => boolean;
+}
+
 interface WindowProps {
   nodeId: string;
   zIndex: number;
   isMinimized?: boolean;
+  dragHandlers?: DragHandlers;
 }
 
 // Main window component with both drag and resize functionality
@@ -15,6 +29,7 @@ export const Window = ({
   nodeId,
   zIndex,
   isMinimized = false,
+  dragHandlers,
 }: WindowProps) => {
   const [pos, setPos] = useState({ x: 100, y: 100 });
   const [size, setSize] = useState({ w: 400, h: 300 });
@@ -103,7 +118,7 @@ export const Window = ({
           canGoBack={canShowBack}
           canGoForward={canShowForward}
         >
-          <WindowContent nodeId={nodeId} />
+          <WindowContent nodeId={nodeId} dragHandlers={dragHandlers} />
         </WindowFrame>
       </ResizeWrapper>
     </div>

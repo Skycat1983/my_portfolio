@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useStore } from "./useStore";
 
 export const useNodeDrag = () => {
@@ -6,6 +6,9 @@ export const useNodeDrag = () => {
   const [currentDropTarget, setCurrentDropTarget] = useState<string | null>(
     null
   );
+
+  // Throttle validation to prevent excessive console logging
+  const lastValidationTime = useRef<number>(0);
 
   const { moveNode, validateMove } = useStore();
 
@@ -31,12 +34,25 @@ export const useNodeDrag = () => {
     // Must preventDefault to allow drop
     e.preventDefault();
 
+    // Stop propagation when we have a specific target to prevent desktop interference
+    if (targetNodeId) {
+      e.stopPropagation();
+    }
+
     // Get the dragged node ID from drag data
     const draggedNodeId = e.dataTransfer.getData("nodeId");
 
     // Update visual feedback if we have a valid target
     if (targetNodeId && draggedNodeId) {
-      const isValid = validateMove(draggedNodeId, targetNodeId);
+      // Throttle validation to prevent excessive console logging
+      const now = Date.now();
+      const shouldValidate = now - lastValidationTime.current > 100; // Only validate every 100ms
+
+      let isValid = true; // Default to true to avoid blocking
+      if (shouldValidate) {
+        isValid = validateMove(draggedNodeId, targetNodeId);
+        lastValidationTime.current = now;
+      }
 
       // Set cursor based on validity
       e.dataTransfer.dropEffect = isValid ? "move" : "none";
@@ -56,6 +72,7 @@ export const useNodeDrag = () => {
     );
 
     e.preventDefault();
+    e.stopPropagation(); // Prevent event from bubbling up
     setCurrentDropTarget(targetNodeId);
   };
 
@@ -72,6 +89,7 @@ export const useNodeDrag = () => {
     console.log("handleDrop in useNodeDrag: dropping on target", targetNodeId);
 
     e.preventDefault();
+    e.stopPropagation(); // Prevent event from bubbling up to parent elements
 
     // Get the dragged node ID
     const draggedNodeId = e.dataTransfer.getData("nodeId");

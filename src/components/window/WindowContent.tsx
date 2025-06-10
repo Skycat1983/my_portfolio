@@ -1,11 +1,25 @@
 import { useStore } from "../../hooks/useStore";
 import { DirectoryLayout } from "../DirectoryLayout";
 
-interface WindowContentProps {
-  nodeId: string; // Original window nodeId
+// Define the drag handlers type (same as in other components)
+interface DragHandlers {
+  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
+  handleDragEnd: () => void;
+  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
+  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
+  handleDragLeave: (e: React.DragEvent) => void;
+  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
+  currentDropTarget: string | null;
+  isValidDropTarget: () => boolean;
+  isDropTarget: (nodeId: string) => boolean;
 }
 
-export const WindowContent = ({ nodeId }: WindowContentProps) => {
+interface WindowContentProps {
+  nodeId: string; // Original window nodeId
+  dragHandlers?: DragHandlers;
+}
+
+export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
   const {
     getNode,
     getChildren,
@@ -62,8 +76,27 @@ export const WindowContent = ({ nodeId }: WindowContentProps) => {
 
     return (
       <div className="h-full flex flex-col">
-        {/* Directory Content */}
-        <div className="flex-1 overflow-auto">
+        {/* Directory Content - Make this area a drop target for the current folder */}
+        <div
+          className="flex-1 overflow-auto"
+          // Make the window content area a drop target for the current folder
+          onDragOver={
+            dragHandlers
+              ? (e) => dragHandlers.handleDragOver(e, currentNodeId)
+              : undefined
+          }
+          onDragEnter={
+            dragHandlers
+              ? (e) => dragHandlers.handleDragEnter(e, currentNodeId)
+              : undefined
+          }
+          onDragLeave={dragHandlers?.handleDragLeave}
+          onDrop={
+            dragHandlers
+              ? (e) => dragHandlers.handleDrop(e, currentNodeId)
+              : undefined
+          }
+        >
           {children.length === 0 ? (
             <div className="text-gray-400 text-center p-4">
               This folder is empty
@@ -75,6 +108,7 @@ export const WindowContent = ({ nodeId }: WindowContentProps) => {
               onSelectNode={selectNode}
               onDoubleClickNode={handleNodeDoubleClick}
               layout="window"
+              dragHandlers={dragHandlers}
             />
           )}
         </div>

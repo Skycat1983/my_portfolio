@@ -54,7 +54,24 @@ export const Desktop = () => {
   return (
     <div className="w-screen h-screen bg-gray-900 relative overflow-hidden background-image">
       <MenubarLayout />
-      <div className="p-10 h-full">
+      <div
+        className="p-10 h-full"
+        // Make desktop a drop target for moving items back to desktop
+        onDragOver={
+          dragHandlers
+            ? (e) => dragHandlers.handleDragOver(e, rootId)
+            : undefined
+        }
+        onDragEnter={
+          dragHandlers
+            ? (e) => dragHandlers.handleDragEnter(e, rootId)
+            : undefined
+        }
+        onDragLeave={dragHandlers?.handleDragLeave}
+        onDrop={
+          dragHandlers ? (e) => dragHandlers.handleDrop(e, rootId) : undefined
+        }
+      >
         {/* Render all open windows */}
         {openWindows.map((windowState) => (
           <Window
@@ -62,6 +79,7 @@ export const Desktop = () => {
             nodeId={windowState.id}
             zIndex={windowState.zIndex}
             isMinimized={windowState.isMinimized}
+            dragHandlers={dragHandlers}
           />
         ))}
 
