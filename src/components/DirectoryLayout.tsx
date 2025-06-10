@@ -3,12 +3,26 @@ import { NodeIcon } from "./NodeIcon";
 
 type LayoutType = "desktop" | "window";
 
+// Define the drag handlers type
+interface DragHandlers {
+  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
+  handleDragEnd: () => void;
+  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
+  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
+  handleDragLeave: (e: React.DragEvent) => void;
+  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
+  currentDropTarget: string | null;
+  isValidDropTarget: () => boolean;
+  isDropTarget: (nodeId: string) => boolean;
+}
+
 type DirectoryLayoutProps = {
   nodes: MapNode[];
   selectedNodeId: string | null;
   onSelectNode: (nodeId: string) => void;
   onDoubleClickNode?: (nodeId: string) => void;
   layout?: LayoutType;
+  dragHandlers?: DragHandlers;
 };
 
 export const DirectoryLayout = ({
@@ -17,6 +31,7 @@ export const DirectoryLayout = ({
   onSelectNode,
   onDoubleClickNode,
   layout = "window",
+  dragHandlers,
 }: DirectoryLayoutProps) => {
   const getLayoutClasses = () => {
     if (layout === "desktop") {
@@ -37,6 +52,7 @@ export const DirectoryLayout = ({
           isSelected={selectedNodeId === node.id}
           onSelect={onSelectNode}
           onDoubleClick={onDoubleClickNode}
+          dragHandlers={dragHandlers}
         />
       ))}
     </div>

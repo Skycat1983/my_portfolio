@@ -1,6 +1,7 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { DirectoryLayout } from "../components/DirectoryLayout";
 import { useStore } from "../hooks/useStore";
+import { useNodeDrag } from "../hooks/useNodeDrag";
 import Window from "../components/window/Window";
 
 export const Desktop = () => {
@@ -14,6 +15,9 @@ export const Desktop = () => {
     isDirectChildOfRoot,
     getNode,
   } = useStore();
+
+  // Initialize drag and drop functionality
+  const dragHandlers = useNodeDrag();
 
   const desktopChildren = getChildren(rootId);
 
@@ -67,6 +71,7 @@ export const Desktop = () => {
           onSelectNode={selectNode}
           onDoubleClickNode={handleNodeDoubleClick}
           layout="desktop"
+          dragHandlers={dragHandlers}
         />
       </div>
     </div>
