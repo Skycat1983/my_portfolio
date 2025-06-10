@@ -65,7 +65,6 @@ export const images = {
   EASTER_EGG1,
   EASTER_EGG2,
   EASTER_EGG3,
-  EASTER_EGG4,
   EXPRESS,
   PDF,
 };

@@ -11,8 +11,13 @@ export const useNodeDoubleClick = ({
   context,
   windowNodeId,
 }: UseNodeDoubleClickProps) => {
-  const { getNode, openWindow, navigateInWindow, isDirectChildOfRoot } =
-    useStore();
+  const {
+    getNode,
+    openWindow,
+    navigateInWindow,
+    isDirectChildOfRoot,
+    breakEasterEgg,
+  } = useStore();
 
   const handleNodeDoubleClick = (nodeId: string) => {
     console.log(
@@ -40,6 +45,16 @@ export const useNodeDoubleClick = ({
         nodeId
       );
       openWindow(nodeId);
+      return;
+    }
+
+    // Handle easter eggs - break them on double click
+    if (node.type === "easter-egg") {
+      console.log(
+        `handleNodeDoubleClick in ${context}: Breaking easter egg`,
+        nodeId
+      );
+      breakEasterEgg(nodeId);
       return;
     }
 

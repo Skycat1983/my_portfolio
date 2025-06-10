@@ -1,5 +1,6 @@
 import type { MapNode } from "../constants/nodes";
 import type { DragHandlers } from "../types/dragHandlers";
+import { useEasterEggClick } from "../hooks/useEasterEggClick";
 
 interface NodeIconProps {
   node: MapNode;
@@ -16,7 +17,14 @@ export const NodeIcon = ({
   onDoubleClick,
   dragHandlers,
 }: NodeIconProps) => {
+  const { handleEasterEggClick, getEasterEggImage } = useEasterEggClick();
+
   const handleClick = () => {
+    // Special handling for easter eggs - cycle image on single click
+    if (node.type === "easter-egg") {
+      handleEasterEggClick(node.id);
+    }
+    // Always call onSelect for selection state
     onSelect(node.id);
   };
 
@@ -25,6 +33,14 @@ export const NodeIcon = ({
     if (onDoubleClick) {
       onDoubleClick(node.id);
     }
+  };
+
+  // Determine the image to display
+  const getDisplayImage = (): string => {
+    if (node.type === "easter-egg") {
+      return getEasterEggImage(node.id);
+    }
+    return typeof node.image === "string" ? node.image : "";
   };
 
   // Determine if this node is currently a drop target
@@ -79,7 +95,7 @@ export const NodeIcon = ({
         className={`p-4 w-[120px] h-[120px] flex flex-col items-center justify-center ${containerClass}`}
       >
         <img
-          src={node.image}
+          src={getDisplayImage()}
           alt={node.label}
           className="w-full h-full object-contain"
         />

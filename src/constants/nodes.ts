@@ -115,9 +115,9 @@ export interface MapNode {
   id: string;
   parentId: string | null; // null only for desktop root
   children: string[]; // array of child IDs, empty for apps
-  type: "directory" | "app" | "link";
+  type: "directory" | "app" | "link" | "easter-egg";
   label: string;
-  image: string;
+  image: string | string[]; // string[] for easter eggs, string for others
   action?: () => void;
   url?: string;
 }
@@ -149,8 +149,8 @@ export const defaultNodes: DirectoryObject = {
       type: "directory",
       children: [
         {
-          id: "egg1",
-          label: "Egg 1",
+          id: "egg",
+          label: "EE",
           image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
           type: "easter-egg",
         },
@@ -331,6 +331,9 @@ export const defaultNodes: DirectoryObject = {
     },
   ],
 };
+
+// Export the broken egg image for use in other components
+export { EGG_BROKEN };
 
 // OPERATIONAL MAP READY FOR USE
 export const { nodeMap: defaultNodeMap, rootId: defaultRootId } =

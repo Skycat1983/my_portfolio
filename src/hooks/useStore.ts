@@ -4,6 +4,7 @@ import {
   defaultRootId,
   type NodeMap,
   type MapNode,
+  EGG_BROKEN,
 } from "../constants/nodes";
 
 // Window interface for better type safety and extensibility
@@ -15,6 +16,12 @@ interface WindowState {
   currentHistoryIndex: number;
 }
 
+// Easter egg state for individual eggs
+interface EasterEggState {
+  currentImageIndex: number; // Which image in the array to show (0, 1, 2)
+  isBroken: boolean; // If true, show broken egg image instead
+}
+
 // BASIC STORE INTERFACE
 interface DesktopStore {
   // Core data
@@ -23,6 +30,9 @@ interface DesktopStore {
 
   // Selection state
   selectedNodeId: string | null;
+
+  // Easter egg state
+  easterEggStates: { [nodeId: string]: EasterEggState };
 
   // Basic getters
   getNode: (id: string) => MapNode | undefined;
@@ -53,6 +63,11 @@ interface DesktopStore {
   // Node movement actions for drag & drop
   moveNode: (nodeId: string, newParentId: string) => void;
   validateMove: (nodeId: string, targetParentId: string) => boolean;
+
+  // Easter egg actions
+  cycleEasterEgg: (nodeId: string) => void;
+  breakEasterEgg: (nodeId: string) => void;
+  getEasterEggCurrentImage: (nodeId: string) => string;
 }
 
 export const useStore = create<DesktopStore>((set, get) => ({
@@ -62,6 +77,9 @@ export const useStore = create<DesktopStore>((set, get) => ({
 
   // Selection state
   selectedNodeId: null,
+
+  // Easter egg state - initialize empty, will be populated as eggs are interacted with
+  easterEggStates: {},
 
   // Basic node getter
   getNode: (id: string) => {
@@ -379,5 +397,114 @@ export const useStore = create<DesktopStore>((set, get) => ({
     }
 
     return true;
+  },
+
+  // Easter egg functionality
+  cycleEasterEgg: (nodeId: string) => {
+    console.log("cycleEasterEgg in useStore: cycling easter egg", nodeId);
+
+    const currentState = get();
+    const node = currentState.nodeMap[nodeId];
+
+    if (!node || node.type !== "easter-egg" || !Array.isArray(node.image)) {
+      console.log("cycleEasterEgg in useStore: not a valid easter egg");
+      return;
+    }
+
+    // Get current state or initialize
+    const currentEggState = currentState.easterEggStates[nodeId] || {
+      currentImageIndex: 0,
+      isBroken: false,
+    };
+
+    // Don't cycle if broken
+    if (currentEggState.isBroken) {
+      console.log("cycleEasterEgg in useStore: egg is broken, cannot cycle");
+      return;
+    }
+
+    // Cycle to next image (wrap around to 0 after last image)
+    const nextIndex =
+      (currentEggState.currentImageIndex + 1) % node.image.length;
+
+    set((state) => ({
+      easterEggStates: {
+        ...state.easterEggStates,
+        [nodeId]: {
+          ...currentEggState,
+          currentImageIndex: nextIndex,
+        },
+      },
+    }));
+  },
+
+  breakEasterEgg: (nodeId: string) => {
+    console.log("breakEasterEgg in useStore: breaking easter egg", nodeId);
+
+    const currentState = get();
+    const node = currentState.nodeMap[nodeId];
+
+    if (!node || node.type !== "easter-egg") {
+      console.log("breakEasterEgg in useStore: not a valid easter egg");
+      return;
+    }
+
+    // Get current state or initialize
+    const currentEggState = currentState.easterEggStates[nodeId] || {
+      currentImageIndex: 0,
+      isBroken: false,
+    };
+
+    // Break the egg
+    set((state) => ({
+      easterEggStates: {
+        ...state.easterEggStates,
+        [nodeId]: {
+          ...currentEggState,
+          isBroken: true,
+        },
+      },
+    }));
+  },
+
+  getEasterEggCurrentImage: (nodeId: string): string => {
+    const currentState = get();
+    const node = currentState.nodeMap[nodeId];
+
+    if (!node || node.type !== "easter-egg") {
+      return typeof node?.image === "string" ? node.image : "";
+    }
+
+    // Get current egg state
+    const eggState = currentState.easterEggStates[nodeId] || {
+      currentImageIndex: 0,
+      isBroken: false,
+    };
+
+    // If broken, return broken image
+    if (eggState.isBroken) {
+      console.log(
+        "getEasterEggCurrentImage: egg is broken, returning EGG_BROKEN",
+        EGG_BROKEN
+      );
+      return EGG_BROKEN;
+    }
+
+    // If not broken and has image array, return current image
+    if (Array.isArray(node.image)) {
+      const currentImage =
+        node.image[eggState.currentImageIndex] || node.image[0];
+      console.log(
+        "getEasterEggCurrentImage: returning current image",
+        currentImage,
+        "index:",
+        eggState.currentImageIndex
+      );
+      return currentImage;
+    }
+
+    // Fallback
+    console.log("getEasterEggCurrentImage: using fallback image");
+    return typeof node.image === "string" ? node.image : "";
   },
 }));
