@@ -16,6 +16,9 @@ const {
   FIREBASE,
   JAVASCRIPT,
   EASTER_EGG1,
+  EASTER_EGG2,
+  EASTER_EGG3,
+  EGG_BROKEN,
   GITHUB,
   PDF,
   JL,
@@ -55,7 +58,18 @@ export interface LinkObject {
   url: string;
 }
 
-export type NodeObject = DirectoryObject | AppObject | LinkObject;
+export interface EasterEggObject {
+  id: string;
+  type: "easter-egg";
+  label: string;
+  image: string[];
+}
+
+export type NodeObject =
+  | DirectoryObject
+  | AppObject
+  | LinkObject
+  | EasterEggObject;
 
 // OPERATIONAL MAP TYPES
 
@@ -87,8 +101,16 @@ interface LinkEntry {
   url: string;
 }
 
-export type MapEntry = DirectoryEntry | AppEntry | LinkEntry;
+interface EasterEggEntry {
+  id: string;
+  parentId: string | null;
+  children: string[];
+  type: "easter-egg";
+  label: string;
+  image: string[];
+}
 
+export type MapEntry = DirectoryEntry | AppEntry | LinkEntry | EasterEggEntry;
 export interface MapNode {
   id: string;
   parentId: string | null; // null only for desktop root
@@ -129,14 +151,8 @@ export const defaultNodes: DirectoryObject = {
         {
           id: "egg1",
           label: "Egg 1",
-          image: EASTER_EGG1,
-          type: "app",
-          action: () => {
-            console.log("Easter egg clicked!");
-            // This will be replaced with proper store integration
-            // For now, just log which image should be next
-            console.log("Next image should be EASTER_EGG2");
-          },
+          image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
+          type: "easter-egg",
         },
       ],
     },

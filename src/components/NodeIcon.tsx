@@ -1,17 +1,5 @@
 import type { MapNode } from "../constants/nodes";
-
-// Define the drag handlers type (same as in DirectoryLayout)
-interface DragHandlers {
-  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
-  handleDragEnd: () => void;
-  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
-  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
-  handleDragLeave: (e: React.DragEvent) => void;
-  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
-  currentDropTarget: string | null;
-  isValidDropTarget: () => boolean;
-  isDropTarget: (nodeId: string) => boolean;
-}
+import type { DragHandlers } from "../types/dragHandlers";
 
 interface NodeIconProps {
   node: MapNode;

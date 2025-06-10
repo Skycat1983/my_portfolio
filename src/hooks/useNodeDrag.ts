@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import { useStore } from "./useStore";
+import type { DragHandlers } from "../types/dragHandlers";
 
-export const useNodeDrag = () => {
+export const useNodeDrag = (): DragHandlers => {
   // Track current drop target for visual feedback (highlighting)
   const [currentDropTarget, setCurrentDropTarget] = useState<string | null>(
     null

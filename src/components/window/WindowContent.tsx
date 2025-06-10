@@ -1,18 +1,7 @@
 import { useStore } from "../../hooks/useStore";
+import { useNodeDoubleClick } from "../../hooks/useNodeDoubleClick";
 import { DirectoryLayout } from "../DirectoryLayout";
-
-// Define the drag handlers type (same as in other components)
-interface DragHandlers {
-  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
-  handleDragEnd: () => void;
-  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
-  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
-  handleDragLeave: (e: React.DragEvent) => void;
-  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
-  currentDropTarget: string | null;
-  isValidDropTarget: () => boolean;
-  isDropTarget: (nodeId: string) => boolean;
-}
+import type { DragHandlers } from "../../types/dragHandlers";
 
 interface WindowContentProps {
   nodeId: string; // Original window nodeId
@@ -25,10 +14,14 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
     getChildren,
     selectedNodeId,
     selectNode,
-    openWindow,
     getWindowByNodeId,
-    navigateInWindow,
   } = useStore();
+
+  // Initialize shared double-click functionality for window context
+  const { handleNodeDoubleClick } = useNodeDoubleClick({
+    context: "window",
+    windowNodeId: nodeId,
+  });
 
   // Get the window state to see what we're currently viewing
   const windowState = getWindowByNodeId(nodeId);
@@ -38,37 +31,6 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
   if (!node) {
     return <div className="text-gray-400 text-center p-4">Node not found</div>;
   }
-
-  const handleNodeDoubleClick = (targetNodeId: string) => {
-    console.log(
-      "handleNodeDoubleClick in WindowContent: Double-clicked targetNodeId",
-      targetNodeId
-    );
-
-    const targetNode = getNode(targetNodeId);
-    if (!targetNode) return;
-
-    // Handle links - open URL in new tab
-    if (targetNode.type === "link") {
-      console.log(
-        "handleNodeDoubleClick in WindowContent: Opening link",
-        targetNode.url
-      );
-      window.open(targetNode.url, "_blank");
-      return;
-    }
-
-    // Always open apps in new windows
-    if (targetNode.type === "app") {
-      openWindow(targetNodeId);
-      return;
-    }
-
-    // For directories: always navigate within current window
-    if (targetNode.type === "directory") {
-      navigateInWindow(nodeId, targetNodeId);
-    }
-  };
 
   // If it's a directory, show navigation and its children using DirectoryLayout
   if (node.type === "directory") {
@@ -116,61 +78,41 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
     );
   }
 
-  // If it's an app, show app-specific content
-  if (node.type === "app") {
-    return (
-      <div className="p-4">
-        <div className="text-center mb-4">
-          <img
-            src={node.image}
-            alt={node.label}
-            className="w-16 h-16 mx-auto mb-2"
-          />
-          <h2 className="text-lg font-semibold text-gray-100">{node.label}</h2>
-        </div>
-        <div className="text-gray-300 text-sm">
-          {/* App-specific content would go here */}
-          <p>This is the {node.label} application.</p>
-          <p className="mt-2 text-gray-400">
-            App functionality will be implemented here.
-          </p>
-        </div>
+  // For non-directory nodes, show a simple placeholder
+  // In practice, only directories should open in windows (apps have their own UI, links open in browser)
+  return (
+    <div className="p-4 text-center">
+      <div className="mb-4">
+        <img
+          src={node.image}
+          alt={node.label}
+          className="w-16 h-16 mx-auto mb-2"
+        />
+        <h2 className="text-lg font-semibold text-gray-100">{node.label}</h2>
       </div>
-    );
-  }
-
-  // If it's a link, show link-specific content
-  if (node.type === "link") {
-    return (
-      <div className="p-4">
-        <div className="text-center mb-4">
-          <img
-            src={node.image}
-            alt={node.label}
-            className="w-16 h-16 mx-auto mb-2"
-          />
-          <h2 className="text-lg font-semibold text-gray-100">{node.label}</h2>
-        </div>
-        <div className="text-gray-300 text-sm">
-          <p>This is a link to:</p>
-          <a
-            href={node.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-400 hover:text-blue-300 underline mt-2 block break-all"
-          >
-            {node.url}
-          </a>
-          <button
-            onClick={() => window.open(node.url, "_blank")}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm"
-          >
-            Open Link
-          </button>
-        </div>
+      <div className="text-gray-300 text-sm">
+        {node.type === "app" && (
+          <>
+            <p>This is the {node.label} application.</p>
+            <p className="mt-2 text-gray-400">
+              App functionality will be implemented here.
+            </p>
+          </>
+        )}
+        {node.type === "link" && (
+          <>
+            <p>This link opens in a new browser tab:</p>
+            <a
+              href={node.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 underline mt-2 block break-all"
+            >
+              {node.url}
+            </a>
+          </>
+        )}
       </div>
-    );
-  }
-
-  return <div className="text-gray-400 text-center p-4">Unknown node type</div>;
+    </div>
+  );
 };

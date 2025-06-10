@@ -3,34 +3,16 @@ import ResizeWrapper from "./WindowWrapper";
 import { WindowFrame } from "./WindowFrame";
 import { WindowContent } from "./WindowContent";
 import { useStore } from "../../hooks/useStore";
-
-// Define the drag handlers type (same as in other components)
-interface DragHandlers {
-  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
-  handleDragEnd: () => void;
-  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
-  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
-  handleDragLeave: (e: React.DragEvent) => void;
-  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
-  currentDropTarget: string | null;
-  isValidDropTarget: () => boolean;
-  isDropTarget: (nodeId: string) => boolean;
-}
+import type { DragHandlers } from "../../hooks/useNodeDrag";
 
 interface WindowProps {
   nodeId: string;
   zIndex: number;
-  isMinimized?: boolean;
   dragHandlers?: DragHandlers;
 }
 
 // Main window component with both drag and resize functionality
-export const Window = ({
-  nodeId,
-  zIndex,
-  isMinimized = false,
-  dragHandlers,
-}: WindowProps) => {
+export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
   const [pos, setPos] = useState({ x: 100, y: 100 });
   const [size, setSize] = useState({ w: 400, h: 300 });
   const titleBarHeight = 28;
@@ -92,11 +74,6 @@ export const Window = ({
   const parent = getParent(currentNodeId);
   const canShowBack = canGoBack(nodeId) && parent && parent.id !== rootId;
   const canShowForward = canGoForward(nodeId);
-
-  // Don't render minimized windows (for now)
-  if (isMinimized) {
-    return null;
-  }
 
   return (
     <div style={{ zIndex }} onClick={handleFocus} className="absolute">

@@ -11,7 +11,6 @@ interface WindowState {
   id: string; // original nodeId that opened the window
   currentNodeId: string; // current folder being viewed (for navigation)
   zIndex: number;
-  isMinimized?: boolean;
   navigationHistory: string[]; // for back/forward navigation
   currentHistoryIndex: number;
 }
@@ -130,7 +129,6 @@ export const useStore = create<DesktopStore>((set, get) => ({
       id: nodeId,
       currentNodeId: nodeId,
       zIndex: currentState.nextZIndex,
-      isMinimized: false,
       navigationHistory: [nodeId],
       currentHistoryIndex: 0,
     };
@@ -166,9 +164,7 @@ export const useStore = create<DesktopStore>((set, get) => ({
     // Update the focused window to have the highest z-index
     set((state) => ({
       openWindows: state.openWindows.map((window) =>
-        window.id === nodeId
-          ? { ...window, zIndex: state.nextZIndex, isMinimized: false }
-          : window
+        window.id === nodeId ? { ...window, zIndex: state.nextZIndex } : window
       ),
       nextZIndex: state.nextZIndex + 1,
     }));
