@@ -15,6 +15,7 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
     selectedNodeId,
     selectNode,
     getWindowByNodeId,
+    getEasterEggCurrentImage,
   } = useStore();
 
   // Initialize shared double-click functionality for window context
@@ -78,41 +79,63 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
     );
   }
 
-  // For non-directory nodes, show a simple placeholder
-  // In practice, only directories should open in windows (apps have their own UI, links open in browser)
-  return (
-    <div className="p-4 text-center">
-      <div className="mb-4">
+  if (node.type === "easter-egg") {
+    const currentImage = getEasterEggCurrentImage(nodeId);
+    return (
+      <div className="p-4 text-center">
         <img
-          src={node.image}
+          src={currentImage}
           alt={node.label}
           className="w-16 h-16 mx-auto mb-2"
         />
-        <h2 className="text-lg font-semibold text-gray-100">{node.label}</h2>
       </div>
-      <div className="text-gray-300 text-sm">
-        {node.type === "app" && (
-          <>
-            <p>This is the {node.label} application.</p>
-            <p className="mt-2 text-gray-400">
-              App functionality will be implemented here.
-            </p>
-          </>
-        )}
-        {node.type === "link" && (
-          <>
-            <p>This link opens in a new browser tab:</p>
-            <a
-              href={node.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline mt-2 block break-all"
-            >
-              {node.url}
-            </a>
-          </>
-        )}
+    );
+  }
+
+  if (node.type === "app") {
+    return (
+      <div className="p-4 text-center">
+        <div className="mb-4">
+          <img
+            src={node.image}
+            alt={node.label}
+            className="w-16 h-16 mx-auto mb-2"
+          />
+          <h2 className="text-lg font-semibold text-gray-100">{node.label}</h2>
+        </div>
+        <div className="text-gray-300 text-sm">
+          <p>This is the {node.label} application.</p>
+          <p className="mt-2 text-gray-400">
+            App functionality will be implemented here.
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (node.type === "link") {
+    return (
+      <div className="p-4 text-center">
+        <div className="mb-4">
+          <img
+            src={node.image}
+            alt={node.label}
+            className="w-16 h-16 mx-auto mb-2"
+          />
+          <h2 className="text-lg font-semibold text-gray-100">{node.label}</h2>
+        </div>
+        <div className="text-gray-300 text-sm">
+          <p>This link opens in a new browser tab:</p>
+          <a
+            href={node.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 underline mt-2 block break-all"
+          >
+            {node.url}
+          </a>
+        </div>
+      </div>
+    );
+  }
 };

@@ -5,6 +5,7 @@ import {
   type NodeMap,
   type MapNode,
   EGG_BROKEN,
+  type DirectoryEntry,
 } from "../constants/nodes";
 
 // Window interface for better type safety and extensibility
@@ -93,9 +94,14 @@ export const useStore = create<DesktopStore>((set, get) => ({
     const parent = state.nodeMap[parentId];
     if (!parent) return [];
 
-    return parent.children
-      .map((childId) => state.nodeMap[childId])
-      .filter(Boolean); // Filter out any undefined nodes
+    // Only directories and easter eggs have children
+    if (parent.type === "directory" || parent.type === "easter-egg") {
+      return parent.children
+        .map((childId: string) => state.nodeMap[childId])
+        .filter(Boolean); // Filter out any undefined nodes
+    }
+
+    return [];
   },
 
   // Get parent of a node
@@ -321,18 +327,20 @@ export const useStore = create<DesktopStore>((set, get) => ({
           parentId: newParentId,
         },
         // Remove from old parent's children array
-        ...(oldParent && {
-          [oldParent.id]: {
-            ...oldParent,
-            children: oldParent.children.filter(
-              (childId) => childId !== nodeId
-            ),
-          },
-        }),
-        // Add to new parent's children array
+        ...(oldParent &&
+          (oldParent.type === "directory" ||
+            oldParent.type === "easter-egg") && {
+            [oldParent.id]: {
+              ...oldParent,
+              children: oldParent.children.filter(
+                (childId: string) => childId !== nodeId
+              ),
+            },
+          }),
+        // Add to new parent's children array (newParent is already validated as directory)
         [newParentId]: {
           ...newParent,
-          children: [...newParent.children, nodeId],
+          children: [...(newParent as DirectoryEntry).children, nodeId],
         },
       },
     }));

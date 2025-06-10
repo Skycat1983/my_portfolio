@@ -38,8 +38,10 @@ const PDF = "src/assets/icons_m/pdf.png";
 const APPLE = "src/assets/icons_m/apple.png";
 
 const JL = "src/assets/icons_m/jl1.png";
+const IMAGE = "src/assets/icons_m/image1.png";
 
 export const images = {
+  IMAGE,
   EGG_BROKEN,
   JL,
   APPLE,

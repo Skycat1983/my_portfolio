@@ -32,6 +32,13 @@ export const convertMapToObjects = (
         image: mapNode.image,
         url: mapNode.url,
       } as LinkObject;
+    } else if (mapNode.type === "easter-egg") {
+      return {
+        id: mapNode.id,
+        type: "easter-egg",
+        label: mapNode.label,
+        image: mapNode.image,
+      };
     } else {
       // Directory nodes need to recursively build children
       const children: NodeObject[] = mapNode.children.map((childId) =>

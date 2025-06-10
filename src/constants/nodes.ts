@@ -22,6 +22,7 @@ const {
   GITHUB,
   PDF,
   JL,
+  IMAGE,
 } = images;
 
 /**
@@ -70,10 +71,11 @@ export type NodeObject =
   | AppObject
   | LinkObject
   | EasterEggObject;
+// | ImageObject;
 
-// OPERATIONAL MAP TYPES
+// OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
-interface DirectoryEntry {
+export interface DirectoryEntry {
   id: string;
   parentId: string | null;
   children: string[];
@@ -82,26 +84,25 @@ interface DirectoryEntry {
   image: string;
 }
 
-interface AppEntry {
+export interface AppEntry {
   id: string;
   parentId: string | null;
-  children: string[];
   type: "app";
   label: string;
   image: string;
+  action?: () => void;
 }
 
-interface LinkEntry {
+export interface LinkEntry {
   id: string;
   parentId: string | null;
-  children: string[];
   type: "link";
   label: string;
   image: string;
   url: string;
 }
 
-interface EasterEggEntry {
+export interface EasterEggEntry {
   id: string;
   parentId: string | null;
   children: string[];
@@ -110,17 +111,8 @@ interface EasterEggEntry {
   image: string[];
 }
 
-export type MapEntry = DirectoryEntry | AppEntry | LinkEntry | EasterEggEntry;
-export interface MapNode {
-  id: string;
-  parentId: string | null; // null only for desktop root
-  children: string[]; // array of child IDs, empty for apps
-  type: "directory" | "app" | "link" | "easter-egg";
-  label: string;
-  image: string | string[]; // string[] for easter eggs, string for others
-  action?: () => void;
-  url?: string;
-}
+export type MapNode = DirectoryEntry | AppEntry | LinkEntry | EasterEggEntry;
+// | ImageEntry;
 
 export interface NodeMap {
   [id: string]: MapNode;
@@ -128,6 +120,7 @@ export interface NodeMap {
 
 const resumePath = "/documents/resume.pdf";
 const recommendationsPath = "/documents/recommendation.pdf";
+const reviewPath = "/images/screenshot.png";
 
 // HUMAN-READABLE DATA DEFINITION
 export const defaultNodes: DirectoryObject = {
@@ -326,6 +319,13 @@ export const defaultNodes: DirectoryObject = {
           image: PDF,
           type: "link",
           url: recommendationsPath,
+        },
+        {
+          id: "review",
+          label: "Review",
+          image: IMAGE,
+          type: "link",
+          url: reviewPath,
         },
       ],
     },
