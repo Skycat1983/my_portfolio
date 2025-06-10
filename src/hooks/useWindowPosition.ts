@@ -57,7 +57,7 @@ export const useWindowPosition = ({
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
     };
-  }, [isDragging]);
+  }, [isDragging, onPositionChange]);
 
   // Handle drag from title bar only
   const handleTitleBarPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {

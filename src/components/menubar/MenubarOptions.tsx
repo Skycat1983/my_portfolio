@@ -8,6 +8,7 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "../ui/menubar";
+import Apple from "../icons/Apple";
 
 const HoverableMenuItem = ({
   children,
@@ -39,6 +40,33 @@ const HoverableMenuItem = ({
 export function MenubarOptions() {
   return (
     <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>
+          <Apple />
+        </MenubarTrigger>
+        <MenubarContent>
+          <HoverableMenuItem>
+            New <MenubarShortcut>⌘N</MenubarShortcut>
+          </HoverableMenuItem>
+          <HoverableMenuItem>
+            Open <MenubarShortcut>⌘O</MenubarShortcut>
+          </HoverableMenuItem>
+          <MenubarSeparator />
+          <HoverableMenuItem>
+            Save <MenubarShortcut>⌘S</MenubarShortcut>
+          </HoverableMenuItem>
+          <HoverableMenuItem>
+            Save As <MenubarShortcut>⇧⌘S</MenubarShortcut>
+          </HoverableMenuItem>
+          <MenubarSeparator />
+          <HoverableMenuItem>
+            Close <MenubarShortcut>⌘W</MenubarShortcut>
+          </HoverableMenuItem>
+          <HoverableMenuItem>
+            Print <MenubarShortcut>⌘P</MenubarShortcut>
+          </HoverableMenuItem>
+        </MenubarContent>
+      </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>

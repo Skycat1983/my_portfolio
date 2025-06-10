@@ -35,8 +35,13 @@ const EASTER_EGG4 = "src/assets/icons_m/egg4.png";
 
 const FIREFOX = "src/assets/icons_m/firefox.png";
 const PDF = "src/assets/icons_m/pdf.png";
+const APPLE = "src/assets/icons_m/apple.png";
+
+const JL = "src/assets/icons_m/jl1.png";
 
 export const images = {
+  JL,
+  APPLE,
   LINKEDIN_SMALL,
   GITHUB_SMALL,
   FIREFOX,

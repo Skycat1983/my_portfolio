@@ -18,6 +18,7 @@ const {
   EASTER_EGG1,
   GITHUB,
   PDF,
+  JL,
 } = images;
 
 /**
@@ -140,11 +141,33 @@ export const defaultNodes: DirectoryObject = {
       ],
     },
     {
-      id: "projects",
-      label: "Projects",
+      id: "portfolio",
+      label: "Portfolio",
       image: FOLDER,
       type: "directory",
       children: [
+        {
+          id: "laoutaris",
+          label: "Laoutaris",
+          image: FOLDER,
+          type: "directory",
+          children: [
+            {
+              id: "laoutaris_code",
+              label: "Code",
+              image: GITHUB,
+              type: "link",
+              url: "https://github.com/Skycat1983/laoutaris-nextjs",
+            },
+            {
+              id: "laoutaris_website",
+              label: "Website",
+              image: JL,
+              type: "link",
+              url: "https://laoutaris-nextjs.vercel.app/",
+            },
+          ],
+        },
         {
           id: "roboCrop",
           label: "RoboCrop",
