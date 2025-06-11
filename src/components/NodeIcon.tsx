@@ -1,9 +1,9 @@
-import type { MapNode } from "../constants/nodes";
+import type { NodeEntry } from "../types/nodeTypes";
 import type { DragHandlers } from "../types/dragHandlers";
 import { useEasterEggClick } from "../hooks/useEasterEggClick";
 
 interface NodeIconProps {
-  node: MapNode;
+  node: NodeEntry;
   isSelected: boolean;
   onSelect: (nodeId: string) => void;
   onDoubleClick?: (nodeId: string) => void;
