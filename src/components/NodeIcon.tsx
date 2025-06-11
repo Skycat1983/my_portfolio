@@ -3,6 +3,7 @@ import type { DragHandlers } from "../types/dragHandlers";
 import { useEasterEggClick } from "../hooks/useEasterEggClick";
 
 interface NodeIconProps {
+  id: string;
   node: NodeEntry;
   isSelected: boolean;
   onSelect: (nodeId: string) => void;
@@ -11,6 +12,7 @@ interface NodeIconProps {
 }
 
 export const NodeIcon = ({
+  id,
   node,
   isSelected,
   onSelect,

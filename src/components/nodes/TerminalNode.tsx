@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useNewStore";
-import type { LinkEntry } from "../../types/nodeTypes";
+import type { TerminalEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
   imageSize,
@@ -10,22 +10,22 @@ import {
   titleBase,
 } from "./node.styles";
 
-type Props = { link: LinkEntry };
+type Props = { terminal: TerminalEntry };
 
-export const LinkNode = ({ link }: Props) => {
+export const TerminalNode = ({ terminal }: Props) => {
   const selectNode = useNewStore((s) => s.selectNode);
-  const isSelected = useNewStore((s) => s.selectedNodeId === link.id);
+  const openTerminal = useNewStore((s) => s.openTerminal);
+  const isSelected = useNewStore((s) => s.selectedNodeId === terminal.id);
 
   const handleClick = useCallback(() => {
-    console.log("Link single-click:", link.id);
-    selectNode(link.id);
-  }, [link.id, selectNode]);
+    console.log("Terminal single-click:", terminal.id);
+    selectNode(terminal.id);
+  }, [terminal.id, selectNode]);
 
   const handleDoubleClick = useCallback(() => {
-    console.log("Link double-click: opening URL", link.url);
-    // Open URL in new tab
-    window.open(link.url, "_blank", "noopener,noreferrer");
-  }, [link.url]);
+    console.log("Terminal double-click: opening terminal");
+    openTerminal();
+  }, [openTerminal]);
 
   const isDropTarget = false;
 
@@ -39,11 +39,11 @@ export const LinkNode = ({ link }: Props) => {
           drop: isDropTarget,
         })}`}
       >
-        <img src={link.image} alt={link.label} className={imageSize} />
+        <img src={terminal.image} alt={terminal.label} className={imageSize} />
       </div>
 
       <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
-        {link.label}
+        {terminal.label}
       </h2>
     </div>
   );
