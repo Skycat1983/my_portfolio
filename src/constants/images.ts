@@ -1,3 +1,6 @@
+export const BACKGROUND_OS = "src/assets/wallpapers/fuji.jpg";
+export const BACKGROUND_MS = "src/assets/wallpapers/windows.png";
+
 // PROFILE ICONS
 const GITHUB = "src/assets/icons_m/github.png";
 const LINKEDIN = "src/assets/icons/linkedin.png";
@@ -9,9 +12,12 @@ const GITHUB_SMALL = "src/assets/icons_s/github_white.png";
 const ICON = "src/assets/icons_m/1.png";
 
 // FOLDERS
-const FOLDER = "src/assets/icons_m/folder1.png";
+const FOLDER = "src/assets/icons_m/folder_os.png";
 const BIN_EMPTY = "src/assets/icons_m/bin_empty.png";
 const BIN_FULL = "src/assets/icons_m/bin_full.png";
+
+export const FOLDER_OS = "src/assets/icons_m/folder_os.png";
+export const FOLDER_MS = "src/assets/icons_m/folder_ms.png";
 
 // APPS
 const TERMINAL = "src/assets/icons_m/terminal.png";
@@ -40,7 +46,12 @@ const APPLE = "src/assets/icons_m/apple.png";
 const JL = "src/assets/icons_m/jl1.png";
 const IMAGE = "src/assets/icons_m/image1.png";
 
+export const LOGO_MAC = "src/assets/icons_m/logo_mac.png";
+export const LOGO_MS = "src/assets/icons_m/logo_ms.png";
+
 export const images = {
+  LOGO_MAC,
+  LOGO_MS,
   IMAGE,
   EGG_BROKEN,
   JL,

@@ -4,20 +4,40 @@ import { useNewStore } from "../hooks/useNewStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
 import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";
-import { Weather } from "../components/widgets/Weather";
 // import { Weather } from "../components/widgets/Weather";
+import { BACKGROUND_MS } from "../constants/images";
+import { BACKGROUND_OS } from "../constants/images";
 
 export const Desktop = () => {
-  const { rootId, getChildren, openWindows, isTerminalOpen, closeTerminal } =
-    useNewStore();
+  const {
+    rootId,
+    getChildren,
+    openWindows,
+    isTerminalOpen,
+    closeTerminal,
+    os,
+  } = useNewStore();
 
   // Initialize drag and drop functionality
   const dragHandlers = useNodeDrag();
 
   const desktopChildren = getChildren(rootId);
 
+  const background = os === "mac" ? BACKGROUND_OS : BACKGROUND_MS;
+
   return (
-    <div className="w-screen h-screen bg-gray-900 relative overflow-hidden background-image">
+    <div
+      // className="w-screen h-screen bg-gray-900 relative overflow-hidden background-image"
+      className="w-screen h-screen bg-gray-900 relative overflow-hidden "
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
       <MenubarLayout />
       <div
         className="p-10 h-full"
@@ -50,7 +70,7 @@ export const Desktop = () => {
         {/* Conditionally render terminal */}
         {isTerminalOpen && <Terminal onClose={closeTerminal} />}
 
-        <Weather />
+        {/* <Weather /> */}
 
         <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>

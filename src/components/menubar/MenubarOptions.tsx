@@ -6,39 +6,11 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "../ui/menubar";
-import { images } from "../../constants/images";
 import { HoverableItem } from "./HoverableItem";
 
 export function MenubarOptions() {
   return (
     <Menubar>
-      <MenubarMenu>
-        <MenubarTrigger>
-          <img src={images.APPLE} alt="apple" className="w-4 h-4" />
-        </MenubarTrigger>
-        <MenubarContent>
-          <HoverableItem>
-            New <MenubarShortcut>⌘N</MenubarShortcut>
-          </HoverableItem>
-          <HoverableItem>
-            Open <MenubarShortcut>⌘O</MenubarShortcut>
-          </HoverableItem>
-          <MenubarSeparator />
-          <HoverableItem>
-            Save <MenubarShortcut>⌘S</MenubarShortcut>
-          </HoverableItem>
-          <HoverableItem>
-            Save As <MenubarShortcut>⇧⌘S</MenubarShortcut>
-          </HoverableItem>
-          <MenubarSeparator />
-          <HoverableItem>
-            Close <MenubarShortcut>⌘W</MenubarShortcut>
-          </HoverableItem>
-          <HoverableItem>
-            Print <MenubarShortcut>⌘P</MenubarShortcut>
-          </HoverableItem>
-        </MenubarContent>
-      </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>

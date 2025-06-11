@@ -11,6 +11,7 @@ import { DirectoryNode } from "../nodes/DirectoryNode";
 import { LinkNode } from "../nodes/LinkNode";
 import { TerminalNode } from "../nodes/TerminalNode";
 import { EasterEggNode } from "../nodes/EasterEggNode";
+import { useNewStore } from "../../hooks/useNewStore";
 
 type LayoutType = "desktop" | "window";
 
@@ -18,15 +19,22 @@ type DirectoryLayoutProps = {
   nodes: NodeEntry[];
   layout?: LayoutType;
 };
-
 export const WindowLayout = ({
   nodes,
   layout = "window",
 }: DirectoryLayoutProps) => {
-  const getLayoutClasses = () =>
-    layout === "desktop"
-      ? "flex flex-col flex-wrap-reverse content-start w-full gap-10 h-full"
-      : "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
+  const os = useNewStore((s) => s.os);
+
+  const getLayoutClasses = () => {
+    if (layout === "desktop") {
+      // Windows wants normal wrapping; everything else keeps wrap-reverse
+      const wrapClass = os === "windows" ? "flex-wrap" : "flex-wrap-reverse";
+      return `flex flex-col ${wrapClass} content-start w-full gap-10 h-full`;
+    }
+
+    // “window” layout
+    return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
+  };
 
   return (
     <div className={getLayoutClasses()}>
@@ -52,7 +60,6 @@ export const WindowLayout = ({
             );
 
           default:
-            // This should never happen if all node types are handled above
             console.warn("Unknown node type:", node);
             return null;
         }

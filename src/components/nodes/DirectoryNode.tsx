@@ -10,11 +10,14 @@ import {
   titleBase,
   tileFrame,
 } from "./node.styles";
+import { FOLDER_MS } from "../../constants/images";
+import { FOLDER_OS } from "../../constants/images";
 
 type Props = { directory: DirectoryEntry };
 
 export const DirectoryNode = ({ directory }: Props) => {
   // ─────────── store actions & state ───────────
+  const os = useNewStore((s) => s.os);
   const selectNode = useNewStore((s) => s.selectNode);
   const handleDirectoryOpen = useNewStore((s) => s.handleDirectoryOpen);
   const isSelected = useNewStore((s) => s.selectedNodeId === directory.id);
@@ -57,6 +60,8 @@ export const DirectoryNode = ({ directory }: Props) => {
     [isSelected, directory.id, moveNode, deleteNode, isNodeInTrash]
   );
 
+  const folderImage = os === "mac" ? FOLDER_OS : FOLDER_MS;
+
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
@@ -83,11 +88,7 @@ export const DirectoryNode = ({ directory }: Props) => {
           drop: isDropTarget,
         })}`}
       >
-        <img
-          src={directory.image}
-          alt={directory.label}
-          className={imageSize}
-        />
+        <img src={folderImage} alt={directory.label} className={imageSize} />
       </div>
       <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
         {directory.label}
