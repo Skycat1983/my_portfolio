@@ -21,7 +21,7 @@ interface WindowActions {
   goForward: (windowNodeId: string) => void;
 
   // Smart directory handler
-  handleDirectoryDoubleClick: (nodeId: DirectoryEntry["id"]) => void;
+  handleDirectoryOpen: (nodeId: DirectoryEntry["id"]) => void;
 }
 
 interface WindowStoreState {
@@ -217,9 +217,9 @@ export const createWindowSlice = (
   },
 
   // Smart directory double-click handler that auto-detects context
-  handleDirectoryDoubleClick: (nodeId: DirectoryEntry["id"]) => {
+  handleDirectoryOpen: (nodeId: DirectoryEntry["id"]) => {
     console.log(
-      "handleDirectoryDoubleClick in windowSlice: handling directory",
+      "handleDirectoryOpen in windowSlice: handling directory",
       nodeId
     );
 

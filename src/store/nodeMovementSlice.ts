@@ -2,8 +2,10 @@ import type { DirectoryEntry } from "../types/nodeTypes";
 import type { BaseStoreState, SetState, GetState } from "../types/storeTypes";
 
 interface NodeMovementActions {
+  deleteNode: (nodeId: string) => void;
   moveNode: (nodeId: string, newParentId: string) => void;
   validateMove: (nodeId: string, targetParentId: string) => boolean;
+  isNodeInTrash: (nodeId: string) => boolean;
 }
 
 export type NodeMovementSlice = NodeMovementActions;
@@ -154,5 +156,64 @@ export const createNodeMovementSlice = (
         },
       },
     }));
+  },
+
+  // Permanently delete a node (completely removes it from nodeMap)
+  deleteNode: (nodeId: string) => {
+    console.log(
+      "permanentlyDeleteNode in nodeMovementSlice: permanently deleting node",
+      nodeId
+    );
+
+    const currentState = get();
+    const node = currentState.nodeMap[nodeId];
+
+    // Prevent deleting the trash itself
+    if (nodeId === "trash") {
+      console.log("permanentlyDeleteNode: cannot delete trash folder");
+      return;
+    }
+
+    if (!node) {
+      console.log("permanentlyDeleteNode: node not found");
+      return;
+    }
+
+    // Remove from parent's children array
+    const parentNode = node.parentId
+      ? currentState.nodeMap[node.parentId]
+      : null;
+
+    set((state) => {
+      // Create new nodeMap without the deleted node
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [nodeId]: _, ...remainingNodes } = state.nodeMap;
+
+      return {
+        nodeMap: {
+          ...remainingNodes,
+          // Remove from parent's children array if parent exists and is a directory
+          ...(parentNode &&
+            parentNode.type === "directory" && {
+              [parentNode.id]: {
+                ...parentNode,
+                children: parentNode.children.filter(
+                  (childId: string) => childId !== nodeId
+                ),
+              },
+            }),
+        },
+        // Clear selection if the deleted node was selected
+        selectedNodeId:
+          state.selectedNodeId === nodeId ? null : state.selectedNodeId,
+      };
+    });
+  },
+
+  // Check if a node is in the trash
+  isNodeInTrash: (nodeId: string) => {
+    const currentState = get();
+    const node = currentState.nodeMap[nodeId];
+    return node?.parentId === "trash";
   },
 });

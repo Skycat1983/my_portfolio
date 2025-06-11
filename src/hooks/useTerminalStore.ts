@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { useStore } from "./useStore";
-import type { MapNode } from "../constants/nodes";
+import type { NodeEntry } from "../types/nodeTypes";
 
 // Terminal-specific state and functionality
 interface TerminalState {
@@ -21,7 +21,7 @@ interface TerminalState {
 
   // Utility functions
   resolvePath: (path: string) => string | null; // Resolve relative/absolute paths
-  getCurrentDirectory: () => MapNode | undefined;
+  getCurrentDirectory: () => NodeEntry | undefined;
   addToHistory: (command: string) => void;
 }
 
