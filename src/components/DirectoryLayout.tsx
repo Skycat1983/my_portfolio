@@ -1,11 +1,12 @@
-import type { MapNode } from "../constants/nodes";
+import type { EasterEggEntry, NodeEntry } from "../types/nodeTypes";
 import type { DragHandlers } from "../types/dragHandlers";
 import { NodeIcon } from "./NodeIcon";
+import { EasterEgg } from "./nodes/easterEgg/EasterEgg";
 
 type LayoutType = "desktop" | "window";
 
 type DirectoryLayoutProps = {
-  nodes: MapNode[];
+  nodes: NodeEntry[];
   selectedNodeId: string | null;
   onSelectNode: (nodeId: string) => void;
   onDoubleClickNode?: (nodeId: string) => void;
@@ -33,16 +34,20 @@ export const DirectoryLayout = ({
 
   return (
     <div className={getLayoutClasses()}>
-      {nodes.map((node) => (
-        <NodeIcon
-          key={node.id}
-          node={node}
-          isSelected={selectedNodeId === node.id}
-          onSelect={onSelectNode}
-          onDoubleClick={onDoubleClickNode}
-          dragHandlers={dragHandlers}
-        />
-      ))}
+      {nodes.map((node) =>
+        node.type === "easter-egg" ? (
+          <EasterEgg key={node.id} egg={node as EasterEggEntry} />
+        ) : (
+          <NodeIcon
+            key={node.id}
+            node={node}
+            isSelected={selectedNodeId === node.id}
+            onSelect={onSelectNode}
+            onDoubleClick={onDoubleClickNode}
+            dragHandlers={dragHandlers}
+          />
+        )
+      )}
     </div>
   );
 };
