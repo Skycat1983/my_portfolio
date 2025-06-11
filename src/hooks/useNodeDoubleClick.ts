@@ -54,7 +54,7 @@ export const useNodeDoubleClick = ({
         `handleNodeDoubleClick in ${context}: Breaking easter egg`,
         nodeId
       );
-      breakEasterEgg(nodeId);
+      // breakEasterEgg(nodeId);
       return;
     }
 

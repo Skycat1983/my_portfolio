@@ -1,12 +1,6 @@
 import { create } from "zustand";
-import {
-  defaultNodeMap,
-  defaultRootId,
-  type NodeMap,
-  type MapNode,
-  EGG_BROKEN,
-  type DirectoryEntry,
-} from "../constants/nodes";
+import { defaultNodeMap, defaultRootId, EGG_BROKEN } from "../constants/nodes";
+import type { DirectoryEntry, NodeEntry, NodeMap } from "../types/nodeTypes";
 
 // Window interface for better type safety and extensibility
 interface WindowState {
@@ -36,9 +30,9 @@ interface DesktopStore {
   easterEggStates: { [nodeId: string]: EasterEggState };
 
   // Basic getters
-  getNode: (id: string) => MapNode | undefined;
-  getChildren: (parentId: string) => MapNode[];
-  getParent: (nodeId: string) => MapNode | undefined;
+  getNode: (id: string) => NodeEntry | undefined;
+  getChildren: (parentId: string) => NodeEntry[];
+  getParent: (nodeId: string) => NodeEntry | undefined;
   isDirectChildOfRoot: (nodeId: string) => boolean;
 
   // Selection actions
@@ -95,7 +89,7 @@ export const useStore = create<DesktopStore>((set, get) => ({
     if (!parent) return [];
 
     // Only directories and easter eggs have children
-    if (parent.type === "directory" || parent.type === "easter-egg") {
+    if (parent.type === "directory") {
       return parent.children
         .map((childId: string) => state.nodeMap[childId])
         .filter(Boolean); // Filter out any undefined nodes
@@ -115,7 +109,7 @@ export const useStore = create<DesktopStore>((set, get) => ({
   // Check if node is direct child of root
   isDirectChildOfRoot: (nodeId: string) => {
     const state = get();
-    const node: MapNode | undefined = state.nodeMap[nodeId];
+    const node: NodeEntry | undefined = state.nodeMap[nodeId];
     return node?.parentId === state.rootId;
   },
 
@@ -328,8 +322,7 @@ export const useStore = create<DesktopStore>((set, get) => ({
         },
         // Remove from old parent's children array
         ...(oldParent &&
-          (oldParent.type === "directory" ||
-            oldParent.type === "easter-egg") && {
+          oldParent.type === "directory" && {
             [oldParent.id]: {
               ...oldParent,
               children: oldParent.children.filter(
