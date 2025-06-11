@@ -3,7 +3,7 @@ import type {
   LinkObject,
   NodeMap,
   NodeObject,
-} from "../constants/nodes";
+} from "../types/nodeTypes";
 
 // REVERSE CONVERSION: Operational Map → Human-readable Object (for debugging/visualization)
 export const convertMapToObjects = (
@@ -16,13 +16,14 @@ export const convertMapToObjects = (
       throw new Error(`Node with id '${nodeId}' not found in map`);
     }
 
-    if (mapNode.type === "app") {
+    if (mapNode.type === "icon") {
       // App nodes have no children
       return {
         id: mapNode.id,
-        type: "app",
+        type: "icon",
         label: mapNode.label,
         image: mapNode.image,
+        info: mapNode.info,
       };
     } else if (mapNode.type === "link") {
       return {
@@ -36,6 +37,15 @@ export const convertMapToObjects = (
       return {
         id: mapNode.id,
         type: "easter-egg",
+        label: mapNode.label,
+        image: mapNode.image,
+        currentImageIndex: mapNode.currentImageIndex,
+        isBroken: mapNode.isBroken,
+      };
+    } else if (mapNode.type === "terminal") {
+      return {
+        id: mapNode.id,
+        type: "terminal",
         label: mapNode.label,
         image: mapNode.image,
       };

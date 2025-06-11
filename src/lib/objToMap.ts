@@ -3,10 +3,11 @@ import type {
   NodeMap,
   NodeObject,
   DirectoryEntry,
-  AppEntry,
+  IconEntry,
   LinkEntry,
   EasterEggEntry,
   DirectoryObject,
+  TerminalEntry,
 } from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
@@ -34,15 +35,15 @@ export const convertObjectsToMap = (
         processNode(child, nodeObj.id);
         mapNode.children.push(child.id);
       }
-    } else if (nodeObj.type === "app") {
+    } else if (nodeObj.type === "icon") {
       mapNode = {
         id: nodeObj.id,
         parentId,
-        type: "app",
+        type: "icon",
         label: nodeObj.label,
         image: nodeObj.image,
-        ...(nodeObj.action && { action: nodeObj.action }),
-      } as AppEntry;
+        info: nodeObj.info,
+      } as IconEntry;
     } else if (nodeObj.type === "link") {
       mapNode = {
         id: nodeObj.id,
@@ -62,6 +63,14 @@ export const convertObjectsToMap = (
         currentImageIndex: nodeObj.currentImageIndex,
         isBroken: nodeObj.isBroken,
       } as EasterEggEntry;
+    } else if (nodeObj.type === "terminal") {
+      mapNode = {
+        id: nodeObj.id,
+        parentId,
+        type: "terminal",
+        label: nodeObj.label,
+        image: nodeObj.image,
+      } as TerminalEntry;
     } else {
       throw new Error(`Unknown node type: ${(nodeObj as NodeObject).type}`);
     }

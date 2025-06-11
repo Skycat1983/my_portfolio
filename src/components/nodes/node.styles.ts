@@ -18,5 +18,5 @@ export const labelClasses = (selected: boolean) =>
 export const tileWrapper =
   "p-4 w-[120px] h-[120px] flex flex-col items-center justify-center";
 export const tileFrame = "flex flex-col items-center";
-export const imageSize = "w-16 h-16 mx-auto mb-2";
+export const imageSize = "w-24 h-24 mx-auto mb-0";
 export const titleBase = "text-lg font-bold text-center max-w-[120px] truncate";

@@ -16,21 +16,23 @@ export interface DirectoryEntry {
   image: string;
 }
 
-export interface AppObject {
+export interface IconObject {
   id: string;
-  type: "app";
+  type: "icon";
   label: string;
   image: string;
-  action?: () => void;
+  info: string;
+  // action?: () => void;
 }
 
-export interface AppEntry {
+export interface IconEntry {
   id: string;
   parentId: string | null;
-  type: "app";
+  type: "icon";
   label: string;
   image: string;
-  action?: () => void;
+  info: string;
+  // action?: () => void;
 }
 
 export interface LinkObject {
@@ -68,15 +70,36 @@ export interface EasterEggEntry {
   isBroken: boolean;
 }
 
+export interface TerminalObject {
+  id: string;
+  type: "terminal";
+  label: string;
+  image: string;
+}
+
+export interface TerminalEntry {
+  id: string;
+  parentId: string | null;
+  type: "terminal";
+  label: string;
+  image: string;
+}
+
 export type NodeObject =
   | DirectoryObject
-  | AppObject
+  | IconObject
   | LinkObject
-  | EasterEggObject;
+  | EasterEggObject
+  | TerminalObject;
 
 // OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
-export type NodeEntry = DirectoryEntry | AppEntry | LinkEntry | EasterEggEntry;
+export type NodeEntry =
+  | DirectoryEntry
+  | IconEntry
+  | LinkEntry
+  | EasterEggEntry
+  | TerminalEntry;
 
 export interface NodeMap {
   [id: string]: NodeEntry;
