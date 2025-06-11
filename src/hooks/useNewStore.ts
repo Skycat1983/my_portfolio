@@ -13,6 +13,10 @@ import {
   createTerminalSlice,
   type TerminalSlice,
 } from "../store/terminalSlice";
+import {
+  createNodeMovementSlice,
+  type NodeMovementSlice,
+} from "../store/nodeMovementSlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
@@ -20,7 +24,8 @@ export interface NewDesktopStore
     SelectionSlice,
     EasterEggSlice,
     WindowSlice,
-    TerminalSlice {}
+    TerminalSlice,
+    NodeMovementSlice {}
 
 // Properly typed set/get functions for slices
 export type SetState = (
@@ -37,4 +42,5 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createEasterEggSlice(set, get),
   ...createWindowSlice(set, get),
   ...createTerminalSlice(set),
+  ...createNodeMovementSlice(set, get),
 }));

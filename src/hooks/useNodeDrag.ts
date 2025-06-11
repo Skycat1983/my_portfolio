@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useStore } from "./useStore";
+import { useNewStore } from "./useNewStore";
 import type { DragHandlers } from "../types/dragHandlers";
 
 export const useNodeDrag = (): DragHandlers => {
@@ -11,7 +11,7 @@ export const useNodeDrag = (): DragHandlers => {
   // Throttle validation to prevent excessive console logging
   const lastValidationTime = useRef<number>(0);
 
-  const { moveNode, validateMove } = useStore();
+  const { moveNode, validateMove } = useNewStore();
 
   // Called when user starts dragging a node
   const handleDragStart = (e: React.DragEvent, nodeId: string) => {

@@ -1,4 +1,5 @@
 import { useNewStore } from "../../hooks/useNewStore";
+import { useNodeDrag } from "../../hooks/useNodeDrag";
 import type { EasterEggEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -20,21 +21,29 @@ export const EasterEggNode = ({ egg }: Props) => {
   const currentImg = useNewStore((s) => s.getEasterEggCurrentImage(egg.id));
   const isSelected = useNewStore((s) => s.selectedNodeId === egg.id);
 
+  // ─────────── drag & drop functionality ───────────
+  const dragHandlers = useNodeDrag();
+
   // ────────────────────── handlers ────────────────────────────
   const handleClick = () => {
     selectNode(egg.id);
     cycleEgg(egg.id);
   };
 
-  // drop-target state could come from DnD context later
+  // Easter eggs are not drop targets (only directories are)
   const isDropTarget = false;
 
   // ────────────────────── render ──────────────────────────────
   return (
     <div className={tileFrame}>
       <div
+        // Click handlers
         onClick={handleClick}
         onDoubleClick={() => breakEgg(egg.id)}
+        // Drag source (can be dragged)
+        draggable="true"
+        onDragStart={(e) => dragHandlers.handleDragStart(e, egg.id)}
+        onDragEnd={dragHandlers.handleDragEnd}
         className={`${tileWrapper} ${containerClasses({
           selected: isSelected,
           drop: isDropTarget,

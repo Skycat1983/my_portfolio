@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useNewStore";
+import { useNodeDrag } from "../../hooks/useNodeDrag";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -20,6 +21,10 @@ export const DirectoryNode = ({ directory }: Props) => {
   );
   const isSelected = useNewStore((s) => s.selectedNodeId === directory.id);
 
+  // ─────────── drag & drop functionality ───────────
+  const dragHandlers = useNodeDrag();
+  const isDropTarget = dragHandlers.isDropTarget(directory.id);
+
   // ─────────── click / dbl-click handlers ───────
   const handleClick = useCallback(() => {
     console.log("Directory single-click:", directory.id);
@@ -31,15 +36,22 @@ export const DirectoryNode = ({ directory }: Props) => {
     handleDirectoryDoubleTap(directory.id);
   }, [directory.id, handleDirectoryDoubleTap]);
 
-  // (DnD drop target still hard-coded off)
-  const isDropTarget = false;
-
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
+        // Click handlers
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
+        // Drag source (can be dragged)
+        draggable="true"
+        onDragStart={(e) => dragHandlers.handleDragStart(e, directory.id)}
+        onDragEnd={dragHandlers.handleDragEnd}
+        // Drop target (directories can accept drops)
+        onDragOver={(e) => dragHandlers.handleDragOver(e, directory.id)}
+        onDragEnter={(e) => dragHandlers.handleDragEnter(e, directory.id)}
+        onDragLeave={dragHandlers.handleDragLeave}
+        onDrop={(e) => dragHandlers.handleDrop(e, directory.id)}
         className={`${tileWrapper} ${containerClasses({
           selected: isSelected,
           drop: isDropTarget,
