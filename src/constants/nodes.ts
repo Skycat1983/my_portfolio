@@ -1,4 +1,6 @@
 import { convertObjectsToMap } from "../lib/objToMap";
+import type { DirectoryObject } from "../types/nodeTypes";
+import { DOCUMENTS } from "./documents";
 import { images } from "./images";
 
 const {
@@ -25,6 +27,8 @@ const {
   IMAGE,
 } = images;
 
+const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
+
 /**
  * Design Decision: Dual Data Structure Approach
  *
@@ -33,94 +37,6 @@ const {
  
  * Objects are intuitive to write/read, Maps enable advanced desktop functionality
  */
-
-// HUMAN-READABLE OBJECT TYPES
-export interface DirectoryObject {
-  id: string;
-  type: "directory";
-  label: string;
-  image: string;
-  children: NodeObject[];
-}
-
-export interface AppObject {
-  id: string;
-  type: "app";
-  label: string;
-  image: string;
-  action?: () => void;
-}
-
-export interface LinkObject {
-  id: string;
-  type: "link";
-  label: string;
-  image: string;
-  url: string;
-}
-
-export interface EasterEggObject {
-  id: string;
-  type: "easter-egg";
-  label: string;
-  image: string[];
-}
-
-export type NodeObject =
-  | DirectoryObject
-  | AppObject
-  | LinkObject
-  | EasterEggObject;
-// | ImageObject;
-
-// OPERATIONAL MAP TYPES - Discriminated Union Interfaces
-
-export interface DirectoryEntry {
-  id: string;
-  parentId: string | null;
-  children: string[];
-  type: "directory";
-  label: string;
-  image: string;
-}
-
-export interface AppEntry {
-  id: string;
-  parentId: string | null;
-  type: "app";
-  label: string;
-  image: string;
-  action?: () => void;
-}
-
-export interface LinkEntry {
-  id: string;
-  parentId: string | null;
-  type: "link";
-  label: string;
-  image: string;
-  url: string;
-}
-
-export interface EasterEggEntry {
-  id: string;
-  parentId: string | null;
-  children: string[];
-  type: "easter-egg";
-  label: string;
-  image: string[];
-}
-
-export type MapNode = DirectoryEntry | AppEntry | LinkEntry | EasterEggEntry;
-// | ImageEntry;
-
-export interface NodeMap {
-  [id: string]: MapNode;
-}
-
-const resumePath = "/documents/resume.pdf";
-const recommendationsPath = "/documents/recommendation.pdf";
-const reviewPath = "/images/screenshot.png";
 
 // HUMAN-READABLE DATA DEFINITION
 export const defaultNodes: DirectoryObject = {
@@ -146,6 +62,8 @@ export const defaultNodes: DirectoryObject = {
           label: "EE",
           image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
           type: "easter-egg",
+          currentImageIndex: 0,
+          isBroken: false,
         },
       ],
     },
@@ -311,21 +229,21 @@ export const defaultNodes: DirectoryObject = {
           label: "Resume",
           image: PDF,
           type: "link",
-          url: resumePath,
+          url: RESUME,
         },
         {
           id: "recommendation",
           label: "Recommendation",
           image: PDF,
           type: "link",
-          url: recommendationsPath,
+          url: RECOMMENDATIONS,
         },
         {
           id: "review",
           label: "Review",
           image: IMAGE,
           type: "link",
-          url: reviewPath,
+          url: REVIEW,
         },
       ],
     },

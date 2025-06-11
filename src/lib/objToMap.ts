@@ -1,13 +1,13 @@
 import type {
-  MapNode,
+  NodeEntry,
   NodeMap,
   NodeObject,
   DirectoryEntry,
   AppEntry,
   LinkEntry,
   EasterEggEntry,
-} from "../constants/nodes";
-import type { DirectoryObject } from "../constants/nodes";
+  DirectoryObject,
+} from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
 export const convertObjectsToMap = (
@@ -16,7 +16,7 @@ export const convertObjectsToMap = (
   const nodeMap: NodeMap = {};
 
   const processNode = (nodeObj: NodeObject, parentId: string | null): void => {
-    let mapNode: MapNode;
+    let mapNode: NodeEntry;
 
     // Create type-specific map nodes using discriminated union
     if (nodeObj.type === "directory") {
@@ -56,10 +56,11 @@ export const convertObjectsToMap = (
       mapNode = {
         id: nodeObj.id,
         parentId,
-        children: [],
         type: "easter-egg",
         label: nodeObj.label,
         image: nodeObj.image,
+        currentImageIndex: nodeObj.currentImageIndex,
+        isBroken: nodeObj.isBroken,
       } as EasterEggEntry;
     } else {
       throw new Error(`Unknown node type: ${(nodeObj as NodeObject).type}`);
