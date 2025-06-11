@@ -1,5 +1,5 @@
 import { useNewStore } from "../../hooks/useNewStore";
-import { DirectoryLayout } from "../DirectoryLayout";
+import { WindowLayout } from "./WindowLayout";
 import type { DragHandlers } from "../../types/dragHandlers";
 
 interface WindowContentProps {
@@ -50,7 +50,7 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
             This folder is empty
           </div>
         ) : (
-          <DirectoryLayout nodes={nodesToShow} layout="window" />
+          <WindowLayout nodes={nodesToShow} layout="window" />
         )}
       </div>
     </div>

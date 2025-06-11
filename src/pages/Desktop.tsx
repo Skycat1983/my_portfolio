@@ -1,5 +1,5 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
-import { DirectoryLayout } from "../components/DirectoryLayout";
+import { WindowLayout } from "../components/window/WindowLayout";
 import { useNewStore } from "../hooks/useNewStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
 import Window from "../components/window/Window";
@@ -52,7 +52,7 @@ export const Desktop = () => {
 
         <Weather />
 
-        <DirectoryLayout nodes={desktopChildren} layout="desktop" />
+        <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>
     </div>
   );

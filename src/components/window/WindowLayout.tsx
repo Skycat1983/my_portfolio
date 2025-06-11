@@ -5,12 +5,12 @@ import type {
   DirectoryEntry,
   LinkEntry,
   TerminalEntry,
-} from "../types/nodeTypes";
-import { IconNode } from "./nodes/IconNode";
-import { DirectoryNode } from "./nodes/DirectoryNode";
-import { LinkNode } from "./nodes/LinkNode";
-import { TerminalNode } from "./nodes/TerminalNode";
-import { EasterEggNode } from "./nodes/EasterEggNode";
+} from "../../types/nodeTypes";
+import { IconNode } from "../nodes/IconNode";
+import { DirectoryNode } from "../nodes/DirectoryNode";
+import { LinkNode } from "../nodes/LinkNode";
+import { TerminalNode } from "../nodes/TerminalNode";
+import { EasterEggNode } from "../nodes/EasterEggNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -19,7 +19,7 @@ type DirectoryLayoutProps = {
   layout?: LayoutType;
 };
 
-export const DirectoryLayout = ({
+export const WindowLayout = ({
   nodes,
   layout = "window",
 }: DirectoryLayoutProps) => {
