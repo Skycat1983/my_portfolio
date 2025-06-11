@@ -2,8 +2,8 @@ import { useState } from "react";
 import ResizeWrapper from "./WindowWrapper";
 import { WindowFrame } from "./WindowFrame";
 import { WindowContent } from "./WindowContent";
-import { useStore } from "../../hooks/useStore";
-import type { DragHandlers } from "../../hooks/useNodeDrag";
+import { useNewStore } from "../../hooks/useNewStore";
+import type { DragHandlers } from "../../types/dragHandlers";
 
 interface WindowProps {
   nodeId: string;
@@ -28,7 +28,7 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
     goForward,
     getParent,
     rootId,
-  } = useStore();
+  } = useNewStore();
 
   const node = getNode(nodeId);
   const windowState = getWindowByNodeId(nodeId);

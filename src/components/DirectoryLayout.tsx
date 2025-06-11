@@ -1,53 +1,61 @@
-import type { EasterEggEntry, NodeEntry } from "../types/nodeTypes";
-import type { DragHandlers } from "../types/dragHandlers";
-import { NodeIcon } from "./NodeIcon";
-import { EasterEgg } from "./nodes/easterEgg/EasterEgg";
+import type {
+  NodeEntry,
+  EasterEggEntry,
+  IconEntry,
+  DirectoryEntry,
+  LinkEntry,
+  TerminalEntry,
+} from "../types/nodeTypes";
+import { IconNode } from "./nodes/IconNode";
+import { DirectoryNode } from "./nodes/DirectoryNode";
+import { LinkNode } from "./nodes/LinkNode";
+import { TerminalNode } from "./nodes/TerminalNode";
+import { EasterEggNode } from "./nodes/EasterEggNode";
 
 type LayoutType = "desktop" | "window";
 
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];
-  selectedNodeId: string | null;
-  onSelectNode: (nodeId: string) => void;
-  onDoubleClickNode?: (nodeId: string) => void;
   layout?: LayoutType;
-  dragHandlers?: DragHandlers;
 };
 
 export const DirectoryLayout = ({
   nodes,
-  selectedNodeId,
-  onSelectNode,
-  onDoubleClickNode,
   layout = "window",
-  dragHandlers,
 }: DirectoryLayoutProps) => {
-  const getLayoutClasses = () => {
-    if (layout === "desktop") {
-      // Desktop layout: column-first, wrap-reverse (Mac-style)
-      return "flex flex-col flex-wrap-reverse content-start w-full gap-10 h-full";
-    } else {
-      // Window layout: row-first, wrap-down (standard file browser)
-      return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
-    }
-  };
+  const getLayoutClasses = () =>
+    layout === "desktop"
+      ? "flex flex-col flex-wrap-reverse content-start w-full gap-10 h-full"
+      : "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
 
   return (
     <div className={getLayoutClasses()}>
-      {nodes.map((node) =>
-        node.type === "easter-egg" ? (
-          <EasterEgg key={node.id} egg={node as EasterEggEntry} />
-        ) : (
-          <NodeIcon
-            key={node.id}
-            node={node}
-            isSelected={selectedNodeId === node.id}
-            onSelect={onSelectNode}
-            onDoubleClick={onDoubleClickNode}
-            dragHandlers={dragHandlers}
-          />
-        )
-      )}
+      {nodes.map((node) => {
+        switch (node.type) {
+          case "easter-egg":
+            return <EasterEggNode key={node.id} egg={node as EasterEggEntry} />;
+
+          case "icon":
+            return <IconNode key={node.id} icon={node as IconEntry} />;
+
+          case "directory":
+            return (
+              <DirectoryNode key={node.id} directory={node as DirectoryEntry} />
+            );
+
+          case "link":
+            return <LinkNode key={node.id} link={node as LinkEntry} />;
+
+          case "terminal":
+            return (
+              <TerminalNode key={node.id} terminal={node as TerminalEntry} />
+            );
+
+          default:
+            console.warn("Unknown node type:", node);
+            return null;
+        }
+      })}
     </div>
   );
 };
