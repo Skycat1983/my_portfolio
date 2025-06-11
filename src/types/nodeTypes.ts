@@ -22,7 +22,6 @@ export interface IconObject {
   label: string;
   image: string;
   info: string;
-  // action?: () => void;
 }
 
 export interface IconEntry {
@@ -32,7 +31,6 @@ export interface IconEntry {
   label: string;
   image: string;
   info: string;
-  // action?: () => void;
 }
 
 export interface LinkObject {

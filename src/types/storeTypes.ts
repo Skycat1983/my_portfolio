@@ -16,6 +16,7 @@ export interface BaseStoreState {
   selectedNodeId: string | null;
   openWindows: WindowData[];
   nextZIndex: number;
+  isTerminalOpen: boolean;
 }
 
 // Properly typed store functions
