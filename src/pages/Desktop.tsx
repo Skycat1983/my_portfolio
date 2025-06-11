@@ -1,21 +1,18 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { DirectoryLayout } from "../components/DirectoryLayout";
-import { useStore } from "../hooks/useStore";
+import { useNewStore } from "../hooks/useNewStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
-import { useNodeDoubleClick } from "../hooks/useNodeDoubleClick";
 import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";
 import { Weather } from "../components/widgets/Weather";
+// import { Weather } from "../components/widgets/Weather";
 
 export const Desktop = () => {
-  const { rootId, getChildren, selectedNodeId, selectNode, openWindows } =
-    useStore();
+  const { rootId, getChildren, openWindows, isTerminalOpen, closeTerminal } =
+    useNewStore();
 
   // Initialize drag and drop functionality
   const dragHandlers = useNodeDrag();
-
-  // Initialize shared double-click functionality
-  const { handleNodeDoubleClick } = useNodeDoubleClick({ context: "desktop" });
 
   const desktopChildren = getChildren(rootId);
 
@@ -50,18 +47,12 @@ export const Desktop = () => {
           />
         ))}
 
-        <Terminal />
+        {/* Conditionally render terminal */}
+        {isTerminalOpen && <Terminal onClose={closeTerminal} />}
 
         <Weather />
 
-        <DirectoryLayout
-          nodes={desktopChildren}
-          selectedNodeId={selectedNodeId}
-          onSelectNode={selectNode}
-          onDoubleClickNode={handleNodeDoubleClick}
-          layout="desktop"
-          dragHandlers={dragHandlers}
-        />
+        <DirectoryLayout nodes={desktopChildren} layout="desktop" />
       </div>
     </div>
   );

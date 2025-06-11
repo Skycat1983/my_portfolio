@@ -58,7 +58,6 @@ interface WeatherResponse {
 }
 
 export const Weather = () => {
-  console.log("apiKey in Weather component:", apiKey);
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,10 +77,8 @@ export const Weather = () => {
         }
 
         const data: WeatherResponse = await response.json();
-        console.log("weather data in fetchWeather:", data);
         setWeather(data);
       } catch (err) {
-        console.log("error in fetchWeather:", err);
         setError(
           err instanceof Error ? err.message : "Failed to fetch weather data"
         );
@@ -95,7 +92,7 @@ export const Weather = () => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center">
+      <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center absolute top-20 left-10">
         <div className="animate-pulse text-center">
           <div className="w-8 h-8 bg-white/30 rounded-full animate-spin border-2 border-white/20 border-t-white mx-auto mb-2"></div>
           <p className="text-sm opacity-80">Loading weather...</p>
@@ -106,7 +103,7 @@ export const Weather = () => {
 
   if (error) {
     return (
-      <div className="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center">
+      <div className="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center absolute top-20 left-10">
         <div className="text-center">
           <div className="text-3xl mb-2">⚠️</div>
           <p className="text-sm opacity-90">Weather unavailable</p>
@@ -118,7 +115,7 @@ export const Weather = () => {
 
   if (!weather) {
     return (
-      <div className="bg-gradient-to-br from-gray-400 to-gray-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center">
+      <div className="bg-gradient-to-br from-gray-400 to-gray-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center absolute top-20 left-10">
         <p className="text-sm opacity-80">No weather data available</p>
       </div>
     );
