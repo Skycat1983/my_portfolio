@@ -1,41 +1,13 @@
-import React, { useState } from "react";
 import {
   Menubar,
   MenubarContent,
-  MenubarItem,
   MenubarMenu,
   MenubarSeparator,
   MenubarShortcut,
   MenubarTrigger,
 } from "../ui/menubar";
 import { images } from "../../constants/images";
-
-const HoverableMenuItem = ({
-  children,
-
-  ...props
-}: React.ComponentProps<typeof MenubarItem>) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleClick = () => {
-    const email = "hlaoutaris@gmail.com";
-    const subject = "When can you start?";
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
-
-    window.location.href = mailtoLink;
-  };
-
-  return (
-    <MenubarItem
-      {...props}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={handleClick}
-    >
-      {isHovered ? "Offer Job" : children}
-    </MenubarItem>
-  );
-};
+import { HoverableItem } from "./HoverableItem";
 
 export function MenubarOptions() {
   return (
@@ -45,109 +17,109 @@ export function MenubarOptions() {
           <img src={images.APPLE} alt="apple" className="w-4 h-4" />
         </MenubarTrigger>
         <MenubarContent>
-          <HoverableMenuItem>
+          <HoverableItem>
             New <MenubarShortcut>⌘N</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Open <MenubarShortcut>⌘O</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Save <MenubarShortcut>⌘S</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Save As <MenubarShortcut>⇧⌘S</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Close <MenubarShortcut>⌘W</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Print <MenubarShortcut>⌘P</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>
-          <HoverableMenuItem>
+          <HoverableItem>
             New <MenubarShortcut>⌘N</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Open <MenubarShortcut>⌘O</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Save <MenubarShortcut>⌘S</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Save As <MenubarShortcut>⇧⌘S</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Close <MenubarShortcut>⌘W</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Print <MenubarShortcut>⌘P</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>Edit</MenubarTrigger>
         <MenubarContent>
-          <HoverableMenuItem>
+          <HoverableItem>
             Undo <MenubarShortcut>⌘Z</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Cut <MenubarShortcut>⌘X</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Copy <MenubarShortcut>⌘C</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Paste <MenubarShortcut>⌘V</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Select All <MenubarShortcut>⌘A</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>View</MenubarTrigger>
         <MenubarContent>
-          <HoverableMenuItem>Show Toolbar</HoverableMenuItem>
-          <HoverableMenuItem>Show Sidebar</HoverableMenuItem>
+          <HoverableItem>Show Toolbar</HoverableItem>
+          <HoverableItem>Show Sidebar</HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Enter Full Screen <MenubarShortcut>⌃⌘F</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Zoom In <MenubarShortcut>⌘+</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Zoom Out <MenubarShortcut>⌘-</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>
             Actual Size <MenubarShortcut>⌘0</MenubarShortcut>
-          </HoverableMenuItem>
+          </HoverableItem>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>Help</MenubarTrigger>
         <MenubarContent>
-          <HoverableMenuItem>About</HoverableMenuItem>
-          <HoverableMenuItem>Support</HoverableMenuItem>
+          <HoverableItem>About</HoverableItem>
+          <HoverableItem>Support</HoverableItem>
           <MenubarSeparator />
-          <HoverableMenuItem>
+          <HoverableItem>
             Keyboard Shortcuts <MenubarShortcut>⌘/</MenubarShortcut>
-          </HoverableMenuItem>
-          <HoverableMenuItem>Contact Us</HoverableMenuItem>
+          </HoverableItem>
+          <HoverableItem>Contact Us</HoverableItem>
         </MenubarContent>
       </MenubarMenu>
     </Menubar>
