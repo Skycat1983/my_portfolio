@@ -14,6 +14,7 @@ import {
 type Props = { terminal: TerminalEntry };
 
 export const TerminalNode = ({ terminal }: Props) => {
+  // ─────────── store actions & state ───────────
   const selectNode = useNewStore((s) => s.selectNode);
   const openTerminal = useNewStore((s) => s.openTerminal);
   const isSelected = useNewStore((s) => s.selectedNodeId === terminal.id);
@@ -21,6 +22,7 @@ export const TerminalNode = ({ terminal }: Props) => {
   // ─────────── drag & drop functionality ───────────
   const dragHandlers = useNodeDrag();
 
+  // ─────────── click / dbl-click handlers ───────────
   const handleClick = useCallback(() => {
     console.log("Terminal single-click:", terminal.id);
     selectNode(terminal.id);
@@ -31,15 +33,31 @@ export const TerminalNode = ({ terminal }: Props) => {
     openTerminal();
   }, [openTerminal]);
 
+  // ─────────── Enter-key handler ───────────
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" && isSelected) {
+        e.preventDefault();
+        openTerminal();
+      }
+    },
+    [isSelected, openTerminal]
+  );
+
   // Terminals are not drop targets (only directories are)
   const isDropTarget = false;
 
+  // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
+        role="button"
+        tabIndex={0}
+        aria-selected={isSelected}
         // Click handlers
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
+        onKeyDown={handleKeyDown}
         // Drag source (can be dragged)
         draggable="true"
         onDragStart={(e) => dragHandlers.handleDragStart(e, terminal.id)}

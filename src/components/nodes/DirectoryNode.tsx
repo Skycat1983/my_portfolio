@@ -16,16 +16,17 @@ type Props = { directory: DirectoryEntry };
 export const DirectoryNode = ({ directory }: Props) => {
   // ─────────── store actions & state ───────────
   const selectNode = useNewStore((s) => s.selectNode);
-  const handleDirectoryDoubleTap = useNewStore(
-    (s) => s.handleDirectoryDoubleClick
-  );
+  const handleDirectoryOpen = useNewStore((s) => s.handleDirectoryOpen);
   const isSelected = useNewStore((s) => s.selectedNodeId === directory.id);
+  const moveNode = useNewStore((s) => s.moveNode);
+  const deleteNode = useNewStore((s) => s.deleteNode);
+  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
 
   // ─────────── drag & drop functionality ───────────
   const dragHandlers = useNodeDrag();
   const isDropTarget = dragHandlers.isDropTarget(directory.id);
 
-  // ─────────── click / dbl-click handlers ───────
+  // ─────────── click / dbl-click handlers ───────────
   const handleClick = useCallback(() => {
     console.log("Directory single-click:", directory.id);
     selectNode(directory.id);
@@ -33,16 +34,41 @@ export const DirectoryNode = ({ directory }: Props) => {
 
   const handleDoubleClick = useCallback(() => {
     console.log("Directory double-click:", directory.id);
-    handleDirectoryDoubleTap(directory.id);
-  }, [directory.id, handleDirectoryDoubleTap]);
+    handleDirectoryOpen(directory.id);
+  }, [directory.id, handleDirectoryOpen]);
+
+  // ─────────── key handler (ENTER → double-tap) ───────────
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" && isSelected) {
+        e.preventDefault();
+        console.log("Directory Enter-press:", directory.id);
+      }
+      if (e.key === "Delete" && isSelected) {
+        e.preventDefault();
+
+        if (isNodeInTrash(directory.id)) {
+          deleteNode(directory.id);
+        } else {
+          moveNode(directory.id, "trash");
+        }
+      }
+    },
+    [isSelected, directory.id, moveNode, deleteNode, isNodeInTrash]
+  );
 
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
+        role="button" // tells screen-readers this is clickable
+        tabIndex={0} // makes the div focusable → receives key events
+        aria-selected={isSelected} // optional, for accessibility
         // Click handlers
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
+        // NEW: key handler
+        onKeyDown={handleKeyDown}
         // Drag source (can be dragged)
         draggable="true"
         onDragStart={(e) => dragHandlers.handleDragStart(e, directory.id)}

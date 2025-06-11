@@ -9,11 +9,12 @@ import {
   imageSize,
   titleBase,
 } from "./node.styles";
+import { useCallback } from "react";
 
 type Props = { egg: EasterEggEntry };
 
 export const EasterEggNode = ({ egg }: Props) => {
-  // ────────────────────── store selectors ─────────────────────
+  // ───────────────── store selectors ─────────────────
   const cycleEgg = useNewStore((s) => s.cycleEasterEgg);
   const selectNode = useNewStore((s) => s.selectNode);
   const breakEgg = useNewStore((s) => s.breakEasterEgg);
@@ -21,25 +22,39 @@ export const EasterEggNode = ({ egg }: Props) => {
   const currentImg = useNewStore((s) => s.getEasterEggCurrentImage(egg.id));
   const isSelected = useNewStore((s) => s.selectedNodeId === egg.id);
 
-  // ─────────── drag & drop functionality ───────────
+  // ───────── drag & drop functionality ───────────────
   const dragHandlers = useNodeDrag();
 
-  // ────────────────────── handlers ────────────────────────────
+  // ─────────────────── handlers ──────────────────────
   const handleClick = () => {
     selectNode(egg.id);
     cycleEgg(egg.id);
   };
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" && isSelected) {
+        e.preventDefault();
+        breakEgg(egg.id);
+      }
+    },
+    [isSelected, egg.id, breakEgg]
+  );
+
   // Easter eggs are not drop targets (only directories are)
   const isDropTarget = false;
 
-  // ────────────────────── render ──────────────────────────────
+  // ─────────────────── render ────────────────────────
   return (
     <div className={tileFrame}>
       <div
+        role="button" // focusable & announced as button
+        tabIndex={0}
+        aria-selected={isSelected}
         // Click handlers
         onClick={handleClick}
         onDoubleClick={() => breakEgg(egg.id)}
+        onKeyDown={handleKeyDown} // ⬅ new
         // Drag source (can be dragged)
         draggable="true"
         onDragStart={(e) => dragHandlers.handleDragStart(e, egg.id)}
