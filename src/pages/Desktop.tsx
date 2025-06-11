@@ -4,6 +4,8 @@ import { useStore } from "../hooks/useStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
 import { useNodeDoubleClick } from "../hooks/useNodeDoubleClick";
 import Window from "../components/window/Window";
+import { Terminal } from "../components/terminal/Terminal";
+import { Weather } from "../components/widgets/Weather";
 
 export const Desktop = () => {
   const { rootId, getChildren, selectedNodeId, selectNode, openWindows } =
@@ -47,6 +49,10 @@ export const Desktop = () => {
             dragHandlers={dragHandlers}
           />
         ))}
+
+        <Terminal />
+
+        <Weather />
 
         <DirectoryLayout
           nodes={desktopChildren}
