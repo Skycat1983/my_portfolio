@@ -52,6 +52,7 @@ export const DirectoryLayout = ({
             );
 
           default:
+            // This should never happen if all node types are handled above
             console.warn("Unknown node type:", node);
             return null;
         }

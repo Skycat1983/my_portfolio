@@ -8,7 +8,7 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "../ui/menubar";
-import Apple from "../icons/Apple";
+import { images } from "../../constants/images";
 
 const HoverableMenuItem = ({
   children,
@@ -42,7 +42,7 @@ export function MenubarOptions() {
     <Menubar>
       <MenubarMenu>
         <MenubarTrigger>
-          <Apple />
+          <img src={images.APPLE} alt="apple" className="w-4 h-4" />
         </MenubarTrigger>
         <MenubarContent>
           <HoverableMenuItem>
