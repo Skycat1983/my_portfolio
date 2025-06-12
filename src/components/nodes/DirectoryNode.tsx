@@ -19,7 +19,7 @@ export const DirectoryNode = ({ directory }: Props) => {
   // ─────────── store actions & state ───────────
   const os = useNewStore((s) => s.os);
   const selectNode = useNewStore((s) => s.selectNode);
-  const handleDirectoryOpen = useNewStore((s) => s.handleDirectoryOpen);
+  const openDirectory = useNewStore((s) => s.openDirectory);
   const isSelected = useNewStore((s) => s.selectedNodeId === directory.id);
   const moveNode = useNewStore((s) => s.moveNode);
   const deleteNode = useNewStore((s) => s.deleteNode);
@@ -37,8 +37,8 @@ export const DirectoryNode = ({ directory }: Props) => {
 
   const handleDoubleClick = useCallback(() => {
     console.log("Directory double-click:", directory.id);
-    handleDirectoryOpen(directory.id);
-  }, [directory.id, handleDirectoryOpen]);
+    openDirectory(directory.id);
+  }, [directory.id, openDirectory]);
 
   // ─────────── key handler (ENTER → double-tap) ───────────
   const handleKeyDown = useCallback(
@@ -46,6 +46,7 @@ export const DirectoryNode = ({ directory }: Props) => {
       if (e.key === "Enter" && isSelected) {
         e.preventDefault();
         console.log("Directory Enter-press:", directory.id);
+        openDirectory(directory.id);
       }
       if (e.key === "Delete" && isSelected) {
         e.preventDefault();
@@ -57,7 +58,14 @@ export const DirectoryNode = ({ directory }: Props) => {
         }
       }
     },
-    [isSelected, directory.id, moveNode, deleteNode, isNodeInTrash]
+    [
+      isSelected,
+      directory.id,
+      moveNode,
+      deleteNode,
+      isNodeInTrash,
+      openDirectory,
+    ]
   );
 
   console.log("directory", directory);
