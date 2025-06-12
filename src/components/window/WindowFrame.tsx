@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWindowPosition } from "../../hooks/useWindowPosition";
+import { createWindowFrameStyles } from "./WindowFrame.styles";
 import { WindowHeader } from "./WindowHeader";
 
 interface WindowFrameProps {
@@ -65,30 +66,17 @@ export const WindowFrame = ({
 
   // Use props if provided, otherwise use hook values
   const windowSize = size || hookSize;
-
-  const windowStyle: React.CSSProperties = {
-    position: "relative", // Changed from absolute since wrapper handles positioning
-    width: windowSize.w,
-    height: windowSize.h,
-    background: "#1f2937", // gray-800
-    border: "1px solid #4b5563", // gray-600
-    borderRadius: 8,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
-    touchAction: "none",
-    cursor: isDragging ? "move" : hoverCursor,
-    overflow: "hidden",
-  };
-
-  const contentStyle: React.CSSProperties = {
-    height: windowSize.h - titleBarHeight,
-    padding: "12px",
-    overflow: "auto",
-    color: "#f3f4f6", // gray-100
-  };
+  const styles = createWindowFrameStyles({
+    w: windowSize.w,
+    h: windowSize.h,
+    titleBarHeight,
+    isDragging,
+    hoverCursor,
+  });
 
   return (
     <div
-      style={windowStyle}
+      style={styles.windowStyle}
       onPointerMove={handleWindowPointerMove}
       onPointerLeave={handlePointerLeave}
     >
@@ -102,7 +90,7 @@ export const WindowFrame = ({
         canGoBack={canGoBack}
         canGoForward={canGoForward}
       />
-      <div style={contentStyle}>{children || "Window content area"}</div>
+      <div style={styles.contentStyle}>{children || "Window content area"}</div>
     </div>
   );
 };

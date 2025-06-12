@@ -7,20 +7,23 @@ import { Terminal } from "../components/terminal/Terminal";
 // import { Weather } from "../components/widgets/Weather";
 import { BACKGROUND_MS } from "../constants/images";
 import { BACKGROUND_OS } from "../constants/images";
+import Browser from "../components/browser/Browser";
+import { Weather } from "../components/widgets/Weather";
 
 export const Desktop = () => {
   const {
     rootId,
+    os,
     getChildren,
     openWindows,
     isTerminalOpen,
-    closeTerminal,
-    os,
+    isBrowserOpen,
   } = useNewStore();
 
-  // Initialize drag and drop functionality
+  //enables drag and drop to and from desktop functionality
   const dragHandlers = useNodeDrag();
 
+  // desktop children/nodes
   const desktopChildren = getChildren(rootId);
 
   const background = os === "mac" ? BACKGROUND_OS : BACKGROUND_MS;
@@ -41,7 +44,6 @@ export const Desktop = () => {
       <MenubarLayout />
       <div
         className="p-10 h-full"
-        // Make desktop a drop target for moving items back to desktop
         onDragOver={
           dragHandlers
             ? (e) => dragHandlers.handleDragOver(e, rootId)
@@ -67,10 +69,10 @@ export const Desktop = () => {
           />
         ))}
 
-        {/* Conditionally render terminal */}
-        {isTerminalOpen && <Terminal onClose={closeTerminal} />}
+        {isTerminalOpen && <Terminal />}
+        {isBrowserOpen && <Browser />}
 
-        {/* <Weather /> */}
+        {os === "mac" && <Weather />}
 
         <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>

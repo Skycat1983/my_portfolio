@@ -268,19 +268,62 @@ export const createWindowSlice = (
       }
     } else {
       // Window context: find which window contains this directory and navigate within it
-      // For now, we'll just open a new window - this can be enhanced later
-      const newWindow: WindowData = {
-        id: nodeId,
-        currentNodeId: nodeId,
-        zIndex: currentState.nextZIndex,
-        navigationHistory: [nodeId],
-        currentHistoryIndex: 0,
-      };
+      // Find the window that's currently viewing the parent directory
+      const parentId = directory.parentId;
+      const windowContainingDirectory = currentState.openWindows.find(
+        (window) => window.currentNodeId === parentId
+      );
 
-      set((state) => ({
-        openWindows: [...state.openWindows, newWindow],
-        nextZIndex: state.nextZIndex + 1,
-      }));
+      if (windowContainingDirectory) {
+        // Navigate within the existing window
+        console.log(
+          "handleDirectoryOpen in windowSlice: navigating within window",
+          windowContainingDirectory.id,
+          "to",
+          nodeId
+        );
+
+        // Call navigateInWindow directly since we're inside the slice
+        set((state) => ({
+          openWindows: state.openWindows.map((window) => {
+            if (window.id !== windowContainingDirectory.id) return window;
+
+            // Trim history after current position (like browser navigation)
+            const newHistory = window.navigationHistory.slice(
+              0,
+              window.currentHistoryIndex + 1
+            );
+
+            // Add new target to history
+            newHistory.push(nodeId);
+
+            return {
+              ...window,
+              currentNodeId: nodeId,
+              navigationHistory: newHistory,
+              currentHistoryIndex: newHistory.length - 1,
+            };
+          }),
+        }));
+      } else {
+        // Fallback: if we can't find the containing window, open a new one
+        console.log(
+          "handleDirectoryOpen in windowSlice: couldn't find containing window, opening new window"
+        );
+
+        const newWindow: WindowData = {
+          id: nodeId,
+          currentNodeId: nodeId,
+          zIndex: currentState.nextZIndex,
+          navigationHistory: [nodeId],
+          currentHistoryIndex: 0,
+        };
+
+        set((state) => ({
+          openWindows: [...state.openWindows, newWindow],
+          nextZIndex: state.nextZIndex + 1,
+        }));
+      }
     }
   },
 });

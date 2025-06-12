@@ -72,11 +72,6 @@ export const DirectoryNode = ({ directory }: Props) => {
     }
   }
 
-  // if (directory.id === "trash") {
-  //   folderImage = children.length > 0 ? BIN_FULL : BIN_EMPTY;
-  //   console.log("folderImage", folderImage);
-  // }
-
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
