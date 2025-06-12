@@ -4,9 +4,7 @@ import { useNewStore } from "../hooks/useNewStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
 import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";
-// import { Weather } from "../components/widgets/Weather";
-import { BACKGROUND_MS } from "../constants/images";
-import { BACKGROUND_OS } from "../constants/images";
+import { BACKGROUND_OS, BACKGROUND_MS } from "../constants/images";
 import Browser from "../components/browser/Browser";
 import { Weather } from "../components/widgets/Weather";
 
@@ -27,6 +25,9 @@ export const Desktop = () => {
   const desktopChildren = getChildren(rootId);
 
   const background = os === "mac" ? BACKGROUND_OS : BACKGROUND_MS;
+
+  console.log("desktopChildren", desktopChildren);
+  console.log("openWindows", openWindows);
 
   return (
     <div
@@ -71,7 +72,6 @@ export const Desktop = () => {
 
         {isTerminalOpen && <Terminal />}
         {isBrowserOpen && <Browser />}
-
         {os === "mac" && <Weather />}
 
         <WindowLayout nodes={desktopChildren} layout="desktop" />

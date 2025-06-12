@@ -10,7 +10,6 @@ export const Weather = () => {
       weatherLoading,
     });
 
-    // Only fetch if we don't have weather data and we're not already loading
     if (!weather && !weatherLoading) {
       console.log("Weather useEffect: fetching weather data");
       fetchWeather();
