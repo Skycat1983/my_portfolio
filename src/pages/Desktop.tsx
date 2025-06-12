@@ -6,7 +6,7 @@ import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";
 import { BACKGROUND_OS, BACKGROUND_MS } from "../constants/images";
 import Browser from "../components/browser/Browser";
-// import { Weather } from "../components/widgets/Weather";
+import { Weather } from "../components/widgets/Weather";
 
 export const Desktop = () => {
   const {
@@ -72,7 +72,7 @@ export const Desktop = () => {
 
         {isTerminalOpen && <Terminal />}
         {isBrowserOpen && <Browser />}
-        {/* {os === "mac" && <Weather />} */}
+        {os === "mac" && <Weather />}
 
         <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>
