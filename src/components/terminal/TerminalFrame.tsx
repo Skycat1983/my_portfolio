@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useWindowPosition } from "../../hooks/useWindowPosition";
-import { TerminalHeader } from "./TerminalHeader";
+import { useNewStore } from "../../hooks/useNewStore";
+import { createTerminalFrameStyles } from "./TerminalFrame.styles";
+import { MacWindowControls } from "../controls/MacWindowControls";
+import { WindowsWindowControls } from "../controls/WindowsWindowControls";
 
 interface TerminalFrameProps {
   pos?: { x: number; y: number };
@@ -20,6 +23,9 @@ export const TerminalFrame = ({
 }: TerminalFrameProps) => {
   const titleBarHeight = 28;
   const [hoverCursor, setHoverCursor] = useState<string>("default");
+
+  // Get OS from store for window controls
+  const { os } = useNewStore();
 
   // Use provided pos/size or defaults from hook
   const {
@@ -53,47 +59,74 @@ export const TerminalFrame = ({
     }
   };
 
-  // Use props if provided, otherwise use hook values
   const terminalSize = size || hookSize;
+  const styles = createTerminalFrameStyles({
+    w: terminalSize.w,
+    h: terminalSize.h,
+    titleBarHeight,
+    isDragging,
+    hoverCursor,
+  });
 
-  // Mac terminal styling - dark theme with characteristic appearance
-  const terminalStyle: React.CSSProperties = {
-    position: "relative", // Changed from absolute since wrapper handles positioning
-    width: terminalSize.w,
-    height: terminalSize.h,
-    background: "#1a1a1a", // Very dark background like Mac terminal
-    border: "1px solid #333333", // Dark border
-    borderRadius: 8,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.4)", // Stronger shadow for depth
-    touchAction: "none",
-    cursor: isDragging ? "move" : hoverCursor,
-    overflow: "hidden",
-    fontFamily:
-      "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+  const renderWindowControls = () => {
+    if (os === "mac") {
+      return (
+        <MacWindowControls
+          onClose={onClose}
+          onMinimize={() => console.log("Terminal minimize clicked")}
+          onMaximize={() => console.log("Terminal maximize clicked")}
+        />
+      );
+    } else {
+      return (
+        <WindowsWindowControls
+          onClose={onClose}
+          onMinimize={() => console.log("Terminal minimize clicked")}
+          onMaximize={() => console.log("Terminal maximize clicked")}
+        />
+      );
+    }
   };
 
-  const contentStyle: React.CSSProperties = {
-    height: terminalSize.h - titleBarHeight,
-    padding: "12px",
-    overflow: "auto",
-    color: "#00ff00", // Classic green terminal text
-    background: "#000000", // Pure black background for content
-    fontSize: "13px",
-    lineHeight: "1.4",
+  const renderHeaderContent = () => {
+    if (os === "mac") {
+      // Mac: Controls on left, title in center
+      return (
+        <>
+          <div className="flex items-center gap-2">
+            {renderWindowControls()}
+          </div>
+          <span className="text-xs text-gray-300 font-medium">Terminal</span>
+          <div className="flex items-center gap-1">
+            {/* Empty space for symmetry */}
+          </div>
+        </>
+      );
+    } else {
+      // Windows: Title on left, controls on right
+      return (
+        <>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-300 font-medium">Terminal</span>
+          </div>
+          {renderWindowControls()}
+        </>
+      );
+    }
   };
 
   return (
     <div
-      style={terminalStyle}
+      style={styles.terminalStyle}
       onPointerMove={handleTerminalPointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      <TerminalHeader
-        isDragging={isDragging}
-        onPointerDown={handleTitleBarPointerDown}
-        onClose={onClose}
-      />
-      <div style={contentStyle}>{children || "Terminal content area"}</div>
+      <div style={styles.headerStyle} onPointerDown={handleTitleBarPointerDown}>
+        {renderHeaderContent()}
+      </div>
+      <div style={styles.contentStyle}>
+        {children || "Terminal content area"}
+      </div>
     </div>
   );
 };

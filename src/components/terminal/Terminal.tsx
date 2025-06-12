@@ -2,13 +2,14 @@ import { useState } from "react";
 import ResizeWrapper from "../window/WindowWrapper";
 import { TerminalFrame } from "./TerminalFrame";
 import { TerminalContent } from "./TerminalContent";
+import { useNewStore } from "../../hooks/useNewStore";
 interface TerminalProps {
-  onClose?: () => void;
   zIndex?: number;
 }
 
 // Main terminal component with both drag and resize functionality
-export const Terminal = ({ onClose, zIndex = 1000 }: TerminalProps) => {
+export const Terminal = ({ zIndex = 1000 }: TerminalProps) => {
+  const closeTerminal = useNewStore((s) => s.closeTerminal);
   const [pos, setPos] = useState({ x: 150, y: 150 });
   const [size, setSize] = useState({ w: 600, h: 400 });
   const titleBarHeight = 28;
@@ -25,7 +26,7 @@ export const Terminal = ({ onClose, zIndex = 1000 }: TerminalProps) => {
 
   const handleClose = () => {
     console.log("handleClose in Terminal: closing terminal");
-    onClose?.();
+    closeTerminal();
   };
 
   return (
