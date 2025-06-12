@@ -1,96 +1,23 @@
-import { useEffect, useState } from "react";
-
-const apiKey = import.meta.env.VITE_APIKEY;
-
-// TypeScript interfaces for weather data
-interface WeatherCondition {
-  text: string;
-  icon: string;
-  code: number;
-}
-
-interface Location {
-  name: string;
-  region: string;
-  country: string;
-  lat: number;
-  lon: number;
-  tz_id: string;
-  localtime_epoch: number;
-  localtime: string;
-}
-
-interface CurrentWeather {
-  cloud: number;
-  condition: WeatherCondition;
-  dewpoint_c: number;
-  dewpoint_f: number;
-  feelslike_c: number;
-  feelslike_f: number;
-  gust_kph: number;
-  gust_mph: number;
-  heatindex_c: number;
-  heatindex_f: number;
-  humidity: number;
-  is_day: number;
-  last_updated: string;
-  last_updated_epoch: number;
-  precip_in: number;
-  precip_mm: number;
-  pressure_in: number;
-  pressure_mb: number;
-  temp_c: number;
-  temp_f: number;
-  uv: number;
-  vis_km: number;
-  vis_miles: number;
-  wind_degree: number;
-  wind_dir: string;
-  wind_kph: number;
-  wind_mph: number;
-  windchill_c: number;
-  windchill_f: number;
-}
-
-interface WeatherResponse {
-  location: Location;
-  current: CurrentWeather;
-}
+import { useEffect } from "react";
+import { useNewStore } from "../../hooks/useNewStore";
 
 export const Weather = () => {
-  const [weather, setWeather] = useState<WeatherResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { weather, weatherLoading, weatherError, fetchWeather } = useNewStore();
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    console.log("Weather useEffect: checking if weather data exists", {
+      weather,
+      weatherLoading,
+    });
 
-        const response = await fetch(
-          `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=Berlin`
-        );
+    // Only fetch if we don't have weather data and we're not already loading
+    if (!weather && !weatherLoading) {
+      console.log("Weather useEffect: fetching weather data");
+      fetchWeather();
+    }
+  }, [weather, weatherLoading, fetchWeather]);
 
-        if (!response.ok) {
-          throw new Error(`Weather API error: ${response.status}`);
-        }
-
-        const data: WeatherResponse = await response.json();
-        setWeather(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch weather data"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWeather();
-  }, []);
-
-  if (loading) {
+  if (weatherLoading) {
     return (
       <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center absolute top-20 left-10">
         <div className="animate-pulse text-center">
@@ -101,13 +28,13 @@ export const Weather = () => {
     );
   }
 
-  if (error) {
+  if (weatherError) {
     return (
       <div className="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl p-6 text-white shadow-xl w-80 h-48 flex items-center justify-center absolute top-20 left-10">
         <div className="text-center">
           <div className="text-3xl mb-2">⚠️</div>
           <p className="text-sm opacity-90">Weather unavailable</p>
-          <p className="text-xs opacity-70 mt-1">{error}</p>
+          <p className="text-xs opacity-70 mt-1">{weatherError}</p>
         </div>
       </div>
     );
