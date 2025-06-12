@@ -39,7 +39,8 @@ const EASTER_EGG2 = "src/assets/icons_m/egg2.png";
 const EASTER_EGG3 = "src/assets/icons_m/egg3.png";
 const EGG_BROKEN = "src/assets/icons_m/egg4.png";
 
-const FIREFOX = "src/assets/icons_m/firefox.png";
+export const FIREFOX = "src/assets/icons_m/firefox.png";
+export const EDGE = "src/assets/icons_m/edge.png";
 const PDF = "src/assets/icons_m/pdf.png";
 const APPLE = "src/assets/icons_m/apple.png";
 

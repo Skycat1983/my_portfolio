@@ -7,6 +7,19 @@ export interface DirectoryObject {
   children: NodeObject[];
 }
 
+export interface BrowserObject {
+  id: string;
+  type: "browser";
+  label: string;
+}
+
+export interface BrowserEntry {
+  id: string;
+  parentId: string | null;
+  type: "browser";
+  label: string;
+}
+
 export interface DirectoryEntry {
   id: string;
   parentId: string | null;
@@ -88,7 +101,8 @@ export type NodeObject =
   | IconObject
   | LinkObject
   | EasterEggObject
-  | TerminalObject;
+  | TerminalObject
+  | BrowserObject;
 
 // OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
@@ -97,7 +111,8 @@ export type NodeEntry =
   | IconEntry
   | LinkEntry
   | EasterEggEntry
-  | TerminalEntry;
+  | TerminalEntry
+  | BrowserEntry;
 
 export interface NodeMap {
   [id: string]: NodeEntry;

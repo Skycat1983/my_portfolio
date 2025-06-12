@@ -49,6 +49,12 @@ export const convertMapToObjects = (
         label: mapNode.label,
         image: mapNode.image,
       };
+    } else if (mapNode.type === "browser") {
+      return {
+        id: mapNode.id,
+        type: "browser",
+        label: mapNode.label,
+      };
     } else {
       // Directory nodes need to recursively build children
       const children: NodeObject[] = mapNode.children.map((childId) =>

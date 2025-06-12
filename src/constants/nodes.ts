@@ -46,6 +46,11 @@ export const defaultNodes: DirectoryObject = {
   image: FOLDER,
   children: [
     {
+      id: "browser",
+      label: "Internet",
+      type: "browser",
+    },
+    {
       id: "terminal",
       label: "Terminal",
       image: TERMINAL,

@@ -8,6 +8,7 @@ import type {
   EasterEggEntry,
   DirectoryObject,
   TerminalEntry,
+  BrowserEntry,
 } from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
@@ -71,6 +72,13 @@ export const convertObjectsToMap = (
         label: nodeObj.label,
         image: nodeObj.image,
       } as TerminalEntry;
+    } else if (nodeObj.type === "browser") {
+      mapNode = {
+        id: nodeObj.id,
+        parentId,
+        type: "browser",
+        label: nodeObj.label,
+      } as BrowserEntry;
     } else {
       throw new Error(`Unknown node type: ${(nodeObj as NodeObject).type}`);
     }
