@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useTerminalStore } from "../../hooks/useTerminalStore";
+import { useNewStore } from "../../hooks/useNewStore";
 
 interface TerminalLine {
   type: "command" | "output" | "error";
@@ -31,20 +31,29 @@ export const TerminalContent = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
 
-  // Get terminal store functions
+  // Get store functions
   const {
-    cd,
-    ls,
-    pwd,
-    cat,
-    mkdir,
-    touch,
-    rm,
-    mv,
-    cp,
-    find,
-    getCurrentDirectory,
-  } = useTerminalStore();
+    currentWorkingDirectory,
+    setCurrentWorkingDirectory,
+    addToHistory,
+    terminalLs,
+    terminalCd,
+    terminalPwd,
+    terminalCat,
+    rootId,
+    getNode,
+  } = useNewStore();
+
+  // Initialize working directory to root if not set
+  useEffect(() => {
+    if (!currentWorkingDirectory && rootId) {
+      console.log(
+        "TerminalContent: initializing working directory to root",
+        rootId
+      );
+      setCurrentWorkingDirectory(rootId);
+    }
+  }, [currentWorkingDirectory, rootId, setCurrentWorkingDirectory]);
 
   // Enhanced commands that work with the file system
   const commands: { [key: string]: (args: string[]) => string } = {
@@ -72,9 +81,12 @@ System Commands:
       return "";
     },
 
-    // File system commands using terminal store
+    // File system commands using new store
     ls: (args: string[]) => {
-      const result = ls(args[0]);
+      if (!currentWorkingDirectory) {
+        return "Error: working directory not initialized";
+      }
+      const result = terminalLs(args[0], currentWorkingDirectory);
       return result.output;
     },
 
@@ -82,12 +94,21 @@ System Commands:
       if (args.length === 0) {
         return "cd: missing argument";
       }
-      const result = cd(args[0]);
+      if (!currentWorkingDirectory) {
+        return "Error: working directory not initialized";
+      }
+      const result = terminalCd(args[0], currentWorkingDirectory);
+      if (result.success && result.newDir) {
+        setCurrentWorkingDirectory(result.newDir);
+      }
       return result.output;
     },
 
     pwd: () => {
-      const result = pwd();
+      if (!currentWorkingDirectory) {
+        return "Error: working directory not initialized";
+      }
+      const result = terminalPwd(currentWorkingDirectory);
       return result.output;
     },
 
@@ -95,56 +116,35 @@ System Commands:
       if (args.length === 0) {
         return "cat: missing file operand";
       }
-      const result = cat(args[0]);
+      if (!currentWorkingDirectory) {
+        return "Error: working directory not initialized";
+      }
+      const result = terminalCat(args[0], currentWorkingDirectory);
       return result.output;
     },
 
-    mkdir: (args: string[]) => {
-      if (args.length === 0) {
-        return "mkdir: missing operand";
-      }
-      const result = mkdir(args[0]);
-      return result.output;
+    mkdir: () => {
+      return "mkdir: not implemented yet";
     },
 
-    touch: (args: string[]) => {
-      if (args.length === 0) {
-        return "touch: missing file operand";
-      }
-      const result = touch(args[0]);
-      return result.output;
+    touch: () => {
+      return "touch: not implemented yet";
     },
 
-    rm: (args: string[]) => {
-      if (args.length === 0) {
-        return "rm: missing operand";
-      }
-      const result = rm(args[0]);
-      return result.output;
+    rm: () => {
+      return "rm: not implemented yet";
     },
 
-    mv: (args: string[]) => {
-      if (args.length < 2) {
-        return "mv: missing operand";
-      }
-      const result = mv(args[0], args[1]);
-      return result.output;
+    mv: () => {
+      return "mv: not implemented yet";
     },
 
-    cp: (args: string[]) => {
-      if (args.length < 2) {
-        return "cp: missing operand";
-      }
-      const result = cp(args[0], args[1]);
-      return result.output;
+    cp: () => {
+      return "cp: not implemented yet";
     },
 
-    find: (args: string[]) => {
-      if (args.length === 0) {
-        return "find: missing search pattern";
-      }
-      const result = find(args[0]);
-      return result.output;
+    find: () => {
+      return "find: not implemented yet";
     },
 
     // System commands (unchanged)
@@ -159,8 +159,9 @@ System Commands:
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    // Add command to history
+    // Add command to history (both local and store)
     setCommandHistory((prev) => [...prev, trimmed]);
+    addToHistory(trimmed);
     setHistoryIndex(-1);
 
     // Add command line to terminal
@@ -304,7 +305,12 @@ System Commands:
 
       {/* Current input line */}
       <div style={promptStyle}>
-        <span>{getCurrentDirectory()?.label || "~"}$</span>
+        <span>
+          {currentWorkingDirectory
+            ? getNode(currentWorkingDirectory)?.label || "~"
+            : "~"}
+          $
+        </span>
         <input
           ref={inputRef}
           type="text"
