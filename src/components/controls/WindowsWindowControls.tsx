@@ -33,7 +33,7 @@ export const WindowsWindowControls = ({
     padding: "2px",
     width: "46px",
     height: "30px",
-    cursor: "pointer",
+    // cursor: "pointer",
     // border: "1px solid #000",
     display: "flex",
     alignItems: "center",
@@ -45,31 +45,31 @@ export const WindowsWindowControls = ({
   return (
     <div className="flex items-center">
       {/* Minimize button */}
-      <button
+      <div
         style={buttonBaseStyle}
         onClick={handleMinimizeClick}
         aria-label="Minimize window"
         className="hover:bg-gray-200 transition-colors"
       >
         <Minus size={14} />
-      </button>
+      </div>
 
       {/* Maximize button */}
-      <button
+      <div
         style={buttonBaseStyle}
         onClick={handleMaximizeClick}
         aria-label="Maximize window"
         className="hover:bg-gray-200 transition-colors"
       >
         <Square size={12} />
-      </button>
+      </div>
 
       {/* Close button */}
       <button
         style={buttonBaseStyle}
         onClick={handleCloseClick}
         aria-label="Close window"
-        className="hover:bg-red-500 hover:text-white transition-colors"
+        className="hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
       >
         <X size={14} />
       </button>

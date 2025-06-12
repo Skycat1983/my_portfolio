@@ -34,7 +34,7 @@ export const MacWindowControls = ({
     height: "12px",
     borderRadius: "50%",
     border: "none",
-    cursor: "pointer",
+    // cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -53,7 +53,7 @@ export const MacWindowControls = ({
         }}
         onClick={handleCloseClick}
         aria-label="Close window"
-        className="group hover:bg-red-600 transition-colors"
+        className="group hover:bg-red-600 transition-colors cursor-pointer"
       >
         <X
           size={8}
@@ -62,7 +62,7 @@ export const MacWindowControls = ({
       </button>
 
       {/* Minimize button - Yellow */}
-      <button
+      <div
         style={{
           ...buttonBaseStyle,
           background: "#ffbd2e",
@@ -70,16 +70,16 @@ export const MacWindowControls = ({
         }}
         onClick={handleMinimizeClick}
         aria-label="Minimize window"
-        className="group hover:bg-yellow-600 transition-colors"
+        className="group hover:bg-yellow-600 transition-colors cursor-default"
       >
         <Minus
           size={8}
-          className="text-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="text-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity "
         />
-      </button>
+      </div>
 
       {/* Maximize button - Green */}
-      <button
+      <div
         style={{
           ...buttonBaseStyle,
           background: "#28ca42",
@@ -87,13 +87,13 @@ export const MacWindowControls = ({
         }}
         onClick={handleMaximizeClick}
         aria-label="Maximize window"
-        className="group hover:bg-green-600 transition-colors"
+        className="group hover:bg-green-600 transition-colors cursor-default"
       >
         <Square
           size={6}
           className="text-green-900 opacity-0 group-hover:opacity-100 transition-opacity"
         />
-      </button>
+      </div>
     </div>
   );
 };
