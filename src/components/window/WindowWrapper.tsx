@@ -10,7 +10,7 @@ interface ResizableWrapperProps {
   onPositionChange?: (pos: { x: number; y: number }) => void;
 }
 
-export const ResizableWrapper = ({
+export const WindowWrapper = ({
   children,
   pos,
   size,
@@ -95,4 +95,4 @@ export const ResizableWrapper = ({
   );
 };
 
-export default ResizableWrapper;
+export default WindowWrapper;
