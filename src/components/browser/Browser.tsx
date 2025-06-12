@@ -10,11 +10,14 @@ interface BrowserProps {
 }
 
 // Main browser component with both drag and resize functionality
-export const Browser = ({ zIndex = 1000 }: BrowserProps) => {
-  const closeBrowser = useNewStore((s) => s.closeBrowser);
+export const Browser = ({ zIndex }: BrowserProps) => {
+  const { closeBrowser, focusBrowser, browserZIndex } = useNewStore();
   const [pos, setPos] = useState({ x: 150, y: 150 });
   const [size, setSize] = useState({ w: 800, h: 600 });
   const titleBarHeight = 70; // Browser has a taller header
+
+  // Use z-index from store if not provided as prop
+  const activeZIndex = zIndex ?? browserZIndex;
 
   const handleSizeChange = (newSize: { w: number; h: number }) => {
     console.log("handleSizeChange in Browser: new size", newSize);
@@ -31,8 +34,17 @@ export const Browser = ({ zIndex = 1000 }: BrowserProps) => {
     closeBrowser();
   };
 
+  const handleFocus = () => {
+    console.log("handleFocus in Browser: focusing browser");
+    focusBrowser();
+  };
+
   return (
-    <div style={{ zIndex }} className="absolute">
+    <div
+      style={{ zIndex: activeZIndex }}
+      onClick={handleFocus}
+      className="absolute"
+    >
       <ResizeWrapper
         pos={pos}
         size={size}

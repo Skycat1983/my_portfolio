@@ -2,6 +2,7 @@ import type { SetState } from "../hooks/useNewStore";
 
 interface BrowserState {
   isBrowserOpen: boolean;
+  browserZIndex: number;
   url: string;
   lastNavigatedUrl: string;
   addressPosition: number;
@@ -13,6 +14,7 @@ interface BrowserState {
 interface BrowserActions {
   openBrowser: () => void;
   closeBrowser: () => void;
+  focusBrowser: () => void;
   setUrl: (url: string) => void;
   setAddressPosition: (position: number) => void;
   setCompleteUrl: (complete: boolean) => void;
@@ -28,6 +30,7 @@ export type BrowserSlice = BrowserState & BrowserActions;
 export const createBrowserSlice = (set: SetState): BrowserSlice => ({
   // Browser state
   isBrowserOpen: false,
+  browserZIndex: 1000,
   url: "",
   lastNavigatedUrl: "",
   addressPosition: 0,
@@ -38,7 +41,20 @@ export const createBrowserSlice = (set: SetState): BrowserSlice => ({
   // Browser actions
   openBrowser: () => {
     console.log("openBrowser in browserSlice: opening browser");
-    set({ isBrowserOpen: true, currentPage: "start" });
+    set((state) => ({
+      isBrowserOpen: true,
+      currentPage: "start",
+      browserZIndex: state.nextZIndex,
+      nextZIndex: state.nextZIndex + 1,
+    }));
+  },
+
+  focusBrowser: () => {
+    console.log("focusBrowser in browserSlice: focusing browser");
+    set((state) => ({
+      browserZIndex: state.nextZIndex,
+      nextZIndex: state.nextZIndex + 1,
+    }));
   },
 
   closeBrowser: () => {

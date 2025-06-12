@@ -2,12 +2,14 @@ import type { BaseStoreState, SetState } from "../types/storeTypes";
 
 interface TerminalState {
   isTerminalOpen: boolean;
+  terminalZIndex: number;
 }
 
 interface TerminalActions {
   openTerminal: () => void;
   closeTerminal: () => void;
   toggleTerminal: () => void;
+  focusTerminal: () => void;
 }
 
 export type TerminalSlice = TerminalState & TerminalActions;
@@ -17,11 +19,16 @@ export const createTerminalSlice = (
 ): TerminalSlice => ({
   // Terminal state
   isTerminalOpen: false,
+  terminalZIndex: 1000,
 
   // Terminal actions
   openTerminal: () => {
     console.log("openTerminal in terminalSlice: opening terminal");
-    set({ isTerminalOpen: true });
+    set((state) => ({
+      isTerminalOpen: true,
+      terminalZIndex: state.nextZIndex,
+      nextZIndex: state.nextZIndex + 1,
+    }));
   },
 
   closeTerminal: () => {
@@ -31,6 +38,22 @@ export const createTerminalSlice = (
 
   toggleTerminal: () => {
     console.log("toggleTerminal in terminalSlice: toggling terminal");
-    set((state) => ({ isTerminalOpen: !state.isTerminalOpen }));
+    set((state) => ({
+      isTerminalOpen: !state.isTerminalOpen,
+      terminalZIndex: !state.isTerminalOpen
+        ? state.nextZIndex
+        : state.terminalZIndex,
+      nextZIndex: !state.isTerminalOpen
+        ? state.nextZIndex + 1
+        : state.nextZIndex,
+    }));
+  },
+
+  focusTerminal: () => {
+    console.log("focusTerminal in terminalSlice: focusing terminal");
+    set((state) => ({
+      terminalZIndex: state.nextZIndex,
+      nextZIndex: state.nextZIndex + 1,
+    }));
   },
 });

@@ -15,7 +15,7 @@ export type SystemSlice = SystemState & SystemActions;
 export const createSystemSlice = (
   set: SetState<BaseStoreState>
 ): SystemSlice => ({
-  os: "windows",
+  os: "mac",
   toggleOS: () =>
     set((state) => ({ os: state.os === "mac" ? "windows" : "mac" })),
 });

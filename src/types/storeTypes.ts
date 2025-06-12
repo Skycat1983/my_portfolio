@@ -19,6 +19,8 @@ export interface BaseStoreState {
   nextZIndex: number;
   isTerminalOpen: boolean;
   os: OS;
+  browserZIndex: number;
+  terminalZIndex: number;
 }
 
 // Properly typed store functions

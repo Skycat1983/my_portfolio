@@ -8,11 +8,14 @@ interface TerminalProps {
 }
 
 // Main terminal component with both drag and resize functionality
-export const Terminal = ({ zIndex = 1000 }: TerminalProps) => {
-  const closeTerminal = useNewStore((s) => s.closeTerminal);
+export const Terminal = ({ zIndex }: TerminalProps) => {
+  const { closeTerminal, focusTerminal, terminalZIndex } = useNewStore();
   const [pos, setPos] = useState({ x: 150, y: 150 });
   const [size, setSize] = useState({ w: 600, h: 400 });
   const titleBarHeight = 28;
+
+  // Use z-index from store if not provided as prop
+  const activeZIndex = zIndex ?? terminalZIndex;
 
   const handleSizeChange = (newSize: { w: number; h: number }) => {
     console.log("handleSizeChange in Terminal: new size", newSize);
@@ -29,8 +32,17 @@ export const Terminal = ({ zIndex = 1000 }: TerminalProps) => {
     closeTerminal();
   };
 
+  const handleFocus = () => {
+    console.log("handleFocus in Terminal: focusing terminal");
+    focusTerminal();
+  };
+
   return (
-    <div style={{ zIndex }} className="absolute">
+    <div
+      style={{ zIndex: activeZIndex }}
+      onClick={handleFocus}
+      className="absolute"
+    >
       <ResizeWrapper
         pos={pos}
         size={size}

@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import ResizeWrapper from "./WindowWrapper";
 import { WindowFrame } from "./WindowFrame";
 import { WindowContent } from "./WindowContent";
 import { useNewStore } from "../../hooks/useNewStore";
+import {
+  calculateWindowSize,
+  calculateWindowPosition,
+  getWindowSizeCategory,
+} from "../../utils/windowSizing";
 import type { DragHandlers } from "../../types/dragHandlers";
 
 interface WindowProps {
@@ -13,8 +18,6 @@ interface WindowProps {
 
 // Main window component with both drag and resize functionality
 export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
-  const [pos, setPos] = useState({ x: 100, y: 100 });
-  const [size, setSize] = useState({ w: 400, h: 300 });
   const titleBarHeight = 28;
 
   const {
@@ -28,6 +31,8 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
     goForward,
     getParent,
     rootId,
+    getChildren,
+    openWindows,
   } = useNewStore();
 
   const node = getNode(nodeId);
@@ -36,6 +41,51 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
   // Get the current node being viewed (for title and navigation)
   const currentNodeId = windowState?.currentNodeId || nodeId;
   const currentNode = getNode(currentNodeId);
+
+  // Calculate optimal size and position based on content
+  const { optimalSize, optimalPosition } = useMemo(() => {
+    console.log(
+      "Window useMemo: calculating optimal size and position for nodeId",
+      nodeId
+    );
+
+    if (!currentNode) {
+      return {
+        optimalSize: { w: 400, h: 300 },
+        optimalPosition: { x: 100, y: 100 },
+      };
+    }
+
+    // Get children to calculate content size
+    const children =
+      currentNode.type === "directory"
+        ? getChildren(currentNodeId)
+        : [currentNode];
+    const itemCount = children.length;
+    const sizeCategory = getWindowSizeCategory(itemCount);
+
+    console.log(
+      "Window useMemo: found",
+      itemCount,
+      "items, size category:",
+      sizeCategory
+    );
+
+    // Calculate size based on content
+    const optimalSize = calculateWindowSize(itemCount);
+
+    // Calculate position based on window index to stagger them
+    const windowIndex = openWindows.findIndex((w) => w.id === nodeId);
+    const optimalPosition = calculateWindowPosition(
+      windowIndex >= 0 ? windowIndex : openWindows.length
+    );
+
+    return { optimalSize, optimalPosition };
+  }, [nodeId, currentNodeId, currentNode, getChildren, openWindows]);
+
+  // Use calculated values as initial state, but allow user to override via resize/drag
+  const [pos, setPos] = useState(optimalPosition);
+  const [size, setSize] = useState(optimalSize);
 
   if (!node) {
     console.log("Window: Node not found for nodeId", nodeId);
