@@ -1,9 +1,10 @@
 import { useNewStore } from "../../hooks/useNewStore";
 import { WindowLayout } from "./WindowLayout";
 import type { DragHandlers } from "../../types/dragHandlers";
+import type { DirectoryEntry } from "../../types/nodeTypes";
 
 interface WindowContentProps {
-  nodeId: string; // Original window nodeId
+  nodeId: DirectoryEntry["id"];
   dragHandlers?: DragHandlers;
 }
 
