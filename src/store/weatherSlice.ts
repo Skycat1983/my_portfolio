@@ -77,7 +77,7 @@ export const createWeatherSlice = (set: SetState): WeatherSlice => ({
       set({ weatherLoading: true, weatherError: null });
 
       const response = await fetch(
-        `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`
+        `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`
       );
 
       if (!response.ok) {
