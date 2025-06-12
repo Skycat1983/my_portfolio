@@ -12,15 +12,15 @@ const GITHUB_SMALL = "src/assets/icons_s/github_white.png";
 const ICON = "src/assets/icons_m/1.png";
 
 // FOLDERS
-const FOLDER = "src/assets/icons_m/folder_os.png";
-const BIN_EMPTY = "src/assets/icons_m/bin_empty.png";
-const BIN_FULL = "src/assets/icons_m/bin_full.png";
+export const FOLDER = "src/assets/icons_m/folder_os.png";
+export const BIN_EMPTY = "src/assets/icons_m/bin_empty.png";
+export const BIN_FULL = "src/assets/icons_m/bin_full.png";
 
 export const FOLDER_OS = "src/assets/icons_m/folder_os.png";
 export const FOLDER_MS = "src/assets/icons_m/folder_ms.png";
 
 // APPS
-const TERMINAL = "src/assets/icons_m/terminal.png";
+export const TERMINAL = "src/assets/icons_m/terminal.png";
 
 // STACK ICONS
 const REACT = "src/assets/icons_m/react.png";

@@ -18,6 +18,9 @@ export const EasterEggNode = ({ egg }: Props) => {
   const cycleEgg = useNewStore((s) => s.cycleEasterEgg);
   const selectNode = useNewStore((s) => s.selectNode);
   const breakEgg = useNewStore((s) => s.breakEasterEgg);
+  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
+  const moveNode = useNewStore((s) => s.moveNode);
+  const deleteNode = useNewStore((s) => s.deleteNode);
 
   const currentImg = useNewStore((s) => s.getEasterEggCurrentImage(egg.id));
   const isSelected = useNewStore((s) => s.selectedNodeId === egg.id);
@@ -37,8 +40,17 @@ export const EasterEggNode = ({ egg }: Props) => {
         e.preventDefault();
         breakEgg(egg.id);
       }
+      if (e.key === "Delete" && isSelected) {
+        e.preventDefault();
+
+        if (isNodeInTrash(egg.id)) {
+          deleteNode(egg.id);
+        } else {
+          moveNode(egg.id, "trash");
+        }
+      }
     },
-    [isSelected, egg.id, breakEgg]
+    [isSelected, egg.id, breakEgg, isNodeInTrash, moveNode, deleteNode]
   );
 
   // Easter eggs are not drop targets (only directories are)

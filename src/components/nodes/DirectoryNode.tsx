@@ -10,7 +10,7 @@ import {
   titleBase,
   tileFrame,
 } from "./node.styles";
-import { FOLDER_MS } from "../../constants/images";
+import { BIN_EMPTY, BIN_FULL, FOLDER_MS } from "../../constants/images";
 import { FOLDER_OS } from "../../constants/images";
 
 type Props = { directory: DirectoryEntry };
@@ -60,7 +60,22 @@ export const DirectoryNode = ({ directory }: Props) => {
     [isSelected, directory.id, moveNode, deleteNode, isNodeInTrash]
   );
 
-  const folderImage = os === "mac" ? FOLDER_OS : FOLDER_MS;
+  console.log("directory", directory);
+
+  let folderImage = os === "mac" ? FOLDER_OS : FOLDER_MS;
+
+  if (directory.id === "trash") {
+    folderImage = BIN_EMPTY;
+
+    if (directory.children.length > 0) {
+      folderImage = BIN_FULL;
+    }
+  }
+
+  // if (directory.id === "trash") {
+  //   folderImage = children.length > 0 ? BIN_FULL : BIN_EMPTY;
+  //   console.log("folderImage", folderImage);
+  // }
 
   // ─────────── render ───────────
   return (
