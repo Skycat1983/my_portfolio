@@ -4,7 +4,7 @@ import BACKGROUND_MS from "../assets/wallpapers/windows.png";
 
 // Profile icons
 import GITHUB from "../assets/icons_m/github.png";
-import LINKEDIN from "../assets/icons/linkedin.png";
+import LINKEDIN from "../assets/icons_m/linked_in2.png";
 import LINKEDIN_SMALL from "../assets/icons_s/linked_in1.png";
 import GITHUB_SMALL from "../assets/icons_s/github_white.png";
 
@@ -44,7 +44,7 @@ import EGG_BROKEN from "../assets/icons_m/egg4.png";
 
 // Other icons
 import PDF from "../assets/icons_m/pdf.png";
-import APPLE from "../assets/icons_m/apple.png";
+import APPLE from "../assets/icons_m/logo_mac.png";
 import JL1 from "../assets/icons_m/JL1.png";
 import JL2 from "../assets/icons_m/JL2.png";
 import IMAGE1 from "../assets/icons_m/image1.png";

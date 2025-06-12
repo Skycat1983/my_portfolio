@@ -23,8 +23,8 @@ const {
   EGG_BROKEN,
   GITHUB,
   PDF,
-  JL,
-  IMAGE,
+  JL1,
+  IMAGE1,
 } = images;
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -94,7 +94,7 @@ export const defaultNodes: DirectoryObject = {
             {
               id: "laoutaris_website",
               label: "Website",
-              image: JL,
+              image: JL1,
               type: "link",
               url: "https://laoutaris-nextjs.vercel.app/",
             },
@@ -255,7 +255,7 @@ export const defaultNodes: DirectoryObject = {
         {
           id: "review",
           label: "Review",
-          image: IMAGE,
+          image: IMAGE1,
           type: "link",
           url: REVIEW,
         },
