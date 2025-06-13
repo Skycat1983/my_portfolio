@@ -1,6 +1,17 @@
 import { useState, useRef } from "react";
 import { useNewStore } from "./useNewStore";
-import type { DragHandlers } from "../types/dragHandlers";
+
+export interface DragHandlers {
+  handleDragStart: (e: React.DragEvent, nodeId: string) => void;
+  handleDragEnd: () => void;
+  handleDragOver: (e: React.DragEvent, targetNodeId?: string) => void;
+  handleDragEnter: (e: React.DragEvent, targetNodeId: string) => void;
+  handleDragLeave: (e: React.DragEvent) => void;
+  handleDrop: (e: React.DragEvent, targetNodeId: string) => void;
+  currentDropTarget: string | null;
+  isValidDropTarget: () => boolean;
+  isDropTarget: (nodeId: string) => boolean;
+}
 
 export const useNodeDrag = (): DragHandlers => {
   // Track current drop target for visual feedback (highlighting)

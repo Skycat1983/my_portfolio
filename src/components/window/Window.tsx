@@ -8,7 +8,7 @@ import {
   calculateWindowPosition,
   getWindowSizeCategory,
 } from "../../utils/windowSizing";
-import type { DragHandlers } from "../../types/dragHandlers";
+import { type DragHandlers } from "../../hooks/useNodeDrag";
 
 interface WindowProps {
   nodeId: string;
