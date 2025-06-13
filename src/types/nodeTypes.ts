@@ -3,7 +3,7 @@ export interface DirectoryObject {
   id: string;
   type: "directory";
   label: string;
-  image: string;
+  // image: string;
   children: NodeObject[];
 }
 
@@ -26,7 +26,7 @@ export interface DirectoryEntry {
   children: string[];
   type: "directory";
   label: string;
-  image: string;
+  // image: string;
 }
 
 export interface IconObject {
@@ -85,7 +85,7 @@ export interface TerminalObject {
   id: string;
   type: "terminal";
   label: string;
-  image: string;
+  // image: string;
 }
 
 export interface TerminalEntry {
@@ -93,7 +93,7 @@ export interface TerminalEntry {
   parentId: string | null;
   type: "terminal";
   label: string;
-  image: string;
+  // image: string;
 }
 
 export type NodeObject =

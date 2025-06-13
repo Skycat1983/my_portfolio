@@ -1,9 +1,9 @@
 import type { BaseStoreState, SetState } from "../types/storeTypes";
 
-export type OS = "mac" | "windows";
+export type OperatingSystem = "mac" | "windows";
 
 export interface SystemState {
-  os: OS;
+  operatingSystem: OperatingSystem;
 }
 
 interface SystemActions {
@@ -15,7 +15,9 @@ export type SystemSlice = SystemState & SystemActions;
 export const createSystemSlice = (
   set: SetState<BaseStoreState>
 ): SystemSlice => ({
-  os: "mac",
+  operatingSystem: "mac",
   toggleOS: () =>
-    set((state) => ({ os: state.os === "mac" ? "windows" : "mac" })),
+    set((state) => ({
+      operatingSystem: state.operatingSystem === "mac" ? "windows" : "mac",
+    })),
 });

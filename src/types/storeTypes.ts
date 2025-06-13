@@ -1,5 +1,5 @@
 import type { NodeMap } from "./nodeTypes";
-import type { OS } from "../store/systemSlice";
+import type { OperatingSystem } from "../store/systemSlice";
 
 // Forward declare WindowData to avoid circular imports
 export interface WindowData {
@@ -18,7 +18,7 @@ export interface BaseStoreState {
   openWindows: WindowData[];
   nextZIndex: number;
   isTerminalOpen: boolean;
-  os: OS;
+  operatingSystem: OperatingSystem;
   browserZIndex: number;
   terminalZIndex: number;
 }

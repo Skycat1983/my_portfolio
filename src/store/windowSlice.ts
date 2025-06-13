@@ -8,6 +8,7 @@ import type {
 
 interface WindowActions {
   // Core window management
+  //? unused
   openWindow: (nodeId: string) => void;
   closeWindow: (nodeId: string) => void;
   focusWindow: (nodeId: string) => void;

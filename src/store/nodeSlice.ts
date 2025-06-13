@@ -1,5 +1,5 @@
 import { defaultNodeMap, defaultRootId } from "../constants/nodes";
-import { FOLDER, images } from "../constants/images";
+import { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3 } from "../constants/images";
 import type {
   NodeEntry,
   NodeMap,
@@ -155,7 +155,7 @@ export const createNodeSlice = (
       children: [],
       type: "directory",
       label: "Downloads",
-      image: FOLDER,
+      // image: operatingSystem === "mac" ? FOLDER_MAC : FOLDER_WIN,
     };
 
     set((state) => {
@@ -198,7 +198,7 @@ export const createNodeSlice = (
         children: [],
         type: "directory",
         label: "Downloads",
-        image: FOLDER,
+        // image: operatingSystem === "mac" ? FOLDER_MAC : FOLDER_WIN,
       };
 
       set((state) => {
@@ -226,7 +226,7 @@ export const createNodeSlice = (
       parentId: downloadsId,
       type: "easter-egg",
       label: "Egg",
-      image: [images.EASTER_EGG1, images.EASTER_EGG2, images.EASTER_EGG3],
+      image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
       currentImageIndex: 0,
       isBroken: false,
     };
