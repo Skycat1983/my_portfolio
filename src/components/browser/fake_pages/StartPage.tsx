@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export const StartPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
-  const { downloadEgg } = useNewStore();
+  const { downloadEgg, ensureDownloadsFolder, openDirectory } = useNewStore();
 
   useEffect(() => {
     if (isDownloading) {
@@ -34,7 +34,7 @@ export const StartPage = () => {
 
       {/* Navigation cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 hover:shadow-md transition-shadow cursor-pointer">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 hover:shadow-md transition-shadow ">
           <Search className="w-8 h-8 text-blue-600 mb-3" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Search</h3>
           <p className="text-gray-600 text-sm">
@@ -42,7 +42,7 @@ export const StartPage = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200 hover:shadow-md transition-shadow cursor-pointer">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200 hover:shadow-md transition-shadow ">
           <Star className="w-8 h-8 text-green-600 mb-3" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Featured</h3>
           <p className="text-gray-600 text-sm">
@@ -50,7 +50,13 @@ export const StartPage = () => {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer">
+        <div
+          onClick={() => {
+            const downloadsId = ensureDownloadsFolder();
+            openDirectory(downloadsId);
+          }}
+          className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
+        >
           <Download className="w-8 h-8 text-purple-600 mb-3" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Downloads
