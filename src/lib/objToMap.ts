@@ -28,7 +28,6 @@ export const convertObjectsToMap = (
         children: [],
         type: "directory",
         label: nodeObj.label,
-        image: nodeObj.image,
       } as DirectoryEntry;
 
       // Process children for directories
@@ -70,7 +69,6 @@ export const convertObjectsToMap = (
         parentId,
         type: "terminal",
         label: nodeObj.label,
-        image: nodeObj.image,
       } as TerminalEntry;
     } else if (nodeObj.type === "browser") {
       mapNode = {

@@ -1,13 +1,16 @@
 import { convertObjectsToMap } from "../lib/objToMap";
 import type { DirectoryObject } from "../types/nodeTypes";
 import { DOCUMENTS } from "./documents";
-import { images } from "./images";
-
-const {
-  FIREFOX,
-  FOLDER,
-  BIN_EMPTY,
-  TERMINAL,
+import {
+  ROBOCROP,
+  SKYNOT,
+  EASTER_EGG1,
+  EASTER_EGG2,
+  EASTER_EGG3,
+  GITHUB,
+  JL1,
+  IMAGE1,
+  PDF,
   REACT,
   TYPESCRIPT,
   NODEJS,
@@ -17,15 +20,8 @@ const {
   TAILWIND,
   FIREBASE,
   JAVASCRIPT,
-  EASTER_EGG1,
-  EASTER_EGG2,
-  EASTER_EGG3,
   EGG_BROKEN,
-  GITHUB,
-  PDF,
-  JL1,
-  IMAGE1,
-} = images;
+} from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
 
@@ -43,7 +39,6 @@ export const defaultNodes: DirectoryObject = {
   id: "desktop-root",
   type: "directory",
   label: "Desktop",
-  image: FOLDER,
   children: [
     {
       id: "browser",
@@ -53,13 +48,11 @@ export const defaultNodes: DirectoryObject = {
     {
       id: "terminal",
       label: "Terminal",
-      image: TERMINAL,
       type: "terminal",
     },
     {
       id: "trash",
       label: "Trash",
-      image: BIN_EMPTY,
       type: "directory",
       children: [
         {
@@ -75,13 +68,11 @@ export const defaultNodes: DirectoryObject = {
     {
       id: "portfolio",
       label: "Portfolio",
-      image: FOLDER,
       type: "directory",
       children: [
         {
           id: "laoutaris",
           label: "Laoutaris",
-          image: FOLDER,
           type: "directory",
           children: [
             {
@@ -103,7 +94,6 @@ export const defaultNodes: DirectoryObject = {
         {
           id: "roboCrop",
           label: "RoboCrop",
-          image: FOLDER,
           type: "directory",
           children: [
             {
@@ -116,7 +106,7 @@ export const defaultNodes: DirectoryObject = {
             {
               id: "roboCrop_download",
               label: "Download",
-              image: FIREFOX,
+              image: ROBOCROP,
               type: "link",
               url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
             },
@@ -125,7 +115,6 @@ export const defaultNodes: DirectoryObject = {
         {
           id: "SkyNot",
           label: "SkyNot",
-          image: FOLDER,
           type: "directory",
           children: [
             {
@@ -138,7 +127,7 @@ export const defaultNodes: DirectoryObject = {
             {
               id: "SkyNot_download",
               label: "Download",
-              image: FIREFOX,
+              image: SKYNOT,
               type: "link",
               url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
             },
@@ -147,7 +136,6 @@ export const defaultNodes: DirectoryObject = {
         {
           id: "Dashboard",
           label: "Dashboard",
-          image: FOLDER,
           type: "directory",
           children: [
             {
@@ -164,7 +152,6 @@ export const defaultNodes: DirectoryObject = {
     {
       id: "stack",
       label: "Stack",
-      image: FOLDER,
       type: "directory",
       children: [
         {
@@ -235,7 +222,6 @@ export const defaultNodes: DirectoryObject = {
     {
       id: "documents",
       label: "Documents",
-      image: FOLDER,
       type: "directory",
       children: [
         {

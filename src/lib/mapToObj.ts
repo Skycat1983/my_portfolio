@@ -47,7 +47,6 @@ export const convertMapToObjects = (
         id: mapNode.id,
         type: "terminal",
         label: mapNode.label,
-        image: mapNode.image,
       };
     } else if (mapNode.type === "browser") {
       return {
@@ -65,7 +64,6 @@ export const convertMapToObjects = (
         id: mapNode.id,
         type: "directory",
         label: mapNode.label,
-        image: mapNode.image,
         children,
       };
     }
