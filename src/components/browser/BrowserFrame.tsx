@@ -31,7 +31,7 @@ export const BrowserFrame = ({
 
   // Use browser slice from store
   const {
-    os,
+    operatingSystem,
     url,
     addressPosition,
     predefinedAddress,
@@ -110,7 +110,7 @@ export const BrowserFrame = ({
   };
 
   const renderWindowControls = () => {
-    if (os === "mac") {
+    if (operatingSystem === "mac") {
       return (
         <MacWindowControls
           onClose={onClose}
@@ -130,7 +130,7 @@ export const BrowserFrame = ({
   };
 
   const renderTopBarContent = () => {
-    if (os === "mac") {
+    if (operatingSystem === "mac") {
       // Mac: Controls on left, title in center
       return (
         <>

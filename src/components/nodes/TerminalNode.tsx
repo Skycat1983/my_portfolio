@@ -10,6 +10,7 @@ import {
   tileWrapper,
   titleBase,
 } from "./node.styles";
+import { TERMINAL } from "../../constants/images";
 
 type Props = { terminal: TerminalEntry };
 
@@ -67,7 +68,7 @@ export const TerminalNode = ({ terminal }: Props) => {
           drop: isDropTarget,
         })}`}
       >
-        <img src={terminal.image} alt={terminal.label} className={imageSize} />
+        <img src={TERMINAL} alt={terminal.label} className={imageSize} />
       </div>
 
       <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>

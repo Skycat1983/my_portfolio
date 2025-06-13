@@ -25,13 +25,13 @@ export const WindowLayout = ({
   nodes,
   layout = "window",
 }: DirectoryLayoutProps) => {
-  const os = useNewStore((s) => s.os);
+  const operatingSystem = useNewStore((s) => s.operatingSystem);
 
   const getLayoutClasses = () => {
     if (layout === "desktop") {
       // Windows wants normal wrapping; everything else keeps wrap-reverse
       const wrapClass =
-        os === "windows" ? "flex-wrap" : "flex-wrap-reverse pt-8";
+        operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse pt-8";
       return `flex flex-col ${wrapClass} content-start w-full gap-10 h-full`;
     }
     // “window” layout

@@ -10,13 +10,13 @@ import {
   titleBase,
   tileFrame,
 } from "./node.styles";
-import { EDGE, FIREFOX } from "../../constants/images";
+import { EDGE, SAFARI } from "../../constants/images";
 
 type Props = { browser: BrowserEntry };
 
 export const BrowserNode = ({ browser }: Props) => {
   // ─────────── store actions & state ───────────
-  const os = useNewStore((s) => s.os);
+  const operatingSystem = useNewStore((s) => s.operatingSystem);
   const selectNode = useNewStore((s) => s.selectNode);
   const isSelected = useNewStore((s) => s.selectedNodeId === browser.id);
   const openBrowser = useNewStore((s) => s.openBrowser);
@@ -59,9 +59,7 @@ export const BrowserNode = ({ browser }: Props) => {
     [isSelected, browser.id, moveNode, deleteNode, isNodeInTrash]
   );
 
-  console.log("browser", browser);
-
-  const folderImage = os === "mac" ? FIREFOX : EDGE;
+  const folderImage = operatingSystem === "mac" ? SAFARI : EDGE;
 
   // ─────────── render ───────────
   return (

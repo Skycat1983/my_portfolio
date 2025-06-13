@@ -25,7 +25,7 @@ export const TerminalFrame = ({
   const [hoverCursor, setHoverCursor] = useState<string>("default");
 
   // Get OS from store for window controls
-  const { os } = useNewStore();
+  const { operatingSystem } = useNewStore();
 
   // Use provided pos/size or defaults from hook
   const {
@@ -69,7 +69,7 @@ export const TerminalFrame = ({
   });
 
   const renderWindowControls = () => {
-    if (os === "mac") {
+    if (operatingSystem === "mac") {
       return (
         <MacWindowControls
           onClose={onClose}
@@ -89,7 +89,7 @@ export const TerminalFrame = ({
   };
 
   const renderHeaderContent = () => {
-    if (os === "mac") {
+    if (operatingSystem === "mac") {
       // Mac: Controls on left, title in center
       return (
         <>

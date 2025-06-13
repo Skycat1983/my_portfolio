@@ -24,11 +24,11 @@ export const StartPage = () => {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Globe className="w-8 h-8 text-blue-500" />
           <h1 className="text-3xl font-bold text-gray-900">
-            Welcome to Example.com
+            Welcome to Internet
           </h1>
         </div>
         <p className="text-lg text-gray-600">
-          Your gateway to the internet - Explore, Learn, Discover
+          Your gateway to explore, learn, & discover
         </p>
       </header>
 
@@ -38,7 +38,7 @@ export const StartPage = () => {
           <Search className="w-8 h-8 text-blue-600 mb-3" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Search</h3>
           <p className="text-gray-600 text-sm">
-            Find anything you're looking for with our powerful search engine
+            Eventually clicking here will focus on the search bar.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export const StartPage = () => {
           <Star className="w-8 h-8 text-green-600 mb-3" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Featured</h3>
           <p className="text-gray-600 text-sm">
-            Discover trending topics and featured content curated for you
+            I haven't decided what to put here yet.
           </p>
         </div>
 

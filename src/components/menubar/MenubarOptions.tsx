@@ -10,9 +10,9 @@ import { HoverableItem } from "./HoverableItem";
 import { useNewStore } from "../../hooks/useNewStore";
 
 export function MenubarOptions() {
-  const { os } = useNewStore();
+  const { operatingSystem } = useNewStore();
 
-  const char = os === "mac" ? "⌘" : "Ctrl ";
+  const char = operatingSystem === "mac" ? "⌘" : "Ctrl ";
   return (
     <Menubar>
       <MenubarMenu>
