@@ -65,6 +65,13 @@ export {
   NEXT2,
 };
 
+// Achievements
+import ACHIEVEMENT from "../assets/icons_m/achievement.png";
+import TROPHY1 from "../assets/icons_m/trophy1.png";
+import TROPHY2 from "../assets/icons_m/trophy2.png";
+
+export { ACHIEVEMENT, TROPHY1, TROPHY2 };
+
 // Easter eggs
 import EASTER_EGG1 from "../assets/icons_m/egg1.png";
 import EASTER_EGG2 from "../assets/icons_m/egg2.png";

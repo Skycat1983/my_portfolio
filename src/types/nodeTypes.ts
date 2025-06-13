@@ -18,6 +18,21 @@ export interface DirectoryEntry {
   // image: string;
 }
 
+export interface AchievementObject {
+  id: string;
+  type: "achievement";
+  label: string;
+  image: string;
+}
+
+export interface AchievementEntry {
+  id: string;
+  parentId: string | null;
+  type: "achievement";
+  label: string;
+  image: string;
+}
+
 export interface DocumentObject {
   id: string;
   type: "document";
@@ -120,7 +135,8 @@ export type NodeObject =
   | EasterEggObject
   | TerminalObject
   | BrowserObject
-  | DocumentObject;
+  | DocumentObject
+  | AchievementObject;
 
 // OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
@@ -131,7 +147,8 @@ export type NodeEntry =
   | EasterEggEntry
   | TerminalEntry
   | BrowserEntry
-  | DocumentEntry;
+  | DocumentEntry
+  | AchievementEntry;
 
 export interface NodeMap {
   [id: string]: NodeEntry;
