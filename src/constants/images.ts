@@ -77,8 +77,9 @@ export { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3, EGG_BROKEN };
 import PDF from "../assets/icons_m/pdf.png";
 import IMAGE1 from "../assets/icons_m/image1.png";
 import IMAGE2 from "../assets/icons_m/image2.png";
+import DOCUMENT from "../assets/icons_m/document.png";
 
-export { PDF, IMAGE1, IMAGE2 };
+export { PDF, IMAGE1, IMAGE2, DOCUMENT };
 
 // my portfolio icons
 import JL1 from "../assets/icons_m/JL1.png";

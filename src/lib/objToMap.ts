@@ -9,6 +9,7 @@ import type {
   DirectoryObject,
   TerminalEntry,
   BrowserEntry,
+  DocumentEntry,
 } from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
@@ -77,6 +78,14 @@ export const convertObjectsToMap = (
         type: "browser",
         label: nodeObj.label,
       } as BrowserEntry;
+    } else if (nodeObj.type === "document") {
+      mapNode = {
+        id: nodeObj.id,
+        parentId,
+        type: "document",
+        label: nodeObj.label,
+        image: nodeObj.image,
+      } as DocumentEntry;
     } else {
       throw new Error(`Unknown node type: ${(nodeObj as NodeObject).type}`);
     }

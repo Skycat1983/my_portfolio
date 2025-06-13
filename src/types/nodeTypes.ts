@@ -1,3 +1,5 @@
+// TODO: these types could be 'Entry extends Object' and just add the parentId?
+
 // HUMAN-READABLE OBJECT TYPES
 export interface DirectoryObject {
   id: string;
@@ -5,6 +7,30 @@ export interface DirectoryObject {
   label: string;
   // image: string;
   children: NodeObject[];
+}
+
+export interface DirectoryEntry {
+  id: string;
+  parentId: string | null;
+  children: string[];
+  type: "directory";
+  label: string;
+  // image: string;
+}
+
+export interface DocumentObject {
+  id: string;
+  type: "document";
+  label: string;
+  image: string;
+}
+
+export interface DocumentEntry {
+  id: string;
+  parentId: string | null;
+  type: "document";
+  label: string;
+  image: string;
 }
 
 export interface BrowserObject {
@@ -18,15 +44,6 @@ export interface BrowserEntry {
   parentId: string | null;
   type: "browser";
   label: string;
-}
-
-export interface DirectoryEntry {
-  id: string;
-  parentId: string | null;
-  children: string[];
-  type: "directory";
-  label: string;
-  // image: string;
 }
 
 export interface IconObject {
@@ -102,7 +119,8 @@ export type NodeObject =
   | LinkObject
   | EasterEggObject
   | TerminalObject
-  | BrowserObject;
+  | BrowserObject
+  | DocumentObject;
 
 // OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
@@ -112,7 +130,8 @@ export type NodeEntry =
   | LinkEntry
   | EasterEggEntry
   | TerminalEntry
-  | BrowserEntry;
+  | BrowserEntry
+  | DocumentEntry;
 
 export interface NodeMap {
   [id: string]: NodeEntry;
