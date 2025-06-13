@@ -1,14 +1,21 @@
 import { Globe, Search, Star, Download } from "lucide-react";
 import { useNewStore } from "../../../hooks/useNewStore";
+import { useEffect, useState } from "react";
 
 export const StartPage = () => {
+  const [isDownloading, setIsDownloading] = useState(false);
   const { downloadEgg } = useNewStore();
 
-  const handleEggDownload = (e: React.MouseEvent) => {
-    e.preventDefault();
-    console.log("StartPage: downloading infinite egg");
-    downloadEgg();
-  };
+  useEffect(() => {
+    if (isDownloading) {
+      setTimeout(() => {
+        downloadEgg();
+        setIsDownloading(false);
+      }, 1000);
+    }
+  }, [isDownloading, downloadEgg]);
+
+  const buttonLabel = isDownloading ? "Downloading..." : "Download Egg";
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -117,10 +124,10 @@ export const StartPage = () => {
                 <span>Easter Eggs</span>
               </div>
               <button
-                onClick={handleEggDownload}
+                onClick={() => setIsDownloading(true)}
                 className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded transition-colors"
               >
-                Download Egg
+                {buttonLabel}
               </button>
             </div>
           </article>
