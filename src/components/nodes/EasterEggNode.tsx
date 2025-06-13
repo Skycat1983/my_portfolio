@@ -1,5 +1,6 @@
+import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useNewStore";
-import { useNodeDrag } from "../../hooks/useNodeDrag";
+import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { EasterEggEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -9,77 +10,60 @@ import {
   imageSize,
   titleBase,
 } from "./node.styles";
-import { useCallback } from "react";
 
 type Props = { egg: EasterEggEntry };
 
 export const EasterEggNode = ({ egg }: Props) => {
-  // ───────────────── store selectors ─────────────────
+  // ─────────── node-specific store actions ───────────
   const cycleEgg = useNewStore((s) => s.cycleEasterEgg);
-  const selectNode = useNewStore((s) => s.selectNode);
   const breakEgg = useNewStore((s) => s.breakEasterEgg);
-  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
-  const moveNode = useNewStore((s) => s.moveNode);
-  const deleteNode = useNewStore((s) => s.deleteNode);
-
   const currentImg = useNewStore((s) => s.getEasterEggCurrentImage(egg.id));
-  const isSelected = useNewStore((s) => s.selectedNodeId === egg.id);
 
-  // ───────── drag & drop functionality ───────────────
-  const dragHandlers = useNodeDrag();
+  // ─────────── node-specific activation ───────────
+  const handleActivate = useCallback(() => {
+    breakEgg(egg.id);
+  }, [egg.id, breakEgg]);
 
-  // ─────────────────── handlers ──────────────────────
-  const handleClick = () => {
+  // ─────────── shared node behavior ───────────
+  const nodeBehavior = useNodeBehavior({
+    id: egg.id,
+    nodeType: "easter-egg",
+    enableLogging: true,
+    onActivate: handleActivate,
+  });
+
+  // ─────────── special click behavior (cycle + select) ───────────
+  const handleSpecialClick = useCallback(() => {
+    nodeBehavior.log("special-click");
+    // First select the node (shared behavior)
+    const selectNode = useNewStore.getState().selectNode;
     selectNode(egg.id);
+    // Then cycle the egg (special behavior)
     cycleEgg(egg.id);
-  };
+  }, [egg.id, cycleEgg, nodeBehavior]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && isSelected) {
-        e.preventDefault();
-        breakEgg(egg.id);
-      }
-      if (e.key === "Delete" && isSelected) {
-        e.preventDefault();
-
-        if (isNodeInTrash(egg.id)) {
-          deleteNode(egg.id);
-        } else {
-          moveNode(egg.id, "trash");
-        }
-      }
-    },
-    [isSelected, egg.id, breakEgg, isNodeInTrash, moveNode, deleteNode]
-  );
-
-  // Easter eggs are not drop targets (only directories are)
-  const isDropTarget = false;
-
-  // ─────────────────── render ────────────────────────
+  // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
-        role="button" // focusable & announced as button
-        tabIndex={0}
-        aria-selected={isSelected}
-        // Click handlers
-        onClick={handleClick}
-        onDoubleClick={() => breakEgg(egg.id)}
-        onKeyDown={handleKeyDown} // ⬅ new
-        // Drag source (can be dragged)
-        draggable="true"
-        onDragStart={(e) => dragHandlers.handleDragStart(e, egg.id)}
-        onDragEnd={dragHandlers.handleDragEnd}
+        {...nodeBehavior.accessibilityProps}
+        // Click handlers - using special click for single-click
+        onClick={handleSpecialClick}
+        onDoubleClick={nodeBehavior.handleDoubleClick}
+        onKeyDown={nodeBehavior.handleKeyDown}
+        // Drag source
+        {...nodeBehavior.dragSourceHandlers}
+        // Drop target (empty for non-directories)
+        {...nodeBehavior.dropTargetHandlers}
         className={`${tileWrapper} ${containerClasses({
-          selected: isSelected,
-          drop: isDropTarget,
+          selected: nodeBehavior.isSelected,
+          drop: nodeBehavior.isDropTarget,
         })}`}
       >
         <img src={currentImg} alt={egg.label} className={imageSize} />
       </div>
 
-      <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
+      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {egg.label}
       </h2>
     </div>

@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useNewStore";
-import { useNodeDrag } from "../../hooks/useNodeDrag";
+import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { LinkEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -14,76 +13,42 @@ import {
 type Props = { link: LinkEntry };
 
 export const LinkNode = ({ link }: Props) => {
-  // ─────────── store & state ───────────
-  const selectNode = useNewStore((s) => s.selectNode);
-  const isSelected = useNewStore((s) => s.selectedNodeId === link.id);
-  const moveNode = useNewStore((s) => s.moveNode);
-  const deleteNode = useNewStore((s) => s.deleteNode);
-  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
-
-  // ─────────── drag & drop functionality ───────────
-  const dragHandlers = useNodeDrag();
-
-  // ─────────── click / dbl-click handlers ───────────
-  const handleClick = useCallback(() => {
-    console.log("Link single-click:", link.id);
-    selectNode(link.id);
-  }, [link.id, selectNode]);
-
-  const openUrl = useCallback(() => {
+  // ─────────── node-specific activation ───────────
+  const handleActivate = useCallback(() => {
     console.log("Link activate: opening URL", link.url);
     window.open(link.url, "_blank", "noopener,noreferrer");
   }, [link.url]);
 
-  const handleDoubleClick = openUrl;
-
-  // ─────────── Enter-key handler ───────────
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && isSelected) {
-        e.preventDefault();
-        console.log("Link Enter-press:", link.id);
-      }
-      if (e.key === "Delete" && isSelected) {
-        e.preventDefault();
-
-        if (isNodeInTrash(link.id)) {
-          deleteNode(link.id);
-        } else {
-          moveNode(link.id, "trash");
-        }
-      }
-    },
-    [isSelected, link.id, moveNode, deleteNode, isNodeInTrash]
-  );
-
-  // Links are not drop targets (only directories are)
-  const isDropTarget = false;
+  // ─────────── shared node behavior ───────────
+  const nodeBehavior = useNodeBehavior({
+    id: link.id,
+    nodeType: "link",
+    enableLogging: true,
+    onActivate: handleActivate,
+  });
 
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
-        role="button"
-        tabIndex={0}
-        aria-selected={isSelected}
+        {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        onKeyDown={handleKeyDown}
-        // Drag source (can be dragged)
-        draggable="true"
-        onDragStart={(e) => dragHandlers.handleDragStart(e, link.id)}
-        onDragEnd={dragHandlers.handleDragEnd}
+        onClick={nodeBehavior.handleClick}
+        onDoubleClick={nodeBehavior.handleDoubleClick}
+        onKeyDown={nodeBehavior.handleKeyDown}
+        // Drag source
+        {...nodeBehavior.dragSourceHandlers}
+        // Drop target (empty for non-directories)
+        {...nodeBehavior.dropTargetHandlers}
         className={`${tileWrapper} ${containerClasses({
-          selected: isSelected,
-          drop: isDropTarget,
+          selected: nodeBehavior.isSelected,
+          drop: nodeBehavior.isDropTarget,
         })}`}
       >
         <img src={link.image} alt={link.label} className={imageSize} />
       </div>
 
-      <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
+      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {link.label}
       </h2>
     </div>

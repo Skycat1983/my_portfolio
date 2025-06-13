@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useNewStore";
-import { useNodeDrag } from "../../hooks/useNodeDrag";
+import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { TerminalEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -15,63 +15,45 @@ import { TERMINAL } from "../../constants/images";
 type Props = { terminal: TerminalEntry };
 
 export const TerminalNode = ({ terminal }: Props) => {
-  // ─────────── store actions & state ───────────
-  const selectNode = useNewStore((s) => s.selectNode);
+  // ─────────── node-specific store actions ───────────
   const openTerminal = useNewStore((s) => s.openTerminal);
-  const isSelected = useNewStore((s) => s.selectedNodeId === terminal.id);
 
-  // ─────────── drag & drop functionality ───────────
-  const dragHandlers = useNodeDrag();
-
-  // ─────────── click / dbl-click handlers ───────────
-  const handleClick = useCallback(() => {
-    console.log("Terminal single-click:", terminal.id);
-    selectNode(terminal.id);
-  }, [terminal.id, selectNode]);
-
-  const handleDoubleClick = useCallback(() => {
-    console.log("Terminal double-click: opening terminal");
+  // ─────────── node-specific activation ───────────
+  const handleActivate = useCallback(() => {
+    console.log("Terminal activate: opening terminal");
     openTerminal();
   }, [openTerminal]);
 
-  // ─────────── Enter-key handler ───────────
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && isSelected) {
-        e.preventDefault();
-        openTerminal();
-      }
-    },
-    [isSelected, openTerminal]
-  );
-
-  // Terminals are not drop targets (only directories are)
-  const isDropTarget = false;
+  // ─────────── shared node behavior ───────────
+  const nodeBehavior = useNodeBehavior({
+    id: terminal.id,
+    nodeType: "terminal",
+    enableLogging: true,
+    onActivate: handleActivate,
+  });
 
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
-        role="button"
-        tabIndex={0}
-        aria-selected={isSelected}
+        {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        onKeyDown={handleKeyDown}
-        // Drag source (can be dragged)
-        draggable="true"
-        onDragStart={(e) => dragHandlers.handleDragStart(e, terminal.id)}
-        onDragEnd={dragHandlers.handleDragEnd}
+        onClick={nodeBehavior.handleClick}
+        onDoubleClick={nodeBehavior.handleDoubleClick}
+        onKeyDown={nodeBehavior.handleKeyDown}
+        // Drag source
+        {...nodeBehavior.dragSourceHandlers}
+        // Drop target (empty for non-directories)
+        {...nodeBehavior.dropTargetHandlers}
         className={`${tileWrapper} ${containerClasses({
-          selected: isSelected,
-          drop: isDropTarget,
+          selected: nodeBehavior.isSelected,
+          drop: nodeBehavior.isDropTarget,
         })}`}
       >
         <img src={TERMINAL} alt={terminal.label} className={imageSize} />
       </div>
 
-      <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
+      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {terminal.label}
       </h2>
     </div>

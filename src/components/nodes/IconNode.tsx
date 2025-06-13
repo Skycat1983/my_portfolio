@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useNewStore";
-import { useNodeDrag } from "../../hooks/useNodeDrag";
+import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { IconEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -14,71 +13,41 @@ import {
 type Props = { icon: IconEntry };
 
 export const IconNode = ({ icon }: Props) => {
-  const selectNode = useNewStore((s) => s.selectNode);
-  const isSelected = useNewStore((s) => s.selectedNodeId === icon.id);
-  const moveNode = useNewStore((s) => s.moveNode);
-  const deleteNode = useNewStore((s) => s.deleteNode);
-  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
-
-  // ─────────── drag & drop functionality ───────────
-  const dragHandlers = useNodeDrag();
-
-  // ─────────── click / dbl-click handlers ───────────
-  const handleClick = () => {
-    selectNode(icon.id);
-  };
-
-  const handleDoubleClick = useCallback(() => {
-    console.log("Icon double-click:", icon.id);
+  // ─────────── node-specific activation ───────────
+  const handleActivate = useCallback(() => {
+    console.log("Icon activate in IconNode:", icon.id);
   }, [icon.id]);
 
-  // ─────────── Enter-key handler ───────────
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && isSelected) {
-        e.preventDefault();
-        console.log("Icon Enter-press:", icon.id);
-      }
-      if (e.key === "Delete" && isSelected) {
-        e.preventDefault();
-
-        if (isNodeInTrash(icon.id)) {
-          deleteNode(icon.id);
-        } else {
-          moveNode(icon.id, "trash");
-        }
-      }
-    },
-    [isSelected, icon.id, deleteNode, moveNode, isNodeInTrash]
-  );
-
-  // Icons are not drop targets (only directories are)
-  const isDropTarget = false;
+  // ─────────── shared node behavior ───────────
+  const nodeBehavior = useNodeBehavior({
+    id: icon.id,
+    nodeType: "icon",
+    enableLogging: true,
+    onActivate: handleActivate,
+  });
 
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
-        role="button"
-        tabIndex={0}
-        aria-selected={isSelected}
+        {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        onKeyDown={handleKeyDown}
-        // Drag source (can be dragged)
-        draggable="true"
-        onDragStart={(e) => dragHandlers.handleDragStart(e, icon.id)}
-        onDragEnd={dragHandlers.handleDragEnd}
+        onClick={nodeBehavior.handleClick}
+        onDoubleClick={nodeBehavior.handleDoubleClick}
+        onKeyDown={nodeBehavior.handleKeyDown}
+        // Drag source
+        {...nodeBehavior.dragSourceHandlers}
+        // Drop target (empty for non-directories)
+        {...nodeBehavior.dropTargetHandlers}
         className={`${tileWrapper} ${containerClasses({
-          selected: isSelected,
-          drop: isDropTarget,
+          selected: nodeBehavior.isSelected,
+          drop: nodeBehavior.isDropTarget,
         })}`}
       >
         <img src={icon.image} alt={icon.label} className={imageSize} />
       </div>
 
-      <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
+      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {icon.label}
       </h2>
     </div>

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useNewStore";
-import { useNodeDrag } from "../../hooks/useNodeDrag";
+import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { BrowserEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -15,81 +15,48 @@ import { EDGE, SAFARI } from "../../constants/images";
 type Props = { browser: BrowserEntry };
 
 export const BrowserNode = ({ browser }: Props) => {
-  // ─────────── store actions & state ───────────
+  // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const selectNode = useNewStore((s) => s.selectNode);
-  const isSelected = useNewStore((s) => s.selectedNodeId === browser.id);
   const openBrowser = useNewStore((s) => s.openBrowser);
-  const moveNode = useNewStore((s) => s.moveNode);
-  const deleteNode = useNewStore((s) => s.deleteNode);
-  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
 
-  // ─────────── drag & drop functionality ───────────
-  const dragHandlers = useNodeDrag();
-  const isDropTarget = dragHandlers.isDropTarget(browser.id);
-
-  // ─────────── click / dbl-click handlers ───────────
-  const handleClick = useCallback(() => {
-    console.log("Browser single-click:", browser.id);
-    selectNode(browser.id);
-  }, [browser.id, selectNode]);
-
-  const handleDoubleClick = useCallback(() => {
-    console.log("Browser double-click:", browser.id);
+  // ─────────── node-specific activation ───────────
+  const handleActivate = useCallback(() => {
+    console.log("Browser activate: opening browser");
     openBrowser();
-  }, [browser.id, openBrowser]);
+  }, [openBrowser]);
 
-  // ─────────── key handler (ENTER → double-tap) ───────────
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && isSelected) {
-        e.preventDefault();
-        console.log("Browser Enter-press:", browser.id);
-      }
-      if (e.key === "Delete" && isSelected) {
-        e.preventDefault();
+  // ─────────── shared node behavior ───────────
+  const nodeBehavior = useNodeBehavior({
+    id: browser.id,
+    nodeType: "browser",
+    enableLogging: true,
+    onActivate: handleActivate,
+  });
 
-        if (isNodeInTrash(browser.id)) {
-          deleteNode(browser.id);
-        } else {
-          moveNode(browser.id, "trash");
-        }
-      }
-    },
-    [isSelected, browser.id, moveNode, deleteNode, isNodeInTrash]
-  );
-
+  // ─────────── image resolution logic ───────────
   const folderImage = operatingSystem === "mac" ? SAFARI : EDGE;
 
   // ─────────── render ───────────
   return (
     <div className={tileFrame}>
       <div
-        role="button" // tells screen-readers this is clickable
-        tabIndex={0} // makes the div focusable → receives key events
-        aria-selected={isSelected} // optional, for accessibility
+        {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        // NEW: key handler
-        onKeyDown={handleKeyDown}
-        // Drag source (can be dragged)
-        draggable="true"
-        onDragStart={(e) => dragHandlers.handleDragStart(e, browser.id)}
-        onDragEnd={dragHandlers.handleDragEnd}
-        // Drop target (directories can accept drops)
-        onDragOver={(e) => dragHandlers.handleDragOver(e, browser.id)}
-        onDragEnter={(e) => dragHandlers.handleDragEnter(e, browser.id)}
-        onDragLeave={dragHandlers.handleDragLeave}
-        onDrop={(e) => dragHandlers.handleDrop(e, browser.id)}
+        onClick={nodeBehavior.handleClick}
+        onDoubleClick={nodeBehavior.handleDoubleClick}
+        onKeyDown={nodeBehavior.handleKeyDown}
+        // Drag source
+        {...nodeBehavior.dragSourceHandlers}
+        // Drop target (empty for non-directories)
+        {...nodeBehavior.dropTargetHandlers}
         className={`${tileWrapper} ${containerClasses({
-          selected: isSelected,
-          drop: isDropTarget,
+          selected: nodeBehavior.isSelected,
+          drop: nodeBehavior.isDropTarget,
         })}`}
       >
         <img src={folderImage} alt={browser.label} className={imageSize} />
       </div>
-      <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
+      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {browser.label}
       </h2>
     </div>

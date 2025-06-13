@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useNewStore";
-import { useNodeDrag } from "../../hooks/useNodeDrag";
+import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -20,58 +20,25 @@ import {
 type Props = { directory: DirectoryEntry };
 
 export const DirectoryNode = ({ directory }: Props) => {
-  // ─────────── store actions & state ───────────
+  // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const selectNode = useNewStore((s) => s.selectNode);
   const openDirectory = useNewStore((s) => s.openDirectory);
-  const isSelected = useNewStore((s) => s.selectedNodeId === directory.id);
-  const moveNode = useNewStore((s) => s.moveNode);
-  const deleteNode = useNewStore((s) => s.deleteNode);
-  const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
 
-  // ─────────── drag & drop functionality ───────────
-  const dragHandlers = useNodeDrag();
-  const isDropTarget = dragHandlers.isDropTarget(directory.id);
-
-  // ─────────── click / dbl-click handlers ───────────
-  const handleClick = useCallback(() => {
-    console.log("Directory single-click:", directory.id);
-    selectNode(directory.id);
-  }, [directory.id, selectNode]);
-
-  const handleDoubleClick = useCallback(() => {
-    console.log("Directory double-click:", directory.id);
+  // ─────────── node-specific activation ───────────
+  const handleActivate = useCallback(() => {
+    console.log("Directory activate: opening directory", directory.id);
     openDirectory(directory.id);
   }, [directory.id, openDirectory]);
 
-  // ─────────── key handler (ENTER → double-tap) ───────────
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && isSelected) {
-        e.preventDefault();
-        console.log("Directory Enter-press:", directory.id);
-        openDirectory(directory.id);
-      }
-      if (e.key === "Delete" && isSelected) {
-        e.preventDefault();
+  // ─────────── shared node behavior ───────────
+  const nodeBehavior = useNodeBehavior({
+    id: directory.id,
+    nodeType: "directory",
+    enableLogging: true,
+    onActivate: handleActivate,
+  });
 
-        if (isNodeInTrash(directory.id)) {
-          deleteNode(directory.id);
-        } else {
-          moveNode(directory.id, "trash");
-        }
-      }
-    },
-    [
-      isSelected,
-      directory.id,
-      moveNode,
-      deleteNode,
-      isNodeInTrash,
-      openDirectory,
-    ]
-  );
-
+  // ─────────── image resolution logic ───────────
   console.log("directory", directory);
 
   let folderImage = operatingSystem === "mac" ? FOLDER_MAC : FOLDER_WIN;
@@ -88,31 +55,23 @@ export const DirectoryNode = ({ directory }: Props) => {
   return (
     <div className={tileFrame}>
       <div
-        role="button" // tells screen-readers this is clickable
-        tabIndex={0} // makes the div focusable → receives key events
-        aria-selected={isSelected} // optional, for accessibility
+        {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={handleClick}
-        onDoubleClick={handleDoubleClick}
-        // NEW: key handler
-        onKeyDown={handleKeyDown}
-        // Drag source (can be dragged)
-        draggable="true"
-        onDragStart={(e) => dragHandlers.handleDragStart(e, directory.id)}
-        onDragEnd={dragHandlers.handleDragEnd}
-        // Drop target (directories can accept drops)
-        onDragOver={(e) => dragHandlers.handleDragOver(e, directory.id)}
-        onDragEnter={(e) => dragHandlers.handleDragEnter(e, directory.id)}
-        onDragLeave={dragHandlers.handleDragLeave}
-        onDrop={(e) => dragHandlers.handleDrop(e, directory.id)}
+        onClick={nodeBehavior.handleClick}
+        onDoubleClick={nodeBehavior.handleDoubleClick}
+        onKeyDown={nodeBehavior.handleKeyDown}
+        // Drag source
+        {...nodeBehavior.dragSourceHandlers}
+        // Drop target (directories accept drops)
+        {...nodeBehavior.dropTargetHandlers}
         className={`${tileWrapper} ${containerClasses({
-          selected: isSelected,
-          drop: isDropTarget,
+          selected: nodeBehavior.isSelected,
+          drop: nodeBehavior.isDropTarget,
         })}`}
       >
         <img src={folderImage} alt={directory.label} className={imageSize} />
       </div>
-      <h2 className={`${titleBase} ${labelClasses(isSelected)}`}>
+      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {directory.label}
       </h2>
     </div>
