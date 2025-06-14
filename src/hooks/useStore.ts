@@ -24,6 +24,10 @@ import {
   createAchievementSlice,
   type AchievementSlice,
 } from "../store/achievementsSlice";
+import {
+  createNodeCrudSlice,
+  type NodeCrudSlice,
+} from "../store/nodeCrudSlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
@@ -37,7 +41,8 @@ export interface NewDesktopStore
     SystemSlice,
     BrowserSlice,
     WeatherSlice,
-    AchievementSlice {}
+    AchievementSlice,
+    NodeCrudSlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // All functionality now comes from slices
@@ -52,4 +57,5 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createBrowserSlice(set),
   ...createWeatherSlice(set),
   ...createAchievementSlice(set),
+  ...createNodeCrudSlice(set, get),
 }));

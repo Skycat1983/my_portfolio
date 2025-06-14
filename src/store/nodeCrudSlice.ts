@@ -37,12 +37,12 @@ interface NodeActions {
   nodeExists: (predicate: (node: NodeEntry) => boolean) => boolean;
 }
 
-export type NodeSlice = NodeState & NodeActions;
+export type NodeCrudSlice = NodeState & NodeActions;
 
-export const createNewNodeSlice = (
+export const createNodeCrudSlice = (
   set: SetState<BaseStoreState>,
   get: GetState<BaseStoreState>
-): NodeSlice => ({
+): NodeCrudSlice => ({
   // Core node data
   nodeMap: defaultNodeMap,
   rootId: defaultRootId,
@@ -61,7 +61,7 @@ export const createNewNodeSlice = (
   // Create operations
   createOneNode: (
     nodeData: Omit<NodeEntry, "parentId">,
-    parentId: NodeEntry["id"]
+    parentId: DirectoryEntry["id"]
   ) => {
     console.log(
       "createOneNode in newNodeSlice: creating node",
@@ -109,7 +109,7 @@ export const createNewNodeSlice = (
 
   createManyNodes: (
     nodeDataArray: Omit<NodeEntry, "parentId">[],
-    parentId: NodeEntry["id"]
+    parentId: DirectoryEntry["id"]
   ) => {
     console.log(
       "createManyNodes in newNodeSlice: creating",

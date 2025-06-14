@@ -1,14 +1,9 @@
 import { useNewStore } from "./useStore";
-import type {
-  NodeEntry,
-  DirectoryEntry,
-  EasterEggEntry,
-} from "../types/nodeTypes";
-import { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3 } from "../constants/images";
+import type { NodeEntry, DirectoryEntry } from "../types/nodeTypes";
 
 export const useNodeOperations = () => {
   // TODO: Once newNodeSlice is integrated into main store, use these operations:
-  /*
+
   const {
     rootId,
     findOneNode,
@@ -34,114 +29,182 @@ export const useNodeOperations = () => {
     countNodes: state.countNodes,
     nodeExists: state.nodeExists,
   }));
-  */
 
-  // Temporary: Using existing operations until newNodeSlice is integrated
-  const { rootId, createNode, updateNode, findNodes, countNodes, nodeExists } =
-    useNewStore((state) => ({
-      rootId: state.rootId,
-      createNode: state.createNode,
-      updateNode: state.updateNode,
-      findNodes: state.findNodes,
-      countNodes: state.countNodes,
-      nodeExists: state.nodeExists,
-    }));
-
-  // Derived accessor operations (built from base operations)
-  const getNode = (id: NodeEntry["id"]): NodeEntry | undefined => {
-    return findNodes((node: NodeEntry) => node.id === id)[0];
+  const getNodeByID = (id: NodeEntry["id"]): NodeEntry | undefined => {
+    return findOneNode((node: NodeEntry) => node.id === id);
   };
 
-  const getChildren = (parentId: NodeEntry["id"]): NodeEntry[] => {
-    return findNodes((node: NodeEntry) => node.parentId === parentId);
+  const getChildrenByParentID = (
+    parentId: DirectoryEntry["id"]
+  ): NodeEntry[] => {
+    return findManyNodes((node: NodeEntry) => node.parentId === parentId);
   };
 
-  const getParent = (nodeId: NodeEntry["id"]): NodeEntry | undefined => {
-    const node = getNode(nodeId);
-    return node?.parentId ? getNode(node.parentId) : undefined;
+  const getParentByChildID = (
+    nodeId: NodeEntry["id"]
+  ): NodeEntry | undefined => {
+    const node = getNodeByID(nodeId);
+    return node?.parentId ? getNodeByID(node.parentId) : undefined;
   };
 
   const isDirectChildOfRoot = (nodeId: NodeEntry["id"]): boolean => {
-    const node = getNode(nodeId);
+    const node = getNodeByID(nodeId);
     return node?.parentId === rootId;
   };
 
-  // Business logic operations (built from base operations)
-  const ensureDownloadsFolder = (): string => {
+  // Utility: Get directory specifically (with type safety)
+  const getDirectoryByID = (
+    id: NodeEntry["id"]
+  ): DirectoryEntry | undefined => {
+    const node = getNodeByID(id);
+    return node?.type === "directory" ? (node as DirectoryEntry) : undefined;
+  };
+
+  // Utility: Check if one node is a descendant of another (reusable)
+  const isNodeDescendantOfAncestor = (
+    ancestorId: NodeEntry["id"],
+    descendantId: NodeEntry["id"]
+  ): boolean => {
+    const descendant = getNodeByID(descendantId);
+    if (!descendant || !descendant.parentId) return false;
+    if (descendant.parentId === ancestorId) return true;
+    return isNodeDescendantOfAncestor(ancestorId, descendant.parentId);
+  };
+
+  // Node movement operations (built from base operations)
+  const moveNodeByIDToParentID = (
+    nodeId: NodeEntry["id"],
+    newParentId: DirectoryEntry["id"]
+  ): boolean => {
     console.log(
-      "ensureDownloadsFolder in useNodeOperations: checking for downloads folder"
+      "moveNodeByIDToParentID in useNodeOperations: moving node",
+      nodeId,
+      "to parent",
+      newParentId
     );
 
-    // Check if downloads folder already exists
-    const existingDownloads = findNodes(
-      (node: NodeEntry) =>
-        node.label === "Downloads" && node.parentId === rootId
-    )[0];
+    const node = getNodeByID(nodeId);
+    const newParent = getDirectoryByID(newParentId);
+    const oldParent = node?.parentId ? getDirectoryByID(node.parentId) : null;
 
-    if (existingDownloads) {
+    // Validation checks
+    if (!node || !newParent) {
       console.log(
-        "ensureDownloadsFolder in useNodeOperations: downloads folder already exists",
-        existingDownloads.id
+        "moveNodeByIDToParentID: invalid move - missing node or parent not directory"
       );
-      return existingDownloads.id;
+      return false;
     }
 
-    // Create downloads folder
-    const downloadsId = "downloads";
-    const downloadsFolder: Omit<DirectoryEntry, "parentId"> = {
-      id: downloadsId,
-      children: [],
-      type: "directory",
-      label: "Downloads",
-    };
+    if (node.parentId === newParentId) {
+      console.log("moveNodeByIDToParentID: same parent, no move needed");
+      return false;
+    }
 
-    createNode(downloadsFolder, rootId);
-    console.log(
-      "ensureDownloadsFolder in useNodeOperations: created downloads folder with ID",
-      downloadsId
-    );
-    return downloadsId;
+    // Check for circular reference if moving a directory
+    if (node.type === "directory") {
+      if (
+        nodeId === newParentId ||
+        isNodeDescendantOfAncestor(nodeId, newParentId)
+      ) {
+        console.log("moveNodeByIDToParentID: circular reference detected");
+        return false;
+      }
+    }
+
+    // Perform the move using base operations
+    // 1. Update the node's parentId
+    updateOneNode(nodeId, { parentId: newParentId });
+
+    // 2. Remove from old parent's children array
+    if (oldParent) {
+      const newOldParentChildren = oldParent.children.filter(
+        (childId: string) => childId !== nodeId
+      );
+      updateOneNode(oldParent.id, { children: newOldParentChildren });
+    }
+
+    // 3. Add to new parent's children array
+    const newParentChildren = [...newParent.children, nodeId];
+    updateOneNode(newParentId, { children: newParentChildren });
+
+    console.log("moveNodeByIDToParentID: move completed successfully");
+    return true;
   };
 
-  const downloadEgg = (): void => {
-    console.log("downloadEgg in useNodeOperations: downloading a new egg");
+  // Business logic operations (built from base operations)
+  // const ensureDownloadsFolder = (): string => {
+  //   console.log(
+  //     "ensureDownloadsFolder in useNodeOperations: checking for downloads folder"
+  //   );
 
-    // Ensure downloads folder exists
-    const downloadsId = ensureDownloadsFolder();
+  //   // Check if downloads folder already exists
+  //   const existingDownloads = findNodes(
+  //     (node: NodeEntry) =>
+  //       node.label === "Downloads" && node.parentId === rootId
+  //   )[0];
 
-    // Generate unique ID for the new egg
-    const timestamp = Date.now();
-    const eggId = `downloaded-egg-${timestamp}`;
+  //   if (existingDownloads) {
+  //     console.log(
+  //       "ensureDownloadsFolder in useNodeOperations: downloads folder already exists",
+  //       existingDownloads.id
+  //     );
+  //     return existingDownloads.id;
+  //   }
 
-    // Create new egg
-    const newEgg: Omit<EasterEggEntry, "parentId"> = {
-      id: eggId,
-      type: "easter-egg",
-      label: "Egg",
-      image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
-      currentImageIndex: 0,
-      isBroken: false,
-    };
+  //   // Create downloads folder
+  //   const downloadsId = "downloads";
+  //   const downloadsFolder: Omit<DirectoryEntry, "parentId"> = {
+  //     id: downloadsId,
+  //     children: [],
+  //     type: "directory",
+  //     label: "Downloads",
+  //   };
 
-    createNode(newEgg, downloadsId);
-    console.log("downloadEgg in useNodeOperations: created egg with ID", eggId);
-  };
+  //   createNode(downloadsFolder, rootId);
+  //   console.log(
+  //     "ensureDownloadsFolder in useNodeOperations: created downloads folder with ID",
+  //     downloadsId
+  //   );
+  //   return downloadsId;
+  // };
+  // const downloadEgg = (): void => {
+  //   console.log("downloadEgg in useNodeOperations: downloading a new egg");
+
+  //   // Ensure downloads folder exists
+  //   const downloadsId = ensureDownloadsFolder();
+
+  //   // Generate unique ID for the new egg
+  //   const timestamp = Date.now();
+  //   const eggId = `downloaded-egg-${timestamp}`;
+
+  //   // Create new egg
+  //   const newEgg: Omit<EasterEggEntry, "parentId"> = {
+  //     id: eggId,
+  //     type: "easter-egg",
+  //     label: "Egg",
+  //     image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
+  //     currentImageIndex: 0,
+  //     isBroken: false,
+  //   };
+
+  //   createNode(newEgg, downloadsId);
+  //   console.log("downloadEgg in useNodeOperations: created egg with ID", eggId);
+  // };
 
   return {
     // Derived accessors (composed from base operations)
-    getNode,
-    getChildren,
-    getParent,
+    getNodeByID,
+    getChildrenByParentID,
+    getParentByChildID,
     isDirectChildOfRoot,
 
-    // Business logic (composed from base operations)
-    ensureDownloadsFolder,
-    downloadEgg,
+    // Utility functions (reusable helpers)
+    getDirectoryByID,
+    isNodeDescendantOfAncestor,
 
-    // Base operations (direct pass-through)
-    findNodes,
-    createNode,
-    updateNode,
+    // Node operations (composed from base operations)
+    moveNodeByIDToParentID,
+
     countNodes,
     nodeExists,
   };
