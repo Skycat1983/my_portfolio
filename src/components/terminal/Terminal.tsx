@@ -2,7 +2,7 @@ import { useState } from "react";
 import ResizeWrapper from "../window/WindowWrapper";
 import { TerminalFrame } from "./TerminalFrame";
 import { TerminalContent } from "./TerminalContent";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 interface TerminalProps {
   zIndex?: number;
 }

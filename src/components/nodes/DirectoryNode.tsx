@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 import { useNodeBehavior } from "../../hooks/useNodeBehavior";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 import {

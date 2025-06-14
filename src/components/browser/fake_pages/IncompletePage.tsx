@@ -1,5 +1,5 @@
 import { AlertCircle } from "lucide-react";
-import { useNewStore } from "../../../hooks/useNewStore";
+import { useNewStore } from "../../../hooks/useStore";
 
 export const IncompletePage = () => {
   const { lastNavigatedUrl } = useNewStore();

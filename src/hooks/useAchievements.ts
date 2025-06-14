@@ -1,4 +1,4 @@
-import { useNewStore } from "./useNewStore";
+import { useNewStore } from "./useStore";
 
 interface AchievementsUnlocked {
   downloadEggs: boolean;

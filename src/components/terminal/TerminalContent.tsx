@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 
 interface TerminalLine {
   type: "command" | "output" | "error";

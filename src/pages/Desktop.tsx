@@ -1,6 +1,6 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { WindowLayout } from "../components/window/WindowLayout";
-import { useNewStore } from "../hooks/useNewStore";
+import { useNewStore } from "../hooks/useStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
 import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";

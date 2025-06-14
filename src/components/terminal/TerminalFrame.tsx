@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useWindowPosition } from "../../hooks/useWindowPosition";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 import { createTerminalFrameStyles } from "./TerminalFrame.styles";
 import { MacWindowControls } from "../controls/MacWindowControls";
 import { WindowsWindowControls } from "../controls/WindowsWindowControls";

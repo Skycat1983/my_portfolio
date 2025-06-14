@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import ResizeWrapper from "./WindowWrapper";
 import { WindowFrame } from "./WindowFrame";
 import { WindowContent } from "./WindowContent";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 import {
   calculateWindowSize,
   calculateWindowPosition,

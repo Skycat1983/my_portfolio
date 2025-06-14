@@ -2,7 +2,7 @@ import { DisplayDate } from "./DisplayDate";
 import { MenubarOptions } from "./MenubarOptions";
 import { Social } from "./Social";
 import { Logo } from "../icons/Logo";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 import { GITHUB_SMALL, LINKEDIN_SMALL } from "../../constants/images";
 
 export const MenubarLayout = () => {

@@ -12,7 +12,7 @@ import { DirectoryNode } from "../nodes/DirectoryNode";
 import { LinkNode } from "../nodes/LinkNode";
 import { TerminalNode } from "../nodes/TerminalNode";
 import { EasterEggNode } from "../nodes/EasterEggNode";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 import { BrowserNode } from "../nodes/BrowserNode";
 
 type LayoutType = "desktop" | "window";

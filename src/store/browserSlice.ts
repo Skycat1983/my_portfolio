@@ -1,5 +1,5 @@
 import type { SetState } from "../types/storeTypes";
-import type { NewDesktopStore } from "../hooks/useNewStore";
+import type { NewDesktopStore } from "../hooks/useStore";
 
 interface BrowserState {
   isBrowserOpen: boolean;

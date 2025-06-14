@@ -2,7 +2,7 @@ import { useState } from "react";
 import ResizeWrapper from "../window/WindowWrapper";
 import { BrowserFrame } from "./BrowserFrame";
 import { BrowserContent } from "./BrowserContent";
-import { useNewStore } from "../../hooks/useNewStore";
+import { useNewStore } from "../../hooks/useStore";
 
 interface BrowserProps {
   // onClose?: () => void;

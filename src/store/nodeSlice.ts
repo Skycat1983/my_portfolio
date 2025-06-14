@@ -14,29 +14,26 @@ interface NodeState {
 }
 
 interface NodeActions {
-  getNode: (id: NodeEntry["id"]) => NodeEntry | undefined;
-  getChildren: (parentId: NodeEntry["id"]) => NodeEntry[];
-  getParent: (nodeId: NodeEntry["id"]) => NodeEntry | undefined;
-  isDirectChildOfRoot: (nodeId: NodeEntry["id"]) => boolean;
+  // Core CRUD operations
   createNode: (
     nodeData: Omit<NodeEntry, "parentId">,
     parentId: NodeEntry["id"]
   ) => void;
-  countNodes: (predicate: (node: NodeEntry) => boolean) => number;
+  updateNode: (nodeId: NodeEntry["id"], updates: Partial<NodeEntry>) => void;
+  // Core query operations
   findNodes: (predicate: (node: NodeEntry) => boolean) => NodeEntry[];
+  countNodes: (predicate: (node: NodeEntry) => boolean) => number;
   nodeExists: (predicate: (node: NodeEntry) => boolean) => boolean;
-  // Property-based searches (type-safe)
-  countNodesByProperty: <K extends keyof NodeEntry>(
-    key: K,
-    value: NodeEntry[K]
-  ) => number;
-  nodeExistsByProperty: <K extends keyof NodeEntry>(
-    key: K,
-    value: NodeEntry[K]
-  ) => boolean;
+
+  // Derivable operations (TODO: Move to hook layer)
+  getNode: (id: NodeEntry["id"]) => NodeEntry | undefined;
+  getChildren: (parentId: NodeEntry["id"]) => NodeEntry[];
+  getParent: (nodeId: NodeEntry["id"]) => NodeEntry | undefined;
+  isDirectChildOfRoot: (nodeId: NodeEntry["id"]) => boolean;
+
+  // Business logic operations (TODO: Move to hook layer)
   ensureDownloadsFolder: () => string;
   downloadEgg: () => void;
-  // Generic node querying actions
 }
 
 export type NodeSlice = NodeState & NodeActions;
@@ -81,7 +78,7 @@ export const createNodeSlice = (
     const node = state.nodeMap[nodeId];
     return node?.parentId === state.rootId;
   },
-  //? unused
+
   createNode: (nodeData: Omit<NodeEntry, "parentId">, parentId: string) => {
     console.log(
       "createNode in nodeSlice: creating node",
@@ -123,6 +120,34 @@ export const createNodeSlice = (
           ...parent,
           children: [...(parent as DirectoryEntry).children, nodeData.id],
         },
+      },
+    }));
+  },
+
+  updateNode: (nodeId: NodeEntry["id"], updates: Partial<NodeEntry>) => {
+    console.log(
+      "updateNode in nodeSlice: updating node",
+      nodeId,
+      "with",
+      updates
+    );
+
+    const currentState = get();
+    const existingNode = currentState.nodeMap[nodeId];
+
+    if (!existingNode) {
+      console.log("updateNode in nodeSlice: node not found", nodeId);
+      return;
+    }
+
+    set((state) => ({
+      nodeMap: {
+        ...state.nodeMap,
+        [nodeId]: {
+          ...existingNode,
+          ...updates,
+          id: nodeId, // Prevent ID from being changed
+        } as NodeEntry,
       },
     }));
   },
@@ -264,23 +289,5 @@ export const createNodeSlice = (
   nodeExists: (predicate: (node: NodeEntry) => boolean) => {
     const state = get();
     return Object.values(state.nodeMap).some(predicate);
-  },
-
-  // Property-based searches (type-safe)
-  countNodesByProperty: <K extends keyof NodeEntry>(
-    key: K,
-    value: NodeEntry[K]
-  ) => {
-    const state = get();
-    return Object.values(state.nodeMap).filter((node) => node[key] === value)
-      .length;
-  },
-
-  nodeExistsByProperty: <K extends keyof NodeEntry>(
-    key: K,
-    value: NodeEntry[K]
-  ) => {
-    const state = get();
-    return Object.values(state.nodeMap).some((node) => node[key] === value);
   },
 });
