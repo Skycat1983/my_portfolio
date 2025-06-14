@@ -47,7 +47,7 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createSelectionSlice(set),
   ...createEasterEggSlice(set, get),
   ...createWindowSlice(set, get),
-  ...createTerminalSlice(set),
+  ...createTerminalSlice(set, get),
   ...createNodeMovementSlice(set, get),
   ...createBrowserSlice(set),
   ...createWeatherSlice(set),
