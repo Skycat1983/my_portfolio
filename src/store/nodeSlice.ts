@@ -14,11 +14,14 @@ interface NodeState {
 }
 
 interface NodeActions {
-  getNode: (id: string) => NodeEntry | undefined;
-  getChildren: (parentId: string) => NodeEntry[];
-  getParent: (nodeId: string) => NodeEntry | undefined;
-  isDirectChildOfRoot: (nodeId: string) => boolean;
-  createNode: (nodeData: Omit<NodeEntry, "parentId">, parentId: string) => void;
+  getNode: (id: NodeEntry["id"]) => NodeEntry | undefined;
+  getChildren: (parentId: NodeEntry["id"]) => NodeEntry[];
+  getParent: (nodeId: NodeEntry["id"]) => NodeEntry | undefined;
+  isDirectChildOfRoot: (nodeId: NodeEntry["id"]) => boolean;
+  createNode: (
+    nodeData: Omit<NodeEntry, "parentId">,
+    parentId: NodeEntry["id"]
+  ) => void;
   ensureDownloadsFolder: () => string;
   downloadEgg: () => void;
   // Terminal filesystem commands
@@ -49,7 +52,7 @@ export const createNodeSlice = (
   rootId: defaultRootId,
 
   // Node accessor methods
-  getNode: (id: string) => {
+  getNode: (id: NodeEntry["id"]) => {
     const state = get();
     return state.nodeMap[id];
   },
@@ -80,7 +83,7 @@ export const createNodeSlice = (
     const node = state.nodeMap[nodeId];
     return node?.parentId === state.rootId;
   },
-
+  //? unused
   createNode: (nodeData: Omit<NodeEntry, "parentId">, parentId: string) => {
     console.log(
       "createNode in nodeSlice: creating node",

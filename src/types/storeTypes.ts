@@ -21,9 +21,9 @@ export interface BaseStoreState {
   operatingSystem: OperatingSystem;
   browserZIndex: number;
   terminalZIndex: number;
+  // achievements: AchievementSlice;
 }
 
-// Properly typed store functions
 export type SetState<T> = (
   partial: Partial<T> | ((state: T) => Partial<T>)
 ) => void;

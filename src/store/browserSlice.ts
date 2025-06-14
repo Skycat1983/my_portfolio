@@ -1,4 +1,5 @@
-import type { SetState } from "../hooks/useNewStore";
+import type { SetState } from "../types/storeTypes";
+import type { NewDesktopStore } from "../hooks/useNewStore";
 
 interface BrowserState {
   isBrowserOpen: boolean;
@@ -27,7 +28,9 @@ interface BrowserActions {
 
 export type BrowserSlice = BrowserState & BrowserActions;
 
-export const createBrowserSlice = (set: SetState): BrowserSlice => ({
+export const createBrowserSlice = (
+  set: SetState<NewDesktopStore>
+): BrowserSlice => ({
   // Browser state
   isBrowserOpen: false,
   browserZIndex: 1000,

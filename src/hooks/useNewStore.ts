@@ -20,10 +20,15 @@ import {
 import { createSystemSlice, type SystemSlice } from "../store/systemSlice";
 import { createBrowserSlice, type BrowserSlice } from "../store/browserSlice";
 import { createWeatherSlice, type WeatherSlice } from "../store/weatherSlice";
+import {
+  createAchievementSlice,
+  type AchievementSlice,
+} from "../store/achievementsSlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
   extends NodeSlice,
+    AchievementSlice,
     SelectionSlice,
     EasterEggSlice,
     WindowSlice,
@@ -31,19 +36,13 @@ export interface NewDesktopStore
     NodeMovementSlice,
     SystemSlice,
     BrowserSlice,
-    WeatherSlice {}
-
-// Properly typed set/get functions for slices
-export type SetState = (
-  partial:
-    | Partial<NewDesktopStore>
-    | ((state: NewDesktopStore) => Partial<NewDesktopStore>)
-) => void;
-export type GetState = () => NewDesktopStore;
+    WeatherSlice,
+    AchievementSlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // All functionality now comes from slices
   ...createSystemSlice(set),
+  ...createAchievementSlice(set),
   ...createNodeSlice(set, get),
   ...createSelectionSlice(set),
   ...createEasterEggSlice(set, get),
@@ -52,4 +51,5 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createNodeMovementSlice(set, get),
   ...createBrowserSlice(set),
   ...createWeatherSlice(set),
+  ...createAchievementSlice(set),
 }));

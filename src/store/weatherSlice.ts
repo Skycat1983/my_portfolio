@@ -1,4 +1,5 @@
-import type { SetState } from "../hooks/useNewStore";
+import type { SetState } from "../types/storeTypes";
+import type { NewDesktopStore } from "../hooks/useNewStore";
 
 const apiKey = import.meta.env.VITE_APIKEY;
 
@@ -65,7 +66,9 @@ export interface WeatherSlice {
   clearWeatherError: () => void;
 }
 
-export const createWeatherSlice = (set: SetState): WeatherSlice => ({
+export const createWeatherSlice = (
+  set: SetState<NewDesktopStore>
+): WeatherSlice => ({
   weather: null,
   weatherLoading: false,
   weatherError: null,
