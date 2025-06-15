@@ -20,8 +20,11 @@ interface WindowProps {
 export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
   const titleBarHeight = 28;
 
+  const getNodeByID = useNewStore((s) => s.getNodeByID);
+  const getParentByChildID = useNewStore((s) => s.getParentByChildID);
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+
   const {
-    getNode,
     closeWindow,
     focusWindow,
     getWindowByNodeId,
@@ -29,18 +32,16 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
     canGoForward,
     goBack,
     goForward,
-    getParent,
     rootId,
-    getChildren,
     openWindows,
   } = useNewStore();
 
-  const node = getNode(nodeId);
+  const node = getNodeByID(nodeId);
   const windowState = getWindowByNodeId(nodeId);
 
   // Get the current node being viewed (for title and navigation)
   const currentNodeId = windowState?.currentNodeId || nodeId;
-  const currentNode = getNode(currentNodeId);
+  const currentNode = getNodeByID(currentNodeId);
 
   // Calculate optimal size and position based on content
   const { optimalSize, optimalPosition } = useMemo(() => {
@@ -59,7 +60,7 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
     // Get children to calculate content size
     const children =
       currentNode.type === "directory"
-        ? getChildren(currentNodeId)
+        ? getChildrenByParentID(currentNodeId)
         : [currentNode];
     const itemCount = children.length;
     const sizeCategory = getWindowSizeCategory(itemCount);
@@ -81,7 +82,7 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
     );
 
     return { optimalSize, optimalPosition };
-  }, [nodeId, currentNodeId, currentNode, getChildren, openWindows]);
+  }, [nodeId, currentNodeId, currentNode, getChildrenByParentID, openWindows]);
 
   // Use calculated values as initial state, but allow user to override via resize/drag
   const [pos, setPos] = useState(optimalPosition);
@@ -121,7 +122,7 @@ export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
   };
 
   // Check navigation availability with the same logic as WindowContent
-  const parent = getParent(currentNodeId);
+  const parent = getParentByChildID(currentNodeId);
   const canShowBack = canGoBack(nodeId) && parent && parent.id !== rootId;
   const canShowForward = canGoForward(nodeId);
 

@@ -9,12 +9,15 @@ interface WindowContentProps {
 }
 
 export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
-  const { getNode, getChildren, getWindowByNodeId } = useNewStore();
+  const { getWindowByNodeId } = useNewStore();
+
+  const getNodeByID = useNewStore((s) => s.getNodeByID);
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
 
   // Get the window state to see what we're currently viewing
   const windowState = getWindowByNodeId(nodeId);
   const currentNodeId = windowState?.currentNodeId || nodeId;
-  const node = getNode(currentNodeId);
+  const node = getNodeByID(currentNodeId);
 
   if (!node) {
     return <div className="text-gray-400 text-center p-4">Node not found</div>;
@@ -22,7 +25,7 @@ export const WindowContent = ({ nodeId, dragHandlers }: WindowContentProps) => {
 
   // Determine what nodes to show
   const nodesToShow =
-    node.type === "directory" ? getChildren(currentNodeId) : [node];
+    node.type === "directory" ? getChildrenByParentID(currentNodeId) : [node];
 
   return (
     <div className="h-full flex flex-col">

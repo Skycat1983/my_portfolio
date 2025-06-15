@@ -9,10 +9,11 @@ import Browser from "../components/browser/Browser";
 // import { Weather } from "../components/widgets/Weather";
 
 export const Desktop = () => {
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const {
     rootId,
     operatingSystem,
-    getChildren,
+
     openWindows,
     isTerminalOpen,
     isBrowserOpen,
@@ -22,7 +23,7 @@ export const Desktop = () => {
   const dragHandlers = useNodeDrag();
 
   // desktop children/nodes
-  const desktopChildren = getChildren(rootId);
+  const desktopChildren = getChildrenByParentID(rootId);
 
   const background =
     operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;

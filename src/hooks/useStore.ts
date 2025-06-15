@@ -13,10 +13,7 @@ import {
   createTerminalSlice,
   type TerminalSlice,
 } from "../store/terminalSlice";
-import {
-  createNodeMovementSlice,
-  type NodeMovementSlice,
-} from "../store/nodeMovementSlice";
+
 import { createSystemSlice, type SystemSlice } from "../store/systemSlice";
 import { createBrowserSlice, type BrowserSlice } from "../store/browserSlice";
 import { createWeatherSlice, type WeatherSlice } from "../store/weatherSlice";
@@ -39,8 +36,7 @@ import {
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
-  extends NodeSlice,
-    AchievementSlice,
+  extends AchievementSlice,
     SelectionSlice,
     EasterEggSlice,
     WindowSlice,
@@ -54,13 +50,17 @@ export interface NewDesktopStore
     NodeBusinessSlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
-  // All functionality now comes from slices
+  // {operating system}
   ...createSystemSlice(set),
+  // {node base crud}
   ...createNodeCrudSlice(set, get),
+  // {node operations (derived from base crud)}
   ...createNodeOperationsSlice(set, get),
+  // {node business (derived from operations)}
   ...createNodeBusinessSlice(set, get),
+  // {achievements}
   ...createAchievementSlice(set),
-  ...createNodeSlice(set, get),
+  // ...createNodeSlice(set, get),
   ...createSelectionSlice(set),
   ...createEasterEggSlice(set, get),
   ...createWindowSlice(set, get),
