@@ -1,3 +1,20 @@
+```
+┌─────────────────────────────────┐
+│     Business Logic Slice        │  ← moveNodeById, ensureDownloadsFolder
+│   (Complex workflows)           │
+└─────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────┐
+│     Node Operations Slice       │  ← getNodeById, getChildrenByParentId
+│   (Specific accessors)          │
+└─────────────────────────────────┘
+                 ↓
+┌─────────────────────────────────┐
+│     Node CRUD Slice             │  ← Pure predicate-based operations
+│   (Generic data operations)     │
+└─────────────────────────────────┘
+```
+
 # Store Architecture Refactoring: Hook Interface Layer
 
 ## Current State Analysis

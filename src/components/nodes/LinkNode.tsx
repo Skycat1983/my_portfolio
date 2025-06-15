@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNodeBehavior } from "../../hooks/useNodeBehavior";
+import { useNodeBehavior } from "../../hooks/useNodeEvents";
 import type { LinkEntry } from "../../types/nodeTypes";
 import {
   containerClasses,

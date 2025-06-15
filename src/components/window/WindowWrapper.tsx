@@ -1,5 +1,5 @@
 import React from "react";
-import { useResize } from "../../hooks/useResize";
+import { useResize } from "../../hooks/useWindowResize";
 
 interface ResizableWrapperProps {
   children: React.ReactNode;

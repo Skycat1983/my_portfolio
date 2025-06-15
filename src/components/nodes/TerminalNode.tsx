@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
-import { useNodeBehavior } from "../../hooks/useNodeBehavior";
+import { useNodeBehavior } from "../../hooks/useNodeEvents";
 import type { TerminalEntry } from "../../types/nodeTypes";
 import {
   containerClasses,

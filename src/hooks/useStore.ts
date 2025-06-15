@@ -28,6 +28,14 @@ import {
   createNodeCrudSlice,
   type NodeCrudSlice,
 } from "../store/nodeCrudSlice";
+import {
+  createNodeOperationsSlice,
+  type NodeOperationsSlice,
+} from "../store/nodeOperationsSlice";
+import {
+  createNodeBusinessSlice,
+  type NodeBusinessSlice,
+} from "../store/nodeBusinessSlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
@@ -37,25 +45,27 @@ export interface NewDesktopStore
     EasterEggSlice,
     WindowSlice,
     TerminalSlice,
-    NodeMovementSlice,
     SystemSlice,
     BrowserSlice,
     WeatherSlice,
     AchievementSlice,
-    NodeCrudSlice {}
+    NodeCrudSlice,
+    NodeOperationsSlice,
+    NodeBusinessSlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // All functionality now comes from slices
   ...createSystemSlice(set),
+  ...createNodeCrudSlice(set, get),
+  ...createNodeOperationsSlice(set, get),
+  ...createNodeBusinessSlice(set, get),
   ...createAchievementSlice(set),
   ...createNodeSlice(set, get),
   ...createSelectionSlice(set),
   ...createEasterEggSlice(set, get),
   ...createWindowSlice(set, get),
   ...createTerminalSlice(set, get),
-  ...createNodeMovementSlice(set, get),
   ...createBrowserSlice(set),
   ...createWeatherSlice(set),
   ...createAchievementSlice(set),
-  ...createNodeCrudSlice(set, get),
 }));

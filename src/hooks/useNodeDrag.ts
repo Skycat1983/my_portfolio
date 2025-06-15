@@ -154,7 +154,7 @@ export const useNodeDrag = (): DragHandlers => {
   };
 
   return {
-    // Event handlers for drag source (NodeIcon)
+    // Event handlers for drag source (any Node)
     handleDragStart,
     handleDragEnd,
 
