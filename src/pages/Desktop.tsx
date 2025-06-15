@@ -6,8 +6,7 @@ import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import Browser from "../components/browser/Browser";
-import { Toast } from "../components/toast/Toast";
-// import { Weather } from "../components/widgets/Weather";
+import { AchievementsWindow } from "../components/window/content/AchievementsWindow";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
@@ -83,10 +82,9 @@ export const Desktop = () => {
         {isTerminalOpen && <Terminal />}
         {isBrowserOpen && <Browser />}
         {/* {operatingSystem === "mac" && <Weather />} */}
-
+        {/* <AchievementsWindow /> */}
         <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>
-      <Toast />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import type {
   LinkEntry,
   TerminalEntry,
   BrowserEntry,
+  AchievementEntry,
 } from "../../types/nodeTypes";
 import { IconNode } from "../nodes/IconNode";
 import { DirectoryNode } from "../nodes/DirectoryNode";
@@ -14,6 +15,7 @@ import { TerminalNode } from "../nodes/TerminalNode";
 import { EasterEggNode } from "../nodes/EasterEggNode";
 import { useNewStore } from "../../hooks/useStore";
 import { BrowserNode } from "../nodes/BrowserNode";
+import { AchievementNode } from "../nodes/AchievementNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -63,6 +65,14 @@ export const WindowLayout = ({
 
           case "browser":
             return <BrowserNode key={node.id} browser={node as BrowserEntry} />;
+
+          case "achievement":
+            return (
+              <AchievementNode
+                key={node.id}
+                achievement={node as AchievementEntry}
+              />
+            );
 
           default:
             console.warn("Unknown node type:", node);

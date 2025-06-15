@@ -21,6 +21,8 @@ import {
   FIREBASE,
   JAVASCRIPT,
   EGG_BROKEN,
+  TROPHY1,
+  TROPHY2,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -246,6 +248,12 @@ export const defaultNodes: DirectoryObject = {
           url: REVIEW,
         },
       ],
+    },
+    {
+      id: "achievements",
+      label: "Achievements",
+      type: "achievement",
+      image: TROPHY1,
     },
   ],
 };

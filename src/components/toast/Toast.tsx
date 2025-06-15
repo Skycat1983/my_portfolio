@@ -2,6 +2,14 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useNewStore } from "../../hooks/useStore";
 import { Toaster } from "../ui/sonner";
+import ACHIEVEMENT from "../../assets/icons_m/achievement.png";
+
+// Create trophy icon component
+const TrophyIcon = () => (
+  <div className="flex items-center justify-center">
+    <img src={ACHIEVEMENT} alt="Achievement" className="w-6 h-6" />
+  </div>
+);
 
 export const Toast = () => {
   const clickOnSomethingAchieved = useNewStore(
@@ -18,9 +26,11 @@ export const Toast = () => {
 
   useEffect(() => {
     if (clickOnSomethingAchieved) {
-      toast.success("👆 Achievement Unlocked!", {
+      console.log("clickOnSomethingAchieved");
+      toast.success("Achievement Unlocked!", {
         description: "You clicked on something!",
         duration: 4000,
+        icon: <TrophyIcon />,
       });
     }
   }, [clickOnSomethingAchieved]);
@@ -28,36 +38,40 @@ export const Toast = () => {
   // Trigger toasts when achievements are unlocked
   useEffect(() => {
     if (downloadEggsAchieved) {
-      toast.success("🥚 Achievement Unlocked!", {
-        description: "You downloaded some eggs!",
+      toast.success("Achievement Unlocked!", {
+        description: "You downloaded some eggs! 🥚",
         duration: 4000,
+        icon: <TrophyIcon />,
       });
     }
   }, [downloadEggsAchieved]);
 
   useEffect(() => {
     if (deletedPortfolioAchieved) {
-      toast.success("🗑️ Achievement Unlocked!", {
-        description: "You deleted a portfolio!",
+      toast.success("Achievement Unlocked!", {
+        description: "You deleted a portfolio! 🗑️",
         duration: 4000,
+        icon: <TrophyIcon />,
       });
     }
   }, [deletedPortfolioAchieved]);
 
   useEffect(() => {
     if (joinAQueueAchieved) {
-      toast.success("🔄 Achievement Unlocked!", {
-        description: "You joined a queue!",
+      toast.success("Achievement Unlocked!", {
+        description: "You joined a queue! 🔄",
         duration: 4000,
+        icon: <TrophyIcon />,
       });
     }
   }, [joinAQueueAchieved]);
 
   useEffect(() => {
     if (operatingSystemSwitchedAchieved) {
-      toast.success("💻 Achievement Unlocked!", {
-        description: "You switched operating systems!",
+      toast.success("Achievement Unlocked!", {
+        description: "You switched operating systems! 💻",
         duration: 4000,
+        icon: <TrophyIcon />,
       });
     }
   }, [operatingSystemSwitchedAchieved]);

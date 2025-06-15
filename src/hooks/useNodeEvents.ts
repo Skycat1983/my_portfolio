@@ -21,6 +21,9 @@ export const useNodeBehavior = ({
   const moveNodeById = useNewStore((s) => s.moveNodeByID);
   const deleteNode = useNewStore((s) => s.deleteNodeByID);
   const isNodeInTrash = useNewStore((s) => s.isNodeInTrash);
+  const unlockPortfolioDeletedAchievement = useNewStore(
+    (s) => s.unlockPortfolioDeletedAchievement
+  );
 
   // ─────────── drag & drop functionality ───────────
   const dragHandlers = useNodeDrag();
@@ -53,10 +56,19 @@ export const useNodeBehavior = ({
   const handleDelete = useCallback(() => {
     if (isNodeInTrash(id)) {
       deleteNode(id);
+      if (id === "portfolio") {
+        unlockPortfolioDeletedAchievement();
+      }
     } else {
       moveNodeById(id, "trash");
     }
-  }, [id, isNodeInTrash, deleteNode, moveNodeById]);
+  }, [
+    id,
+    isNodeInTrash,
+    deleteNode,
+    moveNodeById,
+    unlockPortfolioDeletedAchievement,
+  ]);
 
   // ─────────── keyboard handler ───────────
   const handleKeyDown = useCallback(
