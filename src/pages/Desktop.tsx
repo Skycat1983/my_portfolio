@@ -37,14 +37,9 @@ export const Desktop = () => {
   return (
     <div
       // className="w-screen h-screen bg-gray-900 relative overflow-hidden background-image"
-      className="w-screen h-screen bg-gray-900 relative overflow-hidden "
+      className="w-screen h-screen bg-gray-900 relative overflow-hidden bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: `url(${background})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        height: "100vh",
-        width: "100vw",
       }}
       onClick={() => {
         console.log("clicked");
