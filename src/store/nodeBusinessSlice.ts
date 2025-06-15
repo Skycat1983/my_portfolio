@@ -15,6 +15,12 @@ export interface NodeBusinessSlice {
     newParentId: DirectoryEntry["id"]
   ) => boolean;
 
+  // Validation operations (for UI feedback)
+  validateMoveByID: (
+    nodeId: NodeEntry["id"],
+    newParentId: DirectoryEntry["id"]
+  ) => boolean;
+
   // Business logic operations
   isNodeInTrash: (nodeId: NodeEntry["id"]) => boolean;
   ensureDownloadsFolder: () => string;
@@ -341,5 +347,49 @@ export const createNodeBusinessSlice = (
     } else {
       console.error("downloadEgg: failed to create egg");
     }
+  },
+
+  /**
+   * Validate move operation (for UI feedback)
+   */
+  validateMoveByID: (
+    nodeId: NodeEntry["id"],
+    newParentId: DirectoryEntry["id"]
+  ): boolean => {
+    console.log(
+      "validateMoveByID: validating move from",
+      nodeId,
+      "to",
+      newParentId
+    );
+
+    const state = get();
+
+    // Get nodes using operations layer
+    const node = state.getNodeByID(nodeId);
+    const newParent = state.getDirectoryByID(newParentId);
+
+    // Validation
+    if (!node || !newParent) {
+      console.warn("validateMoveByID: invalid node or parent");
+      return false;
+    }
+    if (node.parentId === newParentId) {
+      console.info("validateMoveByID: already in target parent");
+      return false;
+    }
+    if (node.type === "directory") {
+      if (nodeId === newParentId) {
+        console.error("validateMoveByID: cannot move directory into itself");
+        return false;
+      }
+      if (state.isNodeDescendantOfAncestor(nodeId, newParentId)) {
+        console.error("validateMoveByID: circular move detected");
+        return false;
+      }
+    }
+
+    console.log("validateMoveByID: move operation is valid");
+    return true;
   },
 });

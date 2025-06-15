@@ -2,10 +2,12 @@ import type { BaseStoreState, SetState } from "../types/storeTypes";
 
 interface SelectionState {
   selectedNodeId: string | null;
+  selectedNodeIds: string[];
 }
 
 interface SelectionActions {
-  selectNode: (nodeId: string) => void;
+  selectOneNode: (nodeId: string) => void;
+  selectManyNodes: (nodeIds: string[]) => void;
 }
 
 export type SelectionSlice = SelectionState & SelectionActions;
@@ -15,10 +17,14 @@ export const createSelectionSlice = (
 ): SelectionSlice => ({
   // Selection state
   selectedNodeId: null,
-
+  selectedNodeIds: [],
   // Selection actions
-  selectNode: (nodeId: string) => {
-    console.log("selectNode in selectionSlice: selecting node", nodeId);
+  selectOneNode: (nodeId: string) => {
+    console.log("selectOneNode in selectionSlice: selecting node", nodeId);
     set({ selectedNodeId: nodeId });
+  },
+  selectManyNodes: (nodeIds: string[]) => {
+    console.log("selectManyNodes in selectionSlice: selecting nodes", nodeIds);
+    set({ selectedNodeIds: nodeIds });
   },
 });

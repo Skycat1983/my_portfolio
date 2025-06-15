@@ -19,10 +19,11 @@ export const useNodeDrag = (): DragHandlers => {
     null
   );
 
+  const moveNodeByID = useNewStore((s) => s.moveNodeByID);
+  const validateMoveByID = useNewStore((s) => s.validateMoveByID);
+
   // Throttle validation to prevent excessive console logging
   const lastValidationTime = useRef<number>(0);
-
-  const { moveNode, validateMove } = useNewStore();
 
   // Called when user starts dragging a node
   const handleDragStart = (e: React.DragEvent, nodeId: string) => {
@@ -62,7 +63,7 @@ export const useNodeDrag = (): DragHandlers => {
 
       let isValid = true; // Default to true to avoid blocking
       if (shouldValidate) {
-        isValid = validateMove(draggedNodeId, targetNodeId);
+        isValid = validateMoveByID(draggedNodeId, targetNodeId);
         lastValidationTime.current = now;
       }
 
@@ -112,14 +113,17 @@ export const useNodeDrag = (): DragHandlers => {
     }
 
     // Validate and execute the move
-    if (validateMove(draggedNodeId, targetNodeId)) {
+    if (validateMoveByID(draggedNodeId, targetNodeId)) {
       console.log(
         "handleDrop in useNodeDrag: executing move from",
         draggedNodeId,
         "to",
         targetNodeId
       );
-      moveNode(draggedNodeId, targetNodeId);
+      const success = moveNodeByID(draggedNodeId, targetNodeId);
+      if (!success) {
+        console.error("handleDrop in useNodeDrag: move operation failed");
+      }
     } else {
       console.log(
         "handleDrop in useNodeDrag: invalid move from",

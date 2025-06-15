@@ -4,7 +4,6 @@ import {
   type EasterEggSlice,
 } from "../store/easterEggSlice";
 import { createWindowSlice, type WindowSlice } from "../store/windowSlice";
-import { createNodeSlice, type NodeSlice } from "../store/nodeSlice";
 import {
   createSelectionSlice,
   type SelectionSlice,
@@ -36,18 +35,17 @@ import {
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
-  extends AchievementSlice,
+  extends NodeCrudSlice,
+    NodeOperationsSlice,
+    NodeBusinessSlice,
+    AchievementSlice,
     SelectionSlice,
     EasterEggSlice,
     WindowSlice,
     TerminalSlice,
     SystemSlice,
     BrowserSlice,
-    WeatherSlice,
-    AchievementSlice,
-    NodeCrudSlice,
-    NodeOperationsSlice,
-    NodeBusinessSlice {}
+    WeatherSlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // {operating system}
@@ -58,10 +56,12 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createNodeOperationsSlice(set, get),
   // {node business (derived from operations)}
   ...createNodeBusinessSlice(set, get),
+
+  ...createSelectionSlice(set),
+  // {easter egg}
   // {achievements}
   ...createAchievementSlice(set),
   // ...createNodeSlice(set, get),
-  ...createSelectionSlice(set),
   ...createEasterEggSlice(set, get),
   ...createWindowSlice(set, get),
   ...createTerminalSlice(set, get),

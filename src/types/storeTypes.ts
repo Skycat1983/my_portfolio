@@ -15,6 +15,7 @@ export interface BaseStoreState {
   nodeMap: NodeMap;
   rootId: string;
   selectedNodeId: string | null;
+  selectedNodeIds: string[];
   openWindows: WindowData[];
   nextZIndex: number;
   isTerminalOpen: boolean;
