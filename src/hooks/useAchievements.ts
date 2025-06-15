@@ -1,19 +1,28 @@
 import { useNewStore } from "./useStore";
 
 interface AchievementsUnlocked {
-  downloadEggs: boolean;
-  deletedPortfolio: boolean;
-  eggsDownloaded: number;
+  downloadEggsAchieved: boolean;
+  deletedPortfolioAchieved: boolean;
+  joinAQueueAchieved: boolean;
+  operatingSystemSwitchedAchieved: boolean;
 }
 
-const eggThreshold = 12;
-
 export const useAchievements = (): AchievementsUnlocked => {
-  const eggsDownloaded = useNewStore((state) => state.eggsDownloaded);
+  const downloadEggsAchieved = useNewStore(
+    (state) => state.downloadEggsAchieved
+  );
+  const deletedPortfolioAchieved = useNewStore(
+    (state) => state.portfolioDeletedAchieved
+  );
+  const joinAQueueAchieved = useNewStore((state) => state.joinAQueueAchieved);
+  const operatingSystemSwitchedAchieved = useNewStore(
+    (state) => state.operatingSystemSwitchedAchieved
+  );
 
-  const downloadEggs = eggsDownloaded >= eggThreshold;
-
-  const deletedPortfolio = useNewStore((state) => state.portfolioDeleted);
-
-  return { downloadEggs, deletedPortfolio, eggsDownloaded };
+  return {
+    downloadEggsAchieved,
+    deletedPortfolioAchieved,
+    joinAQueueAchieved,
+    operatingSystemSwitchedAchieved,
+  };
 };

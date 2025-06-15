@@ -7,7 +7,9 @@ export const StartPage = () => {
   const downloadEgg = useNewStore((s) => s.downloadEgg);
   const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
   const openDirectory = useNewStore((s) => s.openDirectory);
-  const incrementEggsDownloaded = useNewStore((s) => s.incrementEggsDownloaded);
+  const incrementEggsDownloadedAchievement = useNewStore(
+    (s) => s.incrementEggsDownloadedAchievement
+  );
   // const eggsDownloaded = useNewStore((s) => s.eggsDownloaded);
   // const { downloadEgg, ensureDownloadsFolder, openDirectory } = useNewStore();
 
@@ -15,11 +17,11 @@ export const StartPage = () => {
     if (isDownloading) {
       setTimeout(() => {
         downloadEgg();
-        incrementEggsDownloaded();
+        incrementEggsDownloadedAchievement();
         setIsDownloading(false);
       }, 1000);
     }
-  }, [isDownloading, downloadEgg, incrementEggsDownloaded]);
+  }, [isDownloading, downloadEgg, incrementEggsDownloadedAchievement]);
 
   const buttonLabel = isDownloading ? "Downloading..." : "Download Egg";
 

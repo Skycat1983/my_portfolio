@@ -6,12 +6,13 @@ import Window from "../components/window/Window";
 import { Terminal } from "../components/terminal/Terminal";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import Browser from "../components/browser/Browser";
+import { Toast } from "../components/toast/Toast";
 // import { Weather } from "../components/widgets/Weather";
-import { useAchievements } from "../hooks/useAchievements";
 
 export const Desktop = () => {
-  const achievements = useAchievements();
-  console.log("achievements", achievements);
+  const unlockClickOnSomethingAchievement = useNewStore(
+    (s) => s.unlockClickOnSomethingAchievement
+  );
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const {
     rootId,
@@ -45,6 +46,10 @@ export const Desktop = () => {
         backgroundRepeat: "no-repeat",
         height: "100vh",
         width: "100vw",
+      }}
+      onClick={() => {
+        console.log("clicked");
+        unlockClickOnSomethingAchievement();
       }}
     >
       <MenubarLayout />
@@ -81,6 +86,7 @@ export const Desktop = () => {
 
         <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>
+      <Toast />
     </div>
   );
 };

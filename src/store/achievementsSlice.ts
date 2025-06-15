@@ -12,22 +12,27 @@ import type { NewDesktopStore } from "../hooks/useStore";
 
 interface AchievementState {
   // employerScore: number;
+  clickOnSomethingAchieved: boolean;
   eggsDownloaded: number;
-  portfolioDeleted: boolean;
+  downloadEggsAchieved: boolean;
+  portfolioDeletedAchieved: boolean;
+  joinAQueueAchieved: boolean;
+  operatingSystemSwitchedAchieved: boolean;
+
   //   emailSent: boolean;
-  //   websiteVisited: boolean;
   //   cvDownloaded: number;
-  //   operatingSystemSwitched: boolean;
 }
 
 interface AchievementAction {
   //   incrementEmployerScore: (n: number) => void;
-  incrementEggsDownloaded: () => void;
-  deletePortfolio: () => void;
+  unlockClickOnSomethingAchievement: () => void;
+  incrementEggsDownloadedAchievement: () => void;
+  unlockPortfolioDeletedAchievement: () => void;
+  unlockJoinAQueueAchievement: () => void;
+  unlockOperatingSystemAchievement: () => void;
+
   //   sendEmail: () => void;
-  //   visitWebsite: () => void;
   //   downloadCV: () => void;
-  //   switchOperatingSystem: () => void;
 }
 
 export type AchievementSlice = AchievementState & AchievementAction;
@@ -35,22 +40,45 @@ export type AchievementSlice = AchievementState & AchievementAction;
 export const createAchievementSlice = (
   set: SetState<NewDesktopStore>
 ): AchievementSlice => ({
+  clickOnSomethingAchieved: false,
   eggsDownloaded: 0,
-  portfolioDeleted: false,
+  downloadEggsAchieved: false,
+  portfolioDeletedAchieved: false,
+  joinAQueueAchieved: false,
+  operatingSystemSwitchedAchieved: false,
   //   emailSent: false,
   //   websiteVisited: false,
   //   cvDownloaded: 0,
   //   operatingSystemSwitched: false,
 
-  incrementEggsDownloaded: () => {
-    set((state) => ({
-      eggsDownloaded: state.eggsDownloaded + 1,
+  unlockClickOnSomethingAchievement: () => {
+    set(() => ({
+      clickOnSomethingAchieved: true,
     }));
   },
 
-  deletePortfolio: () => {
+  incrementEggsDownloadedAchievement: () => {
+    set((state) => ({
+      eggsDownloaded: state.eggsDownloaded + 1,
+      download12EggsAchieved: state.eggsDownloaded >= 12,
+    }));
+  },
+
+  unlockPortfolioDeletedAchievement: () => {
     set(() => ({
-      portfolioDeleted: true,
+      portfolioDeletedAchieved: true,
+    }));
+  },
+
+  unlockJoinAQueueAchievement: () => {
+    set(() => ({
+      joinAQueueAchieved: true,
+    }));
+  },
+
+  unlockOperatingSystemAchievement: () => {
+    set(() => ({
+      operatingSystemSwitchedAchieved: true,
     }));
   },
 });
