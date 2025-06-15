@@ -1,5 +1,5 @@
 import { defaultNodeMap, defaultRootId } from "../constants/nodes";
-import type { NodeEntry, NodeMap, DirectoryEntry } from "../types/nodeTypes";
+import type { NodeEntry, NodeMap } from "../types/nodeTypes";
 import type { BaseStoreState, SetState, GetState } from "../types/storeTypes";
 
 interface NodeState {
@@ -8,31 +8,31 @@ interface NodeState {
 }
 
 interface NodeActions {
-  // find operations
+  // Find operations (predicate-based)
   findOneNode: (
     predicate: (node: NodeEntry) => boolean
   ) => NodeEntry | undefined;
   findManyNodes: (predicate: (node: NodeEntry) => boolean) => NodeEntry[];
-  // update operations
-  updateOneNode: (nodeId: NodeEntry["id"], updates: Partial<NodeEntry>) => void;
+
+  // Create operations (generic)
+  createOneNode: (node: NodeEntry) => boolean;
+  createManyNodes: (nodes: NodeEntry[]) => boolean;
+
+  // Update operations (all predicate-based)
+  updateOneNode: (
+    predicate: (node: NodeEntry) => boolean,
+    updates: Partial<NodeEntry>
+  ) => boolean;
   updateManyNodes: (
     predicate: (node: NodeEntry) => boolean,
     updates: Partial<NodeEntry>
-  ) => void;
-  // delete operations
-  deleteOneNode: (nodeId: NodeEntry["id"]) => void;
-  deleteManyNodes: (predicate: (node: NodeEntry) => boolean) => void;
+  ) => number;
 
-  // create operations
-  createOneNode: (
-    nodeData: Omit<NodeEntry, "parentId">,
-    parentId: NodeEntry["id"]
-  ) => void;
-  createManyNodes: (
-    nodeData: Omit<NodeEntry, "parentId">[],
-    parentId: NodeEntry["id"]
-  ) => void;
-  // query operations
+  // Delete operations (all predicate-based)
+  deleteOneNode: (predicate: (node: NodeEntry) => boolean) => boolean;
+  deleteManyNodes: (predicate: (node: NodeEntry) => boolean) => number;
+
+  // Query operations (remain here as they're fundamental)
   countNodes: (predicate: (node: NodeEntry) => boolean) => number;
   nodeExists: (predicate: (node: NodeEntry) => boolean) => boolean;
 }
@@ -58,161 +58,107 @@ export const createNodeCrudSlice = (
     return Object.values(state.nodeMap).filter(predicate);
   },
 
-  // Create operations
-  createOneNode: (
-    nodeData: Omit<NodeEntry, "parentId">,
-    parentId: DirectoryEntry["id"]
-  ) => {
-    console.log(
-      "createOneNode in newNodeSlice: creating node",
-      nodeData.id,
-      "in parent",
-      parentId
-    );
+  // Create operations (pure - no business logic)
+  createOneNode: (node: NodeEntry): boolean => {
+    console.log("createOneNode in nodeCrudSlice: creating node", node.id);
 
     const currentState = get();
-    const parent = currentState.nodeMap[parentId];
 
-    if (!parent || parent.type !== "directory") {
-      console.log(
-        "createOneNode in newNodeSlice: parent not found or not a directory"
-      );
-      return;
+    // Check if node already exists
+    if (currentState.nodeMap[node.id]) {
+      console.log("createOneNode: node already exists", node.id);
+      return false;
     }
-
-    // Check if node with this ID already exists
-    if (currentState.nodeMap[nodeData.id]) {
-      console.log(
-        "createOneNode in newNodeSlice: node with ID",
-        nodeData.id,
-        "already exists"
-      );
-      return;
-    }
-
-    const newNode = {
-      ...nodeData,
-      parentId,
-    } as NodeEntry;
 
     set((state) => ({
       nodeMap: {
         ...state.nodeMap,
-        [nodeData.id]: newNode,
-        [parentId]: {
-          ...parent,
-          children: [...(parent as DirectoryEntry).children, nodeData.id],
-        },
+        [node.id]: node,
       },
     }));
+
+    return true;
   },
 
-  createManyNodes: (
-    nodeDataArray: Omit<NodeEntry, "parentId">[],
-    parentId: DirectoryEntry["id"]
-  ) => {
+  createManyNodes: (nodes: NodeEntry[]): boolean => {
     console.log(
-      "createManyNodes in newNodeSlice: creating",
-      nodeDataArray.length,
-      "nodes in parent",
-      parentId
+      "createManyNodes in nodeCrudSlice: creating",
+      nodes.length,
+      "nodes"
     );
 
     const currentState = get();
-    const parent = currentState.nodeMap[parentId];
-
-    if (!parent || parent.type !== "directory") {
-      console.log(
-        "createManyNodes in newNodeSlice: parent not found or not a directory"
-      );
-      return;
-    }
 
     // Filter out nodes that already exist
-    const validNodeData = nodeDataArray.filter((nodeData) => {
-      if (currentState.nodeMap[nodeData.id]) {
-        console.log(
-          "createManyNodes in newNodeSlice: skipping existing node",
-          nodeData.id
-        );
+    const validNodes = nodes.filter((node) => {
+      if (currentState.nodeMap[node.id]) {
+        console.log("createManyNodes: skipping existing node", node.id);
         return false;
       }
       return true;
     });
 
-    if (validNodeData.length === 0) {
-      console.log("createManyNodes in newNodeSlice: no valid nodes to create");
-      return;
+    if (validNodes.length === 0) {
+      console.log("createManyNodes: no valid nodes to create");
+      return false;
     }
 
-    const newNodes: Record<string, NodeEntry> = {};
-    const newNodeIds: string[] = [];
-
-    validNodeData.forEach((nodeData) => {
-      const newNode = {
-        ...nodeData,
-        parentId,
-      } as NodeEntry;
-      newNodes[nodeData.id] = newNode;
-      newNodeIds.push(nodeData.id);
+    const nodeMap: Record<string, NodeEntry> = {};
+    validNodes.forEach((node) => {
+      nodeMap[node.id] = node;
     });
 
     set((state) => ({
       nodeMap: {
         ...state.nodeMap,
-        ...newNodes,
-        [parentId]: {
-          ...parent,
-          children: [...(parent as DirectoryEntry).children, ...newNodeIds],
-        },
+        ...nodeMap,
       },
     }));
+
+    return true;
   },
 
-  // Update operations
-  updateOneNode: (nodeId: NodeEntry["id"], updates: Partial<NodeEntry>) => {
-    console.log(
-      "updateOneNode in newNodeSlice: updating node",
-      nodeId,
-      "with",
-      updates
-    );
+  // Update operations (all predicate-based)
+  updateOneNode: (
+    predicate: (node: NodeEntry) => boolean,
+    updates: Partial<NodeEntry>
+  ): boolean => {
+    console.log("updateOneNodeByPredicate in nodeCrudSlice");
 
     const currentState = get();
-    const existingNode = currentState.nodeMap[nodeId];
+    const nodeToUpdate = Object.values(currentState.nodeMap).find(predicate);
 
-    if (!existingNode) {
-      console.log("updateOneNode in newNodeSlice: node not found", nodeId);
-      return;
+    if (!nodeToUpdate) {
+      console.log("updateOneNodeByPredicate: no node matches predicate");
+      return false;
     }
 
     set((state) => ({
       nodeMap: {
         ...state.nodeMap,
-        [nodeId]: {
-          ...existingNode,
+        [nodeToUpdate.id]: {
+          ...nodeToUpdate,
           ...updates,
-          id: nodeId, // Prevent ID from being changed
+          id: nodeToUpdate.id, // Prevent ID from being changed
         } as NodeEntry,
       },
     }));
+
+    return true;
   },
 
   updateManyNodes: (
     predicate: (node: NodeEntry) => boolean,
     updates: Partial<NodeEntry>
-  ) => {
-    console.log(
-      "updateManyNodes in newNodeSlice: updating nodes with predicate",
-      updates
-    );
+  ): number => {
+    console.log("updateManyNodes in nodeCrudSlice");
 
     const currentState = get();
     const nodesToUpdate = Object.values(currentState.nodeMap).filter(predicate);
 
     if (nodesToUpdate.length === 0) {
-      console.log("updateManyNodes in newNodeSlice: no nodes match predicate");
-      return;
+      console.log("updateManyNodes: no nodes match predicate");
+      return 0;
     }
 
     const updatedNodes: Record<string, NodeEntry> = {};
@@ -230,69 +176,51 @@ export const createNodeCrudSlice = (
         ...updatedNodes,
       },
     }));
+
+    return nodesToUpdate.length;
   },
 
-  // Delete operations
-  deleteOneNode: (nodeId: NodeEntry["id"]) => {
-    console.log("deleteOneNode in newNodeSlice: deleting node", nodeId);
+  // Delete operations (all predicate-based)
+  deleteOneNode: (predicate: (node: NodeEntry) => boolean): boolean => {
+    console.log("deleteOneNode in nodeCrudSlice");
 
     const currentState = get();
-    const node = currentState.nodeMap[nodeId];
+    const nodeToDelete = Object.values(currentState.nodeMap).find(predicate);
 
-    if (!node) {
-      console.log("deleteOneNode in newNodeSlice: node not found", nodeId);
-      return;
+    if (!nodeToDelete) {
+      console.log("deleteOneNodeByPredicate: no node matches predicate");
+      return false;
     }
 
-    // Remove from parent's children array
-    const parentNode = node.parentId
-      ? currentState.nodeMap[node.parentId]
-      : null;
-
     set((state) => {
-      // Create new nodeMap without the deleted node
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [nodeId]: _, ...remainingNodes } = state.nodeMap;
+      const { [nodeToDelete.id]: _, ...remainingNodes } = state.nodeMap;
 
       return {
-        nodeMap: {
-          ...remainingNodes,
-          // Remove from parent's children array if parent exists and is a directory
-          ...(parentNode &&
-            parentNode.type === "directory" && {
-              [parentNode.id]: {
-                ...parentNode,
-                children: parentNode.children.filter(
-                  (childId: string) => childId !== nodeId
-                ),
-              },
-            }),
-        },
+        nodeMap: remainingNodes,
         // Clear selection if the deleted node was selected
         selectedNodeId:
-          state.selectedNodeId === nodeId ? null : state.selectedNodeId,
+          state.selectedNodeId === nodeToDelete.id
+            ? null
+            : state.selectedNodeId,
       };
     });
+
+    return true;
   },
 
-  deleteManyNodes: (predicate: (node: NodeEntry) => boolean) => {
-    console.log(
-      "deleteManyNodes in newNodeSlice: deleting nodes with predicate"
-    );
+  deleteManyNodes: (predicate: (node: NodeEntry) => boolean): number => {
+    console.log("deleteManyNodes in nodeCrudSlice");
 
     const currentState = get();
     const nodesToDelete = Object.values(currentState.nodeMap).filter(predicate);
 
     if (nodesToDelete.length === 0) {
-      console.log("deleteManyNodes in newNodeSlice: no nodes match predicate");
-      return;
+      console.log("deleteManyNodes: no nodes match predicate");
+      return 0;
     }
 
-    console.log(
-      "deleteManyNodes in newNodeSlice: deleting",
-      nodesToDelete.length,
-      "nodes"
-    );
+    console.log("deleteManyNodes: deleting", nodesToDelete.length, "nodes");
 
     set((state) => {
       let newNodeMap = { ...state.nodeMap };
@@ -308,17 +236,6 @@ export const createNodeCrudSlice = (
         if (state.selectedNodeId === node.id) {
           newSelectedNodeId = null;
         }
-
-        // Remove from parent's children array
-        const parentNode = node.parentId ? newNodeMap[node.parentId] : null;
-        if (parentNode && parentNode.type === "directory") {
-          newNodeMap[parentNode.id] = {
-            ...parentNode,
-            children: parentNode.children.filter(
-              (childId: string) => childId !== node.id
-            ),
-          };
-        }
       });
 
       return {
@@ -326,15 +243,17 @@ export const createNodeCrudSlice = (
         selectedNodeId: newSelectedNodeId,
       };
     });
+
+    return nodesToDelete.length;
   },
 
-  // Query operations
-  countNodes: (predicate: (node: NodeEntry) => boolean) => {
+  // Query operations (fundamental operations that belong in CRUD layer)
+  countNodes: (predicate: (node: NodeEntry) => boolean): number => {
     const state = get();
     return Object.values(state.nodeMap).filter(predicate).length;
   },
 
-  nodeExists: (predicate: (node: NodeEntry) => boolean) => {
+  nodeExists: (predicate: (node: NodeEntry) => boolean): boolean => {
     const state = get();
     return Object.values(state.nodeMap).some(predicate);
   },
