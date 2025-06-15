@@ -18,6 +18,9 @@ export const AchievementNode = ({ achievement }: Props) => {
   // ─────────── achievement state ───────────
   const unseenAchievements = useNewStore((s) => s.unseenAchievements);
   const markAchievementsAsSeen = useNewStore((s) => s.markAchievementsAsSeen);
+  const unlockAccessAchievements = useNewStore(
+    (s) => s.unlockAccessAchievements
+  );
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -26,8 +29,13 @@ export const AchievementNode = ({ achievement }: Props) => {
     if (unseenAchievements > 0) {
       markAchievementsAsSeen();
     }
-    // TODO: Add actual achievement window opening logic here
-  }, [achievement.id, unseenAchievements, markAchievementsAsSeen]);
+    unlockAccessAchievements();
+  }, [
+    achievement.id,
+    unseenAchievements,
+    markAchievementsAsSeen,
+    unlockAccessAchievements,
+  ]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeBehavior({

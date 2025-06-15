@@ -15,6 +15,8 @@ export const AchievementsWindow = () => {
   // Get achievement states from store
   const {
     clickOnSomethingAchieved,
+    accessAchievements,
+
     downloadEggsAchieved,
     eggsDownloaded,
     portfolioDeletedAchieved,
@@ -26,10 +28,17 @@ export const AchievementsWindow = () => {
   const achievements: Achievement[] = [
     {
       id: "first-click",
-      title: "First Steps",
-      description: "Click on something to get started",
+      title: "Feature Awareness Nudge",
+      description: "That click didn't go unnoticed",
       icon: "👆",
       unlocked: clickOnSomethingAchieved,
+    },
+    {
+      id: "access-achievements",
+      title: "Investigate the Red Notification",
+      description: "You were successfully manipulated 👍",
+      icon: "🏆",
+      unlocked: accessAchievements,
     },
     {
       id: "egg-collector",

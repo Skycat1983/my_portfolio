@@ -13,6 +13,7 @@ import type { NewDesktopStore } from "../hooks/useStore";
 interface AchievementState {
   // employerScore: number;
   clickOnSomethingAchieved: boolean;
+  accessAchievements: boolean;
   eggsDownloaded: number;
   downloadEggsAchieved: boolean;
   portfolioDeletedAchieved: boolean;
@@ -31,6 +32,7 @@ interface AchievementState {
 interface AchievementAction {
   //   incrementEmployerScore: (n: number) => void;
   unlockClickOnSomethingAchievement: () => void;
+  unlockAccessAchievements: () => void;
   incrementEggsDownloadedAchievement: () => void;
   unlockPortfolioDeletedAchievement: () => void;
   unlockJoinAQueueAchievement: () => void;
@@ -49,6 +51,7 @@ export const createAchievementSlice = (
   set: SetState<NewDesktopStore>
 ): AchievementSlice => ({
   clickOnSomethingAchieved: false,
+  accessAchievements: false,
   eggsDownloaded: 0,
   downloadEggsAchieved: false,
   portfolioDeletedAchieved: false,
@@ -70,6 +73,17 @@ export const createAchievementSlice = (
         };
       }
       return state; // No change if already unlocked
+    });
+  },
+
+  unlockAccessAchievements: () => {
+    set((state) => {
+      if (!state.accessAchievements) {
+        return {
+          accessAchievements: true,
+        };
+      }
+      return state;
     });
   },
 
