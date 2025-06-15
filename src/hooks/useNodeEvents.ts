@@ -16,7 +16,7 @@ export const useNodeBehavior = ({
   onActivate,
 }: NodeBehaviorConfig) => {
   // ─────────── store actions & state ───────────
-  const selectNode = useNewStore((s) => s.selectNode);
+  const selectOneNode = useNewStore((s) => s.selectOneNode);
   const isSelected = useNewStore((s) => s.selectedNodeId === id);
   const moveNodeById = useNewStore((s) => s.moveNodeByID);
   const deleteNode = useNewStore((s) => s.deleteNodeByID);
@@ -40,8 +40,8 @@ export const useNodeBehavior = ({
   // ─────────── base click handler ───────────
   const handleClick = useCallback(() => {
     log("single-click");
-    selectNode(id);
-  }, [id, selectNode, log]);
+    selectOneNode(id);
+  }, [id, selectOneNode, log]);
 
   // ─────────── activation handler (double-click and Enter) ───────────
   const handleDoubleClick = useCallback(() => {

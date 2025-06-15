@@ -7,8 +7,11 @@ import { Terminal } from "../components/terminal/Terminal";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import Browser from "../components/browser/Browser";
 // import { Weather } from "../components/widgets/Weather";
+import { useAchievements } from "../hooks/useAchievements";
 
 export const Desktop = () => {
+  const achievements = useAchievements();
+  console.log("achievements", achievements);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const {
     rootId,

@@ -4,16 +4,22 @@ import { useEffect, useState } from "react";
 
 export const StartPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
-  const { downloadEgg, ensureDownloadsFolder, openDirectory } = useNewStore();
+  const downloadEgg = useNewStore((s) => s.downloadEgg);
+  const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
+  const openDirectory = useNewStore((s) => s.openDirectory);
+  const incrementEggsDownloaded = useNewStore((s) => s.incrementEggsDownloaded);
+  // const eggsDownloaded = useNewStore((s) => s.eggsDownloaded);
+  // const { downloadEgg, ensureDownloadsFolder, openDirectory } = useNewStore();
 
   useEffect(() => {
     if (isDownloading) {
       setTimeout(() => {
         downloadEgg();
+        incrementEggsDownloaded();
         setIsDownloading(false);
       }, 1000);
     }
-  }, [isDownloading, downloadEgg]);
+  }, [isDownloading, downloadEgg, incrementEggsDownloaded]);
 
   const buttonLabel = isDownloading ? "Downloading..." : "Download Egg";
 
