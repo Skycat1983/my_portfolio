@@ -13,44 +13,44 @@ interface StoreWithWindowAndNodeOps
 
 export interface WindowOperationsActions {
   // ID-based accessors (built from predicates)
-  getWindowById: (id: Window["id"]) => Window | undefined;
+  getWindowById: (id: Window["windowId"]) => Window | undefined;
   getWindowByNodeId: (nodeId: string) => Window | undefined;
   getWindowsByNodeType: (nodeType: string) => Window[];
 
   // ID-based operations (built from predicates)
   updateWindowById: (
-    windowId: Window["id"],
+    windowId: Window["windowId"],
     updates: Partial<Window>
   ) => boolean;
-  deleteWindowById: (windowId: Window["id"]) => boolean;
+  deleteWindowById: (windowId: Window["windowId"]) => boolean;
 
   // Business operations (combine multiple CRUD operations)
-  focusWindow: (windowId: Window["id"]) => boolean;
+  focusWindow: (windowId: Window["windowId"]) => boolean;
   resizeWindow: (
-    windowId: Window["id"],
+    windowId: Window["windowId"],
     width: number,
     height: number
   ) => boolean;
-  moveWindow: (windowId: Window["id"], x: number, y: number) => boolean;
+  moveWindow: (windowId: Window["windowId"], x: number, y: number) => boolean;
   setWindowBounds: (
-    windowId: Window["id"],
+    windowId: Window["windowId"],
     bounds: { x: number; y: number; width: number; height: number }
   ) => boolean;
 
   // Complex business operations
   openOrFocusWindow: (nodeId: WindowedNode["id"]) => void;
-  closeWindow: (windowId: Window["id"]) => void;
+  closeWindow: (windowId: Window["windowId"]) => void;
 
   // Window state management
-  minimizeWindow: (windowId: Window["id"]) => boolean;
-  maximizeWindow: (windowId: Window["id"]) => boolean;
-  restoreWindow: (windowId: Window["id"]) => boolean;
-  toggleMinimized: (windowId: Window["id"]) => boolean;
+  minimizeWindow: (windowId: Window["windowId"]) => boolean;
+  maximizeWindow: (windowId: Window["windowId"]) => boolean;
+  restoreWindow: (windowId: Window["windowId"]) => boolean;
+  toggleMinimized: (windowId: Window["windowId"]) => boolean;
 
   // Utility operations
   isWindowOpen: (nodeId: string) => boolean;
   getTopWindow: () => Window | undefined;
-  bringToFront: (windowId: Window["id"]) => boolean;
+  bringToFront: (windowId: Window["windowId"]) => boolean;
 }
 
 export type WindowOperationsSlice = WindowOperationsActions;
@@ -63,8 +63,8 @@ export const createWindowOperationsSlice = (
   /**
    * Get a window by its ID (builds on findOneWindow)
    */
-  getWindowById: (id: Window["id"]): Window | undefined => {
-    return get().findOneWindow((window: Window) => window.id === id);
+  getWindowById: (id: Window["windowId"]): Window | undefined => {
+    return get().findOneWindow((window: Window) => window.windowId === id);
   },
 
   /**
@@ -87,12 +87,12 @@ export const createWindowOperationsSlice = (
    * Update a window by its ID (builds on updateOneWindow)
    */
   updateWindowById: (
-    windowId: Window["id"],
+    windowId: Window["windowId"],
     updates: Partial<Window>
   ): boolean => {
     console.log("updateWindowById: updating window", windowId, "with", updates);
     return get().updateOneWindow(
-      (window: Window) => window.id === windowId,
+      (window: Window) => window.windowId === windowId,
       updates
     );
   },
@@ -100,26 +100,28 @@ export const createWindowOperationsSlice = (
   /**
    * Delete a window by its ID (builds on deleteOneWindow)
    */
-  deleteWindowById: (windowId: Window["id"]): boolean => {
+  deleteWindowById: (windowId: Window["windowId"]): boolean => {
     console.log("deleteWindowById: deleting window", windowId);
-    return get().deleteOneWindow((window: Window) => window.id === windowId);
+    return get().deleteOneWindow(
+      (window: Window) => window.windowId === windowId
+    );
   },
 
   /**
    * Focus a window by bringing it to the front (update zIndex)
    */
-  focusWindow: (windowId: Window["id"]): boolean => {
+  focusWindow: (windowId: Window["windowId"]): boolean => {
     console.log("focusWindow: focusing window", windowId);
 
     const state = get();
-    const window = state.findOneWindow((w: Window) => w.id === windowId);
+    const window = state.findOneWindow((w: Window) => w.windowId === windowId);
 
     if (!window) {
       console.log("focusWindow: window not found", windowId);
       return false;
     }
 
-    return state.updateOneWindow((w: Window) => w.id === windowId, {
+    return state.updateOneWindow((w: Window) => w.windowId === windowId, {
       zIndex: state.nextZIndex,
     });
   },
@@ -128,7 +130,7 @@ export const createWindowOperationsSlice = (
    * Resize a window to specific dimensions
    */
   resizeWindow: (
-    windowId: Window["id"],
+    windowId: Window["windowId"],
     width: number,
     height: number
   ): boolean => {
@@ -141,35 +143,41 @@ export const createWindowOperationsSlice = (
       height
     );
 
-    return get().updateOneWindow((window: Window) => window.id === windowId, {
-      width,
-      height,
-    });
+    return get().updateOneWindow(
+      (window: Window) => window.windowId === windowId,
+      {
+        width,
+        height,
+      }
+    );
   },
 
   /**
    * Move a window to specific coordinates
    */
-  moveWindow: (windowId: Window["id"], x: number, y: number): boolean => {
+  moveWindow: (windowId: Window["windowId"], x: number, y: number): boolean => {
     console.log("moveWindow: moving window", windowId, "to", x, ",", y);
 
-    return get().updateOneWindow((window: Window) => window.id === windowId, {
-      x,
-      y,
-    });
+    return get().updateOneWindow(
+      (window: Window) => window.windowId === windowId,
+      {
+        x,
+        y,
+      }
+    );
   },
 
   /**
    * Set window bounds (position + size) in one operation
    */
   setWindowBounds: (
-    windowId: Window["id"],
+    windowId: Window["windowId"],
     bounds: { x: number; y: number; width: number; height: number }
   ): boolean => {
     console.log("setWindowBounds: setting bounds for window", windowId, bounds);
 
     return get().updateOneWindow(
-      (window: Window) => window.id === windowId,
+      (window: Window) => window.windowId === windowId,
       bounds
     );
   },
@@ -198,7 +206,7 @@ export const createWindowOperationsSlice = (
       // Focus existing window instead of creating new one
       console.log("openOrFocusWindow: focusing existing window", nodeId);
       state.updateOneWindow(
-        (window: Window) => window.id === existingWindow.id,
+        (window: Window) => window.windowId === existingWindow.windowId,
         { zIndex: state.nextZIndex }
       );
       return;
@@ -206,7 +214,8 @@ export const createWindowOperationsSlice = (
 
     // Create new window with default position
     const newWindow: Window = {
-      id: `window-${nodeId}-${Date.now()}`, // Unique window ID
+      windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
+      title: node.label,
       nodeId,
       nodeType: node.type,
       width: 800,
@@ -225,61 +234,70 @@ export const createWindowOperationsSlice = (
   /**
    * Close a window (alias for deleteWindowById for API consistency)
    */
-  closeWindow: (windowId: Window["id"]): void => {
+  closeWindow: (windowId: Window["windowId"]): void => {
     console.log("closeWindow: closing window", windowId);
-    get().deleteOneWindow((window: Window) => window.id === windowId);
+    get().deleteOneWindow((window: Window) => window.windowId === windowId);
   },
 
   /**
    * Minimize a window
    */
-  minimizeWindow: (windowId: Window["id"]): boolean => {
+  minimizeWindow: (windowId: Window["windowId"]): boolean => {
     console.log("minimizeWindow: minimizing window", windowId);
 
-    return get().updateOneWindow((window: Window) => window.id === windowId, {
-      isMinimized: true,
-      isMaximized: false,
-    });
+    return get().updateOneWindow(
+      (window: Window) => window.windowId === windowId,
+      {
+        isMinimized: true,
+        isMaximized: false,
+      }
+    );
   },
 
   /**
    * Maximize a window
    */
-  maximizeWindow: (windowId: Window["id"]): boolean => {
+  maximizeWindow: (windowId: Window["windowId"]): boolean => {
     console.log("maximizeWindow: maximizing window", windowId);
 
-    return get().updateOneWindow((window: Window) => window.id === windowId, {
-      isMaximized: true,
-      isMinimized: false,
-    });
+    return get().updateOneWindow(
+      (window: Window) => window.windowId === windowId,
+      {
+        isMaximized: true,
+        isMinimized: false,
+      }
+    );
   },
 
   /**
    * Restore a window to normal state
    */
-  restoreWindow: (windowId: Window["id"]): boolean => {
+  restoreWindow: (windowId: Window["windowId"]): boolean => {
     console.log("restoreWindow: restoring window", windowId);
 
-    return get().updateOneWindow((window: Window) => window.id === windowId, {
-      isMaximized: false,
-      isMinimized: false,
-    });
+    return get().updateOneWindow(
+      (window: Window) => window.windowId === windowId,
+      {
+        isMaximized: false,
+        isMinimized: false,
+      }
+    );
   },
 
   /**
    * Toggle minimized state of a window
    */
-  toggleMinimized: (windowId: Window["id"]): boolean => {
+  toggleMinimized: (windowId: Window["windowId"]): boolean => {
     console.log(
       "toggleMinimized: toggling minimized state for window",
       windowId
     );
 
-    const window = get().findOneWindow((w: Window) => w.id === windowId);
+    const window = get().findOneWindow((w: Window) => w.windowId === windowId);
     if (!window) return false;
 
     const newMinimizedState = !window.isMinimized;
-    return get().updateOneWindow((w: Window) => w.id === windowId, {
+    return get().updateOneWindow((w: Window) => w.windowId === windowId, {
       isMinimized: newMinimizedState,
       isMaximized: false,
     });
@@ -307,11 +325,11 @@ export const createWindowOperationsSlice = (
   /**
    * Bring a window to the front (calls focusWindow internally)
    */
-  bringToFront: (windowId: Window["id"]): boolean => {
+  bringToFront: (windowId: Window["windowId"]): boolean => {
     console.log("bringToFront: bringing window to front", windowId);
 
     const state = get();
-    return state.updateOneWindow((w: Window) => w.id === windowId, {
+    return state.updateOneWindow((w: Window) => w.windowId === windowId, {
       zIndex: state.nextZIndex,
     });
   },

@@ -3,7 +3,8 @@ import type { OperatingSystem } from "../store/systemSlice";
 
 // Window interface for the new window system
 export interface Window {
-  id: string;
+  windowId: string;
+  title: string;
   nodeId: string;
   nodeType: string;
   width: number;
@@ -21,7 +22,7 @@ export interface Window {
 
 // Forward declare WindowData to avoid circular imports (legacy - for old windowSlice)
 export interface WindowData {
-  id: string;
+  windowId: string;
   currentNodeId: string;
   zIndex: number;
   navigationHistory: string[];
@@ -45,14 +46,14 @@ export interface BaseStoreState {
   // achievements: AchievementSlice;
 }
 
-export interface StoreStateNew {
-  operatingSystem: OperatingSystem;
-  nodeMap: NodeMap;
-  rootId: string;
-  selectedNodeId: string | null;
-  selectedNodeIds: string[];
-  windows: Window[];
-}
+// export interface StoreStateNew {
+//   operatingSystem: OperatingSystem;
+//   nodeMap: NodeMap;
+//   rootId: string;
+//   selectedNodeId: string | null;
+//   selectedNodeIds: string[];
+//   windows: Window[];
+// }
 
 export type SetState<T> = (
   partial: Partial<T> | ((state: T) => Partial<T>)

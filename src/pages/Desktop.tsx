@@ -55,8 +55,8 @@ export const Desktop = () => {
         }
       >
         {/* Render all open windows */}
-        {openWindows.map((windowState) => (
-          <ResizableWindow key={windowState.id} windowId={windowState.id} />
+        {openWindows.map((window) => (
+          <ResizableWindow key={window.windowId} window={window} />
         ))}
 
         {/* {operatingSystem === "mac" && <Weather />} */}

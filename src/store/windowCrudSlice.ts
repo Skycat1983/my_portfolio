@@ -59,14 +59,14 @@ export const createWindowCrudSlice = (
   createOneWindow: (window: Window): boolean => {
     console.log(
       "createOneWindow in windowCrudSlice: creating window",
-      window.id
+      window.windowId
     );
 
     const currentState = get();
 
     // Check if window already exists
-    if (currentState.openWindows.find((w) => w.id === window.id)) {
-      console.log("createOneWindow: window already exists", window.id);
+    if (currentState.openWindows.find((w) => w.windowId === window.windowId)) {
+      console.log("createOneWindow: window already exists", window.windowId);
       return false;
     }
 
@@ -89,8 +89,13 @@ export const createWindowCrudSlice = (
 
     // Filter out windows that already exist
     const validWindows = windows.filter((window) => {
-      if (currentState.openWindows.find((w) => w.id === window.id)) {
-        console.log("createManyWindows: skipping existing window", window.id);
+      if (
+        currentState.openWindows.find((w) => w.windowId === window.windowId)
+      ) {
+        console.log(
+          "createManyWindows: skipping existing window",
+          window.windowId
+        );
         return false;
       }
       return true;
@@ -129,12 +134,12 @@ export const createWindowCrudSlice = (
     const updatedWindow = {
       ...windowToUpdate,
       ...updates,
-      id: windowToUpdate.id, // Prevent ID from being changed
+      windowId: windowToUpdate.windowId, // Prevent ID from being changed
     } as Window;
 
     set((state) => ({
       openWindows: state.openWindows.map((window) =>
-        window.id === windowToUpdate.id ? updatedWindow : window
+        window.windowId === windowToUpdate.windowId ? updatedWindow : window
       ),
       // Update nextZIndex if we're updating zIndex
       nextZIndex:
@@ -168,7 +173,7 @@ export const createWindowCrudSlice = (
           return {
             ...window,
             ...updates,
-            id: window.id, // Prevent ID from being changed
+            windowId: window.windowId, // Prevent ID from being changed
           } as Window;
         }
         return window;
@@ -196,7 +201,7 @@ export const createWindowCrudSlice = (
 
     set((state) => ({
       openWindows: state.openWindows.filter(
-        (window) => window.id !== windowToDelete.id
+        (window) => window.windowId !== windowToDelete.windowId
       ),
     }));
 

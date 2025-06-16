@@ -1,11 +1,11 @@
 import React from "react";
-import { useNewStore } from "../../hooks/useStore";
 import { useResizeWindow } from "../newWindow/useResizeWindow";
 import { WindowHeader } from "./WindowHeader";
+import type { Window } from "../../types/storeTypes";
 
 interface ResizableWindowProps {
-  windowId: string;
-  title?: string;
+  window: Window;
+  // title?: string;
   showCloseButton?: boolean;
   showMinimizeButton?: boolean;
   showMaximizeButton?: boolean;
@@ -13,21 +13,18 @@ interface ResizableWindowProps {
 }
 
 export const ResizableWindow: React.FC<ResizableWindowProps> = ({
-  windowId,
-  title,
+  window,
   showCloseButton = true,
   showMinimizeButton = false,
   showMaximizeButton = false,
   children,
 }) => {
-  const window = useNewStore((s) => s.getWindowById(windowId));
-  const { onResizeStart } = useResizeWindow(windowId);
+  const { windowId, title, width, height, x, y, zIndex, isMinimized } = window;
+  const { onResizeStart } = useResizeWindow(window.windowId);
 
   if (!window) {
     return null; // Window doesn't exist
   }
-
-  const { width, height, x, y, zIndex, isMinimized } = window;
 
   if (isMinimized) {
     return null; // Don't render minimized windows (or render as taskbar item)
