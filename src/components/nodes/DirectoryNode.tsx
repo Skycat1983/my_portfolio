@@ -22,13 +22,14 @@ type Props = { directory: DirectoryEntry };
 export const DirectoryNode = ({ directory }: Props) => {
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const openDirectory = useNewStore((s) => s.openDirectory);
+  // const openDirectory = useNewStore((s) => s.openDirectory);
+  const openWindow = useNewStore((s) => s.openWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
     console.log("Directory activate: opening directory", directory.id);
-    openDirectory(directory.id);
-  }, [directory.id, openDirectory]);
+    openWindow(directory.id);
+  }, [directory.id, openWindow]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeBehavior({
