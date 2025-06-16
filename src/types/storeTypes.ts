@@ -1,23 +1,145 @@
-import type { NodeMap } from "./nodeTypes";
+import type { DirectoryEntry, NodeEntry, NodeMap } from "./nodeTypes";
 import type { OperatingSystem } from "../store/systemSlice";
 
-// Window interface for the new window system
+// Full Window interface with ALL possible properties across all window types
 export interface Window {
   windowId: string;
   title: string;
-  nodeId: string;
+  nodeId: NodeEntry["id"];
   nodeType: string;
   width: number;
   height: number;
   x: number; // Window position X coordinate
   y: number; // Window position Y coordinate
   zIndex: number;
+
   // Optional: Window state flags (for future features)
   isMinimized?: boolean;
   isMaximized?: boolean;
   isResizing?: boolean;
-  // navigationHistory: string[];
-  // currentHistoryIndex: number;
+
+  // Directory-specific properties (optional on base Window)
+  currentPath?: string;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
+  navigationHistory?: string[];
+  currentHistoryIndex?: number;
+
+  // Browser-specific properties (optional on base Window)
+  url?: string;
+  bookmarks?: string[];
+
+  // Terminal-specific properties (optional on base Window)
+  workingDirectory?: string;
+  terminalHistory?: string[];
+
+  // Achievement window properties (optional on base Window)
+  achievements?: unknown[]; // Will be properly typed when achievement system is implemented
+}
+
+// Narrowed types for specific window types using utility types
+export type ApplicationWindow = Omit<
+  Window,
+  | "currentPath"
+  | "canGoBack"
+  | "canGoForward"
+  | "navigationHistory"
+  | "currentHistoryIndex"
+  | "url"
+  | "bookmarks"
+  | "workingDirectory"
+  | "terminalHistory"
+  | "achievements"
+>;
+
+export type DirectoryWindow = Required<
+  Pick<
+    Window,
+    | "windowId"
+    | "title"
+    | "nodeId"
+    | "nodeType"
+    | "width"
+    | "height"
+    | "x"
+    | "y"
+    | "zIndex"
+    | "currentPath"
+    | "canGoBack"
+    | "canGoForward"
+    | "navigationHistory"
+    | "currentHistoryIndex"
+  >
+> & {
+  nodeType: "directory";
+  nodeId: DirectoryEntry["id"];
+} & Pick<Window, "isMinimized" | "isMaximized" | "isResizing">;
+
+export type BrowserWindow = Required<
+  Pick<
+    Window,
+    | "windowId"
+    | "title"
+    | "nodeId"
+    | "nodeType"
+    | "width"
+    | "height"
+    | "x"
+    | "y"
+    | "zIndex"
+    | "url"
+  >
+> & {
+  nodeType: "browser";
+} & Pick<Window, "isMinimized" | "isMaximized" | "isResizing" | "bookmarks">;
+
+export type TerminalWindow = Required<
+  Pick<
+    Window,
+    | "windowId"
+    | "title"
+    | "nodeId"
+    | "nodeType"
+    | "width"
+    | "height"
+    | "x"
+    | "y"
+    | "zIndex"
+    | "workingDirectory"
+  >
+> & {
+  nodeType: "terminal";
+} & Pick<
+    Window,
+    "isMinimized" | "isMaximized" | "isResizing" | "terminalHistory"
+  >;
+
+export type AchievementWindow = Required<
+  Pick<
+    Window,
+    | "windowId"
+    | "title"
+    | "nodeId"
+    | "nodeType"
+    | "width"
+    | "height"
+    | "x"
+    | "y"
+    | "zIndex"
+  >
+> & {
+  nodeType: "achievements";
+} & Pick<Window, "isMinimized" | "isMaximized" | "isResizing" | "achievements">;
+
+// Legacy DirectoryWindow interface (can be removed once everything uses the new types)
+export interface DirectoryWindowLegacy extends Window {
+  nodeType: "directory";
+  nodeId: DirectoryEntry["id"];
+  currentPath: string;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  navigationHistory: string[];
+  currentHistoryIndex: number;
 }
 
 // Forward declare WindowData to avoid circular imports (legacy - for old windowSlice)
@@ -45,15 +167,6 @@ export interface BaseStoreState {
   // openWindows: WindowData[];
   // achievements: AchievementSlice;
 }
-
-// export interface StoreStateNew {
-//   operatingSystem: OperatingSystem;
-//   nodeMap: NodeMap;
-//   rootId: string;
-//   selectedNodeId: string | null;
-//   selectedNodeIds: string[];
-//   windows: Window[];
-// }
 
 export type SetState<T> = (
   partial: Partial<T> | ((state: T) => Partial<T>)
