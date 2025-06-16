@@ -32,6 +32,10 @@ export interface WindowOperationsActions {
     height: number
   ) => boolean;
   moveWindow: (windowId: Window["id"], x: number, y: number) => boolean;
+  setWindowBounds: (
+    windowId: Window["id"],
+    bounds: { x: number; y: number; width: number; height: number }
+  ) => boolean;
 
   // Complex business operations
   openOrFocusWindow: (nodeId: WindowedNode["id"]) => void;
@@ -144,17 +148,29 @@ export const createWindowOperationsSlice = (
   },
 
   /**
-   * Move a window to specific coordinates (when we add x,y to Window interface)
+   * Move a window to specific coordinates
    */
   moveWindow: (windowId: Window["id"], x: number, y: number): boolean => {
     console.log("moveWindow: moving window", windowId, "to", x, ",", y);
 
-    // Note: This assumes we'll add x,y coordinates to Window interface later
+    return get().updateOneWindow((window: Window) => window.id === windowId, {
+      x,
+      y,
+    });
+  },
+
+  /**
+   * Set window bounds (position + size) in one operation
+   */
+  setWindowBounds: (
+    windowId: Window["id"],
+    bounds: { x: number; y: number; width: number; height: number }
+  ): boolean => {
+    console.log("setWindowBounds: setting bounds for window", windowId, bounds);
+
     return get().updateOneWindow(
       (window: Window) => window.id === windowId,
-      {
-        /* x, y */
-      } // Placeholder for when we add position
+      bounds
     );
   },
 
@@ -188,14 +204,19 @@ export const createWindowOperationsSlice = (
       return;
     }
 
-    // Create new window
+    // Create new window with default position
     const newWindow: Window = {
       id: `window-${nodeId}-${Date.now()}`, // Unique window ID
       nodeId,
       nodeType: node.type,
       width: 800,
       height: 600,
+      x: 100, // Default X position
+      y: 100, // Default Y position
       zIndex: state.nextZIndex,
+      isMinimized: false,
+      isMaximized: false,
+      isResizing: false,
     };
 
     state.createOneWindow(newWindow);
@@ -210,32 +231,27 @@ export const createWindowOperationsSlice = (
   },
 
   /**
-   * Minimize a window (when we add minimized state)
+   * Minimize a window
    */
   minimizeWindow: (windowId: Window["id"]): boolean => {
     console.log("minimizeWindow: minimizing window", windowId);
 
-    // Note: This assumes we'll add a 'minimized' property to Window interface
-    return get().updateOneWindow(
-      (window: Window) => window.id === windowId,
-      {
-        /* minimized: true */
-      } // Placeholder for when we add window states
-    );
+    return get().updateOneWindow((window: Window) => window.id === windowId, {
+      isMinimized: true,
+      isMaximized: false,
+    });
   },
 
   /**
-   * Maximize a window (when we add maximized state)
+   * Maximize a window
    */
   maximizeWindow: (windowId: Window["id"]): boolean => {
     console.log("maximizeWindow: maximizing window", windowId);
 
-    return get().updateOneWindow(
-      (window: Window) => window.id === windowId,
-      {
-        /* maximized: true, minimized: false */
-      } // Placeholder
-    );
+    return get().updateOneWindow((window: Window) => window.id === windowId, {
+      isMaximized: true,
+      isMinimized: false,
+    });
   },
 
   /**
@@ -244,12 +260,10 @@ export const createWindowOperationsSlice = (
   restoreWindow: (windowId: Window["id"]): boolean => {
     console.log("restoreWindow: restoring window", windowId);
 
-    return get().updateOneWindow(
-      (window: Window) => window.id === windowId,
-      {
-        /* maximized: false, minimized: false */
-      } // Placeholder
-    );
+    return get().updateOneWindow((window: Window) => window.id === windowId, {
+      isMaximized: false,
+      isMinimized: false,
+    });
   },
 
   /**
@@ -264,14 +278,11 @@ export const createWindowOperationsSlice = (
     const window = get().findOneWindow((w: Window) => w.id === windowId);
     if (!window) return false;
 
-    // Note: This assumes we'll add minimized property
-    // const newMinimizedState = !window.minimized;
-    return get().updateOneWindow(
-      (w: Window) => w.id === windowId,
-      {
-        /* minimized: newMinimizedState */
-      } // Placeholder
-    );
+    const newMinimizedState = !window.isMinimized;
+    return get().updateOneWindow((w: Window) => w.id === windowId, {
+      isMinimized: newMinimizedState,
+      isMaximized: false,
+    });
   },
 
   /**

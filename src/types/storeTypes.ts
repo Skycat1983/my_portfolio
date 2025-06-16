@@ -8,7 +8,13 @@ export interface Window {
   nodeType: string;
   width: number;
   height: number;
+  x: number; // Window position X coordinate
+  y: number; // Window position Y coordinate
   zIndex: number;
+  // Optional: Window state flags (for future features)
+  isMinimized?: boolean;
+  isMaximized?: boolean;
+  isResizing?: boolean;
   // navigationHistory: string[];
   // currentHistoryIndex: number;
 }

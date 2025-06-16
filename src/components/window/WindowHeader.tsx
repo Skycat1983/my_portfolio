@@ -1,111 +1,119 @@
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import React from "react";
+import { useNewStore } from "../../hooks/useStore";
+import { useDragWindow } from "../newWindow/useDragWindow";
 
-export const WindowHeader = ({
-  title,
-  isDragging,
-  onPointerDown,
-  onClose,
-  onBack,
-  onForward,
-  canGoBack,
-  canGoForward,
-}: {
+interface WindowHeaderProps {
+  windowId: string;
   title?: string;
-  isDragging: boolean;
-  onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void;
-  onClose?: () => void;
-  onBack?: () => void;
-  onForward?: () => void;
-  canGoBack?: boolean;
-  canGoForward?: boolean;
+  showCloseButton?: boolean;
+  showMinimizeButton?: boolean;
+  showMaximizeButton?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const WindowHeader: React.FC<WindowHeaderProps> = ({
+  windowId,
+  title,
+  showCloseButton = true,
+  showMinimizeButton = false,
+  showMaximizeButton = false,
+  className = "",
+  children,
 }) => {
-  const titleBarHeight = 42;
+  const window = useNewStore((s) => s.getWindowById(windowId));
+  const focusWindow = useNewStore((s) => s.focusWindow);
+  const closeWindow = useNewStore((s) => s.closeWindow);
+  const minimizeWindow = useNewStore((s) => s.minimizeWindow);
+  const maximizeWindow = useNewStore((s) => s.maximizeWindow);
+  const restoreWindow = useNewStore((s) => s.restoreWindow);
+  const { onDragStart } = useDragWindow(windowId);
 
-  const titleBarStyle: React.CSSProperties = {
-    height: titleBarHeight,
-    background: "linear-gradient(to bottom, #374151, #1f2937)", // gray-700 to gray-800
-    borderBottom: "1px solid #4b5563", // gray-600
-    cursor: isDragging ? "move" : "default",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    fontFamily: "system-ui, -apple-system, sans-serif",
-    fontSize: "13px",
-    fontWeight: "500",
-    color: "#f3f4f6", // gray-100
-    userSelect: "none",
-    padding: "0 8px",
+  if (!window) {
+    return null;
+  }
+
+  const displayTitle = title || `Window ${windowId.slice(-8)}`;
+
+  const handleHeaderClick = () => {
+    focusWindow(windowId);
   };
-
-  const closeButtonStyle: React.CSSProperties = {
-    height: "16px",
-    width: "16px",
-    marginRight: "16px",
-    marginLeft: "10px",
-    borderRadius: "50%",
-    padding: "2px",
-    background: "#ef4444", // red-500
-    border: "none",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "white",
-  };
-
-  const navButtonStyle = (enabled: boolean): React.CSSProperties => ({
-    height: "20px",
-    width: "20px",
-    padding: "2px",
-    borderRadius: "4px",
-    background: enabled ? "#4b5563" : "transparent",
-    border: "none",
-    cursor: enabled ? "pointer" : "default",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: enabled ? "#f3f4f6" : "#6b7280",
-    marginLeft: "4px",
-  });
 
   const handleCloseClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering drag
-    onClose?.();
+    e.stopPropagation();
+    closeWindow(windowId);
   };
 
-  const handleBackClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering drag
-    if (canGoBack) onBack?.();
+  const handleMinimizeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    minimizeWindow(windowId);
   };
 
-  const handleForwardClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering drag
-    if (canGoForward) onForward?.();
+  const handleMaximizeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.isMaximized) {
+      restoreWindow(windowId);
+    } else {
+      maximizeWindow(windowId);
+    }
+  };
+
+  const handleDragStart = (e: React.PointerEvent) => {
+    // Focus window first, then start drag
+    focusWindow(windowId);
+    onDragStart(e);
   };
 
   return (
-    <div style={titleBarStyle} onPointerDown={onPointerDown}>
-      {onClose && (
-        <X
-          style={closeButtonStyle}
-          onClick={handleCloseClick}
-          aria-label="Close window"
-        />
-      )}
+    <div
+      className={`bg-gray-100 border-b border-gray-300 p-2 flex justify-between items-center cursor-move select-none ${className}`}
+      onClick={handleHeaderClick}
+      onPointerDown={handleDragStart}
+    >
+      {/* Left side - Title and custom content */}
+      <div className="flex items-center flex-1 min-w-0">
+        <span className="text-sm font-medium text-gray-700 truncate">
+          {displayTitle}
+        </span>
+        {children && <div className="ml-2 flex items-center">{children}</div>}
+      </div>
 
-      {/* Title */}
-      <div className="font-bold">{title || "Window"}</div>
+      {/* Right side - Window controls */}
+      <div className="flex items-center space-x-1 ml-2">
+        {showMinimizeButton && (
+          <button
+            onClick={handleMinimizeClick}
+            className="text-gray-500 hover:text-blue-600 text-sm font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200"
+            aria-label="Minimize window"
+            title="Minimize"
+          >
+            −
+          </button>
+        )}
 
-      {/* Navigation buttons */}
-      <div className="flex items-center">
-        <ChevronLeft
-          style={navButtonStyle(canGoBack || false)}
-          onClick={handleBackClick}
-        />
-        <ChevronRight
-          style={navButtonStyle(canGoForward || false)}
-          onClick={handleForwardClick}
-        />
+        {showMaximizeButton && (
+          <button
+            onClick={handleMaximizeClick}
+            className="text-gray-500 hover:text-blue-600 text-sm font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200"
+            aria-label={
+              window.isMaximized ? "Restore window" : "Maximize window"
+            }
+            title={window.isMaximized ? "Restore" : "Maximize"}
+          >
+            {window.isMaximized ? "⧉" : "□"}
+          </button>
+        )}
+
+        {showCloseButton && (
+          <button
+            onClick={handleCloseClick}
+            className="text-gray-500 hover:text-red-500 text-lg font-bold w-6 h-6 flex items-center justify-center rounded hover:bg-red-100"
+            aria-label="Close window"
+            title="Close"
+          >
+            ×
+          </button>
+        )}
       </div>
     </div>
   );

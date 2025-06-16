@@ -2,11 +2,8 @@ import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { WindowLayout } from "../components/window/WindowLayout";
 import { useNewStore } from "../hooks/useStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
-import { Terminal } from "../components/terminal/Terminal";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
-import Browser from "../components/browser/Browser";
-import { AchievementsWindow } from "../components/window/content/AchievementsWindow";
-import { NewWindow } from "../components/newWindow/NewWindow";
+import { ResizableWindow } from "../components/window/ResizableWindow";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
@@ -59,22 +56,10 @@ export const Desktop = () => {
       >
         {/* Render all open windows */}
         {openWindows.map((windowState) => (
-          <NewWindow key={windowState.id} window={windowState} />
+          <ResizableWindow key={windowState.id} windowId={windowState.id} />
         ))}
 
-        {/* {openWindows.map((windowState) => (
-          <Window
-            key={windowState.id}
-            nodeId={windowState.id}
-            zIndex={windowState.zIndex}
-            dragHandlers={dragHandlers}
-          />
-        ))} */}
-
-        {/* {isTerminalOpen && <Terminal />} */}
-        {/* {isBrowserOpen && <Browser />} */}
         {/* {operatingSystem === "mac" && <Weather />} */}
-        {/* <AchievementsWindow /> */}
         <WindowLayout nodes={desktopChildren} layout="desktop" />
       </div>
     </div>
