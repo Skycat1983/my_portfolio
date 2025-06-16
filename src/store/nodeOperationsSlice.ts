@@ -1,8 +1,8 @@
 import type { NodeEntry, DirectoryEntry } from "../types/nodeTypes";
-import type { SetState, GetState, BaseStoreState } from "../types/storeTypes";
+import type { SetState, GetState } from "../types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 
-export interface NodeOperationsSlice {
+export interface NodeOperationsActions {
   // ID-based accessors (built from predicates)
   getNodeByID: (id: NodeEntry["id"]) => NodeEntry | undefined;
   getChildrenByParentID: (parentId: DirectoryEntry["id"]) => NodeEntry[];
@@ -31,12 +31,14 @@ export interface NodeOperationsSlice {
   isNodeInTrash: (nodeId: NodeEntry["id"]) => boolean;
 }
 
-export interface StoreWithCrud extends BaseStoreState, NodeCrudSlice {}
+export type NodeOperationsSlice = NodeOperationsActions;
+
+// export interface NodeOperationsSlice = extends BaseStoreState, NodeCrudSlice {}
 
 // Node operations slice - builds ID-based operations from predicate-based CRUD
 export const createNodeOperationsSlice = (
-  set: SetState<StoreWithCrud>,
-  get: GetState<StoreWithCrud>
+  set: SetState<NodeCrudSlice>,
+  get: GetState<NodeCrudSlice>
 ): NodeOperationsSlice => ({
   /**
    * Get a node by its ID (builds on findOneNode)

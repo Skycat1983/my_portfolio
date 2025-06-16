@@ -3,7 +3,7 @@ import {
   createEasterEggSlice,
   type EasterEggSlice,
 } from "../store/easterEggSlice";
-import { createWindowSlice, type WindowSlice } from "../store/windowSlice";
+// import { createWindowSlice, type WindowSlice } from "../store/windowSlice";
 import {
   createSelectionSlice,
   type SelectionSlice,
@@ -32,6 +32,10 @@ import {
   createNodeBusinessSlice,
   type NodeBusinessSlice,
 } from "../store/nodeBusinessSlice";
+import {
+  createNewWindowSlice,
+  type WindowSliceNew,
+} from "../store/newWindowSlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
@@ -41,7 +45,8 @@ export interface NewDesktopStore
     AchievementSlice,
     SelectionSlice,
     EasterEggSlice,
-    WindowSlice,
+    WindowSliceNew,
+    // WindowSlice, // Temporarily disabled to avoid conflicts
     TerminalSlice,
     SystemSlice,
     BrowserSlice,
@@ -61,11 +66,11 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // {easter egg}
   // {achievements}
   ...createAchievementSlice(set),
+  ...createNewWindowSlice(set, get),
   // ...createNodeSlice(set, get),
   ...createEasterEggSlice(set, get),
-  ...createWindowSlice(set, get),
+  // ...createWindowSlice(set, get), // Temporarily disabled to avoid conflicts
   ...createTerminalSlice(set, get),
   ...createBrowserSlice(set),
   ...createWeatherSlice(set),
-  ...createAchievementSlice(set),
 }));

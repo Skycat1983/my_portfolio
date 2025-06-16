@@ -1,7 +1,19 @@
 import type { NodeMap } from "./nodeTypes";
 import type { OperatingSystem } from "../store/systemSlice";
 
-// Forward declare WindowData to avoid circular imports
+// Window interface for the new window system
+export interface Window {
+  id: string;
+  nodeId: string;
+  nodeType: string;
+  width: number;
+  height: number;
+  zIndex: number;
+  // navigationHistory: string[];
+  // currentHistoryIndex: number;
+}
+
+// Forward declare WindowData to avoid circular imports (legacy - for old windowSlice)
 export interface WindowData {
   id: string;
   currentNodeId: string;
@@ -16,13 +28,24 @@ export interface BaseStoreState {
   rootId: string;
   selectedNodeId: string | null;
   selectedNodeIds: string[];
-  openWindows: WindowData[];
+  openWindows: Window[];
   nextZIndex: number;
   isTerminalOpen: boolean;
   operatingSystem: OperatingSystem;
   browserZIndex: number;
   terminalZIndex: number;
+  // Legacy properties for old windowSlice (temporarily commented out)
+  // openWindows: WindowData[];
   // achievements: AchievementSlice;
+}
+
+export interface StoreStateNew {
+  operatingSystem: OperatingSystem;
+  nodeMap: NodeMap;
+  rootId: string;
+  selectedNodeId: string | null;
+  selectedNodeIds: string[];
+  windows: Window[];
 }
 
 export type SetState<T> = (
