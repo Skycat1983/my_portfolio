@@ -5,18 +5,11 @@ import type { Window } from "../../types/storeTypes";
 
 interface ResizableWindowProps {
   window: Window;
-  // title?: string;
-  showCloseButton?: boolean;
-  showMinimizeButton?: boolean;
-  showMaximizeButton?: boolean;
   children?: React.ReactNode;
 }
 
 export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   window,
-  showCloseButton = true,
-  showMinimizeButton = false,
-  showMaximizeButton = false,
   children,
 }) => {
   const { windowId, title, width, height, x, y, zIndex, isMinimized } = window;
@@ -45,9 +38,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
       <WindowHeader
         windowId={windowId}
         title={title}
-        showCloseButton={showCloseButton}
-        showMinimizeButton={showMinimizeButton}
-        showMaximizeButton={showMaximizeButton}
+        nodeType={window.nodeType}
       />
 
       {/* Window Content */}
