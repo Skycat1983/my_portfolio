@@ -23,13 +23,13 @@ export const DirectoryNode = ({ directory }: Props) => {
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   // const openDirectory = useNewStore((s) => s.openDirectory);
-  const openWindow = useNewStore((s) => s.openWindow);
+  const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
     console.log("Directory activate: opening directory", directory.id);
-    openWindow(directory.id);
-  }, [directory.id, openWindow]);
+    openOrFocusWindow(directory.id);
+  }, [directory.id, openOrFocusWindow]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeBehavior({
