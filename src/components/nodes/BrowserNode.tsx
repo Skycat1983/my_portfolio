@@ -17,13 +17,15 @@ type Props = { browser: BrowserEntry };
 export const BrowserNode = ({ browser }: Props) => {
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const openBrowser = useNewStore((s) => s.openBrowser);
+  // const openBrowser = useNewStore((s) => s.openBrowser);
+  const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
     console.log("Browser activate: opening browser");
-    openBrowser();
-  }, [openBrowser]);
+    // openBrowser();
+    openOrFocusWindow(browser.id);
+  }, [openOrFocusWindow, browser.id]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeBehavior({

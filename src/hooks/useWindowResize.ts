@@ -1,187 +1,90 @@
-import { useState, useRef, useEffect } from "react";
+import { useCallback } from "react";
+import { useNewStore } from "./useStore";
 
-type ResizeMode =
-  | null
-  | "resize-e"
-  | "resize-s"
-  | "resize-w"
-  | "resize-se"
-  | "resize-sw";
+type ResizeHandle = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
 
-interface UseResizeProps {
-  titleBarHeight: number;
-  onSizeChange: (size: { w: number; h: number }) => void;
-  onPositionChange: (pos: { x: number; y: number }) => void;
-  currentPos: { x: number; y: number };
-  currentSize: { w: number; h: number };
-}
+export function useResizeWindow(windowId: string) {
+  // Get the window data using the proper store method
+  const window = useNewStore((s) => s.getWindowById(windowId));
+  const setWindowBounds = useNewStore((s) => s.setWindowBounds);
 
-export const useResize = ({
-  titleBarHeight,
-  onSizeChange,
-  onPositionChange,
-  currentPos,
-  currentSize,
-}: UseResizeProps) => {
-  const [resizeMode, setResizeMode] = useState<ResizeMode>(null);
-  const [hoverCursor, setHoverCursor] = useState<string>("default");
-  const startRef = useRef({ mouseX: 0, mouseY: 0, x: 0, y: 0, w: 0, h: 0 });
-
-  useEffect(() => {
-    function onPointerMove(e: PointerEvent) {
-      e.preventDefault();
-      const dx = e.clientX - startRef.current.mouseX;
-      const dy = e.clientY - startRef.current.mouseY;
-
-      if (resizeMode?.startsWith("resize")) {
-        let { x, w, h } = startRef.current;
-        const { y } = startRef.current;
-        let positionChanged = false;
-
-        if (resizeMode.includes("e")) w = Math.max(100, w + dx);
-        if (resizeMode.includes("s")) h = Math.max(100, h + dy);
-        if (resizeMode.includes("w")) {
-          // Keep east edge fixed, only move west edge
-          const eastEdge = startRef.current.x + startRef.current.w; // Fixed east position
-          const newW = Math.max(100, startRef.current.w - dx); // Original calculation was correct
-          x = eastEdge - newW; // Adjust x to keep east edge fixed
-          w = newW;
-          positionChanged = true;
-        }
-
-        onSizeChange({ w, h });
-        if (positionChanged) {
-          onPositionChange({ x, y });
-        }
+  const onResizeStart = useCallback(
+    (handle: ResizeHandle) => (e: React.PointerEvent) => {
+      // Early return if window doesn't exist
+      if (!window) {
+        console.log("useResizeWindow: window not found", windowId);
+        return;
       }
-    }
 
-    function onPointerUp() {
-      setResizeMode(null);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-    }
-
-    if (resizeMode) {
-      window.addEventListener("pointermove", onPointerMove);
-      window.addEventListener("pointerup", onPointerUp);
-    }
-
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-    };
-  }, [resizeMode, onSizeChange, onPositionChange]);
-
-  // Handle hover on window edges for resize cursors
-  const handleWindowPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (resizeMode) return; // Don't change cursor while resizing
-
-    const { offsetX, offsetY } = e.nativeEvent;
-    const { clientWidth: w, clientHeight: h } = e.currentTarget;
-    const edge = 8;
-
-    // Don't show resize cursors in the title bar area
-    if (offsetY <= titleBarHeight) {
-      setHoverCursor("default");
-      return;
-    }
-
-    let cursor = "default";
-    // Check corners first
-    if (offsetX < edge && offsetY > h - edge) {
-      cursor = "sw-resize";
-    } else if (offsetX > w - edge && offsetY > h - edge) {
-      cursor = "se-resize";
-    }
-    // Then check edges (excluding corners)
-    else if (
-      offsetX < edge &&
-      offsetY > titleBarHeight + edge &&
-      offsetY <= h - edge
-    ) {
-      cursor = "w-resize";
-    } else if (
-      offsetX > w - edge &&
-      offsetY > titleBarHeight + edge &&
-      offsetY <= h - edge
-    ) {
-      cursor = "e-resize";
-    } else if (offsetY > h - edge && offsetX >= edge && offsetX <= w - edge) {
-      cursor = "s-resize";
-    }
-
-    setHoverCursor(cursor);
-  };
-
-  // Handle resize from window edges only (not title bar or top edge)
-  const handleWindowPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    const { offsetX, offsetY } = e.nativeEvent;
-    const { clientWidth: w, clientHeight: h } = e.currentTarget;
-    const edge = 8;
-
-    // Completely block any resize interaction in title bar area
-    if (offsetY <= titleBarHeight) {
-      return;
-    }
-
-    let newMode: ResizeMode = null;
-
-    // Check corners first
-    if (offsetX < edge && offsetY > h - edge) {
-      newMode = "resize-sw"; // Bottom-left corner
-    } else if (offsetX > w - edge && offsetY > h - edge) {
-      newMode = "resize-se"; // Bottom-right corner
-    }
-    // Then check edges (excluding corners)
-    else if (
-      offsetX < edge &&
-      offsetY > titleBarHeight + edge &&
-      offsetY <= h - edge
-    ) {
-      newMode = "resize-w"; // Left edge (excluding corners)
-    } else if (
-      offsetX > w - edge &&
-      offsetY > titleBarHeight + edge &&
-      offsetY <= h - edge
-    ) {
-      newMode = "resize-e"; // Right edge (excluding corners)
-    } else if (offsetY > h - edge && offsetX >= edge && offsetX <= w - edge) {
-      newMode = "resize-s"; // Bottom edge (excluding corners)
-    }
-
-    if (newMode) {
       e.preventDefault();
-      e.stopPropagation();
-      e.currentTarget.setPointerCapture(e.pointerId);
-      startRef.current = {
-        mouseX: e.clientX,
-        mouseY: e.clientY,
-        x: currentPos.x,
-        y: currentPos.y,
-        w: currentSize.w,
-        h: currentSize.h,
-      };
-      setResizeMode(newMode);
-    }
-  };
+      const { width, height, x, y } = window;
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const startW = width;
+      const startH = height;
+      const startLeft = x;
+      const startTop = y;
 
-  // Reset cursor when leaving the window during resize operations
-  const handlePointerLeave = () => {
-    if (!resizeMode) {
-      setHoverCursor("default");
-    }
-  };
+      function onPointerMove(moveEvent: PointerEvent) {
+        const dx = moveEvent.clientX - startX;
+        const dy = moveEvent.clientY - startY;
 
-  const cursor = resizeMode
-    ? `${resizeMode.replace("resize-", "")}-resize`
-    : hoverCursor;
+        let newW = startW;
+        let newH = startH;
+        let newX = startLeft;
+        let newY = startTop;
 
-  return {
-    cursor,
-    isResizing: !!resizeMode,
-    handleWindowPointerMove,
-    handleWindowPointerDown,
-    handlePointerLeave,
-  };
-};
+        // East edge (right side)
+        if (handle.includes("e")) {
+          newW = startW + dx;
+        }
+        // South edge (bottom)
+        if (handle.includes("s")) {
+          newH = startH + dy;
+        }
+        // West edge (left side)
+        if (handle.includes("w")) {
+          newW = startW - dx;
+          newX = startLeft + dx;
+        }
+        // North edge (top)
+        if (handle.includes("n")) {
+          newH = startH - dy;
+          newY = startTop + dy;
+        }
+
+        // Optional: clamp to min/max dimensions
+        const minWidth = 200;
+        const minHeight = 150;
+        newW = Math.max(minWidth, newW);
+        newH = Math.max(minHeight, newH);
+
+        // Prevent the window from going off-screen
+        newX = Math.max(0, newX);
+        newY = Math.max(0, newY);
+
+        // Update window bounds using our store method
+        setWindowBounds(windowId, {
+          width: newW,
+          height: newH,
+          x: newX,
+          y: newY,
+        });
+      }
+
+      function onPointerUp() {
+        document.removeEventListener("pointermove", onPointerMove);
+        document.removeEventListener("pointerup", onPointerUp);
+
+        // Optional: Mark resize as complete
+        // You could add a flag to indicate resizing has stopped
+      }
+
+      document.addEventListener("pointermove", onPointerMove);
+      document.addEventListener("pointerup", onPointerUp);
+    },
+    [window, setWindowBounds, windowId]
+  );
+
+  return { onResizeStart };
+}

@@ -1,8 +1,8 @@
 import React from "react";
 import { useNewStore } from "../../hooks/useStore";
-import { useDragWindow } from "../newWindow/useDragWindow";
+import { useDragWindow } from "../../hooks/useWindowDrag";
 import { WindowControls } from "./WindowControls";
-import { DirectoryNavigation } from "./DirectoryNavigation";
+import { DirectoryNavigation } from "./WindowNavigation";
 
 interface WindowHeaderProps {
   windowId: string;

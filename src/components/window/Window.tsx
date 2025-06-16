@@ -1,156 +1,112 @@
-import { useState, useMemo } from "react";
-import ResizeWrapper from "./WindowWrapper";
-import { WindowFrame } from "./WindowFrame";
-import { WindowContent } from "./WindowContent";
-import { useNewStore } from "../../hooks/useStore";
-import {
-  calculateWindowSize,
-  calculateWindowPosition,
-  getWindowSizeCategory,
-} from "../../utils/windowSizing";
-import { type DragHandlers } from "../../hooks/useNodeDrag";
+import React from "react";
+import { useResizeWindow } from "../../hooks/useWindowResize";
+import { WindowHeader } from "./WindowHeader";
+import type { Window } from "../../types/storeTypes";
 
-interface WindowProps {
-  nodeId: string;
-  zIndex: number;
-  dragHandlers?: DragHandlers;
+interface ResizableWindowProps {
+  window: Window;
+  children?: React.ReactNode;
 }
 
-// Main window component with both drag and resize functionality
-export const Window = ({ nodeId, zIndex, dragHandlers }: WindowProps) => {
-  const titleBarHeight = 28;
+export const ResizableWindow: React.FC<ResizableWindowProps> = ({
+  window,
+  children,
+}) => {
+  const { windowId, title, width, height, x, y, zIndex, isMinimized } = window;
+  const { onResizeStart } = useResizeWindow(window.windowId);
 
-  const getNodeByID = useNewStore((s) => s.getNodeByID);
-  const getParentByChildID = useNewStore((s) => s.getParentByChildID);
-  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
-
-  const {
-    closeWindow,
-    focusWindow,
-    getWindowByNodeId,
-    canGoBack,
-    canGoForward,
-    goBack,
-    goForward,
-    rootId,
-    openWindows,
-  } = useNewStore();
-
-  const node = getNodeByID(nodeId);
-  const windowState = getWindowByNodeId(nodeId);
-
-  // Get the current node being viewed (for title and navigation)
-  const currentNodeId = windowState?.currentNodeId || nodeId;
-  const currentNode = getNodeByID(currentNodeId);
-
-  // Calculate optimal size and position based on content
-  const { optimalSize, optimalPosition } = useMemo(() => {
-    console.log(
-      "Window useMemo: calculating optimal size and position for nodeId",
-      nodeId
-    );
-
-    if (!currentNode) {
-      return {
-        optimalSize: { w: 400, h: 300 },
-        optimalPosition: { x: 100, y: 100 },
-      };
-    }
-
-    // Get children to calculate content size
-    const children =
-      currentNode.type === "directory"
-        ? getChildrenByParentID(currentNodeId)
-        : [currentNode];
-    const itemCount = children.length;
-    const sizeCategory = getWindowSizeCategory(itemCount);
-
-    console.log(
-      "Window useMemo: found",
-      itemCount,
-      "items, size category:",
-      sizeCategory
-    );
-
-    // Calculate size based on content
-    const optimalSize = calculateWindowSize(itemCount);
-
-    // Calculate position based on window index to stagger them
-    const windowIndex = openWindows.findIndex((w) => w.id === nodeId);
-    const optimalPosition = calculateWindowPosition(
-      windowIndex >= 0 ? windowIndex : openWindows.length
-    );
-
-    return { optimalSize, optimalPosition };
-  }, [nodeId, currentNodeId, currentNode, getChildrenByParentID, openWindows]);
-
-  // Use calculated values as initial state, but allow user to override via resize/drag
-  const [pos, setPos] = useState(optimalPosition);
-  const [size, setSize] = useState(optimalSize);
-
-  if (!node) {
-    console.log("Window: Node not found for nodeId", nodeId);
-    return null;
+  if (!window) {
+    return null; // Window doesn't exist
   }
 
-  const handleSizeChange = (newSize: { w: number; h: number }) => {
-    setSize(newSize);
-  };
-
-  const handlePositionChange = (newPos: { x: number; y: number }) => {
-    setPos(newPos);
-  };
-
-  const handleClose = () => {
-    console.log("handleClose in Window: closing window for nodeId", nodeId);
-    closeWindow(nodeId);
-  };
-
-  const handleFocus = () => {
-    console.log("handleFocus in Window: focusing window for nodeId", nodeId);
-    focusWindow(nodeId);
-  };
-
-  const handleBack = () => {
-    console.log("handleBack in Window: going back for nodeId", nodeId);
-    goBack(nodeId);
-  };
-
-  const handleForward = () => {
-    console.log("handleForward in Window: going forward for nodeId", nodeId);
-    goForward(nodeId);
-  };
-
-  // Check navigation availability with the same logic as WindowContent
-  const parent = getParentByChildID(currentNodeId);
-  const canShowBack = canGoBack(nodeId) && parent && parent.id !== rootId;
-  const canShowForward = canGoForward(nodeId);
+  if (isMinimized) {
+    return null; // Don't render minimized windows (or render as taskbar item)
+  }
 
   return (
-    <div style={{ zIndex }} onClick={handleFocus} className="absolute">
-      <ResizeWrapper
-        pos={pos}
-        size={size}
-        titleBarHeight={titleBarHeight}
-        onSizeChange={handleSizeChange}
-        onPositionChange={handlePositionChange}
-      >
-        <WindowFrame
-          pos={pos}
-          size={size}
-          title={currentNode?.label || node.label}
-          onPositionChange={handlePositionChange}
-          onClose={handleClose}
-          onBack={handleBack}
-          onForward={handleForward}
-          canGoBack={canShowBack}
-          canGoForward={canShowForward}
-        >
-          <WindowContent nodeId={nodeId} dragHandlers={dragHandlers} />
-        </WindowFrame>
-      </ResizeWrapper>
+    <div
+      className="absolute border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden"
+      style={{
+        left: x,
+        top: y,
+        width,
+        height,
+        zIndex,
+      }}
+    >
+      {/* Window Header with drag functionality */}
+      <WindowHeader
+        windowId={windowId}
+        title={title}
+        nodeType={window.nodeType}
+      />
+
+      {/* Window Content */}
+      <div className="p-4 h-full overflow-auto">
+        {children || (
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Test Window</h3>
+            <p>Window ID: {windowId}</p>
+            <p>
+              Position: ({x}, {y})
+            </p>
+            <p>
+              Size: {width} × {height}
+            </p>
+            <p>Z-Index: {zIndex}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Resize Handles */}
+      {/* North handle */}
+      <div
+        className="absolute top-0 left-2 right-2 h-2 cursor-n-resize"
+        onPointerDown={onResizeStart("n")}
+      />
+
+      {/* South handle */}
+      <div
+        className="absolute bottom-0 left-2 right-2 h-2 cursor-s-resize"
+        onPointerDown={onResizeStart("s")}
+      />
+
+      {/* East handle */}
+      <div
+        className="absolute top-2 bottom-2 right-0 w-2 cursor-e-resize"
+        onPointerDown={onResizeStart("e")}
+      />
+
+      {/* West handle */}
+      <div
+        className="absolute top-2 bottom-2 left-0 w-2 cursor-w-resize"
+        onPointerDown={onResizeStart("w")}
+      />
+
+      {/* Corner handles */}
+      {/* Northwest */}
+      <div
+        className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize"
+        onPointerDown={onResizeStart("nw")}
+      />
+
+      {/* Northeast */}
+      <div
+        className="absolute top-0 right-0 w-2 h-2 cursor-ne-resize"
+        onPointerDown={onResizeStart("ne")}
+      />
+
+      {/* Southwest */}
+      <div
+        className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize"
+        onPointerDown={onResizeStart("sw")}
+      />
+
+      {/* Southeast */}
+      <div
+        className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize"
+        onPointerDown={onResizeStart("se")}
+      />
     </div>
   );
 };
-
-export default Window;

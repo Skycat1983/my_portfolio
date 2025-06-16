@@ -1,5 +1,5 @@
 import { useNewStore } from "../../hooks/useStore";
-import { WindowLayout } from "./WindowLayout";
+import { WindowLayout } from "../windowContent/directory/Directory";
 import type { DragHandlers } from "../../hooks/useNodeDrag";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 
