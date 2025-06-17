@@ -2,8 +2,8 @@ import type { BaseStoreState, SetState, GetState } from "../types/storeTypes";
 import type { NodeEntry, DirectoryEntry } from "../types/nodeTypes";
 
 interface TerminalState {
-  isTerminalOpen: boolean;
-  terminalZIndex: number;
+  // isTerminalOpen: boolean;
+  // terminalZIndex: number;
   currentWorkingDirectory: string;
   terminalHistory: string[];
 }
@@ -40,8 +40,8 @@ export const createTerminalSlice = (
   get: GetState<BaseStoreState>
 ): TerminalSlice => ({
   // Terminal state
-  isTerminalOpen: false,
-  terminalZIndex: 1000,
+  // isTerminalOpen: false,
+  // terminalZIndex: 1000,
   currentWorkingDirectory: "", // Will be set to root directory on init
   terminalHistory: [],
 
