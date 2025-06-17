@@ -1,7 +1,7 @@
 // interface AchievementsState {}
 
 import type { SetState } from "../../types/storeTypes";
-import type { NewDesktopStore } from "../useStore";
+import type { NewDesktopStore } from "../../hooks/useStore";
 
 // Download 12 eggs.
 // Delete my portfolio.

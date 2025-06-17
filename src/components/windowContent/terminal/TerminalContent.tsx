@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { useNewStore } from "../../../store/useStore";
+import { useNewStore } from "../../../hooks/useStore";
 import { useTerminalState } from "./hooks/useTerminalState";
 import { useTerminalHistory } from "./hooks/useTerminalHistory";
 import { useTerminalKeyboard } from "./hooks/useTerminalKeyboard";

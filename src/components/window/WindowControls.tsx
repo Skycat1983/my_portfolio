@@ -1,4 +1,5 @@
-import { useNewStore } from "../../store/useStore";
+import { useNewStore } from "../../hooks/useStore";
+
 import { MacWindowControls } from "../controls/MacWindowControls";
 import { WindowsWindowControls } from "../controls/WindowsWindowControls";
 

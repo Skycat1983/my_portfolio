@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../store/useStore";
+import { useNewStore } from "../../hooks/useStore";
+
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { TerminalEntry } from "../../types/nodeTypes";
 import {

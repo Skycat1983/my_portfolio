@@ -1,9 +1,9 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { DirectoryLayout } from "../components/windowContent/directory/DirectoryLayout";
-import { useNewStore } from "../store/useStore";
 import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
+import { useNewStore } from "../hooks/useStore";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(

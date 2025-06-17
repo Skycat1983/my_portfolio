@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../../store/useStore";
+import { useNewStore } from "../../../hooks/useStore";
 
 type ResizeHandle = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
 

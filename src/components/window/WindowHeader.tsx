@@ -1,5 +1,6 @@
 import React from "react";
-import { useNewStore } from "../../store/useStore";
+import { useNewStore } from "../../hooks/useStore";
+
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
 import { DirectoryNavigation } from "./WindowNavigation";

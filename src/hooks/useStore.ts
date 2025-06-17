@@ -2,57 +2,57 @@ import { create } from "zustand";
 import {
   createEasterEggSlice,
   type EasterEggSlice,
-} from "./contentState/easterEggSlice";
+} from "../store/contentState/easterEggSlice";
 // import { createWindowSlice, type WindowSlice } from "../store/windowSlice";
 import {
   createSelectionSlice,
   type SelectionSlice,
-} from "./nodeState/nodeSelectionSlice";
+} from "../store/nodeState/nodeSelectionSlice";
 import {
   createTerminalSlice,
   type TerminalSlice,
-} from "./contentState/terminalSlice";
+} from "../store/contentState/terminalSlice";
 
 import {
   createSystemSlice,
   type SystemSlice,
-} from "./desktopState/systemSlice";
+} from "../store/desktopState/systemSlice";
 import {
   createBrowserSlice,
   type BrowserSlice,
-} from "./contentState/browserSlice";
+} from "../store/contentState/browserSlice";
 import {
   createWeatherSlice,
   type WeatherSlice,
-} from "./desktopState/weatherSlice";
+} from "../store/desktopState/weatherSlice";
 import {
   createAchievementSlice,
   type AchievementSlice,
-} from "./desktopState/achievementsSlice";
+} from "../store/desktopState/achievementsSlice";
 import {
   createNodeCrudSlice,
   type NodeCrudSlice,
-} from "./nodeState/nodeCrudSlice";
+} from "../store/nodeState/nodeCrudSlice";
 import {
   createNodeOperationsSlice,
   type NodeOperationsSlice,
-} from "./nodeState/nodeOperationsSlice";
+} from "../store/nodeState/nodeOperationsSlice";
 import {
   createNodeBusinessSlice,
   type NodeBusinessSlice,
-} from "./nodeState/nodeBusinessSlice";
+} from "../store/nodeState/nodeBusinessSlice";
 import {
   createWindowCrudSlice,
   type WindowCrudSlice,
-} from "./windowState/windowCrudSlice";
+} from "../store/windowState/windowCrudSlice";
 import {
   createWindowOperationsSlice,
   type WindowOperationsSlice,
-} from "./windowState/windowOperationsSlice";
+} from "../store/windowState/windowOperationsSlice";
 import {
   createDirectoryOperationsSlice,
   type DirectoryOperationsSlice,
-} from "./contentState/directorySlice";
+} from "../store/contentState/directorySlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore

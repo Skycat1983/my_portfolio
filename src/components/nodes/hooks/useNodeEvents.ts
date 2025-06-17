@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../../store/useStore";
+import { useNewStore } from "../../../hooks/useStore";
 import { useNodeDrag } from "./useNodeDrag";
 
 type NodeBehaviorConfig = {

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useWindowPosition } from "../../hooks/useWindowPosition";
-import { useNewStore } from "../../hooks/useStore";
+import { useWindowPosition } from "../../../hooks/useWindowPosition";
+import { useNewStore } from "../../../hooks/useStore";
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../../lib/utils";
 import {
   createBrowserFrameStyles,
   browserButtonStyles,
