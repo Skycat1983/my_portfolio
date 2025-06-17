@@ -3,7 +3,7 @@ import { WindowLayout } from "../components/windowContent/directory/Directory";
 import { useNewStore } from "../hooks/useStore";
 import { useNodeDrag } from "../hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
-import { ResizableWindow } from "../components/window/Window";
+import { ResizableWindow } from "../components/window/ResizableWindow";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(

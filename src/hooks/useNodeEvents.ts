@@ -9,7 +9,7 @@ type NodeBehaviorConfig = {
   onActivate?: () => void;
 };
 
-export const useNodeBehavior = ({
+export const useNodeEvents = ({
   id,
   nodeType,
   enableLogging = false,

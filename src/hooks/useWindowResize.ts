@@ -77,7 +77,7 @@ export function useResizeWindow(windowId: string) {
         document.removeEventListener("pointerup", onPointerUp);
 
         // Optional: Mark resize as complete
-        // You could add a flag to indicate resizing has stopped
+        //? add a flag to indicate resizing has stopped
       }
 
       document.addEventListener("pointermove", onPointerMove);
