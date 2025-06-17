@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import type { LinkEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -20,7 +20,7 @@ export const LinkNode = ({ link }: Props) => {
   }, [link.url]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: link.id,
     nodeType: "link",
     enableLogging: true,

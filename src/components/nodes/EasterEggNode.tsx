@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import type { EasterEggEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -18,6 +18,7 @@ export const EasterEggNode = ({ egg }: Props) => {
   const cycleEgg = useNewStore((s) => s.cycleEasterEgg);
   const breakEgg = useNewStore((s) => s.breakEasterEgg);
   const currentImg = useNewStore((s) => s.getEasterEggCurrentImage(egg.id));
+  const selectOneNode = useNewStore((s) => s.selectOneNode);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -25,7 +26,7 @@ export const EasterEggNode = ({ egg }: Props) => {
   }, [egg.id, breakEgg]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: egg.id,
     nodeType: "easter-egg",
     enableLogging: true,
@@ -36,11 +37,10 @@ export const EasterEggNode = ({ egg }: Props) => {
   const handleSpecialClick = useCallback(() => {
     nodeBehavior.log("special-click");
     // First select the node (shared behavior)
-    const selectNode = useNewStore.getState().selectNode;
-    selectNode(egg.id);
+    selectOneNode(egg.id);
     // Then cycle the egg (special behavior)
     cycleEgg(egg.id);
-  }, [egg.id, cycleEgg, nodeBehavior]);
+  }, [egg.id, cycleEgg, nodeBehavior, selectOneNode]);
 
   // ─────────── render ───────────
   return (

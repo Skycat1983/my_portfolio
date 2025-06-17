@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import type { BrowserEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -28,7 +28,7 @@ export const BrowserNode = ({ browser }: Props) => {
   }, [openOrFocusWindow, browser.id]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: browser.id,
     nodeType: "browser",
     enableLogging: true,

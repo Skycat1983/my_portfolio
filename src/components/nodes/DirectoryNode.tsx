@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -32,7 +32,7 @@ export const DirectoryNode = ({ directory }: Props) => {
   }, [directory.id, openOrFocusWindow]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: directory.id,
     nodeType: "directory",
     enableLogging: true,

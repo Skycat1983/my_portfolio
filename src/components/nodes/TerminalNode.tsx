@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import type { TerminalEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -27,7 +27,7 @@ export const TerminalNode = ({ terminal }: Props) => {
   }, [terminal.id, openOrFocusWindow]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: terminal.id,
     nodeType: "terminal",
     enableLogging: true,

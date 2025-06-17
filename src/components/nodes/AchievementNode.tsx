@@ -1,8 +1,7 @@
 import { useCallback } from "react";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import { useNewStore } from "../../hooks/useStore";
 import type { AchievementEntry } from "../../types/nodeTypes";
-import { NotificationBadge } from "../notification/NotificationBadge";
 import {
   containerClasses,
   imageSize,
@@ -38,7 +37,7 @@ export const AchievementNode = ({ achievement }: Props) => {
   ]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: achievement.id,
     nodeType: "achievement",
     enableLogging: true,
@@ -76,6 +75,27 @@ export const AchievementNode = ({ achievement }: Props) => {
       <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
         {achievement.label}
       </h2>
+    </div>
+  );
+};
+
+interface NotificationBadgeProps {
+  count: number;
+  className?: string;
+}
+
+export const NotificationBadge = ({
+  count,
+  className = "",
+}: NotificationBadgeProps) => {
+  if (count <= 0) return null;
+
+  return (
+    <div
+      className={`absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center shadow-lg border-2 border-white ${className}`}
+      style={{ zIndex: 10 }}
+    >
+      {count > 99 ? "99+" : count}
     </div>
   );
 };

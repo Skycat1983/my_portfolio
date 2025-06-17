@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNodeBehavior } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "../../hooks/useNodeEvents";
 import type { IconEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -19,7 +19,7 @@ export const IconNode = ({ icon }: Props) => {
   }, [icon.id]);
 
   // ─────────── shared node behavior ───────────
-  const nodeBehavior = useNodeBehavior({
+  const nodeBehavior = useNodeEvents({
     id: icon.id,
     nodeType: "icon",
     enableLogging: true,

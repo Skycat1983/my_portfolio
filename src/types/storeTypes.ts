@@ -2,7 +2,7 @@ import type { DirectoryEntry, NodeEntry, NodeMap } from "./nodeTypes";
 import type { OperatingSystem } from "../store/systemSlice";
 
 // Full Window interface with ALL possible properties across all window types
-export interface Window {
+export interface WindowType {
   windowId: string;
   title: string;
   nodeId: NodeEntry["id"];
@@ -39,7 +39,7 @@ export interface Window {
 
 // Narrowed types for specific window types using utility types
 export type ApplicationWindow = Omit<
-  Window,
+  WindowType,
   | "currentPath"
   | "canGoBack"
   | "canGoForward"
@@ -54,7 +54,7 @@ export type ApplicationWindow = Omit<
 
 export type DirectoryWindow = Required<
   Pick<
-    Window,
+    WindowType,
     | "windowId"
     | "title"
     | "nodeId"
@@ -73,11 +73,11 @@ export type DirectoryWindow = Required<
 > & {
   nodeType: "directory";
   nodeId: DirectoryEntry["id"];
-} & Pick<Window, "isMinimized" | "isMaximized" | "isResizing">;
+} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
 
 export type BrowserWindow = Required<
   Pick<
-    Window,
+    WindowType,
     | "windowId"
     | "title"
     | "nodeId"
@@ -91,11 +91,14 @@ export type BrowserWindow = Required<
   >
 > & {
   nodeType: "browser";
-} & Pick<Window, "isMinimized" | "isMaximized" | "isResizing" | "bookmarks">;
+} & Pick<
+    WindowType,
+    "isMinimized" | "isMaximized" | "isResizing" | "bookmarks"
+  >;
 
 export type TerminalWindow = Required<
   Pick<
-    Window,
+    WindowType,
     | "windowId"
     | "title"
     | "nodeId"
@@ -110,13 +113,13 @@ export type TerminalWindow = Required<
 > & {
   nodeType: "terminal";
 } & Pick<
-    Window,
+    WindowType,
     "isMinimized" | "isMaximized" | "isResizing" | "terminalHistory"
   >;
 
 export type AchievementWindow = Required<
   Pick<
-    Window,
+    WindowType,
     | "windowId"
     | "title"
     | "nodeId"
@@ -129,7 +132,10 @@ export type AchievementWindow = Required<
   >
 > & {
   nodeType: "achievements";
-} & Pick<Window, "isMinimized" | "isMaximized" | "isResizing" | "achievements">;
+} & Pick<
+    WindowType,
+    "isMinimized" | "isMaximized" | "isResizing" | "achievements"
+  >;
 
 // Legacy DirectoryWindow interface (can be removed once everything uses the new types)
 export interface DirectoryWindowLegacy extends Window {
