@@ -1,10 +1,14 @@
-import { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3 } from "../constants/images";
+import { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3 } from "../../constants/images";
 import type {
   NodeEntry,
   DirectoryEntry,
   EasterEggEntry,
-} from "../types/nodeTypes";
-import type { SetState, GetState, BaseStoreState } from "../types/storeTypes";
+} from "../../types/nodeTypes";
+import type {
+  SetState,
+  GetState,
+  BaseStoreState,
+} from "../../types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";
 

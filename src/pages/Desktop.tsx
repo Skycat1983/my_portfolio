@@ -1,7 +1,7 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
-import { WindowLayout } from "../components/windowContent/directory/Directory";
-import { useNewStore } from "../hooks/useStore";
-import { useNodeDrag } from "../hooks/useNodeDrag";
+import { DirectoryLayout } from "../components/windowContent/directory/DirectoryLayout";
+import { useNewStore } from "../store/useStore";
+import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 
@@ -60,7 +60,7 @@ export const Desktop = () => {
         ))}
 
         {/* {operatingSystem === "mac" && <Weather />} */}
-        <WindowLayout nodes={desktopChildren} layout="desktop" />
+        <DirectoryLayout nodes={desktopChildren} layout="desktop" />
       </div>
     </div>
   );

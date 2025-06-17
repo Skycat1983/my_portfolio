@@ -1,6 +1,6 @@
-import type { DirectoryWindow } from "../types/storeTypes";
-import type { SetState, GetState } from "../types/storeTypes";
-import type { WindowCrudSlice } from "./windowCrudSlice";
+import type { DirectoryWindow } from "../../types/storeTypes";
+import type { SetState, GetState } from "../../types/storeTypes";
+import type { WindowCrudSlice } from "../windowState/windowCrudSlice";
 
 // Store interface that includes window CRUD and directory operations
 interface StoreWithDirectoryOps extends WindowCrudSlice {
@@ -70,13 +70,18 @@ export const createDirectoryOperationsSlice = (
       return false;
     }
 
-    if (!dirWindow.canGoBack || dirWindow.currentHistoryIndex <= 0) {
+    // Safety check: initialize navigation properties if they don't exist
+    const currentHistory = dirWindow.navigationHistory || [dirWindow.nodeId];
+    const currentIndex = dirWindow.currentHistoryIndex ?? 0;
+    const canGoBack = dirWindow.canGoBack ?? false;
+
+    if (!canGoBack || currentIndex <= 0) {
       console.log("navigateBack: cannot go back", windowId);
       return false;
     }
 
-    const newIndex = dirWindow.currentHistoryIndex - 1;
-    const newPath = dirWindow.navigationHistory[newIndex];
+    const newIndex = currentIndex - 1;
+    const newPath = currentHistory[newIndex];
 
     return state.updateOneWindow((w) => w.windowId === windowId, {
       currentPath: newPath,
@@ -106,16 +111,18 @@ export const createDirectoryOperationsSlice = (
       return false;
     }
 
-    if (
-      !dirWindow.canGoForward ||
-      dirWindow.currentHistoryIndex >= dirWindow.navigationHistory.length - 1
-    ) {
+    // Safety check: initialize navigation properties if they don't exist
+    const currentHistory = dirWindow.navigationHistory || [dirWindow.nodeId];
+    const currentIndex = dirWindow.currentHistoryIndex ?? 0;
+    const canGoForward = dirWindow.canGoForward ?? false;
+
+    if (!canGoForward || currentIndex >= currentHistory.length - 1) {
       console.log("navigateForward: cannot go forward", windowId);
       return false;
     }
 
-    const newIndex = dirWindow.currentHistoryIndex + 1;
-    const newPath = dirWindow.navigationHistory[newIndex];
+    const newIndex = currentIndex + 1;
+    const newPath = currentHistory[newIndex];
 
     return state.updateOneWindow((w) => w.windowId === windowId, {
       currentPath: newPath,
@@ -142,7 +149,10 @@ export const createDirectoryOperationsSlice = (
       return false;
     }
 
-    const currentPath = dirWindow.currentPath;
+    // Safety check: initialize navigation properties if they don't exist
+    const currentPath = dirWindow.currentPath || dirWindow.nodeId;
+    const currentHistory = dirWindow.navigationHistory || [dirWindow.nodeId];
+    const currentIndex = dirWindow.currentHistoryIndex ?? 0;
 
     // Calculate parent path - remove the last directory segment
     const pathParts = currentPath
@@ -157,10 +167,7 @@ export const createDirectoryOperationsSlice = (
 
     // Add to history and navigate
     const newHistory = [
-      ...dirWindow.navigationHistory.slice(
-        0,
-        dirWindow.currentHistoryIndex + 1
-      ),
+      ...currentHistory.slice(0, currentIndex + 1),
       parentPath,
     ];
     const newIndex = newHistory.length - 1;
@@ -199,14 +206,12 @@ export const createDirectoryOperationsSlice = (
       return false;
     }
 
+    // Safety check: initialize navigation properties if they don't exist
+    const currentHistory = dirWindow.navigationHistory || [dirWindow.nodeId];
+    const currentIndex = dirWindow.currentHistoryIndex ?? 0;
+
     // Add to history and navigate
-    const newHistory = [
-      ...dirWindow.navigationHistory.slice(
-        0,
-        dirWindow.currentHistoryIndex + 1
-      ),
-      path,
-    ];
+    const newHistory = [...currentHistory.slice(0, currentIndex + 1), path];
     const newIndex = newHistory.length - 1;
 
     return state.updateOneWindow((w) => w.windowId === windowId, {

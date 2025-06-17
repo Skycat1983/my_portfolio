@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { useNewStore } from "./useStore";
+import { useNewStore } from "../../../store/useStore";
 
-export function useDragWindow(windowId: string) {
+export function useWindowDrag(windowId: string) {
   // Get the window data using the proper store method
   const windowData = useNewStore((s) => s.getWindowById(windowId));
   const moveWindow = useNewStore((s) => s.moveWindow);

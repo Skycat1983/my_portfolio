@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useStore";
-import { useNodeEvents } from "../../hooks/useNodeEvents";
+import { useNewStore } from "../../store/useStore";
+import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -17,19 +17,70 @@ import {
   FOLDER_WIN,
 } from "../../constants/images";
 
-type Props = { directory: DirectoryEntry };
+type LayoutType = "desktop" | "window";
 
-export const DirectoryNode = ({ directory }: Props) => {
+type Props = {
+  directory: DirectoryEntry;
+  layout?: LayoutType;
+  parentWindowId?: string;
+};
+
+export const DirectoryNode = ({
+  directory,
+  layout = "window",
+  parentWindowId,
+}: Props) => {
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  // const openDirectory = useNewStore((s) => s.openDirectory);
   const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
+  const updateWindowById = useNewStore((s) => s.updateWindowById);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    console.log("Directory activate: opening directory", directory.id);
-    openOrFocusWindow(directory.id);
-  }, [directory.id, openOrFocusWindow]);
+    console.log(
+      "Directory activate: context:",
+      layout,
+      "parentWindowId:",
+      parentWindowId,
+      "directory:",
+      directory.id
+    );
+
+    // Context-aware navigation logic
+    if (layout === "desktop" || !parentWindowId) {
+      // Desktop context or no parent window - always open new window
+      console.log(
+        "DirectoryNode: opening new window for directory",
+        directory.id
+      );
+      openOrFocusWindow(directory.id);
+    } else {
+      // Window context - navigate within existing window by updating nodeId
+      console.log(
+        "DirectoryNode: navigating within window",
+        parentWindowId,
+        "to directory",
+        directory.id
+      );
+      const success = updateWindowById(parentWindowId, {
+        nodeId: directory.id,
+        title: directory.label,
+      });
+      if (!success) {
+        console.warn(
+          "DirectoryNode: failed to update window, falling back to opening new window"
+        );
+        openOrFocusWindow(directory.id);
+      }
+    }
+  }, [
+    directory.id,
+    directory.label,
+    layout,
+    parentWindowId,
+    openOrFocusWindow,
+    updateWindowById,
+  ]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({

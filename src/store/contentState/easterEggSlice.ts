@@ -1,6 +1,10 @@
-import { EGG_BROKEN } from "../constants/nodes";
-import type { EasterEggEntry } from "../types/nodeTypes";
-import type { BaseStoreState, SetState, GetState } from "../types/storeTypes";
+import { EGG_BROKEN } from "../../constants/nodes";
+import type { EasterEggEntry } from "../../types/nodeTypes";
+import type {
+  BaseStoreState,
+  SetState,
+  GetState,
+} from "../../types/storeTypes";
 
 interface EasterEggActions {
   cycleEasterEgg: (nodeId: EasterEggEntry["id"]) => void;

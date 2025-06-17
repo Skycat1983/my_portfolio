@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNewStore } from "./useStore";
+import { useNewStore } from "../../../store/useStore";
 
 export interface DragHandlers {
   handleDragStart: (e: React.DragEvent, nodeId: string) => void;

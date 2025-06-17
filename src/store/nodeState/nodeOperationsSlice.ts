@@ -1,5 +1,5 @@
-import type { NodeEntry, DirectoryEntry } from "../types/nodeTypes";
-import type { SetState, GetState } from "../types/storeTypes";
+import type { NodeEntry, DirectoryEntry } from "../../types/nodeTypes";
+import type { SetState, GetState } from "../../types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 
 export interface NodeOperationsActions {

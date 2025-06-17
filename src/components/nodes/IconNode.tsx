@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNodeEvents } from "../../hooks/useNodeEvents";
+import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { IconEntry } from "../../types/nodeTypes";
 import {
   containerClasses,

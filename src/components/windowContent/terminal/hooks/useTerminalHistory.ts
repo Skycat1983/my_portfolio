@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNewStore } from "../../../../hooks/useStore";
+import { useNewStore } from "../../../../store/useStore";
 
 export const useTerminalHistory = () => {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);

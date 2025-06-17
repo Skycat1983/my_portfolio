@@ -1,6 +1,6 @@
 import React from "react";
-import { useNewStore } from "../../hooks/useStore";
-import { useDragWindow } from "../../hooks/useWindowDrag";
+import { useNewStore } from "../../store/useStore";
+import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
 import { DirectoryNavigation } from "./WindowNavigation";
 
@@ -22,7 +22,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
   const operatingSystem = useNewStore((state) => state.operatingSystem);
   const window = useNewStore((s) => s.getWindowById(windowId));
   const focusWindow = useNewStore((s) => s.focusWindow);
-  const { onDragStart } = useDragWindow(windowId);
+  const { onDragStart } = useWindowDrag(windowId);
 
   if (!window) {
     return null;
@@ -46,7 +46,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
 
   return (
     <div
-      className={`bg-gray-100 border-b border-gray-300 p-2 flex ${flexDirection} justify-between items-center cursor-move select-none ${className}`}
+      className={`absolute w-full bg-gray-100 border-b border-gray-300 p-2 flex ${flexDirection} justify-between items-center cursor-move select-none ${className}`}
       onClick={handleHeaderClick}
       onPointerDown={handleDragStart}
     >

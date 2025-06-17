@@ -1,4 +1,4 @@
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "../../../store/useStore";
 import ACHIEVEMENT from "../../../assets/icons_m/achievement.png";
 
 interface Achievement {

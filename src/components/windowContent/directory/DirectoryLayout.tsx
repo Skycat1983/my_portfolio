@@ -13,7 +13,7 @@ import { DirectoryNode } from "../../nodes/DirectoryNode";
 import { LinkNode } from "../../nodes/LinkNode";
 import { TerminalNode } from "../../nodes/TerminalNode";
 import { EasterEggNode } from "../../nodes/EasterEggNode";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "../../../store/useStore";
 import { BrowserNode } from "../../nodes/BrowserNode";
 import { AchievementNode } from "../../nodes/AchievementNode";
 
@@ -22,10 +22,13 @@ type LayoutType = "desktop" | "window";
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];
   layout?: LayoutType;
+  windowId?: string; // Pass windowId for window context navigation
 };
-export const WindowLayout = ({
+
+export const DirectoryLayout = ({
   nodes,
   layout = "window",
+  windowId,
 }: DirectoryLayoutProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
 
@@ -36,7 +39,7 @@ export const WindowLayout = ({
         operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse pt-8";
       return `flex flex-col ${wrapClass} content-start w-full gap-10 h-full`;
     }
-    // “window” layout
+    // "window" layout
     return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
   };
 
@@ -52,7 +55,12 @@ export const WindowLayout = ({
 
           case "directory":
             return (
-              <DirectoryNode key={node.id} directory={node as DirectoryEntry} />
+              <DirectoryNode
+                key={node.id}
+                directory={node as DirectoryEntry}
+                layout={layout}
+                parentWindowId={windowId}
+              />
             );
 
           case "link":

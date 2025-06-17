@@ -1,37 +1,49 @@
-import type { Window } from "../types/storeTypes";
-import type { BaseStoreState, SetState, GetState } from "../types/storeTypes";
+import type { WindowType } from "../../types/storeTypes";
+import type {
+  BaseStoreState,
+  SetState,
+  GetState,
+} from "../../types/storeTypes";
 
 interface WindowState {
-  openWindows: Window[];
+  openWindows: WindowType[];
   nextZIndex: number;
 }
 
 interface WindowActions {
   // Find operations (predicate-based)
-  findOneWindow: (predicate: (window: Window) => boolean) => Window | undefined;
-  findManyWindows: (predicate: (window: Window) => boolean) => Window[];
+  findOneWindow: (
+    predicate: (window: WindowType) => boolean
+  ) => WindowType | undefined;
+  findManyWindows: (predicate: (window: WindowType) => boolean) => WindowType[];
 
   // Create operations (generic)
-  createOneWindow: (window: Window) => boolean;
-  createManyWindows: (windows: Window[]) => boolean;
+  createOneWindow: (window: WindowType) => boolean;
+  createManyWindows: (windows: WindowType[]) => boolean;
 
   // Update operations (all predicate-based)
   updateOneWindow: (
-    predicate: (window: Window) => boolean,
-    updates: Partial<Window>
+    predicate: (window: WindowType) => boolean,
+    updates: Partial<WindowType>
   ) => boolean;
   updateManyWindows: (
-    predicate: (window: Window) => boolean,
-    updates: Partial<Window>
+    predicate: (window: WindowType) => boolean,
+    updates: Partial<WindowType>
   ) => number;
 
+  // Generic update operations for extended window types
+  updateOneWindowGeneric: <T extends WindowType>(
+    predicate: (window: WindowType) => boolean,
+    updates: Partial<T>
+  ) => boolean;
+
   // Delete operations (all predicate-based)
-  deleteOneWindow: (predicate: (window: Window) => boolean) => boolean;
-  deleteManyWindows: (predicate: (window: Window) => boolean) => number;
+  deleteOneWindow: (predicate: (window: WindowType) => boolean) => boolean;
+  deleteManyWindows: (predicate: (window: WindowType) => boolean) => number;
 
   // Query operations (remain here as they're fundamental)
-  countWindows: (predicate: (window: Window) => boolean) => number;
-  windowExists: (predicate: (window: Window) => boolean) => boolean;
+  countWindows: (predicate: (window: WindowType) => boolean) => number;
+  windowExists: (predicate: (window: WindowType) => boolean) => boolean;
 }
 
 export type WindowCrudSlice = WindowState & WindowActions;
@@ -45,18 +57,18 @@ export const createWindowCrudSlice = (
   nextZIndex: 1000,
 
   // Find operations
-  findOneWindow: (predicate: (window: Window) => boolean) => {
+  findOneWindow: (predicate: (window: WindowType) => boolean) => {
     const state = get();
     return state.openWindows.find(predicate);
   },
 
-  findManyWindows: (predicate: (window: Window) => boolean) => {
+  findManyWindows: (predicate: (window: WindowType) => boolean) => {
     const state = get();
     return state.openWindows.filter(predicate);
   },
 
   // Create operations (pure - no business logic)
-  createOneWindow: (window: Window): boolean => {
+  createOneWindow: (window: WindowType): boolean => {
     console.log(
       "createOneWindow in windowCrudSlice: creating window",
       window.windowId
@@ -78,7 +90,7 @@ export const createWindowCrudSlice = (
     return true;
   },
 
-  createManyWindows: (windows: Window[]): boolean => {
+  createManyWindows: (windows: WindowType[]): boolean => {
     console.log(
       "createManyWindows in windowCrudSlice: creating",
       windows.length,
@@ -118,8 +130,8 @@ export const createWindowCrudSlice = (
 
   // Update operations (all predicate-based)
   updateOneWindow: (
-    predicate: (window: Window) => boolean,
-    updates: Partial<Window>
+    predicate: (window: WindowType) => boolean,
+    updates: Partial<WindowType>
   ): boolean => {
     console.log("updateOneWindow in windowCrudSlice");
 
@@ -135,7 +147,7 @@ export const createWindowCrudSlice = (
       ...windowToUpdate,
       ...updates,
       windowId: windowToUpdate.windowId, // Prevent ID from being changed
-    } as Window;
+    } as WindowType;
 
     set((state) => ({
       openWindows: state.openWindows.map((window) =>
@@ -152,8 +164,8 @@ export const createWindowCrudSlice = (
   },
 
   updateManyWindows: (
-    predicate: (window: Window) => boolean,
-    updates: Partial<Window>
+    predicate: (window: WindowType) => boolean,
+    updates: Partial<WindowType>
   ): number => {
     console.log("updateManyWindows in windowCrudSlice");
 
@@ -174,7 +186,7 @@ export const createWindowCrudSlice = (
             ...window,
             ...updates,
             windowId: window.windowId, // Prevent ID from being changed
-          } as Window;
+          } as WindowType;
         }
         return window;
       }),
@@ -187,8 +199,45 @@ export const createWindowCrudSlice = (
     return windowsToUpdate.length;
   },
 
+  // Generic update operation for extended window types
+  updateOneWindowGeneric: <T extends WindowType>(
+    predicate: (window: WindowType) => boolean,
+    updates: Partial<T>
+  ): boolean => {
+    console.log("updateOneWindowGeneric in windowCrudSlice");
+
+    const currentState = get();
+    const windowToUpdate = currentState.openWindows.find(predicate);
+
+    if (!windowToUpdate) {
+      console.log("updateOneWindowGeneric: no window matches predicate");
+      return false;
+    }
+
+    const updatedWindow = {
+      ...windowToUpdate,
+      ...updates,
+      windowId: windowToUpdate.windowId, // Prevent ID from being changed
+    } as WindowType;
+
+    set((state) => ({
+      openWindows: state.openWindows.map((window) =>
+        window.windowId === windowToUpdate.windowId ? updatedWindow : window
+      ),
+      // Update nextZIndex if we're updating zIndex
+      nextZIndex:
+        "zIndex" in updates &&
+        typeof updates.zIndex === "number" &&
+        updates.zIndex >= state.nextZIndex
+          ? updates.zIndex + 1
+          : state.nextZIndex,
+    }));
+
+    return true;
+  },
+
   // Delete operations (all predicate-based)
-  deleteOneWindow: (predicate: (window: Window) => boolean): boolean => {
+  deleteOneWindow: (predicate: (window: WindowType) => boolean): boolean => {
     console.log("deleteOneWindow in windowCrudSlice");
 
     const currentState = get();
@@ -208,7 +257,7 @@ export const createWindowCrudSlice = (
     return true;
   },
 
-  deleteManyWindows: (predicate: (window: Window) => boolean): number => {
+  deleteManyWindows: (predicate: (window: WindowType) => boolean): number => {
     console.log("deleteManyWindows in windowCrudSlice");
 
     const currentState = get();
@@ -233,12 +282,12 @@ export const createWindowCrudSlice = (
   },
 
   // Query operations (fundamental operations that belong in CRUD layer)
-  countWindows: (predicate: (window: Window) => boolean): number => {
+  countWindows: (predicate: (window: WindowType) => boolean): number => {
     const state = get();
     return state.openWindows.filter(predicate).length;
   },
 
-  windowExists: (predicate: (window: Window) => boolean): boolean => {
+  windowExists: (predicate: (window: WindowType) => boolean): boolean => {
     const state = get();
     return state.openWindows.some(predicate);
   },

@@ -1,5 +1,5 @@
 import React from "react";
-import { useResizeWindow } from "../../hooks/useWindowResize";
+import { useResizeWindow } from "./hooks/useWindowResize";
 import { WindowHeader } from "./WindowHeader";
 import type { WindowType } from "../../types/storeTypes";
 import { WindowContent } from "./WindowContent";
@@ -39,7 +39,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
       />
 
       {/* Window Content */}
-      <div className="p-4 h-full overflow-auto">
+      <div className="pt-9 h-full overflow-auto bg-neutral-600">
         <WindowContent window={window} />
       </div>
 
@@ -95,19 +95,3 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     </div>
   );
 };
-
-{
-  /* {children || (
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Test Window</h3>
-            <p>Window ID: {windowId}</p>
-            <p>
-              Position: ({x}, {y})
-            </p>
-            <p>
-              Size: {width} × {height}
-            </p>
-            <p>Z-Index: {zIndex}</p>
-          </div>
-        )} */
-}

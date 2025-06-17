@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { useNodeEvents } from "../../hooks/useNodeEvents";
-import { useNewStore } from "../../hooks/useStore";
+import { useNodeEvents } from "./hooks/useNodeEvents";
+import { useNewStore } from "../../store/useStore";
 import type { AchievementEntry } from "../../types/nodeTypes";
 import {
   containerClasses,

@@ -1,4 +1,4 @@
-import type { BaseStoreState, SetState } from "../types/storeTypes";
+import type { BaseStoreState, SetState } from "../../types/storeTypes";
 
 interface SelectionState {
   selectedNodeId: string | null;

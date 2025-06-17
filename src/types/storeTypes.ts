@@ -1,5 +1,5 @@
 import type { DirectoryEntry, NodeEntry, NodeMap } from "./nodeTypes";
-import type { OperatingSystem } from "../store/systemSlice";
+import type { OperatingSystem } from "../store/desktopState/systemSlice";
 
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
@@ -138,21 +138,12 @@ export type AchievementWindow = Required<
   >;
 
 // Legacy DirectoryWindow interface (can be removed once everything uses the new types)
-export interface DirectoryWindowLegacy extends Window {
+export interface DirectoryWindowLegacy extends WindowType {
   nodeType: "directory";
   nodeId: DirectoryEntry["id"];
   currentPath: string;
   canGoBack: boolean;
   canGoForward: boolean;
-  navigationHistory: string[];
-  currentHistoryIndex: number;
-}
-
-// Forward declare WindowData to avoid circular imports (legacy - for old windowSlice)
-export interface WindowData {
-  windowId: string;
-  currentNodeId: string;
-  zIndex: number;
   navigationHistory: string[];
   currentHistoryIndex: number;
 }
@@ -163,20 +154,12 @@ export interface BaseStoreState {
   rootId: string;
   selectedNodeId: string | null;
   selectedNodeIds: string[];
-  openWindows: Window[];
+  openWindows: WindowType[];
   nextZIndex: number;
-  isTerminalOpen: boolean;
   operatingSystem: OperatingSystem;
-  browserZIndex: number;
-  terminalZIndex: number;
-  // Legacy properties for old windowSlice (temporarily commented out)
-  // openWindows: WindowData[];
-  // achievements: AchievementSlice;
 }
 
 export type SetState<T> = (
   partial: Partial<T> | ((state: T) => Partial<T>)
 ) => void;
 export type GetState<T> = () => T;
-
-// Store interface that includes CRUD operations for slices to reference

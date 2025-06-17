@@ -7,7 +7,7 @@ import {
   MenubarTrigger,
 } from "../ui/menubar";
 import { HoverableItem } from "./HoverableItem";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "../../store/useStore";
 
 export function MenubarOptions() {
   const { operatingSystem } = useNewStore();
