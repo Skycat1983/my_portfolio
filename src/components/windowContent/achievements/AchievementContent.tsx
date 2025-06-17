@@ -11,18 +11,22 @@ interface Achievement {
   maxProgress?: number;
 }
 
-export const AchievementsWindow = () => {
-  // Get achievement states from store
-  const {
-    clickOnSomethingAchieved,
-    accessAchievements,
-
-    downloadEggsAchieved,
-    eggsDownloaded,
-    portfolioDeletedAchieved,
-    joinAQueueAchieved,
-    operatingSystemSwitchedAchieved,
-  } = useNewStore();
+export const AchievementContent = () => {
+  const clickOnSomethingAchieved = useNewStore(
+    (state) => state.clickOnSomethingAchieved
+  );
+  const accessAchievements = useNewStore((state) => state.accessAchievements);
+  const downloadEggsAchieved = useNewStore(
+    (state) => state.downloadEggsAchieved
+  );
+  const eggsDownloaded = useNewStore((state) => state.eggsDownloaded);
+  const portfolioDeletedAchieved = useNewStore(
+    (state) => state.portfolioDeletedAchieved
+  );
+  const joinAQueueAchieved = useNewStore((state) => state.joinAQueueAchieved);
+  const operatingSystemSwitchedAchieved = useNewStore(
+    (state) => state.operatingSystemSwitchedAchieved
+  );
 
   // Define all achievements with their current status
   const achievements: Achievement[] = [
@@ -52,7 +56,7 @@ export const AchievementsWindow = () => {
     {
       id: "portfolio-destroyer",
       title: "Portfolio Destroyer",
-      description: "Delete the portfolio (you monster!)",
+      description: "Delete my portfolio",
       icon: "🗑️",
       unlocked: portfolioDeletedAchieved,
     },

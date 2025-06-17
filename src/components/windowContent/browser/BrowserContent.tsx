@@ -6,6 +6,7 @@ import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
 
 export const BrowserContent = () => {
+  console.log("BrowserContent");
   const [bookmarked, setBookmarked] = useState(false);
 
   // Get current page state from browser slice

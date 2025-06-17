@@ -15,6 +15,7 @@ import { EDGE, SAFARI } from "../../constants/images";
 type Props = { browser: BrowserEntry };
 
 export const BrowserNode = ({ browser }: Props) => {
+  console.log("BrowserNode");
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   // const openBrowser = useNewStore((s) => s.openBrowser);

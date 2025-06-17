@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Clock, Users, Server, Wifi, AlertTriangle } from "lucide-react";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "../../../../hooks/useStore";
 
 export const QueuePage = () => {
   const predefinedAddress = useNewStore((s) => s.predefinedAddress);

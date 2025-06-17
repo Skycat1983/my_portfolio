@@ -20,7 +20,7 @@ export const AchievementNode = ({ achievement }: Props) => {
   const unlockAccessAchievements = useNewStore(
     (s) => s.unlockAccessAchievements
   );
-
+  const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
     console.log("Achievement activate in AchievementNode:", achievement.id);
@@ -29,11 +29,13 @@ export const AchievementNode = ({ achievement }: Props) => {
       markAchievementsAsSeen();
     }
     unlockAccessAchievements();
+    openOrFocusWindow(achievement.id);
   }, [
     achievement.id,
     unseenAchievements,
     markAchievementsAsSeen,
     unlockAccessAchievements,
+    openOrFocusWindow,
   ]);
 
   // ─────────── shared node behavior ───────────
