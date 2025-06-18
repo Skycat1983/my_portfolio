@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Clock, Users, Server, Wifi, AlertTriangle } from "lucide-react";
 import { useNewStore } from "../../../../hooks/useStore";
 
+// Local constant - moved from global state
+const PREDEFINED_ADDRESS = "www.how-is-he-still-unemployed.com";
+
 export const QueuePage = () => {
-  const predefinedAddress = useNewStore((s) => s.predefinedAddress);
   const unlockJoinAQueueAchievement = useNewStore(
     (s) => s.unlockJoinAQueueAchievement
   );
@@ -70,7 +72,7 @@ export const QueuePage = () => {
         <p className="text-sm text-red-600 font-mono">
           Accessing:{" "}
           <span className="bg-red-100 px-2 py-1 rounded">
-            {predefinedAddress}
+            {PREDEFINED_ADDRESS}
           </span>
         </p>
       </div>

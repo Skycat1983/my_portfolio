@@ -1,23 +1,15 @@
 import { AlertCircle } from "lucide-react";
-import { useNewStore } from "../../../../hooks/useStore";
+import { useBrowserWindowContent } from "../useBrowserWindow";
 
-export const IncompletePage = () => {
-  const browserHistory = useNewStore((s) => s.browserHistory);
-  const browserHistoryIndex = useNewStore((s) => s.browserHistoryIndex);
+interface IncompletePageProps {
+  windowId: string;
+}
 
-  // Get the current URL from history
-  const getCurrentUrl = () => {
-    if (
-      browserHistory.length > 0 &&
-      browserHistoryIndex >= 0 &&
-      browserHistoryIndex < browserHistory.length
-    ) {
-      return browserHistory[browserHistoryIndex];
-    }
-    return "";
-  };
+export const IncompletePage = ({ windowId }: IncompletePageProps) => {
+  const { url, getCurrentHistoryUrl } = useBrowserWindowContent(windowId);
 
-  const currentUrl = getCurrentUrl();
+  // Get the current URL from this window's history
+  const currentUrl = getCurrentHistoryUrl() || url;
 
   return (
     <div className="max-w-4xl mx-auto text-center">

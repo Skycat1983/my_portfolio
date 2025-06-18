@@ -13,10 +13,6 @@ export interface DirectoryOperationsActions {
   navigateBack: (windowId: DirectoryWindow["windowId"]) => boolean;
   navigateForward: (windowId: DirectoryWindow["windowId"]) => boolean;
   navigateUp: (windowId: DirectoryWindow["windowId"]) => boolean;
-  navigateToPath: (
-    windowId: DirectoryWindow["windowId"],
-    path: string
-  ) => boolean;
 
   // Directory state helpers
   getDirectoryWindow: (windowId: string) => DirectoryWindow | undefined;
@@ -174,48 +170,6 @@ export const createDirectoryOperationsSlice = (
 
     return state.updateOneWindow((w) => w.windowId === windowId, {
       currentPath: parentPath,
-      navigationHistory: newHistory,
-      currentHistoryIndex: newIndex,
-      canGoBack: newIndex > 0,
-      canGoForward: false,
-    });
-  },
-
-  /**
-   * Navigate to a specific path (e.g., when clicking on a folder)
-   */
-  navigateToPath: (
-    windowId: DirectoryWindow["windowId"],
-    path: string
-  ): boolean => {
-    console.log(
-      "navigateToPath in directoryOperationsSlice: navigating to path",
-      path,
-      "in window",
-      windowId
-    );
-
-    const state = get();
-    const dirWindow = state.getDirectoryWindow(windowId);
-
-    if (!dirWindow) {
-      console.log(
-        "navigateToPath: window not found or not a directory",
-        windowId
-      );
-      return false;
-    }
-
-    // Safety check: initialize navigation properties if they don't exist
-    const currentHistory = dirWindow.navigationHistory || [dirWindow.nodeId];
-    const currentIndex = dirWindow.currentHistoryIndex ?? 0;
-
-    // Add to history and navigate
-    const newHistory = [...currentHistory.slice(0, currentIndex + 1), path];
-    const newIndex = newHistory.length - 1;
-
-    return state.updateOneWindow((w) => w.windowId === windowId, {
-      currentPath: path,
       navigationHistory: newHistory,
       currentHistoryIndex: newIndex,
       canGoBack: newIndex > 0,

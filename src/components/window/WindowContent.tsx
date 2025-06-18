@@ -9,19 +9,18 @@ interface WindowContentProps {
 }
 
 export const WindowContent = ({ window }: WindowContentProps) => {
-  const { nodeType } = window;
+  const { windowId, nodeType } = window;
   console.log("WindowContent", window);
   if (nodeType === "terminal") {
-    return <TerminalContent />;
+    return <TerminalContent windowId={windowId} />;
   }
   if (nodeType === "directory") {
     return <DirectoryContent window={window as DirectoryWindow} />;
   }
   if (nodeType === "achievement") {
-    return <AchievementContent />;
+    return <AchievementContent windowId={windowId} />;
   }
   if (nodeType === "browser") {
-    console.log("BrowserContent in WindowContent");
-    return <BrowserContent />;
+    return <BrowserContent windowId={windowId} />;
   }
 };

@@ -1,9 +1,13 @@
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { useBrowser } from "./useBrowser";
+import { useBrowserWindowContent } from "./useBrowserWindow";
 import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
 
-export const BrowserNavigation = () => {
+interface BrowserNavigationProps {
+  windowId: string;
+}
+
+export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
   const {
     url,
     canGoBack,
@@ -14,7 +18,7 @@ export const BrowserNavigation = () => {
     handleBackClick,
     handleForwardClick,
     handleRefreshClick,
-  } = useBrowser();
+  } = useBrowserWindowContent(windowId);
 
   const addressBarStyle: React.CSSProperties = {
     height: "50px",

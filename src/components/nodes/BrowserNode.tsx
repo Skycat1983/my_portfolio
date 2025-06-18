@@ -12,9 +12,9 @@ import {
 } from "./node.styles";
 import { EDGE, SAFARI } from "../../constants/images";
 
-type Props = { browser: BrowserEntry };
+type Props = { browserEntry: BrowserEntry };
 
-export const BrowserNode = ({ browser }: Props) => {
+export const BrowserNode = ({ browserEntry }: Props) => {
   console.log("BrowserNode");
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
@@ -25,12 +25,12 @@ export const BrowserNode = ({ browser }: Props) => {
   const handleActivate = useCallback(() => {
     console.log("Browser activate: opening browser");
     // openBrowser();
-    openOrFocusWindow(browser.id);
-  }, [openOrFocusWindow, browser.id]);
+    openOrFocusWindow(browserEntry.id);
+  }, [openOrFocusWindow, browserEntry.id]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
-    id: browser.id,
+    id: browserEntry.id,
     nodeType: "browser",
     enableLogging: true,
     onActivate: handleActivate,
@@ -57,10 +57,10 @@ export const BrowserNode = ({ browser }: Props) => {
           drop: nodeBehavior.isDropTarget,
         })}`}
       >
-        <img src={folderImage} alt={browser.label} className={imageSize} />
+        <img src={folderImage} alt={browserEntry.label} className={imageSize} />
       </div>
       <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-        {browser.label}
+        {browserEntry.label}
       </h2>
     </div>
   );

@@ -11,7 +11,11 @@ interface Achievement {
   maxProgress?: number;
 }
 
-export const AchievementContent = () => {
+interface AchievementContentProps {
+  windowId: string;
+}
+
+export const AchievementContent = ({ windowId }: AchievementContentProps) => {
   const clickOnSomethingAchieved = useNewStore(
     (state) => state.clickOnSomethingAchieved
   );

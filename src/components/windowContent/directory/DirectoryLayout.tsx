@@ -72,7 +72,9 @@ export const DirectoryLayout = ({
             );
 
           case "browser":
-            return <BrowserNode key={node.id} browser={node as BrowserEntry} />;
+            return (
+              <BrowserNode key={node.id} browserEntry={node as BrowserEntry} />
+            );
 
           case "achievement":
             return (

@@ -3,13 +3,14 @@ import { useNewStore } from "../../hooks/useStore";
 
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
-import { DirectoryNavigation } from "./WindowNavigation";
+import { DirectoryNavigation } from "../windowContent/directory/DirectoryNavigation";
 
 interface WindowHeaderProps {
   windowId: string;
   title?: string;
   nodeType?: string;
   className?: string;
+  zIndex?: number;
   // children?: React.ReactNode;
 }
 
@@ -63,7 +64,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
         </span>
       </div>
 
-      <div className="flex items-center space-x-1">
+      <div className="flex justify-end items-center space-x-1 min-w-[10px]">
         {nodeType === "directory" && (
           <DirectoryNavigation windowId={windowId} />
         )}

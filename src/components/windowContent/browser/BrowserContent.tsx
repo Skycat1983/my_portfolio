@@ -6,14 +6,18 @@ import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
 import { BrowserNavigation } from "./BrowserNavigation";
 import { OfflinePage } from "./fake_pages/offlinePage";
+import { useBrowserWindowContent } from "./useBrowserWindow";
 
-export const BrowserContent = () => {
-  console.log("BrowserContent");
+interface BrowserContentProps {
+  windowId: string;
+}
+
+export const BrowserContent = ({ windowId }: BrowserContentProps) => {
+  console.log("BrowserContent for window:", windowId);
   const [bookmarked, setBookmarked] = useState(false);
 
-  // Get current page state from browser slice
-  // const { currentPage } = useNewStore();
-  const currentPage = useNewStore((s) => s.currentPage);
+  // Get window-specific browser state
+  const { currentPage } = useBrowserWindowContent(windowId);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
   const handleBookmarkToggle = () => {
@@ -28,7 +32,7 @@ export const BrowserContent = () => {
     }
     switch (currentPage) {
       case "incomplete":
-        return <IncompletePage />;
+        return <IncompletePage windowId={windowId} />;
       case "complete":
         return <QueuePage />;
       default:
@@ -39,7 +43,7 @@ export const BrowserContent = () => {
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Browser Navigation/Address Bar */}
-      <BrowserNavigation />
+      <BrowserNavigation windowId={windowId} />
 
       {/* Page content area */}
       <div className="flex-1 overflow-auto p-6">{renderPageContent()}</div>

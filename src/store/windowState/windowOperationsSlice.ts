@@ -14,8 +14,8 @@ interface StoreWithWindowAndNodeOps
 export interface WindowOperationsActions {
   // ID-based accessors (built from predicates)
   getWindowById: (id: WindowType["windowId"]) => WindowType | undefined;
-  getWindowByNodeId: (nodeId: string) => WindowType | undefined;
-  getWindowsByNodeType: (nodeType: string) => WindowType[];
+  getWindowByNodeId: (nodeId: WindowType["nodeId"]) => WindowType | undefined;
+  getWindowsByNodeType: (nodeType: WindowType["nodeType"]) => WindowType[];
 
   // ID-based operations (built from predicates)
   updateWindowById: (
@@ -232,6 +232,29 @@ export const createWindowOperationsSlice = (
       baseWindow.currentHistoryIndex = 0;
       baseWindow.canGoBack = false; // Initially can't go back
       baseWindow.canGoForward = false; // Initially can't go forward
+
+      // Also initialize generic history properties for unified system
+      baseWindow.itemHistory = [nodeId]; // Same as navigationHistory but in generic format
+      baseWindow.currentItem = nodeId; // Current path as generic current item
+    }
+
+    // Initialize generic history properties for browser and terminal windows
+    if (node.type === "browser") {
+      baseWindow.itemHistory = []; // Empty history initially
+      baseWindow.currentHistoryIndex = -1;
+      baseWindow.currentItem = ""; // Empty URL initially
+      baseWindow.canGoBack = false;
+      baseWindow.canGoForward = false;
+      baseWindow.url = ""; // Legacy property for backward compatibility
+    }
+
+    if (node.type === "terminal") {
+      baseWindow.itemHistory = []; // Empty command history initially
+      baseWindow.currentHistoryIndex = -1;
+      baseWindow.currentItem = ""; // No current command initially
+      baseWindow.canGoBack = false;
+      baseWindow.canGoForward = false;
+      baseWindow.workingDirectory = ""; // Will be set by terminal initialization
     }
 
     state.createOneWindow(baseWindow);
@@ -317,6 +340,25 @@ export const createWindowOperationsSlice = (
         baseWindow.currentHistoryIndex = 0;
         baseWindow.canGoBack = false;
         baseWindow.canGoForward = false;
+      }
+
+      // Initialize generic history properties for browser and terminal windows
+      if (node.type === "browser") {
+        baseWindow.itemHistory = []; // Empty history initially
+        baseWindow.currentHistoryIndex = -1;
+        baseWindow.currentItem = ""; // Empty URL initially
+        baseWindow.canGoBack = false;
+        baseWindow.canGoForward = false;
+        baseWindow.url = ""; // Legacy property for backward compatibility
+      }
+
+      if (node.type === "terminal") {
+        baseWindow.itemHistory = []; // Empty command history initially
+        baseWindow.currentHistoryIndex = -1;
+        baseWindow.currentItem = ""; // No current command initially
+        baseWindow.canGoBack = false;
+        baseWindow.canGoForward = false;
+        baseWindow.workingDirectory = ""; // Will be set by terminal initialization
       }
 
       store.createOneWindow(baseWindow);

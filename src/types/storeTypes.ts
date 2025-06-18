@@ -18,20 +18,24 @@ export interface WindowType {
   isMaximized?: boolean;
   isResizing?: boolean;
 
-  // Directory-specific properties (optional on base Window)
-  currentPath?: string;
-  canGoBack?: boolean;
-  canGoForward?: boolean;
-  navigationHistory?: string[];
-  currentHistoryIndex?: number;
+  // Generic history properties (new unified approach)
+  itemHistory?: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
+  currentHistoryIndex?: number; // Current position in history
+  currentItem?: string; // Current URL/path/command
+  canGoBack?: boolean; // Can navigate back in history
+  canGoForward?: boolean; // Can navigate forward in history
 
-  // Browser-specific properties (optional on base Window)
+  // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
+  currentPath?: string;
+  navigationHistory?: string[];
+
+  // Browser-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
   url?: string;
   bookmarks?: string[];
 
   // Terminal-specific properties (optional on base Window)
   workingDirectory?: string;
-  terminalHistory?: string[];
+  terminalHistory?: string[]; // LEGACY: will be replaced by generic itemHistory
 
   // Achievement window properties (optional on base Window)
   achievements?: unknown[]; // Will be properly typed when achievement system is implemented
@@ -88,6 +92,11 @@ export type BrowserWindow = Required<
     | "y"
     | "zIndex"
     | "url"
+    | "itemHistory"
+    | "currentHistoryIndex"
+    | "currentItem"
+    | "canGoBack"
+    | "canGoForward"
   >
 > & {
   nodeType: "browser";
@@ -109,6 +118,11 @@ export type TerminalWindow = Required<
     | "y"
     | "zIndex"
     | "workingDirectory"
+    | "itemHistory"
+    | "currentHistoryIndex"
+    | "currentItem"
+    | "canGoBack"
+    | "canGoForward"
   >
 > & {
   nodeType: "terminal";

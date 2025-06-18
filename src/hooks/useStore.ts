@@ -17,10 +17,7 @@ import {
   createSystemSlice,
   type SystemSlice,
 } from "../store/systemState/systemSlice";
-import {
-  createBrowserSlice,
-  type BrowserSlice,
-} from "../store/contentState/browserSlice";
+
 import {
   createWeatherSlice,
   type WeatherSlice,
@@ -53,6 +50,10 @@ import {
   createDirectoryOperationsSlice,
   type DirectoryOperationsSlice,
 } from "../store/contentState/directorySlice";
+import {
+  createWindowHistorySlice,
+  type WindowHistorySlice,
+} from "../store/windowState/windowHistorySlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
@@ -64,11 +65,10 @@ export interface NewDesktopStore
     EasterEggSlice,
     WindowCrudSlice,
     WindowOperationsSlice,
+    WindowHistorySlice,
     DirectoryOperationsSlice,
-    // WindowSlice, // Temporarily disabled to avoid conflicts
     TerminalSlice,
     SystemSlice,
-    BrowserSlice,
     WeatherSlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
@@ -86,6 +86,8 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createWindowCrudSlice(set, get),
   // {window operations (derived from window crud)}
   ...createWindowOperationsSlice(set, get),
+  // {window history operations (generic history for all window types)}
+  ...createWindowHistorySlice(set, get),
   // {directory operations (derived from window crud)}
   ...createDirectoryOperationsSlice(set, get),
   // {easter egg}
@@ -95,6 +97,5 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createEasterEggSlice(set, get),
   // ...createWindowSlice(set, get), // Temporarily disabled to avoid conflicts
   ...createTerminalSlice(set, get),
-  ...createBrowserSlice(set),
   ...createWeatherSlice(set),
 }));
