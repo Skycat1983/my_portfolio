@@ -5,13 +5,16 @@ import { StartPage } from "./fake_pages/StartPage";
 import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
 import { BrowserNavigation } from "./BrowserNavigation";
+import { OfflinePage } from "./fake_pages/offlinePage";
 
 export const BrowserContent = () => {
   console.log("BrowserContent");
   const [bookmarked, setBookmarked] = useState(false);
 
   // Get current page state from browser slice
-  const { currentPage } = useNewStore();
+  // const { currentPage } = useNewStore();
+  const currentPage = useNewStore((s) => s.currentPage);
+  const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
   const handleBookmarkToggle = () => {
     console.log("handleBookmarkToggle in BrowserContent: toggling bookmark");
@@ -20,6 +23,9 @@ export const BrowserContent = () => {
 
   // Render different pages based on currentPage state
   const renderPageContent = () => {
+    if (!wifiEnabled) {
+      return <OfflinePage />;
+    }
     switch (currentPage) {
       case "incomplete":
         return <IncompletePage />;
