@@ -1,9 +1,10 @@
 import { DisplayDate } from "./DisplayDate";
 import { MenubarOptions } from "./MenubarOptions";
 import { Social } from "./Social";
-import { Logo } from "../icons/Logo";
+import { Logo } from "../icons/LogoIcon";
 import { useNewStore } from "../../hooks/useStore";
 import { GITHUB_SMALL, LINKEDIN_SMALL } from "../../constants/images";
+import { WifiIcon } from "../icons/WifiIcon";
 
 export const MenubarLayout = () => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
@@ -20,7 +21,8 @@ export const MenubarLayout = () => {
           <Logo />
           <MenubarOptions />
         </div>
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row items-center">
+          <WifiIcon />
           <Social
             imgPath={LINKEDIN_SMALL}
             link="https://www.linkedin.com/in/heron-laoutaris/"

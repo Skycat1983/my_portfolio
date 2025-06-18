@@ -1,16 +1,13 @@
 import { useNewStore } from "../../../hooks/useStore";
 
 export const useBrowser = () => {
-  // Get browser state and actions from store
-  const {
-    url,
-    addressPosition,
-    predefinedAddress,
-    updateUrl,
-    navigateToUrl,
-    prevUrl,
-    currentPage,
-  } = useNewStore();
+  const url = useNewStore((s) => s.url);
+  const addressPosition = useNewStore((s) => s.addressPosition);
+  const predefinedAddress = useNewStore((s) => s.predefinedAddress);
+  const updateUrl = useNewStore((s) => s.updateUrl);
+  const navigateToUrl = useNewStore((s) => s.navigateToUrl);
+  const prevUrl = useNewStore((s) => s.prevUrl);
+  const currentPage = useNewStore((s) => s.currentPage);
 
   const handleUrlClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();

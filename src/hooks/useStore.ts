@@ -16,7 +16,7 @@ import {
 import {
   createSystemSlice,
   type SystemSlice,
-} from "../store/desktopState/systemSlice";
+} from "../store/systemState/systemSlice";
 import {
   createBrowserSlice,
   type BrowserSlice,
@@ -24,11 +24,11 @@ import {
 import {
   createWeatherSlice,
   type WeatherSlice,
-} from "../store/desktopState/weatherSlice";
+} from "../store/systemState/weatherSlice";
 import {
   createAchievementSlice,
   type AchievementSlice,
-} from "../store/desktopState/achievementsSlice";
+} from "../store/systemState/achievementsSlice";
 import {
   createNodeCrudSlice,
   type NodeCrudSlice,

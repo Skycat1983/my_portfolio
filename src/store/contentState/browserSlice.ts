@@ -5,17 +5,15 @@ interface BrowserState {
   url: string;
   lastNavigatedUrl: string;
   addressPosition: number;
-  completeUrl: boolean;
   currentPage: "start" | "incomplete" | "complete";
   predefinedAddress: string;
-  navigationHistory: string[];
-  currentHistoryIndex: number;
+  browserHistory: string[];
+  browserHistoryIndex: number;
 }
 
 interface BrowserActions {
   setUrl: (url: string) => void;
   setAddressPosition: (position: number) => void;
-  setCompleteUrl: (complete: boolean) => void;
   setCurrentPage: (page: "start" | "incomplete" | "complete") => void;
   updateUrl: (inputLength: number) => void;
   resetBrowser: () => void;
@@ -32,11 +30,10 @@ export const createBrowserSlice = (
   url: "",
   lastNavigatedUrl: "",
   addressPosition: 0,
-  completeUrl: false,
   currentPage: "start",
   predefinedAddress: "www.how-is-he-still-unemployed.com",
-  navigationHistory: [],
-  currentHistoryIndex: 0,
+  browserHistory: [],
+  browserHistoryIndex: 0,
 
   setUrl: (url: string) => {
     console.log("setUrl in browserSlice: setting url to", url);
@@ -49,14 +46,6 @@ export const createBrowserSlice = (
       position
     );
     set({ addressPosition: position });
-  },
-
-  setCompleteUrl: (complete: boolean) => {
-    console.log(
-      "setCompleteUrl in browserSlice: setting complete to",
-      complete
-    );
-    set({ completeUrl: complete });
   },
 
   setCurrentPage: (page: "start" | "incomplete" | "complete") => {
@@ -87,7 +76,6 @@ export const createBrowserSlice = (
       url: "",
       lastNavigatedUrl: "",
       addressPosition: 0,
-      completeUrl: false,
       currentPage: "start",
     });
   },
@@ -103,7 +91,6 @@ export const createBrowserSlice = (
       // If URL is empty, show start page
       if (state.addressPosition === 0 || state.url === "") {
         return {
-          completeUrl: false,
           currentPage: "start",
           lastNavigatedUrl: "",
         };

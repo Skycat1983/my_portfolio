@@ -6,7 +6,7 @@ export const Social = ({
   link: string;
 }) => {
   return (
-    <div className="w-6 h-6">
+    <div className="w-6 h-6 mr-4">
       <a href={link} target="_blank" rel="noopener noreferrer">
         <img src={imgPath} alt="social" />
       </a>
