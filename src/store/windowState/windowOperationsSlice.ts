@@ -349,6 +349,7 @@ export const createWindowOperationsSlice = (
   /**
    * Maximize a window
    */
+  // TODO
   maximizeWindow: (windowId: WindowType["windowId"]): boolean => {
     console.log("maximizeWindow: maximizing window", windowId);
 
@@ -364,7 +365,7 @@ export const createWindowOperationsSlice = (
   /**
    * Restore a window to normal state
    */
-  // ! UNUSED
+  // TODO
   restoreWindow: (windowId: WindowType["windowId"]): boolean => {
     console.log("restoreWindow: restoring window", windowId);
 
@@ -380,7 +381,7 @@ export const createWindowOperationsSlice = (
   /**
    * Toggle minimized state of a window
    */
-  // ! UNUSED
+  // TODO
   toggleMinimized: (windowId: WindowType["windowId"]): boolean => {
     console.log(
       "toggleMinimized: toggling minimized state for window",

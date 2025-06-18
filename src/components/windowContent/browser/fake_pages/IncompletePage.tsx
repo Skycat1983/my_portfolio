@@ -2,7 +2,22 @@ import { AlertCircle } from "lucide-react";
 import { useNewStore } from "../../../../hooks/useStore";
 
 export const IncompletePage = () => {
-  const { lastNavigatedUrl } = useNewStore();
+  const browserHistory = useNewStore((s) => s.browserHistory);
+  const browserHistoryIndex = useNewStore((s) => s.browserHistoryIndex);
+
+  // Get the current URL from history
+  const getCurrentUrl = () => {
+    if (
+      browserHistory.length > 0 &&
+      browserHistoryIndex >= 0 &&
+      browserHistoryIndex < browserHistory.length
+    ) {
+      return browserHistory[browserHistoryIndex];
+    }
+    return "";
+  };
+
+  const currentUrl = getCurrentUrl();
 
   return (
     <div className="max-w-4xl mx-auto text-center">
@@ -14,12 +29,11 @@ export const IncompletePage = () => {
         <p className="text-gray-600 mb-4">
           You've entered:{" "}
           <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-            {lastNavigatedUrl}
+            {currentUrl}
           </span>
         </p>
         <p className="text-gray-600 mb-6">
-          Does{" "}
-          <span className="font-mono text-blue-600">{lastNavigatedUrl}</span>{" "}
+          Does <span className="font-mono text-blue-600">{currentUrl}</span>{" "}
           look like a valid address to you? <br />
           {/* <span className="font-mono text-blue-600">{predefinedAddress}</span> */}
         </p>

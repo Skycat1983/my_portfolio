@@ -6,7 +6,8 @@ import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
 export const BrowserNavigation = () => {
   const {
     url,
-    currentPage,
+    canGoBack,
+    canGoForward,
     handleUrlClick,
     handleUrlChange,
     handleUrlKeyDown,
@@ -31,10 +32,10 @@ export const BrowserNavigation = () => {
         style={browserButtonStyles}
         title="Back"
         onClick={handleBackClick}
-        disabled={currentPage === "start"}
+        disabled={!canGoBack}
         className={cn(
           "hover:bg-gray-200 transition-colors",
-          currentPage === "start" && "opacity-50 cursor-not-allowed"
+          !canGoBack && "opacity-50 cursor-not-allowed"
         )}
       >
         <ChevronLeft size={14} />
@@ -44,7 +45,11 @@ export const BrowserNavigation = () => {
         style={browserButtonStyles}
         title="Forward"
         onClick={handleForwardClick}
-        className="hover:bg-gray-200 transition-colors"
+        disabled={!canGoForward}
+        className={cn(
+          "hover:bg-gray-200 transition-colors",
+          !canGoForward && "opacity-50 cursor-not-allowed"
+        )}
       >
         <ChevronRight size={14} />
       </button>

@@ -7,7 +7,10 @@ export const useBrowser = () => {
   const updateUrl = useNewStore((s) => s.updateUrl);
   const navigateToUrl = useNewStore((s) => s.navigateToUrl);
   const prevUrl = useNewStore((s) => s.prevUrl);
+  const nextUrl = useNewStore((s) => s.nextUrl);
   const currentPage = useNewStore((s) => s.currentPage);
+  const browserHistory = useNewStore((s) => s.browserHistory);
+  const browserHistoryIndex = useNewStore((s) => s.browserHistoryIndex);
 
   const handleUrlClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
@@ -42,7 +45,7 @@ export const useBrowser = () => {
   const handleForwardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     console.log("handleForwardClick in useBrowser: forward button clicked");
-    // Add forward functionality later if needed
+    nextUrl();
   };
 
   const handleRefreshClick = (e: React.MouseEvent) => {
@@ -51,12 +54,37 @@ export const useBrowser = () => {
     // Add refresh functionality later if needed
   };
 
+  // Determine if navigation buttons should be enabled
+  const canGoBack =
+    currentPage !== "start" ||
+    (browserHistory.length > 0 && browserHistoryIndex > 0);
+
+  const canGoForward =
+    browserHistory.length > 0 &&
+    browserHistoryIndex < browserHistory.length - 1;
+
+  // Get current URL from history if available
+  const getCurrentHistoryUrl = () => {
+    if (
+      browserHistory.length > 0 &&
+      browserHistoryIndex >= 0 &&
+      browserHistoryIndex < browserHistory.length
+    ) {
+      return browserHistory[browserHistoryIndex];
+    }
+    return "";
+  };
+
   return {
     // State
     url,
     addressPosition,
     predefinedAddress,
     currentPage,
+    browserHistory,
+    browserHistoryIndex,
+    canGoBack,
+    canGoForward,
 
     // Event handlers
     handleUrlClick,
@@ -65,5 +93,8 @@ export const useBrowser = () => {
     handleBackClick,
     handleForwardClick,
     handleRefreshClick,
+
+    // Utilities
+    getCurrentHistoryUrl,
   };
 };
