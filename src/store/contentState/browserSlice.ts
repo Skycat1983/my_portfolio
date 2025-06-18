@@ -2,20 +2,17 @@ import type { SetState } from "../../types/storeTypes";
 import type { NewDesktopStore } from "../../hooks/useStore";
 
 interface BrowserState {
-  isBrowserOpen: boolean;
-  browserZIndex: number;
   url: string;
   lastNavigatedUrl: string;
   addressPosition: number;
   completeUrl: boolean;
   currentPage: "start" | "incomplete" | "complete";
   predefinedAddress: string;
+  navigationHistory: string[];
+  currentHistoryIndex: number;
 }
 
 interface BrowserActions {
-  openBrowser: () => void;
-  closeBrowser: () => void;
-  focusBrowser: () => void;
   setUrl: (url: string) => void;
   setAddressPosition: (position: number) => void;
   setCompleteUrl: (complete: boolean) => void;
@@ -32,45 +29,14 @@ export const createBrowserSlice = (
   set: SetState<NewDesktopStore>
 ): BrowserSlice => ({
   // Browser state
-  isBrowserOpen: false,
-  browserZIndex: 1000,
   url: "",
   lastNavigatedUrl: "",
   addressPosition: 0,
   completeUrl: false,
   currentPage: "start",
   predefinedAddress: "www.how-is-he-still-unemployed.com",
-
-  // Browser actions
-  openBrowser: () => {
-    console.log("openBrowser in browserSlice: opening browser");
-    set((state) => ({
-      isBrowserOpen: true,
-      currentPage: "start",
-      browserZIndex: state.nextZIndex,
-      nextZIndex: state.nextZIndex + 1,
-    }));
-  },
-
-  focusBrowser: () => {
-    console.log("focusBrowser in browserSlice: focusing browser");
-    set((state) => ({
-      browserZIndex: state.nextZIndex,
-      nextZIndex: state.nextZIndex + 1,
-    }));
-  },
-
-  closeBrowser: () => {
-    console.log("closeBrowser in browserSlice: closing browser");
-    set({
-      isBrowserOpen: false,
-      url: "",
-      lastNavigatedUrl: "",
-      addressPosition: 0,
-      completeUrl: false,
-      currentPage: "start",
-    });
-  },
+  navigationHistory: [],
+  currentHistoryIndex: 0,
 
   setUrl: (url: string) => {
     console.log("setUrl in browserSlice: setting url to", url);

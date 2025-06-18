@@ -364,6 +364,7 @@ export const createWindowOperationsSlice = (
   /**
    * Restore a window to normal state
    */
+  // ! UNUSED
   restoreWindow: (windowId: WindowType["windowId"]): boolean => {
     console.log("restoreWindow: restoring window", windowId);
 
@@ -379,6 +380,7 @@ export const createWindowOperationsSlice = (
   /**
    * Toggle minimized state of a window
    */
+  // ! UNUSED
   toggleMinimized: (windowId: WindowType["windowId"]): boolean => {
     console.log(
       "toggleMinimized: toggling minimized state for window",

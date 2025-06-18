@@ -6,7 +6,7 @@ export const StartPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const downloadEgg = useNewStore((s) => s.downloadEgg);
   const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
-  const openDirectory = useNewStore((s) => s.openDirectory);
+  const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
   const incrementEggsDownloadedAchievement = useNewStore(
     (s) => s.incrementEggsDownloadedAchievement
   );
@@ -61,7 +61,7 @@ export const StartPage = () => {
         <div
           onClick={() => {
             const downloadsId = ensureDownloadsFolder();
-            openDirectory(downloadsId);
+            openOrFocusWindow(downloadsId);
           }}
           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
         >
