@@ -3,6 +3,7 @@ import type { OperatingSystem } from "../store/systemState/systemSlice";
 
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
+  //! Core window properties
   windowId: string;
   title: string;
   nodeId: NodeEntry["id"];
@@ -13,23 +14,24 @@ export interface WindowType {
   y: number; // Window position Y coordinate
   zIndex: number;
 
-  // Optional: Window state flags (for future features)
+  //?: Window state flags (for future features)
   isMinimized?: boolean;
   isMaximized?: boolean;
   isResizing?: boolean;
 
   // Generic history properties (new unified approach)
-  itemHistory?: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
-  currentHistoryIndex?: number; // Current position in history
-  currentItem?: string; // Current URL/path/command
-  canGoBack?: boolean; // Can navigate back in history
-  canGoForward?: boolean; // Can navigate forward in history
+  itemHistory: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
+  currentHistoryIndex: number; // Current position in history
+  currentItem: string; // Current URL/path/command
+  canGoBack: boolean; // Can navigate back in history
+  canGoForward: boolean; // Can navigate forward in history
 
   // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
   currentPath?: string;
   navigationHistory?: string[];
 
   // Browser-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
+  // TODO: remove this
   url?: string;
   bookmarks?: string[];
 

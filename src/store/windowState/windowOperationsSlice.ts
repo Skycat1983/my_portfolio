@@ -317,49 +317,73 @@ export const createWindowOperationsSlice = (
         return;
       }
 
+      // this ensures each additional window is offset to maintain visibility of all open windows
+      const count = store.openWindows.length;
+      const x = 100 * (count + 1);
+      const y = 100 * (count + 1);
+
+      let width = 600;
+      let height = 400;
+
+      if (node.type === "directory") {
+        width = 600;
+        height = 400;
+      } else if (node.type === "browser") {
+        width = 1000;
+        height = 800;
+      } else if (node.type === "terminal") {
+        width = 1000;
+        height = 600;
+      }
+
       // Create new window with default position
       const baseWindow: WindowType = {
         windowId: `window-${nodeId}-${Date.now()}`,
         title: node.label,
         nodeId,
         nodeType: node.type,
-        width: 800,
-        height: 600,
-        x: 100,
-        y: 100,
+        width,
+        height,
+        x,
+        y,
         zIndex: store.nextZIndex,
         isMinimized: false,
         isMaximized: false,
         isResizing: false,
+        itemHistory: [],
+        currentHistoryIndex: -1,
+        currentItem: "",
+        canGoBack: false,
+        canGoForward: false,
       };
-
+      // ! currently all windows have these properties
       // Initialize directory-specific properties for directory windows
-      if (node.type === "directory") {
-        baseWindow.currentPath = nodeId;
-        baseWindow.navigationHistory = [nodeId];
-        baseWindow.currentHistoryIndex = 0;
-        baseWindow.canGoBack = false;
-        baseWindow.canGoForward = false;
-      }
+      // if (node.type === "directory") {
+      //   baseWindow.currentPath = nodeId;
+      //   baseWindow.navigationHistory = [nodeId];
+      //   baseWindow.currentHistoryIndex = 0;
+      //   baseWindow.canGoBack = false;
+      //   baseWindow.canGoForward = false;
+      // }
 
-      // Initialize generic history properties for browser and terminal windows
-      if (node.type === "browser") {
-        baseWindow.itemHistory = []; // Empty history initially
-        baseWindow.currentHistoryIndex = -1;
-        baseWindow.currentItem = ""; // Empty URL initially
-        baseWindow.canGoBack = false;
-        baseWindow.canGoForward = false;
-        baseWindow.url = ""; // Legacy property for backward compatibility
-      }
+      // // Initialize generic history properties for browser and terminal windows
+      // if (node.type === "browser") {
+      //   baseWindow.itemHistory = []; // Empty history initially
+      //   baseWindow.currentHistoryIndex = -1;
+      //   baseWindow.currentItem = ""; // Empty URL initially
+      //   baseWindow.canGoBack = false;
+      //   baseWindow.canGoForward = false;
+      //   baseWindow.url = ""; // Legacy property for backward compatibility
+      // }
 
-      if (node.type === "terminal") {
-        baseWindow.itemHistory = []; // Empty command history initially
-        baseWindow.currentHistoryIndex = -1;
-        baseWindow.currentItem = ""; // No current command initially
-        baseWindow.canGoBack = false;
-        baseWindow.canGoForward = false;
-        baseWindow.workingDirectory = ""; // Will be set by terminal initialization
-      }
+      // if (node.type === "terminal") {
+      //   baseWindow.itemHistory = []; // Empty command history initially
+      //   baseWindow.currentHistoryIndex = -1;
+      //   baseWindow.currentItem = ""; // No current command initially
+      //   baseWindow.canGoBack = false;
+      //   baseWindow.canGoForward = false;
+      //   baseWindow.workingDirectory = ""; // Will be set by terminal initialization
+      // }
 
       store.createOneWindow(baseWindow);
     }
