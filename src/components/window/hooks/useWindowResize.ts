@@ -3,7 +3,7 @@ import { useNewStore } from "../../../hooks/useStore";
 
 type ResizeHandle = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
 
-export function useResizeWindow(windowId: string) {
+export function useWindowResize(windowId: string) {
   // Get the window data using the proper store method
   const window = useNewStore((s) => s.getWindowById(windowId));
   const setWindowBounds = useNewStore((s) => s.setWindowBounds);

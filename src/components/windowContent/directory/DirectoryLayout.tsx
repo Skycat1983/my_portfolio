@@ -21,8 +21,8 @@ type LayoutType = "desktop" | "window";
 
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];
-  layout?: LayoutType;
-  windowId?: string; // Pass windowId for window context navigation
+  layout: LayoutType;
+  windowId: string; // Pass windowId for window context navigation
 };
 
 export const DirectoryLayout = ({

@@ -44,16 +44,8 @@ import {
 } from "../store/windowState/windowCrudSlice";
 import {
   createWindowOperationsSlice,
-  type WindowOperationsSlice,
+  type WindowOperationsActions,
 } from "../store/windowState/windowOperationsSlice";
-import {
-  createDirectoryOperationsSlice,
-  type DirectoryOperationsSlice,
-} from "../store/contentState/directorySlice";
-import {
-  createWindowHistorySlice,
-  type WindowHistorySlice,
-} from "../store/windowState/windowHistorySlice";
 
 // Combined store interface - now composed of slices
 export interface NewDesktopStore
@@ -64,9 +56,7 @@ export interface NewDesktopStore
     SelectionSlice,
     EasterEggSlice,
     WindowCrudSlice,
-    WindowOperationsSlice,
-    WindowHistorySlice,
-    DirectoryOperationsSlice,
+    WindowOperationsActions,
     TerminalSlice,
     SystemSlice,
     WeatherSlice {}
@@ -86,11 +76,6 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createWindowCrudSlice(set, get),
   // {window operations (derived from window crud)}
   ...createWindowOperationsSlice(set, get),
-  // {window history operations (generic history for all window types)}
-  ...createWindowHistorySlice(set, get),
-  // {directory operations (derived from window crud)}
-  ...createDirectoryOperationsSlice(set, get),
-  // {easter egg}
   // {achievements}
   ...createAchievementSlice(set),
   // ...createNodeSlice(set, get),

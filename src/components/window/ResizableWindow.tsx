@@ -1,5 +1,5 @@
 import React from "react";
-import { useResizeWindow } from "./hooks/useWindowResize";
+import { useWindowResize } from "./hooks/useWindowResize";
 import { WindowHeader } from "./WindowHeader";
 import type { WindowType } from "../../types/storeTypes";
 import { WindowContent } from "./WindowContent";
@@ -14,7 +14,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   // children,
 }) => {
   const { windowId, title, width, height, x, y, zIndex, isMinimized } = window;
-  const { onResizeStart } = useResizeWindow(window.windowId);
+  const { onResizeStart } = useWindowResize(window.windowId);
 
   if (isMinimized) {
     return null; // Don't render minimized windows (or render as taskbar item)

@@ -22,9 +22,6 @@ export interface WindowType {
   // Generic history properties (new unified approach)
   itemHistory: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
   currentHistoryIndex: number; // Current position in history
-  currentItem: string; // Current URL/path/command
-  canGoBack: boolean; // Can navigate back in history
-  canGoForward: boolean; // Can navigate forward in history
 
   // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
   currentPath?: string;
@@ -71,8 +68,8 @@ export type DirectoryWindow = Required<
     | "y"
     | "zIndex"
     | "currentPath"
-    | "canGoBack"
-    | "canGoForward"
+    // | "canGoBack"
+    // | "canGoForward"
     | "navigationHistory"
     | "currentHistoryIndex"
   >
@@ -96,9 +93,9 @@ export type BrowserWindow = Required<
     | "url"
     | "itemHistory"
     | "currentHistoryIndex"
-    | "currentItem"
-    | "canGoBack"
-    | "canGoForward"
+    // | "currentItem"
+    // | "canGoBack"
+    // | "canGoForward"
   >
 > & {
   nodeType: "browser";
@@ -122,9 +119,9 @@ export type TerminalWindow = Required<
     | "workingDirectory"
     | "itemHistory"
     | "currentHistoryIndex"
-    | "currentItem"
-    | "canGoBack"
-    | "canGoForward"
+    // | "currentItem"
+    // | "canGoBack"
+    // | "canGoForward"
   >
 > & {
   nodeType: "terminal";

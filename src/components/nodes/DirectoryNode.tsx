@@ -22,7 +22,7 @@ type LayoutType = "desktop" | "window";
 type Props = {
   directory: DirectoryEntry;
   layout?: LayoutType;
-  parentWindowId?: string;
+  parentWindowId: string;
 };
 
 export const DirectoryNode = ({
@@ -34,6 +34,13 @@ export const DirectoryNode = ({
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
+
+  console.log("parentWindowId", parentWindowId);
+
+  const window = useNewStore((s) => s.getWindowById(parentWindowId));
+
+  console.log("window", window);
+  console.log("directory", directory);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -65,6 +72,9 @@ export const DirectoryNode = ({
       const success = updateWindowById(parentWindowId, {
         nodeId: directory.id,
         title: directory.label,
+        itemHistory: [...(window?.itemHistory || []), directory.id],
+        currentHistoryIndex: window?.currentHistoryIndex || 0,
+        currentItem: directory.id,
       });
       if (!success) {
         console.warn(
@@ -80,6 +90,7 @@ export const DirectoryNode = ({
     parentWindowId,
     openOrFocusWindow,
     updateWindowById,
+    window,
   ]);
 
   // ─────────── shared node behavior ───────────

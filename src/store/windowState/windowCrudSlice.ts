@@ -1,11 +1,10 @@
+import { defaultNodeMap } from "../../constants/nodes";
+import type { NodeMap } from "../../types/nodeTypes";
 import type { WindowType } from "../../types/storeTypes";
-import type {
-  BaseStoreState,
-  SetState,
-  GetState,
-} from "../../types/storeTypes";
+import type { SetState, GetState } from "../../types/storeTypes";
 
 interface WindowState {
+  nodeMap: NodeMap;
   openWindows: WindowType[];
   nextZIndex: number;
 }
@@ -31,12 +30,6 @@ interface WindowActions {
     updates: Partial<WindowType>
   ) => number;
 
-  // Generic update operations for extended window types
-  updateOneWindowGeneric: <T extends WindowType>(
-    predicate: (window: WindowType) => boolean,
-    updates: Partial<T>
-  ) => boolean;
-
   // Delete operations (all predicate-based)
   deleteOneWindow: (predicate: (window: WindowType) => boolean) => boolean;
   deleteManyWindows: (predicate: (window: WindowType) => boolean) => number;
@@ -49,12 +42,13 @@ interface WindowActions {
 export type WindowCrudSlice = WindowState & WindowActions;
 
 export const createWindowCrudSlice = (
-  set: SetState<BaseStoreState>,
-  get: GetState<BaseStoreState>
+  set: SetState<WindowCrudSlice>,
+  get: GetState<WindowCrudSlice>
 ): WindowCrudSlice => ({
   // Core window data
   openWindows: [],
   nextZIndex: 1000,
+  nodeMap: defaultNodeMap,
 
   // Find operations
   findOneWindow: (predicate: (window: WindowType) => boolean) => {
@@ -197,43 +191,6 @@ export const createWindowCrudSlice = (
     }));
 
     return windowsToUpdate.length;
-  },
-
-  // Generic update operation for extended window types
-  updateOneWindowGeneric: <T extends WindowType>(
-    predicate: (window: WindowType) => boolean,
-    updates: Partial<T>
-  ): boolean => {
-    console.log("updateOneWindowGeneric in windowCrudSlice");
-
-    const currentState = get();
-    const windowToUpdate = currentState.openWindows.find(predicate);
-
-    if (!windowToUpdate) {
-      console.log("updateOneWindowGeneric: no window matches predicate");
-      return false;
-    }
-
-    const updatedWindow = {
-      ...windowToUpdate,
-      ...updates,
-      windowId: windowToUpdate.windowId, // Prevent ID from being changed
-    } as WindowType;
-
-    set((state) => ({
-      openWindows: state.openWindows.map((window) =>
-        window.windowId === windowToUpdate.windowId ? updatedWindow : window
-      ),
-      // Update nextZIndex if we're updating zIndex
-      nextZIndex:
-        "zIndex" in updates &&
-        typeof updates.zIndex === "number" &&
-        updates.zIndex >= state.nextZIndex
-          ? updates.zIndex + 1
-          : state.nextZIndex,
-    }));
-
-    return true;
   },
 
   // Delete operations (all predicate-based)

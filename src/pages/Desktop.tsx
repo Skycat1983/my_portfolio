@@ -10,7 +10,9 @@ export const Desktop = () => {
     (s) => s.unlockClickOnSomethingAchievement
   );
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
-  const { rootId, operatingSystem, openWindows } = useNewStore();
+  const rootId = useNewStore((s) => s.rootId);
+  const operatingSystem = useNewStore((s) => s.operatingSystem);
+  const openWindows = useNewStore((s) => s.openWindows);
 
   //enables drag and drop to and from desktop functionality
   const dragHandlers = useNodeDrag();
@@ -60,7 +62,11 @@ export const Desktop = () => {
         ))}
 
         {/* {operatingSystem === "mac" && <Weather />} */}
-        <DirectoryLayout nodes={desktopChildren} layout="desktop" />
+        <DirectoryLayout
+          nodes={desktopChildren}
+          layout="desktop"
+          windowId="desktop-root"
+        />
       </div>
     </div>
   );
