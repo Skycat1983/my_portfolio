@@ -31,10 +31,10 @@ export interface WindowOperationsActions {
   ) => boolean;
 
   // ! WINDOW HISTORY OPERATIONS
-  canGoBackInHistory: (windowId: WindowType["windowId"]) => boolean;
-  canGoForwardInHistory: (windowId: WindowType["windowId"]) => boolean;
-  goBackInHistory: (windowId: WindowType["windowId"]) => boolean;
-  goForwardInHistory: (windowId: WindowType["windowId"]) => boolean;
+  canGoBackInWindowHistory: (windowId: WindowType["windowId"]) => boolean;
+  canGoForwardInWindowHistory: (windowId: WindowType["windowId"]) => boolean;
+  decrementWindowHistoryIndex: (windowId: WindowType["windowId"]) => boolean;
+  incrementWindowHistoryIndex: (windowId: WindowType["windowId"]) => boolean;
   getLocationInHistory: (windowId: WindowType["windowId"]) => string;
 
   // History navigation
@@ -238,12 +238,12 @@ export const createWindowOperationsSlice = (
   },
 
   //   ! WINDOW HISTORY OPERATIONS
-  canGoBackInHistory: (windowId: WindowType["windowId"]): boolean => {
+  canGoBackInWindowHistory: (windowId: WindowType["windowId"]): boolean => {
     const state = get();
     const window = state.getWindowById(windowId);
     return (window?.currentHistoryIndex ?? 0) > 0;
   },
-  canGoForwardInHistory: (windowId: WindowType["windowId"]): boolean => {
+  canGoForwardInWindowHistory: (windowId: WindowType["windowId"]): boolean => {
     const state = get();
     const window = state.getWindowById(windowId);
     return (
@@ -254,8 +254,8 @@ export const createWindowOperationsSlice = (
   /**
    * Navigate back in window's history - simple index decrement
    */
-  goBackInHistory: (windowId: WindowType["windowId"]): boolean => {
-    console.log("navigateBackInHistory: navigating back in window", windowId);
+  decrementWindowHistoryIndex: (windowId: WindowType["windowId"]): boolean => {
+    // console.log("navigateBackInHistory: navigating back in window", windowId);
 
     const state = get();
     const window = state.getWindowById(windowId);
@@ -268,7 +268,7 @@ export const createWindowOperationsSlice = (
     const { itemHistory, currentHistoryIndex } = window;
 
     if (currentHistoryIndex <= 0 || itemHistory.length === 0) {
-      console.log("navigateBackInHistory: cannot go back", windowId);
+      // console.log("navigateBackInHistory: cannot go back", windowId);
       return false;
     }
 
@@ -283,7 +283,7 @@ export const createWindowOperationsSlice = (
   /**
    * Navigate forward in window's history - simple index increment
    */
-  goForwardInHistory: (windowId: WindowType["windowId"]): boolean => {
+  incrementWindowHistoryIndex: (windowId: WindowType["windowId"]): boolean => {
     console.log("goForwardInHistory: navigating forward in window", windowId);
 
     const state = get();

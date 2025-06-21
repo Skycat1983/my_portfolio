@@ -1,2 +1,2 @@
-export { useResizeWindow } from "./useWindowResize";
+export { useWindowResize } from "./useWindowResize";
 export { useWindowDrag } from "./useWindowDrag";

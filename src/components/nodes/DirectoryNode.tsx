@@ -32,7 +32,7 @@ export const DirectoryNode = ({
 }: Props) => {
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
+  const openWindow = useNewStore((s) => s.openWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
 
   console.log("parentWindowId", parentWindowId);
@@ -60,7 +60,7 @@ export const DirectoryNode = ({
         "DirectoryNode: opening new window for directory",
         directory.id
       );
-      openOrFocusWindow(directory.id);
+      openWindow(directory, directory.id);
     } else {
       // Window context - navigate within existing window by updating nodeId
       console.log(
@@ -74,24 +74,16 @@ export const DirectoryNode = ({
         title: directory.label,
         itemHistory: [...(window?.itemHistory || []), directory.id],
         currentHistoryIndex: window?.currentHistoryIndex || 0,
-        currentItem: directory.id,
+        // currentItem: directory.id,
       });
       if (!success) {
         console.warn(
           "DirectoryNode: failed to update window, falling back to opening new window"
         );
-        openOrFocusWindow(directory.id);
+        openWindow(directory, directory.id);
       }
     }
-  }, [
-    directory.id,
-    directory.label,
-    layout,
-    parentWindowId,
-    openOrFocusWindow,
-    updateWindowById,
-    window,
-  ]);
+  }, [layout, parentWindowId, openWindow, updateWindowById, window, directory]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({

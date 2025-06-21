@@ -1,7 +1,7 @@
 import React from "react";
-import { useNewStore } from "../../../hooks/useStore";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useDirectoryWindow } from "../../../hooks/useDirectory";
 
 interface DirectoryNavigationProps {
   windowId: string;
@@ -13,47 +13,37 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
   console.log("DirectoryNavigation rendering for windowId:", windowId);
 
   // Use new generic history system
-  const window = useNewStore((state) => state.getWindowById(windowId));
-  const canGoBack = useNewStore((state) => state.canGoBack(windowId));
-  const canGoForward = useNewStore((state) => state.canGoForward(windowId));
-  const navigateBackInHistory = useNewStore(
-    (state) => state.navigateBackInHistory
-  );
-  const navigateForwardInHistory = useNewStore(
-    (state) => state.navigateForwardInHistory
-  );
-
-  if (!window || window.nodeType !== "directory") {
-    console.log("DirectoryNavigation: window not found or not directory type");
-    return null;
-  }
-
-  // Use new generic history state
-  // const canGoBack = directoryWindow.canGoBack;
-  // const canGoForward = directoryWindow.canGoForward;
+  const {
+    canGoBackInDirectoryHistory,
+    canGoForwardInDirectoryHistory,
+    handleGoBackInDirectoryHistory,
+    handleGoForwardInDirectoryHistory,
+  } = useDirectoryWindow(windowId);
 
   const handleBack = (e: React.MouseEvent) => {
-    console.log(window);
-    // console.log("canGoBack", canGoBack);
-    // console.log("canGoForward", canGoForward);
     e.stopPropagation();
     e.preventDefault();
-    if (canGoBack) {
-      navigateBackInHistory(windowId);
+    if (canGoBackInDirectoryHistory(windowId)) {
+      handleGoBackInDirectoryHistory();
     }
-    // console.log("DirectoryNavigation handleBack result:", result);
   };
 
   const handleForward = (e: React.MouseEvent) => {
-    // console.log("canGoBack", canGoBack);
-    // console.log("canGoForward", canGoForward);
     e.stopPropagation();
     e.preventDefault();
-    if (canGoForward) {
-      navigateForwardInHistory(windowId);
+    if (canGoForwardInDirectoryHistory(windowId)) {
+      handleGoForwardInDirectoryHistory();
     }
-    // const result = directoryWindow.goForwardToPath();
   };
+
+  console.log(
+    "canGoBackInDirectoryHistory",
+    canGoBackInDirectoryHistory(windowId)
+  );
+  console.log(
+    "canGoForwardInDirectoryHistory",
+    canGoForwardInDirectoryHistory(windowId)
+  );
 
   return (
     <div
@@ -88,7 +78,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         className={`
           p-1 rounded transition-colors 
           ${
-            canGoBack
+            canGoBackInDirectoryHistory(windowId)
               ? "bg-white hover:bg-gray-100 border-gray-300 cursor-pointer"
               : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-50"
           }
@@ -97,7 +87,9 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         <ChevronLeft
           size={20}
           className={
-            canGoBack ? "text-gray-700 dark:text-gray-300" : "text-gray-400"
+            canGoBackInDirectoryHistory(windowId)
+              ? "text-gray-700 dark:text-gray-300"
+              : "text-gray-400"
           }
         />
       </div>
@@ -117,7 +109,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         className={`
           p-1 rounded transition-colors 
           ${
-            canGoBack
+            canGoForwardInDirectoryHistory(windowId)
               ? "bg-white hover:bg-gray-100 border-gray-300 cursor-pointer"
               : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-50"
           }
@@ -126,7 +118,9 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         <ChevronRight
           size={20}
           className={
-            canGoForward ? "text-gray-700 dark:text-gray-300" : "text-gray-400"
+            canGoForwardInDirectoryHistory(windowId)
+              ? "text-gray-700 dark:text-gray-300"
+              : "text-gray-400"
           }
         />
       </div>
