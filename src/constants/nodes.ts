@@ -94,7 +94,7 @@ export const defaultNodes: DirectoryObject = {
           ],
         },
         {
-          id: "roboCrop",
+          id: "robocrop", // TODO: change to robo-crop
           label: "RoboCrop",
           type: "directory",
           children: [
@@ -115,7 +115,7 @@ export const defaultNodes: DirectoryObject = {
           ],
         },
         {
-          id: "SkyNot",
+          id: "skynot",
           label: "SkyNot",
           type: "directory",
           children: [
@@ -136,7 +136,7 @@ export const defaultNodes: DirectoryObject = {
           ],
         },
         {
-          id: "Dashboard",
+          id: "dashboard",
           label: "Dashboard",
           type: "directory",
           children: [

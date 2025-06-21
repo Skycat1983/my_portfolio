@@ -25,13 +25,22 @@ export const useDirectoryNode = (directoryEntry: DirectoryEntry) => {
 };
 
 export const useDirectoryWindow = (windowId: WindowType["windowId"]) => {
+  console.log("useDirectoryWindow windowId", windowId);
   const window = useNewStore((state) => state.getWindowById(windowId));
-  console.log("window", window);
+  console.log("useDirectoryWindow window", window);
   const canGoBackInDirectoryHistory = useNewStore(
     (state) => state.canGoBackInWindowHistory
   );
   const canGoForwardInDirectoryHistory = useNewStore(
     (state) => state.canGoForwardInWindowHistory
+  );
+  console.log(
+    "useDirectoryWindow canGoBackInDirectoryHistory",
+    canGoBackInDirectoryHistory(windowId)
+  );
+  console.log(
+    "useDirectoryWindow canGoForwardInDirectoryHistory",
+    canGoForwardInDirectoryHistory(windowId)
   );
   const decrementHistoryIndex = useNewStore(
     (state) => state.decrementWindowHistoryIndex

@@ -16,6 +16,7 @@ import { EasterEggNode } from "../../nodes/EasterEggNode";
 import { useNewStore } from "../../../hooks/useStore";
 import { BrowserNode } from "../../nodes/BrowserNode";
 import { AchievementNode } from "../../nodes/AchievementNode";
+import type { OperatingSystem } from "../../../store/systemState/systemSlice";
 
 type LayoutType = "desktop" | "window";
 
@@ -25,6 +26,20 @@ type DirectoryLayoutProps = {
   windowId: string; // Pass windowId for window context navigation
 };
 
+const getLayoutClasses = (
+  layout: LayoutType,
+  operatingSystem: OperatingSystem
+) => {
+  if (layout === "desktop") {
+    // Windows wants normal wrapping; everything else keeps wrap-reverse
+    const wrapClass =
+      operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse pt-8";
+    return `flex flex-col ${wrapClass} content-start w-full gap-10 h-full`;
+  }
+  // "window" layout
+  return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
+};
+
 export const DirectoryLayout = ({
   nodes,
   layout = "window",
@@ -32,19 +47,8 @@ export const DirectoryLayout = ({
 }: DirectoryLayoutProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
 
-  const getLayoutClasses = () => {
-    if (layout === "desktop") {
-      // Windows wants normal wrapping; everything else keeps wrap-reverse
-      const wrapClass =
-        operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse pt-8";
-      return `flex flex-col ${wrapClass} content-start w-full gap-10 h-full`;
-    }
-    // "window" layout
-    return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
-  };
-
   return (
-    <div className={getLayoutClasses()}>
+    <div className={getLayoutClasses(layout, operatingSystem)}>
       {nodes.map((node) => {
         switch (node.type) {
           case "easter-egg":
@@ -57,7 +61,7 @@ export const DirectoryLayout = ({
             return (
               <DirectoryNode
                 key={node.id}
-                directory={node as DirectoryEntry}
+                nodeEntry={node as DirectoryEntry}
                 layout={layout}
                 parentWindowId={windowId}
               />

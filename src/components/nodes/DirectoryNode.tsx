@@ -20,13 +20,13 @@ import {
 type LayoutType = "desktop" | "window";
 
 type Props = {
-  directory: DirectoryEntry;
+  nodeEntry: DirectoryEntry;
   layout?: LayoutType;
   parentWindowId: string;
 };
 
 export const DirectoryNode = ({
-  directory,
+  nodeEntry,
   layout = "window",
   parentWindowId,
 }: Props) => {
@@ -34,13 +34,11 @@ export const DirectoryNode = ({
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindow = useNewStore((s) => s.openWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
-
-  console.log("parentWindowId", parentWindowId);
+  const incrementWindowHistoryIndex = useNewStore(
+    (s) => s.incrementWindowHistoryIndex
+  );
 
   const window = useNewStore((s) => s.getWindowById(parentWindowId));
-
-  console.log("window", window);
-  console.log("directory", directory);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -50,7 +48,7 @@ export const DirectoryNode = ({
       "parentWindowId:",
       parentWindowId,
       "directory:",
-      directory.id
+      nodeEntry.id
     );
 
     // Context-aware navigation logic
@@ -58,50 +56,52 @@ export const DirectoryNode = ({
       // Desktop context or no parent window - always open new window
       console.log(
         "DirectoryNode: opening new window for directory",
-        directory.id
+        nodeEntry.id
       );
-      openWindow(directory, directory.id);
+      openWindow(nodeEntry, nodeEntry.id);
     } else {
       // Window context - navigate within existing window by updating nodeId
       console.log(
         "DirectoryNode: navigating within window",
         parentWindowId,
         "to directory",
-        directory.id
+        nodeEntry.id
       );
+      // incrementWindowHistoryIndex(parentWindowId);
+      const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
       const success = updateWindowById(parentWindowId, {
-        nodeId: directory.id,
-        title: directory.label,
-        itemHistory: [...(window?.itemHistory || []), directory.id],
-        currentHistoryIndex: window?.currentHistoryIndex || 0,
+        nodeId: nodeEntry.id,
+        title: nodeEntry.label,
+        itemHistory: [...(window?.itemHistory || []), nodeEntry.id],
+        currentHistoryIndex: newHistoryIndex,
         // currentItem: directory.id,
       });
       if (!success) {
         console.warn(
           "DirectoryNode: failed to update window, falling back to opening new window"
         );
-        openWindow(directory, directory.id);
+        openWindow(nodeEntry, nodeEntry.id);
       }
     }
-  }, [layout, parentWindowId, openWindow, updateWindowById, window, directory]);
+  }, [layout, parentWindowId, openWindow, updateWindowById, window, nodeEntry]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
-    id: directory.id,
+    id: nodeEntry.id,
     nodeType: "directory",
     enableLogging: true,
     onActivate: handleActivate,
   });
 
   // ─────────── image resolution logic ───────────
-  console.log("directory", directory);
+  console.log("directory", nodeEntry);
 
   let folderImage = operatingSystem === "mac" ? FOLDER_MAC : FOLDER_WIN;
 
-  if (directory.id === "trash") {
+  if (nodeEntry.id === "trash") {
     folderImage = BIN_EMPTY;
 
-    if (directory.children.length > 0) {
+    if (nodeEntry.children.length > 0) {
       folderImage = BIN_FULL;
     }
   }
@@ -124,10 +124,10 @@ export const DirectoryNode = ({
           drop: nodeBehavior.isDropTarget,
         })}`}
       >
-        <img src={folderImage} alt={directory.label} className={imageSize} />
+        <img src={folderImage} alt={nodeEntry.label} className={imageSize} />
       </div>
       <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-        {directory.label}
+        {nodeEntry.label}
       </h2>
     </div>
   );
