@@ -247,8 +247,7 @@ export const createWindowOperationsSlice = (
     const state = get();
     const window = state.getWindowById(windowId);
     return (
-      (window?.currentHistoryIndex ?? 0) <
-      (window?.itemHistory?.length ?? 0) - 1
+      (window?.currentHistoryIndex ?? 0) < (window?.itemHistory.length ?? 0) - 1
     );
   },
   /**

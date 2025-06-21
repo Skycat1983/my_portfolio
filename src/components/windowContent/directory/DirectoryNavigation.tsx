@@ -36,15 +36,6 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
     }
   };
 
-  console.log(
-    "canGoBackInDirectoryHistory",
-    canGoBackInDirectoryHistory(windowId)
-  );
-  console.log(
-    "canGoForwardInDirectoryHistory",
-    canGoForwardInDirectoryHistory(windowId)
-  );
-
   return (
     <div
       className="flex items-center gap-1 "
@@ -94,11 +85,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         />
       </div>
 
-      {/* </button> */}
-
-      {/* Forward button */}
       <div
-        // onClick={handleForward}
         onPointerDown={(e) => {
           console.log("Forward button pointerDown");
           e.stopPropagation(); // Critical: stop window drag

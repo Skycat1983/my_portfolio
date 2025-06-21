@@ -64,7 +64,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
         </span>
       </div>
 
-      <div className="flex justify-end items-center space-x-1 min-w-[10px] bg-red-500">
+      <div className="flex justify-end items-center space-x-1 min-w-[10px]">
         {nodeType === "directory" && (
           <DirectoryNavigation windowId={windowId} />
         )}
