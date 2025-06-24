@@ -43,17 +43,27 @@ export const Desktop = () => {
         className="p-10 h-full"
         onDragOver={
           dragHandlers
-            ? (e) => dragHandlers.handleDragOver(e, rootId)
+            ? (e) => {
+                return dragHandlers.handleDragOver(e, rootId);
+              }
             : undefined
         }
         onDragEnter={
           dragHandlers
-            ? (e) => dragHandlers.handleDragEnter(e, rootId)
+            ? (e) => {
+                return dragHandlers.handleDragEnter(e, rootId);
+              }
             : undefined
         }
-        onDragLeave={dragHandlers?.handleDragLeave}
+        onDragLeave={(e) => {
+          return dragHandlers?.handleDragLeave(e);
+        }}
         onDrop={
-          dragHandlers ? (e) => dragHandlers.handleDrop(e, rootId) : undefined
+          dragHandlers
+            ? (e) => {
+                return dragHandlers.handleDrop(e, rootId);
+              }
+            : undefined
         }
       >
         {/* Render all open windows */}

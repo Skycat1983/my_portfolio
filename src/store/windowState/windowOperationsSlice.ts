@@ -52,7 +52,7 @@ export interface WindowOperationsActions {
   // Window state management
 
   // Utility operations
-  isWindowIdOpen: (nodeId: string) => boolean;
+  isNodeIdWindowOpen: (nodeId: string) => boolean;
   // ID-based accessors (built from predicates)
   getWindowById: (id: WindowType["windowId"]) => WindowType | undefined;
   getWindowByNodeId: (nodeId: WindowType["nodeId"]) => WindowType | undefined;
@@ -351,7 +351,7 @@ export const createWindowOperationsSlice = (
   /**
    * Check if a window is open for a specific node
    */
-  isWindowIdOpen: (nodeId: string): boolean => {
+  isNodeIdWindowOpen: (nodeId: string): boolean => {
     return get().windowExists((window: WindowType) => window.nodeId === nodeId);
   },
 

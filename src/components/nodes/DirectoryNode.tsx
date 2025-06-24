@@ -40,7 +40,10 @@ export const DirectoryNode = ({
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindow = useNewStore((s) => s.openWindow);
+  const focusWindow = useNewStore((s) => s.focusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
+  const isNodeIdWindowOpen = useNewStore((s) => s.isNodeIdWindowOpen);
+  const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
   // const incrementWindowHistoryIndex = useNewStore(
   //   (s) => s.incrementWindowHistoryIndex
   // );
@@ -49,17 +52,19 @@ export const DirectoryNode = ({
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    console.log(
-      "Directory activate: context:",
-      layout,
-      "parentWindowId:",
-      parentWindowId,
-      "directory:",
-      nodeEntry.id
-    );
+    const alreadyOpen = getWindowByNodeId(nodeEntry.id);
+
+    if (alreadyOpen) {
+      focusWindow(alreadyOpen.windowId);
+      return;
+    }
 
     // Context-aware navigation logic
-    if (layout === "desktop" || !parentWindowId) {
+    if (
+      layout === "desktop" ||
+      !parentWindowId ||
+      !isNodeIdWindowOpen(nodeEntry.id)
+    ) {
       // Desktop context or no parent window - always open new window
       console.log(
         "DirectoryNode: opening new window for directory",
@@ -90,7 +95,15 @@ export const DirectoryNode = ({
         openWindow(nodeEntry, nodeEntry.id);
       }
     }
-  }, [layout, parentWindowId, openWindow, updateWindowById, window, nodeEntry]);
+  }, [
+    layout,
+    parentWindowId,
+    openWindow,
+    focusWindow,
+    updateWindowById,
+    window,
+    nodeEntry,
+  ]);
 
   // ─────────── shared node behavior ───────────
   console.log("DIR_NODE_02: calling useNodeEvents", {

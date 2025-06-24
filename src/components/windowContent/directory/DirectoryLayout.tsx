@@ -47,6 +47,13 @@ export const DirectoryLayout = ({
 }: DirectoryLayoutProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
 
+  console.log("DIR_LAYOUT_01: DirectoryLayout rendering", {
+    layout,
+    windowId,
+    nodeCount: nodes.length,
+    nodes: nodes.map((n) => ({ id: n.id, type: n.type })),
+  });
+
   return (
     <div className={getLayoutClasses(layout, operatingSystem)}>
       {nodes.map((node) => {

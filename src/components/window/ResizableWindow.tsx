@@ -17,7 +17,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   const { onResizeStart } = useWindowResize(window.windowId);
 
   if (isMinimized) {
-    return null; // Don't render minimized windows (or render as taskbar item)
+    return null;
   }
 
   return (
