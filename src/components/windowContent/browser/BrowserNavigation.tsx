@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { useBrowserWindowContent } from "./useBrowserWindow";
 import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
+import { useBrowserWindowContent } from "./useBrowserWindow";
 
 interface BrowserNavigationProps {
   windowId: string;

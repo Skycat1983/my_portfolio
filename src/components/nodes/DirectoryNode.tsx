@@ -43,45 +43,29 @@ export const DirectoryNode = ({
   const focusWindow = useNewStore((s) => s.focusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
-  // const incrementWindowHistoryIndex = useNewStore(
-  //   (s) => s.incrementWindowHistoryIndex
-  // );
-
   const window = useNewStore((s) => s.getWindowById(parentWindowId));
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    const alreadyOpen = getWindowByNodeId(nodeEntry.id);
+    const windowAlreadyOpen = getWindowByNodeId(nodeEntry.id);
 
-    if (alreadyOpen) {
-      focusWindow(alreadyOpen.windowId);
+    if (windowAlreadyOpen) {
+      focusWindow(windowAlreadyOpen.windowId);
       return;
     }
 
     // Context-aware navigation logic
     if (layout === "desktop" || !parentWindowId) {
-      // Desktop context or no parent window - always open new window
-      console.log(
-        "DirectoryNode: opening new window for directory",
-        nodeEntry.id
-      );
       openWindow(nodeEntry, nodeEntry.id);
     } else {
-      // Window context - navigate within existing window by updating nodeId
-
-      // incrementWindowHistoryIndex(parentWindowId);
       const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
       const success = updateWindowById(parentWindowId, {
         nodeId: nodeEntry.id,
         title: nodeEntry.label,
         itemHistory: [...(window?.itemHistory || []), nodeEntry.id],
         currentHistoryIndex: newHistoryIndex,
-        // currentItem: directory.id,
       });
       if (!success) {
-        console.warn(
-          "DirectoryNode: failed to update window, falling back to opening new window"
-        );
         openWindow(nodeEntry, nodeEntry.id);
       }
     }

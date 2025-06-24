@@ -18,7 +18,7 @@ export const createSystemSlice = (
   set: SetState<BaseStoreState>
 ): SystemSlice => ({
   operatingSystem: "mac",
-  wifiEnabled: false,
+  wifiEnabled: true,
   toggleOS: () =>
     set((state) => ({
       operatingSystem: state.operatingSystem === "mac" ? "windows" : "mac",

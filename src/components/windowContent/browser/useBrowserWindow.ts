@@ -1,4 +1,5 @@
-import { useBrowserWindow } from "../../../hooks/useWindowState";
+import { useNewStore } from "../../../hooks/useStore";
+import type { BrowserWindow } from "../../../types/storeTypes";
 
 // Local constant - no need for this to be in global state
 const PREDEFINED_ADDRESS = "www.how-is-he-still-unemployed.com";
@@ -7,22 +8,25 @@ const PREDEFINED_ADDRESS = "www.how-is-he-still-unemployed.com";
  * Enhanced browser hook that combines window-specific state with browser functionality
  * @param windowId - The ID of the browser window
  */
-export const useBrowserWindowContent = (windowId: string) => {
+export const useBrowserWindowContent = (
+  windowId: BrowserWindow["windowId"]
+) => {
   // Get window-specific state and operations
-  const browserWindow = useBrowserWindow(windowId);
+  const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
+  const updateWindowById = useNewStore((s) => s.updateWindowById);
 
   // Use local constant instead of global state
   const predefinedAddress = PREDEFINED_ADDRESS;
 
   // Derive browser-specific state
   const url = browserWindow.url;
-  const urlHistory = browserWindow.urlHistory;
-  const urlHistoryIndex = browserWindow.urlHistoryIndex;
-  const canGoBack = browserWindow.canGoBack;
-  const canGoForward = browserWindow.canGoForward;
+  const urlHistory = browserWindow.itemHistory;
+  const urlHistoryIndex = browserWindow.currentHistoryIndex;
+  const canGoBack = urlHistoryIndex > 0;
+  const canGoForward = urlHistoryIndex < urlHistory.length - 1;
 
   // Calculate address position based on current URL and predefined address
-  const addressPosition = url.length;
+  const addressPosition = url?.length ?? 0;
 
   // Get current URL from history if available (defined before usage)
   const getCurrentHistoryUrl = () => {
@@ -66,7 +70,7 @@ export const useBrowserWindowContent = (windowId: string) => {
     // Update URL based on typed character count
     if (typedCharCount <= predefinedAddress.length) {
       const newUrl = predefinedAddress.substring(0, typedCharCount);
-      browserWindow.setUrl(newUrl);
+      updateWindowById(windowId, { url: newUrl });
     }
   };
 
@@ -92,13 +96,18 @@ export const useBrowserWindowContent = (windowId: string) => {
     }
 
     // Add current URL to history and navigate to it
-    browserWindow.navigateToUrl(url);
+    updateWindowById(windowId, {
+      itemHistory: [...urlHistory, url],
+      currentHistoryIndex: urlHistory.length,
+    });
   };
 
   const handleBackClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     console.log("handleBackClick in useBrowserWindow: back button clicked");
-    browserWindow.goBackToUrl();
+    updateWindowById(windowId, {
+      currentHistoryIndex: urlHistoryIndex - 1,
+    });
   };
 
   const handleForwardClick = (e: React.MouseEvent) => {
@@ -106,7 +115,9 @@ export const useBrowserWindowContent = (windowId: string) => {
     console.log(
       "handleForwardClick in useBrowserWindow: forward button clicked"
     );
-    browserWindow.goForwardToUrl();
+    updateWindowById(windowId, {
+      currentHistoryIndex: urlHistoryIndex + 1,
+    });
   };
 
   const handleRefreshClick = (e: React.MouseEvent) => {
@@ -119,7 +130,7 @@ export const useBrowserWindowContent = (windowId: string) => {
 
   return {
     // Window state
-    window: browserWindow.window,
+    // window: browserWindow.window,
     windowId,
 
     // Browser state
@@ -145,10 +156,10 @@ export const useBrowserWindowContent = (windowId: string) => {
     getCurrentHistoryUrl,
 
     // Direct operations
-    setUrl: browserWindow.setUrl,
-    navigateToUrl: browserWindow.navigateToUrl,
-    goBack: browserWindow.goBackToUrl,
-    goForward: browserWindow.goForwardToUrl,
-    clearHistory: browserWindow.clearHistory,
+    // setUrl: browserWindow.setUrl,
+    // navigateToUrl: browserWindow.navigateToUrl,
+    // goBack: browserWindow.goBackToUrl,
+    // goForward: browserWindow.goForwardToUrl,
+    // clearHistory: browserWindow.clearHistory,
   };
 };

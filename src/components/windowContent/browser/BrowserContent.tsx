@@ -5,8 +5,7 @@ import { StartPage } from "./fake_pages/StartPage";
 import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
 import { BrowserNavigation } from "./BrowserNavigation";
-import { OfflinePage } from "./fake_pages/offlinePage";
-import { useBrowserWindowContent } from "./useBrowserWindow";
+import { OfflinePage } from "./fake_pages/OfflinePage";
 
 interface BrowserContentProps {
   windowId: string;
@@ -16,8 +15,11 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
   console.log("BrowserContent for window:", windowId);
   const [bookmarked, setBookmarked] = useState(false);
 
+  const window = useNewStore((s) => s.getWindowById(windowId));
+  const currentPage = window?.itemHistory[window?.currentHistoryIndex];
+
   // Get window-specific browser state
-  const { currentPage } = useBrowserWindowContent(windowId);
+  // const { currentPage } = useBrowserWindowContent(windowId);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
   const handleBookmarkToggle = () => {

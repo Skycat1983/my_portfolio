@@ -27,7 +27,7 @@ export interface NodeBusinessSlice {
 
   // Business logic operations
   isNodeInTrash: (nodeId: NodeEntry["id"]) => boolean;
-  ensureDownloadsFolder: () => string;
+  ensureDownloadsFolder: () => DirectoryEntry;
   downloadEgg: () => void;
 
   // Parent-child relationship management
@@ -194,7 +194,7 @@ export const createNodeBusinessSlice = (
   /**
    * Ensure downloads folder exists (business logic)
    */
-  ensureDownloadsFolder: (): string => {
+  ensureDownloadsFolder: (): DirectoryEntry => {
     console.log("ensureDownloadsFolder: checking for downloads folder");
 
     const state = get();
@@ -210,7 +210,7 @@ export const createNodeBusinessSlice = (
         "ensureDownloadsFolder: downloads folder already exists",
         existingDownloads.id
       );
-      return existingDownloads.id;
+      return existingDownloads as DirectoryEntry;
     }
 
     // Create downloads folder
@@ -237,7 +237,7 @@ export const createNodeBusinessSlice = (
             "ensureDownloadsFolder: created downloads folder with ID",
             downloadsId
           );
-          return downloadsId;
+          return downloadsFolder;
         } else {
           // Rollback creation
           state.deleteNodeByID(downloadsId);
