@@ -3,22 +3,30 @@
 import type { SetState } from "../../types/storeTypes";
 import type { NewDesktopStore } from "../../hooks/useStore";
 
-// Download 12 eggs.
-// Delete my portfolio.
-// Send me an email
-// Visit a website
-// Download my CV 3 times
-// Switch operating system
-
 interface AchievementState {
-  // employerScore: number;
+  // 1. Click on something
   clickOnSomethingAchieved: boolean;
+
+  // 2. Access achievements
   accessAchievements: boolean;
+
+  // 3. Operating system switcher
+  operatingSystemSwitchedAchieved: boolean;
+
+  // 4. Egg collector
   eggsDownloaded: number;
   downloadEggsAchieved: boolean;
-  portfolioDeletedAchieved: boolean;
+
+  // 5. visit a website
   joinAQueueAchieved: boolean;
-  operatingSystemSwitchedAchieved: boolean;
+
+  // 6. Portfolio destroyer
+  portfolioDeletedAchieved: boolean;
+
+  // 7 . prospective employer
+  cvCheckedOut: boolean;
+  recommendationCheckedOut: boolean;
+  prospectiveEmployerAchieved: boolean;
 
   // Notification counter for unseen achievements
   unseenAchievements: number;
@@ -30,13 +38,28 @@ interface AchievementState {
 //! schrodinger's achievement: delete your achievements
 
 interface AchievementAction {
-  //   incrementEmployerScore: (n: number) => void;
+  // 1. Click on something
   unlockClickOnSomethingAchievement: () => void;
+
+  // 2. Access achievements
   unlockAccessAchievements: () => void;
-  incrementEggsDownloadedAchievement: () => void;
-  unlockPortfolioDeletedAchievement: () => void;
-  unlockJoinAQueueAchievement: () => void;
+
+  // 3. Operating system switcher
   unlockOperatingSystemAchievement: () => void;
+
+  // 4. Egg collector
+  incrementEggsDownloadedAchievement: () => void;
+
+  // 5. Portfolio destroyer
+  unlockPortfolioDeletedAchievement: () => void;
+
+  // 6. Prospective employer
+  confirmCVCheckedOut: () => void;
+  confirmRecommendationCheckedOut: () => void;
+  unlockProspectiveEmployerAchievement: () => void;
+
+  // 7. visit a website
+  unlockJoinAQueueAchievement: () => void;
 
   // Mark achievements as seen (reset counter)
   markAchievementsAsSeen: () => void;
@@ -50,14 +73,32 @@ export type AchievementSlice = AchievementState & AchievementAction;
 export const createAchievementSlice = (
   set: SetState<NewDesktopStore>
 ): AchievementSlice => ({
+  // 1. Click on something
   clickOnSomethingAchieved: false,
+
+  // 2. Access achievements
   accessAchievements: false,
+
+  // 3. Operating system switcher
+  operatingSystemSwitchedAchieved: false,
+
+  // 4. Egg collector
   eggsDownloaded: 0,
   downloadEggsAchieved: false,
+
+  // 5. Portfolio destroyer
   portfolioDeletedAchieved: false,
+
+  // 6. visit a website
   joinAQueueAchieved: false,
-  operatingSystemSwitchedAchieved: false,
+
+  // 7. Prospective employer
   unseenAchievements: 0,
+
+  // 8. Checkout my CV and letter of recommendation
+  cvCheckedOut: false,
+  recommendationCheckedOut: false,
+  prospectiveEmployerAchieved: false,
   //   emailSent: false,
   //   websiteVisited: false,
   //   cvDownloaded: 0,
@@ -139,6 +180,44 @@ export const createAchievementSlice = (
         };
       }
       return state; // No change if already unlocked
+    });
+  },
+
+  confirmCVCheckedOut: () => {
+    set((state) => {
+      if (!state.cvCheckedOut) {
+        return {
+          cvCheckedOut: true,
+          // unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
+  },
+
+  confirmRecommendationCheckedOut: () => {
+    set((state) => {
+      if (!state.recommendationCheckedOut) {
+        return {
+          recommendationCheckedOut: true,
+          // unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
+  },
+
+  unlockProspectiveEmployerAchievement: () => {
+    set((state) => {
+      if (!state.prospectiveEmployerAchieved) {
+        if (state.cvCheckedOut && state.recommendationCheckedOut) {
+          return {
+            prospectiveEmployerAchieved: true,
+            unseenAchievements: state.unseenAchievements + 1,
+          };
+        }
+      }
+      return state;
     });
   },
 

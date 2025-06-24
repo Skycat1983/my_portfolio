@@ -3,6 +3,7 @@ import { useWindowResize } from "./hooks/useWindowResize";
 import { WindowHeader } from "./WindowHeader";
 import type { WindowType } from "../../types/storeTypes";
 import { WindowContent } from "./WindowContent";
+import { useNewStore } from "../../hooks/useStore";
 
 interface ResizableWindowProps {
   window: WindowType;
@@ -15,6 +16,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
 }) => {
   const { windowId, title, width, height, x, y, zIndex, isMinimized } = window;
   const { onResizeStart } = useWindowResize(window.windowId);
+  const focusWindow = useNewStore((s) => s.focusWindow);
 
   if (isMinimized) {
     return null;
@@ -29,6 +31,9 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
         width,
         height,
         zIndex,
+      }}
+      onClick={() => {
+        focusWindow(windowId);
       }}
     >
       {/* Window Header with drag functionality */}

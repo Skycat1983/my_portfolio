@@ -25,43 +25,16 @@ export const DirectoryContent = ({ window }: { window: DirectoryWindow }) => {
       className="w-full h-full"
       // Add drag event tracking to directory content
       onDragOver={(e) => {
-        console.log("DIR_CONTENT_01: onDragOver on DirectoryContent", {
-          windowId,
-          nodeId,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          draggedData: e.dataTransfer.getData("nodeId"),
-        });
         // Use drag handlers to handle drops on directory content (empty space)
         return dragHandlers.handleDragOver(e, nodeId);
       }}
       onDragEnter={(e) => {
-        console.log("DIR_CONTENT_02: onDragEnter on DirectoryContent", {
-          windowId,
-          nodeId,
-          target: e.target,
-          currentTarget: e.currentTarget,
-        });
         return dragHandlers.handleDragEnter(e, nodeId);
       }}
       onDragLeave={(e) => {
-        console.log("DIR_CONTENT_03: onDragLeave on DirectoryContent", {
-          windowId,
-          nodeId,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          relatedTarget: e.relatedTarget,
-        });
         return dragHandlers.handleDragLeave(e);
       }}
       onDrop={(e) => {
-        console.log("DIR_CONTENT_04: onDrop on DirectoryContent", {
-          windowId,
-          nodeId,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          draggedData: e.dataTransfer.getData("nodeId"),
-        });
         return dragHandlers.handleDrop(e, nodeId);
       }}
     >

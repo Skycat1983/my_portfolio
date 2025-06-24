@@ -23,9 +23,6 @@ export const Desktop = () => {
   const background =
     operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;
 
-  console.log("desktopChildren", desktopChildren);
-  console.log("openWindows", openWindows);
-
   return (
     <div
       // className="w-screen h-screen bg-gray-900 relative overflow-hidden background-image"

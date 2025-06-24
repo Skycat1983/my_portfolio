@@ -9,15 +9,36 @@ import {
   tileWrapper,
   titleBase,
 } from "./node.styles";
+import { useNewStore } from "../../hooks/useStore";
 
 type Props = { link: LinkEntry };
 
 export const LinkNode = ({ link }: Props) => {
+  const confirmCVCheckedOut = useNewStore((s) => s.confirmCVCheckedOut);
+  const confirmRecommendationCheckedOut = useNewStore(
+    (s) => s.confirmRecommendationCheckedOut
+  );
+  const unlockProspectiveEmployerAchievement = useNewStore(
+    (s) => s.unlockProspectiveEmployerAchievement
+  );
+
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
+    if (link.id === "resume") {
+      confirmCVCheckedOut();
+      unlockProspectiveEmployerAchievement();
+    } else if (link.id === "recommendation") {
+      confirmRecommendationCheckedOut();
+      unlockProspectiveEmployerAchievement();
+    }
     console.log("Link activate: opening URL", link.url);
     window.open(link.url, "_blank", "noopener,noreferrer");
-  }, [link.url]);
+  }, [
+    link,
+    confirmCVCheckedOut,
+    confirmRecommendationCheckedOut,
+    unlockProspectiveEmployerAchievement,
+  ]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({

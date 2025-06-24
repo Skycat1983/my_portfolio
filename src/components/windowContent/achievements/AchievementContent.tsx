@@ -31,6 +31,20 @@ export const AchievementContent = ({ windowId }: AchievementContentProps) => {
   const operatingSystemSwitchedAchieved = useNewStore(
     (state) => state.operatingSystemSwitchedAchieved
   );
+  const cvCheckedOut = useNewStore((state) => state.cvCheckedOut);
+  const recommendationCheckedOut = useNewStore(
+    (state) => state.recommendationCheckedOut
+  );
+  const prospectiveEmployerAchieved = useNewStore(
+    (state) => state.prospectiveEmployerAchieved
+  );
+
+  const prospectiveEmployerProgress =
+    cvCheckedOut && recommendationCheckedOut
+      ? 2
+      : cvCheckedOut || recommendationCheckedOut
+      ? 1
+      : 0;
 
   // Define all achievements with their current status
   const achievements: Achievement[] = [
@@ -49,6 +63,13 @@ export const AchievementContent = ({ windowId }: AchievementContentProps) => {
       unlocked: accessAchievements,
     },
     {
+      id: "os-switcher",
+      title: "OS Explorer",
+      description: "Switch between operating systems",
+      icon: "💻",
+      unlocked: operatingSystemSwitchedAchieved,
+    },
+    {
       id: "egg-collector",
       title: "Egg Collector",
       description: "Download 12 eggs",
@@ -56,6 +77,15 @@ export const AchievementContent = ({ windowId }: AchievementContentProps) => {
       unlocked: downloadEggsAchieved,
       progress: eggsDownloaded,
       maxProgress: 12,
+    },
+    {
+      id: "prospective-employer",
+      title: "Prospective Employer",
+      description: "Checkout my CV and letter of recommendation",
+      icon: "📄",
+      unlocked: prospectiveEmployerAchieved,
+      progress: prospectiveEmployerProgress,
+      maxProgress: 2,
     },
     {
       id: "portfolio-destroyer",
@@ -66,17 +96,17 @@ export const AchievementContent = ({ windowId }: AchievementContentProps) => {
     },
     {
       id: "queue-joiner",
-      title: "Queue Enthusiast",
-      description: "Join a queue like a true professional",
-      icon: "🔄",
+      title: "Surf the Net",
+      description: "Visit a website of your choice",
+      icon: "🌐",
       unlocked: joinAQueueAchieved,
     },
     {
-      id: "os-switcher",
-      title: "OS Explorer",
-      description: "Switch between operating systems",
-      icon: "💻",
-      unlocked: operatingSystemSwitchedAchieved,
+      id: "offer-job",
+      title: "Offer Job",
+      description: "Offer me a job",
+      icon: "💼",
+      unlocked: false,
     },
   ];
 

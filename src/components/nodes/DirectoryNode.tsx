@@ -42,7 +42,6 @@ export const DirectoryNode = ({
   const openWindow = useNewStore((s) => s.openWindow);
   const focusWindow = useNewStore((s) => s.focusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
-  const isNodeIdWindowOpen = useNewStore((s) => s.isNodeIdWindowOpen);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
   // const incrementWindowHistoryIndex = useNewStore(
   //   (s) => s.incrementWindowHistoryIndex
@@ -60,11 +59,7 @@ export const DirectoryNode = ({
     }
 
     // Context-aware navigation logic
-    if (
-      layout === "desktop" ||
-      !parentWindowId ||
-      !isNodeIdWindowOpen(nodeEntry.id)
-    ) {
+    if (layout === "desktop" || !parentWindowId) {
       // Desktop context or no parent window - always open new window
       console.log(
         "DirectoryNode: opening new window for directory",
@@ -73,12 +68,7 @@ export const DirectoryNode = ({
       openWindow(nodeEntry, nodeEntry.id);
     } else {
       // Window context - navigate within existing window by updating nodeId
-      console.log(
-        "DirectoryNode: navigating within window",
-        parentWindowId,
-        "to directory",
-        nodeEntry.id
-      );
+
       // incrementWindowHistoryIndex(parentWindowId);
       const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
       const success = updateWindowById(parentWindowId, {
@@ -96,6 +86,7 @@ export const DirectoryNode = ({
       }
     }
   }, [
+    getWindowByNodeId,
     layout,
     parentWindowId,
     openWindow,
