@@ -15,6 +15,12 @@ export const useNodeEvents = ({
   enableLogging = false,
   onActivate,
 }: NodeBehaviorConfig) => {
+  console.log("NODE_EVENTS_01: useNodeEvents called", {
+    id,
+    nodeType,
+    enableLogging,
+  });
+
   // ─────────── store actions & state ───────────
   const selectOneNode = useNewStore((s) => s.selectOneNode);
   const isSelected = useNewStore((s) => s.selectedNodeId === id);
@@ -26,9 +32,21 @@ export const useNodeEvents = ({
   );
 
   // ─────────── drag & drop functionality ───────────
+  console.log("NODE_EVENTS_02: creating dragHandlers via useNodeDrag", {
+    id,
+    nodeType,
+  });
   const dragHandlers = useNodeDrag();
   const canBeDropTarget = nodeType === "directory";
   const isDropTarget = canBeDropTarget ? dragHandlers.isDropTarget(id) : false;
+
+  console.log("NODE_EVENTS_03: drag configuration", {
+    id,
+    nodeType,
+    canBeDropTarget,
+    isDropTarget,
+    currentDropTarget: dragHandlers.currentDropTarget,
+  });
 
   // ─────────── logging helper ───────────
   const log = useCallback(
@@ -89,23 +107,59 @@ export const useNodeEvents = ({
   // ─────────── drag source handlers ───────────
   const dragSourceHandlers = {
     draggable: "true" as const,
-    onDragStart: (e: React.DragEvent<HTMLDivElement>) =>
-      dragHandlers.handleDragStart(e, id),
-    onDragEnd: dragHandlers.handleDragEnd,
+    onDragStart: (e: React.DragEvent<HTMLDivElement>) => {
+      console.log("NODE_EVENTS_04: onDragStart called", { id, nodeType });
+      return dragHandlers.handleDragStart(e, id);
+    },
+    onDragEnd: () => {
+      console.log("NODE_EVENTS_05: onDragEnd called", { id, nodeType });
+      return dragHandlers.handleDragEnd();
+    },
   };
 
   // ─────────── drop target handlers (only for directories) ───────────
   const dropTargetHandlers = canBeDropTarget
     ? {
-        onDragOver: (e: React.DragEvent<HTMLDivElement>) =>
-          dragHandlers.handleDragOver(e, id),
-        onDragEnter: (e: React.DragEvent<HTMLDivElement>) =>
-          dragHandlers.handleDragEnter(e, id),
-        onDragLeave: dragHandlers.handleDragLeave,
-        onDrop: (e: React.DragEvent<HTMLDivElement>) =>
-          dragHandlers.handleDrop(e, id),
+        onDragOver: (e: React.DragEvent<HTMLDivElement>) => {
+          console.log("NODE_EVENTS_06: onDragOver called on directory", {
+            id,
+            nodeType,
+          });
+          return dragHandlers.handleDragOver(e, id);
+        },
+        onDragEnter: (e: React.DragEvent<HTMLDivElement>) => {
+          console.log("NODE_EVENTS_07: onDragEnter called on directory", {
+            id,
+            nodeType,
+          });
+          return dragHandlers.handleDragEnter(e, id);
+        },
+        onDragLeave: (e: React.DragEvent<HTMLDivElement>) => {
+          console.log("NODE_EVENTS_08: onDragLeave called on directory", {
+            id,
+            nodeType,
+          });
+          return dragHandlers.handleDragLeave(e);
+        },
+        onDrop: (e: React.DragEvent<HTMLDivElement>) => {
+          console.log("NODE_EVENTS_09: onDrop called on directory", {
+            id,
+            nodeType,
+          });
+          return dragHandlers.handleDrop(e, id);
+        },
       }
     : {};
+
+  console.log("NODE_EVENTS_10: returning handlers", {
+    id,
+    nodeType,
+    hasDragSourceHandlers: !!dragSourceHandlers,
+    hasDropTargetHandlers: Object.keys(dropTargetHandlers).length > 0,
+    isSelected,
+    isDropTarget,
+    canBeDropTarget,
+  });
 
   // ─────────── accessibility props ───────────
   const accessibilityProps = {

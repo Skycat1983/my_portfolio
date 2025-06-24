@@ -18,14 +18,14 @@ type Props = { terminal: TerminalEntry };
 export const TerminalNode = ({ terminal }: Props) => {
   // ─────────── node-specific store actions ───────────
   // const openTerminal = useNewStore((s) => s.openTerminal);
-  const openOrFocusWindow = useNewStore((s) => s.openOrFocusWindow);
+  const openWindow = useNewStore((s) => s.openWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
     console.log("Terminal activate: opening terminal");
     // openTerminal();
-    openOrFocusWindow(terminal.id);
-  }, [terminal.id, openOrFocusWindow]);
+    openWindow(terminal, terminal.id);
+  }, [terminal, openWindow]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({

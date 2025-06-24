@@ -30,13 +30,20 @@ export const DirectoryNode = ({
   layout = "window",
   parentWindowId,
 }: Props) => {
+  console.log("DIR_NODE_01: DirectoryNode rendering", {
+    nodeId: nodeEntry.id,
+    layout,
+    parentWindowId,
+    nodeLabel: nodeEntry.label,
+  });
+
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindow = useNewStore((s) => s.openWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
-  const incrementWindowHistoryIndex = useNewStore(
-    (s) => s.incrementWindowHistoryIndex
-  );
+  // const incrementWindowHistoryIndex = useNewStore(
+  //   (s) => s.incrementWindowHistoryIndex
+  // );
 
   const window = useNewStore((s) => s.getWindowById(parentWindowId));
 
@@ -86,11 +93,27 @@ export const DirectoryNode = ({
   }, [layout, parentWindowId, openWindow, updateWindowById, window, nodeEntry]);
 
   // ─────────── shared node behavior ───────────
+  console.log("DIR_NODE_02: calling useNodeEvents", {
+    nodeId: nodeEntry.id,
+    nodeType: "directory",
+  });
+
   const nodeBehavior = useNodeEvents({
     id: nodeEntry.id,
     nodeType: "directory",
     enableLogging: true,
     onActivate: handleActivate,
+  });
+
+  console.log("DIR_NODE_03: received nodeBehavior from useNodeEvents", {
+    nodeId: nodeEntry.id,
+    isSelected: nodeBehavior.isSelected,
+    isDropTarget: nodeBehavior.isDropTarget,
+    canBeDropTarget: nodeBehavior.canBeDropTarget,
+    hasDragSourceHandlers:
+      Object.keys(nodeBehavior.dragSourceHandlers).length > 0,
+    hasDropTargetHandlers:
+      Object.keys(nodeBehavior.dropTargetHandlers).length > 0,
   });
 
   // ─────────── image resolution logic ───────────
@@ -105,6 +128,16 @@ export const DirectoryNode = ({
       folderImage = BIN_FULL;
     }
   }
+
+  console.log("DIR_NODE_04: about to render with drag handlers", {
+    nodeId: nodeEntry.id,
+    isSelected: nodeBehavior.isSelected,
+    isDropTarget: nodeBehavior.isDropTarget,
+    containerClasses: containerClasses({
+      selected: nodeBehavior.isSelected,
+      drop: nodeBehavior.isDropTarget,
+    }),
+  });
 
   // ─────────── render ───────────
   return (
