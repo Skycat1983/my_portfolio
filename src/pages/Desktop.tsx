@@ -4,6 +4,7 @@ import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
+import { Weather } from "../components/widgets/Weather";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
@@ -68,7 +69,7 @@ export const Desktop = () => {
           <ResizableWindow key={window.windowId} window={window} />
         ))}
 
-        {/* {operatingSystem === "mac" && <Weather />} */}
+        {operatingSystem === "mac" && <Weather />}
         <DirectoryLayout
           nodes={desktopChildren}
           layout="desktop"
