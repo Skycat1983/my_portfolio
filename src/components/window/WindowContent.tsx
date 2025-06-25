@@ -12,13 +12,13 @@ export const WindowContent = ({ window }: WindowContentProps) => {
   const { windowId, nodeType } = window;
   console.log("WindowContent", window);
   if (nodeType === "terminal") {
-    return <TerminalContent windowId={windowId} />;
+    return <TerminalContent />;
   }
   if (nodeType === "directory") {
     return <DirectoryContent window={window as DirectoryWindow} />;
   }
   if (nodeType === "achievement") {
-    return <AchievementContent windowId={windowId} />;
+    return <AchievementContent />;
   }
   if (nodeType === "browser") {
     return <BrowserContent windowId={windowId} />;

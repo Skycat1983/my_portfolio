@@ -62,7 +62,7 @@ export type WindowOperationsSlice = WindowCrudSlice & WindowOperationsActions;
 
 // Window operations slice - builds ID-based operations from predicate-based CRUD
 export const createWindowOperationsSlice = (
-  set: SetState<WindowOperationsSlice>,
+  _set: SetState<WindowOperationsSlice>,
   get: GetState<WindowOperationsSlice>
 ): WindowOperationsActions => ({
   /**

@@ -37,7 +37,7 @@ export type NodeOperationsSlice = NodeOperationsActions;
 
 // Node operations slice - builds ID-based operations from predicate-based CRUD
 export const createNodeOperationsSlice = (
-  set: SetState<NodeCrudSlice>,
+  _set: SetState<NodeCrudSlice>,
   get: GetState<NodeCrudSlice>
 ): NodeOperationsSlice => ({
   /**

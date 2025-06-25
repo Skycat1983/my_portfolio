@@ -6,7 +6,7 @@ export const StartPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const downloadEgg = useNewStore((s) => s.downloadEgg);
   const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
-  const focusWindow = useNewStore((s) => s.focusWindow);
+  // const focusWindow = useNewStore((s) => s.focusWindow);
   const openWindow = useNewStore((s) => s.openWindow);
   const incrementEggsDownloadedAchievement = useNewStore(
     (s) => s.incrementEggsDownloadedAchievement

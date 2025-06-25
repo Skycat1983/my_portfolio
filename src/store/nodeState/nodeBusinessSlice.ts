@@ -48,7 +48,7 @@ export interface StoreWithOperations
 
 // Business logic slice - builds complex workflows from operations
 export const createNodeBusinessSlice = (
-  set: SetState<StoreWithOperations>,
+  _set: SetState<StoreWithOperations>,
   get: GetState<StoreWithOperations>
 ): NodeBusinessSlice => ({
   /**

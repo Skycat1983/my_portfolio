@@ -6,11 +6,7 @@ import { useTerminalKeyboard } from "./hooks/useTerminalKeyboard";
 import { terminalStyles, getLineColor } from "./Terminal.styles";
 import { createTerminalCommands } from "./terminalCommands";
 
-interface TerminalContentProps {
-  windowId: string;
-}
-
-export const TerminalContent = ({ windowId }: TerminalContentProps) => {
+export const TerminalContent = () => {
   const {
     lines,
     currentInput,

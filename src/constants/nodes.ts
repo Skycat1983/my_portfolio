@@ -22,7 +22,6 @@ import {
   JAVASCRIPT,
   EGG_BROKEN,
   TROPHY1,
-  TROPHY2,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
