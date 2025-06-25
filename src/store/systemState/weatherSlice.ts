@@ -75,12 +75,27 @@ export const createWeatherSlice = (
 
   fetchWeather: async (location = "Berlin") => {
     console.log("fetchWeather in weatherSlice: fetching weather for", location);
+    console.log(
+      "fetchWeather in weatherSlice: API key is",
+      apiKey ? "defined" : "undefined"
+    );
+
+    // Check if API key exists
+    if (!apiKey || apiKey === "undefined") {
+      console.log(
+        "fetchWeather in weatherSlice: API key not found or undefined"
+      );
+      set({
+        weatherError: "Weather API key not configured",
+        weatherLoading: false,
+      });
+      return;
+    }
 
     try {
       set({ weatherLoading: true, weatherError: null });
 
       const response = await fetch(
-        // `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`
         `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`
       );
 

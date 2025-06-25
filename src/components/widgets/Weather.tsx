@@ -8,13 +8,15 @@ export const Weather = () => {
     console.log("Weather useEffect: checking if weather data exists", {
       weather,
       weatherLoading,
+      weatherError,
     });
 
-    if (!weather && !weatherLoading) {
+    // Only fetch if no weather data, not loading, and no error
+    if (!weather && !weatherLoading && !weatherError) {
       console.log("Weather useEffect: fetching weather data");
       fetchWeather();
     }
-  }, [weather, weatherLoading, fetchWeather]);
+  }, [weather, weatherLoading, weatherError, fetchWeather]);
 
   if (weatherLoading) {
     return (
