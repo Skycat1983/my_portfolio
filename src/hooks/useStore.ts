@@ -12,6 +12,10 @@ import {
   createTerminalSlice,
   type TerminalSlice,
 } from "../store/contentState/terminalSlice";
+import {
+  createGameSlice,
+  type GameSlice,
+} from "../store/contentState/gameSlice";
 
 import {
   createSystemSlice,
@@ -58,6 +62,7 @@ export interface NewDesktopStore
     WindowCrudSlice,
     WindowOperationsActions,
     TerminalSlice,
+    GameSlice,
     SystemSlice,
     WeatherSlice {}
 
@@ -82,5 +87,6 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createEasterEggSlice(set, get),
   // ...createWindowSlice(set, get), // Temporarily disabled to avoid conflicts
   ...createTerminalSlice(set, get),
+  ...createGameSlice(set, get),
   ...createWeatherSlice(set),
 }));

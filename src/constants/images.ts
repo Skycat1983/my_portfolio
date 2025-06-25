@@ -65,6 +65,12 @@ export {
   NEXT2,
 };
 
+import GTA6_LOGO from "../assets/icons_m/gta6_logo.png";
+import GTA6_LOADING from "../assets/wallpapers/gta6_loading.png";
+import GTA6_SCREEN from "../assets/wallpapers/gta6_screenshot.png";
+
+export { GTA6_LOGO, GTA6_LOADING, GTA6_SCREEN };
+
 // Achievements
 import ACHIEVEMENT from "../assets/icons_m/achievement.png";
 import TROPHY1 from "../assets/icons_m/trophy1.png";
