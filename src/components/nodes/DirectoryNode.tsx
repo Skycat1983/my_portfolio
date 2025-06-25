@@ -81,27 +81,12 @@ export const DirectoryNode = ({
   ]);
 
   // ─────────── shared node behavior ───────────
-  console.log("DIR_NODE_02: calling useNodeEvents", {
-    nodeId: nodeEntry.id,
-    nodeType: "directory",
-  });
 
   const nodeBehavior = useNodeEvents({
     id: nodeEntry.id,
     nodeType: "directory",
     enableLogging: true,
     onActivate: handleActivate,
-  });
-
-  console.log("DIR_NODE_03: received nodeBehavior from useNodeEvents", {
-    nodeId: nodeEntry.id,
-    isSelected: nodeBehavior.isSelected,
-    isDropTarget: nodeBehavior.isDropTarget,
-    canBeDropTarget: nodeBehavior.canBeDropTarget,
-    hasDragSourceHandlers:
-      Object.keys(nodeBehavior.dragSourceHandlers).length > 0,
-    hasDropTargetHandlers:
-      Object.keys(nodeBehavior.dropTargetHandlers).length > 0,
   });
 
   // ─────────── image resolution logic ───────────
@@ -116,16 +101,6 @@ export const DirectoryNode = ({
       folderImage = BIN_FULL;
     }
   }
-
-  console.log("DIR_NODE_04: about to render with drag handlers", {
-    nodeId: nodeEntry.id,
-    isSelected: nodeBehavior.isSelected,
-    isDropTarget: nodeBehavior.isDropTarget,
-    containerClasses: containerClasses({
-      selected: nodeBehavior.isSelected,
-      drop: nodeBehavior.isDropTarget,
-    }),
-  });
 
   // ─────────── render ───────────
   return (

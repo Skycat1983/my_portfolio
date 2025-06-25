@@ -59,7 +59,7 @@ export const Toast = () => {
   useEffect(() => {
     if (joinAQueueAchieved) {
       toast.success("Achievement Unlocked!", {
-        description: "You joined a queue! 🔄",
+        description: "You visited a website! 🔄",
         duration: 4000,
         icon: <TrophyIcon />,
       });

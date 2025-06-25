@@ -1,13 +1,71 @@
+import { useCallback } from "react";
 import { useNewStore } from "../../../hooks/useStore";
 import type { BrowserWindow } from "../../../types/storeTypes";
 
 // Local constant - no need for this to be in global state
-const PREDEFINED_ADDRESS = "www.how-is-he-still-unemployed.com";
 
 /**
  * Enhanced browser hook that combines window-specific state with browser functionality
  * @param windowId - The ID of the browser window
  */
+
+// export const useBrowserWindow = (windowId: BrowserWindow["windowId"]) => {
+//   const window = useNewStore((state) => state.getWindowById(windowId));
+//   console.log("useDirectoryWindow window", window);
+//   const canGoBackInBrowserHistory = useNewStore(
+//     (state) => state.canGoBackInWindowHistory
+//   );
+//   const canGoForwardInBrowserHistory = useNewStore(
+//     (state) => state.canGoForwardInWindowHistory
+//   );
+
+//   const decrementHistoryIndex = useNewStore(
+//     (state) => state.decrementWindowHistoryIndex
+//   );
+//   const incrementHistoryIndex = useNewStore(
+//     (state) => state.incrementWindowHistoryIndex
+//   );
+//   const getLocationInHistory = useNewStore(
+//     (state) => state.getLocationInHistory
+//   );
+//   const updateWindowById = useNewStore((state) => state.updateWindowById);
+
+//   const handleGoBackInBrowserHistory = useCallback(() => {
+//     if (canGoBackInBrowserHistory(windowId)) {
+//       decrementHistoryIndex(windowId);
+//       const previousNodeId = getLocationInHistory(windowId);
+//       updateWindowById(windowId, { nodeId: previousNodeId });
+//     }
+//   }, [
+//     windowId,
+//     canGoBackInBrowserHistory,
+//     decrementHistoryIndex,
+//     getLocationInHistory,
+//     updateWindowById,
+//   ]);
+
+//   const handleGoForwardInBrowserHistory = useCallback(() => {
+//     if (canGoForwardInBrowserHistory(windowId)) {
+//       incrementHistoryIndex(windowId);
+//       const nextNodeId = getLocationInHistory(windowId);
+//       updateWindowById(windowId, { nodeId: nextNodeId });
+//     }
+//   }, [
+//     windowId,
+//     canGoForwardInBrowserHistory,
+//     incrementHistoryIndex,
+//     getLocationInHistory,
+//     updateWindowById,
+//   ]);
+
+//   return {
+//     canGoBackInBrowserHistory,
+//     canGoForwardInBrowserHistory,
+//     handleGoBackInBrowserHistory,
+//     handleGoForwardInBrowserHistory,
+//   };
+// };
+
 export const useBrowserWindowContent = (
   windowId: BrowserWindow["windowId"]
 ) => {
@@ -16,7 +74,6 @@ export const useBrowserWindowContent = (
   const updateWindowById = useNewStore((s) => s.updateWindowById);
 
   // Use local constant instead of global state
-  const predefinedAddress = PREDEFINED_ADDRESS;
 
   // Derive browser-specific state
   const url = browserWindow.url;

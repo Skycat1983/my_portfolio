@@ -18,6 +18,9 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
   const window = useNewStore((s) => s.getWindowById(windowId));
   const currentPage = window?.itemHistory[window?.currentHistoryIndex];
 
+  console.log("BROWSER currentPage", currentPage);
+  console.log("BROWSER window", window);
+
   // Get window-specific browser state
   // const { currentPage } = useBrowserWindowContent(windowId);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
@@ -33,12 +36,12 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
       return <OfflinePage />;
     }
     switch (currentPage) {
-      case "incomplete":
-        return <IncompletePage windowId={windowId} />;
-      case "complete":
+      case "":
+        return <StartPage />;
+      case "www.how-is-he-still-unemployed.com":
         return <QueuePage />;
       default:
-        return <StartPage />;
+        return <IncompletePage windowId={windowId} />;
     }
   };
 

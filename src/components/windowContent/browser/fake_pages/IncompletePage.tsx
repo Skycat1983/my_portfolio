@@ -1,15 +1,15 @@
 import { AlertCircle } from "lucide-react";
-import { useBrowserWindowContent } from "../useBrowserWindow";
+import { useNewStore } from "../../../../hooks/useStore";
 
 interface IncompletePageProps {
   windowId: string;
 }
 
 export const IncompletePage = ({ windowId }: IncompletePageProps) => {
-  const { url, getCurrentHistoryUrl } = useBrowserWindowContent(windowId);
+  const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
+  const lastUrl = browserWindow.itemHistory[browserWindow.currentHistoryIndex];
 
   // Get the current URL from this window's history
-  const currentUrl = getCurrentHistoryUrl() || url;
 
   return (
     <div className="max-w-4xl mx-auto text-center">
@@ -21,12 +21,12 @@ export const IncompletePage = ({ windowId }: IncompletePageProps) => {
         <p className="text-gray-600 mb-4">
           You've entered:{" "}
           <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-            {currentUrl}
+            {lastUrl}
           </span>
         </p>
         <p className="text-gray-600 mb-6">
-          Does <span className="font-mono text-blue-600">{currentUrl}</span>{" "}
-          look like a valid address to you? <br />
+          Does <span className="font-mono text-blue-600">{lastUrl}</span> look
+          like a valid address to you? <br />
           {/* <span className="font-mono text-blue-600">{predefinedAddress}</span> */}
         </p>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

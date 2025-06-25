@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useDirectoryWindow } from "../../../hooks/useDirectory";
+import { useWindowHistory } from "../../window/hooks/useWindowHistory";
 
 interface DirectoryNavigationProps {
   windowId: string;
@@ -10,29 +10,26 @@ interface DirectoryNavigationProps {
 export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
   windowId,
 }) => {
-  console.log("DirectoryNavigation rendering for windowId:", windowId);
-
-  // Use new generic history system
   const {
-    canGoBackInDirectoryHistory,
-    canGoForwardInDirectoryHistory,
-    handleGoBackInDirectoryHistory,
-    handleGoForwardInDirectoryHistory,
-  } = useDirectoryWindow(windowId);
+    canGoBackInWindowHistory,
+    canGoForwardInWindowHistory,
+    handleGoBackInWindowHistory,
+    handleGoForwardInWindowHistory,
+  } = useWindowHistory(windowId);
 
   const handleBack = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (canGoBackInDirectoryHistory(windowId)) {
-      handleGoBackInDirectoryHistory();
+    if (canGoBackInWindowHistory(windowId)) {
+      handleGoBackInWindowHistory();
     }
   };
 
   const handleForward = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (canGoForwardInDirectoryHistory(windowId)) {
-      handleGoForwardInDirectoryHistory();
+    if (canGoForwardInWindowHistory(windowId)) {
+      handleGoForwardInWindowHistory();
     }
   };
 
@@ -69,7 +66,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         className={`
           p-1 rounded transition-colors 
           ${
-            canGoBackInDirectoryHistory(windowId)
+            canGoBackInWindowHistory(windowId)
               ? "bg-white hover:bg-gray-100 border-gray-300 cursor-pointer"
               : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-50"
           }
@@ -78,7 +75,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         <ChevronLeft
           size={20}
           className={
-            canGoBackInDirectoryHistory(windowId)
+            canGoBackInWindowHistory(windowId)
               ? "text-gray-700 dark:text-gray-300"
               : "text-gray-400"
           }
@@ -96,7 +93,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         className={`
           p-1 rounded transition-colors 
           ${
-            canGoForwardInDirectoryHistory(windowId)
+            canGoForwardInWindowHistory(windowId)
               ? "bg-white hover:bg-gray-100 border-gray-300 cursor-pointer"
               : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-50"
           }
@@ -105,7 +102,7 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
         <ChevronRight
           size={20}
           className={
-            canGoForwardInDirectoryHistory(windowId)
+            canGoForwardInWindowHistory(windowId)
               ? "text-gray-700 dark:text-gray-300"
               : "text-gray-400"
           }

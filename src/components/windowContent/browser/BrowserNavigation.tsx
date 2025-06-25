@@ -1,24 +1,110 @@
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
 import { cn } from "../../../lib/utils";
 import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
-import { useBrowserWindowContent } from "./useBrowserWindow";
+import { useWindowHistory } from "../../window/hooks/useWindowHistory";
+import { useNewStore } from "../../../hooks/useStore";
+import { PREDEFINED_ADDRESS } from "../../../constants/urls";
 
 interface BrowserNavigationProps {
   windowId: string;
 }
 
 export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
+  const predefinedAddress = PREDEFINED_ADDRESS;
+
+  // Use new generic history system
+  const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
+  const updateWindowById = useNewStore((s) => s.updateWindowById);
+  const urlHistory = browserWindow.itemHistory;
+  const i = browserWindow.currentHistoryIndex;
+  console.log("urlHistory browserWindow", browserWindow);
+
+  console.log("urlHistory", urlHistory);
+  console.log("urlHistory[i]", urlHistory[i]);
+
+  // const urlHistoryIndex = browserWindow.currentHistoryIndex;
+
+  // Get URL from store instead of local state
+  const url = browserWindow.url || "";
+  const addressPosition = url?.length ?? 0;
+
   const {
-    url,
-    canGoBack,
-    canGoForward,
-    handleUrlClick,
-    handleUrlChange,
-    handleUrlKeyDown,
-    handleBackClick,
-    handleForwardClick,
-    handleRefreshClick,
-  } = useBrowserWindowContent(windowId);
+    canGoBackInWindowHistory,
+    canGoForwardInWindowHistory,
+    handleGoBackInWindowHistory,
+    handleGoForwardInWindowHistory,
+  } = useWindowHistory(windowId);
+
+  const handleBack = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (canGoBackInWindowHistory(windowId)) {
+      handleGoBackInWindowHistory();
+
+      if (urlHistory[i]) {
+        updateWindowById(windowId, { url: urlHistory[i - 1] });
+      }
+    }
+  };
+
+  const handleForward = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (canGoForwardInWindowHistory(windowId)) {
+      handleGoForwardInWindowHistory();
+      // Get the URL from the current history position after navigation
+      const getLocationInHistory = useNewStore.getState().getLocationInHistory;
+      const urlAtCurrentPosition = getLocationInHistory(windowId);
+      if (urlAtCurrentPosition) {
+        updateWindowById(windowId, { url: urlAtCurrentPosition });
+      }
+    }
+  };
+
+  const handleUrlClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    console.log("handleUrlClick in useBrowserWindow: input clicked, focusing");
+    e.currentTarget.focus();
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const typedCharCount = inputValue.length;
+
+    // Update URL based on typed character count
+    if (typedCharCount <= predefinedAddress.length) {
+      const newUrl = predefinedAddress.substring(0, typedCharCount);
+      updateWindowById(windowId, { url: newUrl });
+    }
+  };
+
+  const handleNavigateToUrl = () => {
+    console.log("handleNavigateToUrl: navigating based on URL completeness");
+
+    // If URL is empty, don't add to history
+    if (addressPosition === 0 || url === "") {
+      return;
+    }
+
+    // Add current URL to history and navigate to it
+    updateWindowById(windowId, {
+      itemHistory: [...urlHistory, url],
+      currentHistoryIndex: urlHistory.length,
+    });
+  };
+
+  const handleUrlKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleNavigateToUrl();
+      e.preventDefault();
+      return;
+    }
+
+    // Prevent typing beyond predefined address length
+    if (e.key.length === 1 && addressPosition >= predefinedAddress.length) {
+      e.preventDefault();
+    }
+  };
 
   const addressBarStyle: React.CSSProperties = {
     height: "50px",
@@ -35,11 +121,11 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
       <button
         style={browserButtonStyles}
         title="Back"
-        onClick={handleBackClick}
-        disabled={!canGoBack}
+        onClick={handleBack}
+        disabled={!canGoBackInWindowHistory(windowId)}
         className={cn(
           "hover:bg-gray-200 transition-colors",
-          !canGoBack && "opacity-50 cursor-not-allowed"
+          !canGoBackInWindowHistory(windowId) && "opacity-50 cursor-not-allowed"
         )}
       >
         <ChevronLeft size={14} />
@@ -48,11 +134,12 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
       <button
         style={browserButtonStyles}
         title="Forward"
-        onClick={handleForwardClick}
-        disabled={!canGoForward}
+        onClick={handleForward}
+        disabled={!canGoForwardInWindowHistory(windowId)}
         className={cn(
           "hover:bg-gray-200 transition-colors",
-          !canGoForward && "opacity-50 cursor-not-allowed"
+          !canGoForwardInWindowHistory(windowId) &&
+            "opacity-50 cursor-not-allowed"
         )}
       >
         <ChevronRight size={14} />
@@ -61,7 +148,7 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
       <button
         style={browserButtonStyles}
         title="Refresh"
-        onClick={handleRefreshClick}
+        //  onClick={handleRefreshClick}
         className="hover:bg-gray-200 transition-colors"
       >
         <RotateCcw size={14} />

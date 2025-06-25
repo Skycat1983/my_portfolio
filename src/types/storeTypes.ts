@@ -37,7 +37,6 @@ export interface WindowType {
   terminalHistory?: string[]; // LEGACY: will be replaced by generic itemHistory
 
   // Achievement window properties (optional on base Window)
-  achievements?: unknown[]; // Will be properly typed when achievement system is implemented
 }
 
 // Narrowed types for specific window types using utility types
@@ -145,10 +144,7 @@ export type AchievementWindow = Required<
   >
 > & {
   nodeType: "achievements";
-} & Pick<
-    WindowType,
-    "isMinimized" | "isMaximized" | "isResizing" | "achievements"
-  >;
+} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
 
 // Legacy DirectoryWindow interface (can be removed once everything uses the new types)
 export interface DirectoryWindowLegacy extends WindowType {
