@@ -23,6 +23,7 @@ import {
   EGG_BROKEN,
   TROPHY1,
   GTA6_LOGO,
+  PLANET,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -250,11 +251,25 @@ export const defaultNodes: DirectoryObject = {
       ],
     },
     {
-      id: "gtaiv",
-      label: "GTAVI",
-      type: "game",
-      image: GTA6_LOGO,
+      id: "games",
+      label: "Games",
+      type: "directory",
+      children: [
+        {
+          id: "gtaiv",
+          label: "GTAVI",
+          type: "game",
+          image: GTA6_LOGO,
+        },
+        {
+          id: "geo",
+          label: "Geo Game",
+          type: "game",
+          image: PLANET,
+        },
+      ],
     },
+
     {
       id: "achievements",
       label: "Achievements",

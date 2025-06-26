@@ -18,7 +18,7 @@ import { useNewStore } from "../../../hooks/useStore";
 import { BrowserNode } from "../../nodes/BrowserNode";
 import { AchievementNode } from "../../nodes/AchievementNode";
 import type { OperatingSystem } from "../../../store/systemState/systemSlice";
-import { GTANode } from "../../nodes/GTANode";
+import { GameNode } from "../../nodes/GameNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -91,7 +91,7 @@ export const DirectoryLayout = ({
             );
 
           case "game":
-            return <GTANode key={node.id} game={node as GameEntry} />;
+            return <GameNode key={node.id} game={node as GameEntry} />;
 
           default:
             console.warn("Unknown node type:", node);

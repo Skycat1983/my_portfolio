@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "../../../../hooks/useStore";
 
 // Game Menu Component
 const GameMenu = () => {
@@ -399,7 +399,11 @@ const GameOverScreen = () => {
 };
 
 // Main GeoGame Component
-export const GeoGame = () => {
+export const GeoGame = ({ windowId }: { windowId: string }) => {
+  const window = useNewStore((s) => s.getWindowById(windowId));
+  console.log("GeoGame: window", window);
+  // const windowId = window?.windowId;
+  console.log("GeoGame: windowId", windowId);
   const gameStatus = useNewStore((s) => s.gameStatus);
   const loadCountries = useNewStore((s) => s.loadCountries);
   const isLoadingCountries = useNewStore((s) => s.isLoadingCountries);

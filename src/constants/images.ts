@@ -74,8 +74,9 @@ import GTA6_LOGO from "../assets/icons_m/gta6_logo.png";
 import GTA6_LOADING from "../assets/wallpapers/gta6_loading.png";
 import GTA6_SCREEN from "../assets/wallpapers/gta6_screenshot.png";
 import WARNING from "../assets/icons_m/warning.png";
+import PLANET from "../assets/icons_m/planet.png";
 
-export { GTA6_LOGO, GTA6_LOADING, GTA6_SCREEN, WARNING };
+export { GTA6_LOGO, GTA6_LOADING, GTA6_SCREEN, WARNING, PLANET };
 
 // Achievements
 import ACHIEVEMENT from "../assets/icons_m/achievement.png";

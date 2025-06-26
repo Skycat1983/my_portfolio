@@ -1,16 +1,17 @@
 import type { DirectoryWindow, WindowType } from "../../types/storeTypes";
-import { AchievementContent } from "../windowContent/achievements/AchievementContent";
-import { BrowserContent } from "../windowContent/browser/BrowserContent";
-import { DirectoryContent } from "../windowContent/directory/DirectoryContent";
-import GTAVI from "../windowContent/games/GTAVI/GTAVI";
-import { TerminalContent } from "../windowContent/terminal/TerminalContent";
+import { AchievementContent } from "../apps/achievements/AchievementContent";
+import { BrowserContent } from "../apps/browser/BrowserContent";
+import { DirectoryContent } from "../apps/directory/DirectoryContent";
+import GTAVI from "../apps/games/GTAVI/GTAVI";
+import { GeoGame } from "../apps/games/GeoGame/GeoGame";
+import { TerminalContent } from "../apps/terminal/TerminalContent";
 
 interface WindowContentProps {
   window: WindowType;
 }
 
 export const WindowContent = ({ window }: WindowContentProps) => {
-  const { windowId, nodeType } = window;
+  const { windowId, nodeType, nodeId } = window;
   console.log("WindowContent", window);
   if (nodeType === "terminal") {
     return <TerminalContent />;
@@ -24,7 +25,11 @@ export const WindowContent = ({ window }: WindowContentProps) => {
   if (nodeType === "browser") {
     return <BrowserContent windowId={windowId} />;
   }
-  if (nodeType === "game") {
+  if (nodeId === "gtaiv") {
     return <GTAVI windowId={windowId} />;
+  }
+  if (nodeId === "geo") {
+    console.log("GeoGame: windowId", windowId);
+    return <GeoGame windowId={windowId} />;
   }
 };

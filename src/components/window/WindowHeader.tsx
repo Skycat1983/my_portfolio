@@ -3,7 +3,7 @@ import { useNewStore } from "../../hooks/useStore";
 
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
-import { DirectoryNavigation } from "../windowContent/directory/DirectoryNavigation";
+import { DirectoryNavigation } from "../apps/directory/DirectoryNavigation";
 
 interface WindowHeaderProps {
   windowId: string;

@@ -11,11 +11,10 @@ import {
   tileWrapper,
   titleBase,
 } from "./node.styles";
-import { GTA6_LOGO } from "../../constants/images";
 
 type Props = { game: GameEntry };
 
-export const GTANode = ({ game }: Props) => {
+export const GameNode = ({ game }: Props) => {
   // ─────────── node-specific store actions ───────────
   // const openTerminal = useNewStore((s) => s.openTerminal);
   const openWindow = useNewStore((s) => s.openWindow);
@@ -30,7 +29,7 @@ export const GTANode = ({ game }: Props) => {
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
     id: game.id,
-    nodeType: "game",
+    nodeType: game.label,
     enableLogging: true,
     onActivate: handleActivate,
   });
@@ -53,7 +52,7 @@ export const GTANode = ({ game }: Props) => {
           drop: nodeBehavior.isDropTarget,
         })}`}
       >
-        <img src={GTA6_LOGO} alt={game.label} className={imageSize} />
+        <img src={game.image} alt={game.label} className={imageSize} />
       </div>
 
       <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>

@@ -1,5 +1,5 @@
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
-import { DirectoryLayout } from "../components/windowContent/directory/DirectoryLayout";
+import { DirectoryLayout } from "../components/apps/directory/DirectoryLayout";
 import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
@@ -68,7 +68,6 @@ export const Desktop = () => {
         {openWindows.map((window) => (
           <ResizableWindow key={window.windowId} window={window} />
         ))}
-        {/* <GTA6 /> */}
         {/* <GeoGame /> */}
 
         {operatingSystem === "mac" && <Weather />}
