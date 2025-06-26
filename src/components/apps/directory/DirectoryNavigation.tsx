@@ -1,8 +1,8 @@
 import React from "react";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { useWindowHistory } from "../../window/hooks/useWindowHistory";
-
+import { useNewStore } from "../../../hooks/useStore";
 interface DirectoryNavigationProps {
   windowId: string;
 }
@@ -10,6 +10,14 @@ interface DirectoryNavigationProps {
 export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
   windowId,
 }) => {
+  const window = useNewStore((s) => s.getWindowById(windowId));
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+  const deleteManyNodes = useNewStore((s) => s.deleteManyNodes);
+  const nodeId = window?.nodeId;
+  const isTrashWindow = nodeId === "trash";
+
+  console.log("window", window);
+  console.log("window in DirectoryNavigation", window);
   const {
     canGoBackInWindowHistory,
     canGoForwardInWindowHistory,
@@ -30,6 +38,20 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
     e.preventDefault();
     if (canGoForwardInWindowHistory(windowId)) {
       handleGoForwardInWindowHistory();
+    }
+  };
+
+  const handleEmptyTrash = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (nodeId === "trash") {
+      const trashChildren = getChildrenByParentID("trash");
+      if (trashChildren.length > 0) {
+        // Delete all nodes in trash
+        deleteManyNodes((node) => node.parentId === "trash");
+        console.log("handleEmptyTrash in DirectoryNavigation: emptied trash");
+      }
     }
   };
 
@@ -108,6 +130,22 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
           }
         />
       </div>
+
+      {/* Empty Trash Button - only show in trash window */}
+      {isTrashWindow && (
+        <div
+          onPointerDown={(e) => {
+            console.log("Empty trash button pointerDown");
+            e.stopPropagation();
+            handleEmptyTrash(e);
+          }}
+          tabIndex={0}
+          aria-label="Empty trash"
+          className="p-1 rounded transition-colors bg-neutral-400 hover:bg-red-600 border-red-400 cursor-pointer ml-2"
+        >
+          <Trash2 size={20} className="text-white" />
+        </div>
+      )}
     </div>
   );
 };

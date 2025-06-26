@@ -83,7 +83,18 @@ const DockItem: React.FC<DockItemProps> = ({ item, onItemClick }) => {
 const Dock: React.FC = () => {
   const openWindow = useNewStore((state) => state.openWindow);
   const getNodeByID = useNewStore((state) => state.getNodeByID);
+  const getWindowByNodeId = useNewStore((state) => state.getWindowByNodeId);
+  const focusWindow = useNewStore((state) => state.focusWindow);
   const operatingSystem = useNewStore((state) => state.operatingSystem);
+
+  // Achievement-specific state for proper handling
+  const unseenAchievements = useNewStore((state) => state.unseenAchievements);
+  const markAchievementsAsSeen = useNewStore(
+    (state) => state.markAchievementsAsSeen
+  );
+  const unlockAccessAchievements = useNewStore(
+    (state) => state.unlockAccessAchievements
+  );
 
   // Hardcoded dock items with proper images
   const dockItems: DockItemData[] = [
@@ -148,6 +159,13 @@ const Dock: React.FC = () => {
         return;
       }
 
+      // Check if window already exists for this node
+      const existingWindow = getWindowByNodeId(item.nodeId);
+      if (existingWindow) {
+        focusWindow(existingWindow.windowId);
+        return;
+      }
+
       // Handle different node types
       if (node.type === "link") {
         // Open external links in new tab
@@ -156,9 +174,25 @@ const Dock: React.FC = () => {
         return;
       }
 
-      // For windowed nodes (everything except icon and link), open a window
-      if (node.type !== "icon") {
-        // Type assertion to WindowedNode since we've filtered out icons and links
+      // Handle specific node types with their proper starting values
+      if (node.type === "browser") {
+        const startPageUrl = "";
+        openWindow(node as WindowedNode, startPageUrl);
+      } else if (node.type === "terminal") {
+        openWindow(node as WindowedNode, node.id);
+      } else if (node.type === "achievement") {
+        // Reset the notification counter when achievement is opened
+        if (unseenAchievements > 0) {
+          markAchievementsAsSeen();
+        }
+        unlockAccessAchievements();
+        openWindow(node as WindowedNode, node.id);
+      } else if (node.type === "game") {
+        openWindow(node as WindowedNode, node.label);
+      } else if (node.type === "directory") {
+        openWindow(node as WindowedNode, node.label);
+      } else if (node.type !== "icon") {
+        // For any other windowed nodes
         const windowedNode = node as WindowedNode;
         openWindow(windowedNode, node.label);
       }
