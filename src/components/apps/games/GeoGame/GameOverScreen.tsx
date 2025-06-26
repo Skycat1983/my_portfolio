@@ -27,15 +27,15 @@ export const GameOverScreen = () => {
   };
 
   return (
-    <div className="h-full w-full relative bg-gradient-to-br from-red-50 to-pink-100 p-2">
+    <div className="h-full w-full relative bg-gradient-to-br from-red-50 to-pink-100 p-2 overflow-hidden">
       {/* Background Image */}
       <img
         src={gameBackgroundImage}
         alt="Background"
-        className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover opacity-20 z-0 rounded"
+        className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover opacity-20 rounded"
       />
 
-      <div className="relative z-10 h-full flex flex-col items-center justify-center p-4">
+      <div className="relative flex flex-col items-center justify-center p-4 ">
         <div className="bg-white bg-opacity-95 rounded-lg shadow-xl p-8 max-w-md w-full text-center">
           <h1 className="text-3xl font-bold text-red-600 mb-4">Game Over!</h1>
 

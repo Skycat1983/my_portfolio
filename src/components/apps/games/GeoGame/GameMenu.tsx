@@ -18,7 +18,7 @@ export const GameMenu = () => {
   };
 
   return (
-    <div className="h-full w-full relative bg-gradient-to-br from-blue-50 to-indigo-100 p-2 overflow-hidden">
+    <div className="h-full w-full relative bg-gradient-to-br from-blue-50 to-indigo-100 p-2 overflow-hidden min-w-[375px]">
       {/* Background Image */}
       <img
         src={titleBackgroundImage}

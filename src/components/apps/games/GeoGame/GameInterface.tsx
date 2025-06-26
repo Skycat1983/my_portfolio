@@ -63,12 +63,12 @@ export const GameInterface = () => {
   };
 
   return (
-    <div className="h-full w-full relative bg-gradient-to-br from-blue-50 to-indigo-100 p-2">
+    <div className="h-full w-full relative bg-gradient-to-br from-blue-50 to-indigo-100 p-2 overflow-hidden min-w-[375px]">
       {/* Background Image */}
       <img
         src={gameBackgroundImage}
         alt="Background"
-        className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover opacity-20 z-0 rounded"
+        className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] object-cover opacity-20 rounded"
       />
 
       {/* Game Header */}

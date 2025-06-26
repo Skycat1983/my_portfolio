@@ -44,7 +44,10 @@ export const GeoGame = ({ windowId }: { windowId: string }) => {
   };
 
   return (
-    <div className="h-full w-full" style={{ zIndex: contentZIndex }}>
+    <div
+      className="h-full w-full overflow-hidden"
+      style={{ zIndex: contentZIndex }}
+    >
       {renderContent()}
     </div>
   );
