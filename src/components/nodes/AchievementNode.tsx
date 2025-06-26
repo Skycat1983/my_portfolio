@@ -21,21 +21,32 @@ export const AchievementNode = ({ achievement }: Props) => {
     (s) => s.unlockAccessAchievements
   );
   const openWindow = useNewStore((s) => s.openWindow);
+  const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
+  const focusWindow = useNewStore((s) => s.focusWindow);
+
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    console.log("Achievement activate in AchievementNode:", achievement.id);
-    // Reset the notification counter when achievement node is opened
-    if (unseenAchievements > 0) {
-      markAchievementsAsSeen();
+    const achievementWindowAlreadyOpen = getWindowByNodeId(achievement.id);
+
+    if (achievementWindowAlreadyOpen) {
+      focusWindow(achievementWindowAlreadyOpen.windowId);
+      return;
+    } else {
+      // Reset the notification counter when achievement node is opened
+      if (unseenAchievements > 0) {
+        markAchievementsAsSeen();
+      }
+      unlockAccessAchievements();
+      openWindow(achievement, achievement.id);
     }
-    unlockAccessAchievements();
-    openWindow(achievement, achievement.id);
   }, [
     achievement,
     unseenAchievements,
     markAchievementsAsSeen,
     unlockAccessAchievements,
     openWindow,
+    getWindowByNodeId,
+    focusWindow,
   ]);
 
   // ─────────── shared node behavior ───────────

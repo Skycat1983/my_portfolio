@@ -5,6 +5,7 @@ import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
 import { Weather } from "../components/widgets/Weather";
+import Dock from "../components/dock/Dock";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
@@ -77,6 +78,9 @@ export const Desktop = () => {
           windowId="desktop-root"
         />
       </div>
+
+      {/* Dock - positioned outside the main content area to avoid drag/drop conflicts */}
+      {operatingSystem === "mac" && <Dock />}
     </div>
   );
 };
