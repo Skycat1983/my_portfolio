@@ -1,4 +1,4 @@
-import { X, Minus, Square } from "lucide-react";
+import { X, Minus } from "lucide-react";
 import { DEMAXIMIZE_MAC, MAXIMIZE_MAC } from "../../constants/images";
 
 interface MacWindowControlsProps {
