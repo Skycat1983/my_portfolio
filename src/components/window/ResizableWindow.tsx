@@ -32,13 +32,12 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     return null;
   }
 
-  // Conditional styling based on maximized state
   const windowStyle = isMaximized
     ? {
         left: 0,
         top: 0,
-        width: "w-full",
-        height: "h-full",
+        width: "100vw",
+        height: "100vh",
         zIndex: zIndex + 1000, // Ensure fullscreen windows are above everything
       }
     : {
