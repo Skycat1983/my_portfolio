@@ -15,6 +15,11 @@ import GITHUB_SMALL from "../assets/icons_s/github_white.png";
 
 export { LINKEDIN_SMALL, GITHUB_SMALL };
 
+import MAXIMIZE_MAC from "../assets/icons_s/maximise_mac.png";
+import DEMAXIMIZE_MAC from "../assets/icons_s/demaximise_mac.png";
+
+export { MAXIMIZE_MAC, DEMAXIMIZE_MAC };
+
 // Folders
 import BIN_EMPTY from "../assets/icons_m/bin_empty.png";
 import BIN_FULL from "../assets/icons_m/bin_full.png";

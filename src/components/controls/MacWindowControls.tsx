@@ -1,16 +1,20 @@
 import { X, Minus, Square } from "lucide-react";
+import { DEMAXIMIZE_MAC, MAXIMIZE_MAC } from "../../constants/images";
 
 interface MacWindowControlsProps {
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
+  isMaximized?: boolean;
 }
 
 export const MacWindowControls = ({
   onClose,
   onMinimize,
   onMaximize,
+  isMaximized,
 }: MacWindowControlsProps) => {
+  const maximizeIcon = isMaximized ? DEMAXIMIZE_MAC : MAXIMIZE_MAC;
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     console.log("MacWindowControls: close clicked");
@@ -45,7 +49,7 @@ export const MacWindowControls = ({
   return (
     <div className="flex items-center gap-2">
       {/* Close button - Red */}
-      <button
+      <div
         style={{
           ...buttonBaseStyle,
           background: "#ff5f57",
@@ -57,9 +61,9 @@ export const MacWindowControls = ({
       >
         <X
           size={8}
-          className="text-red-900 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="text-red-900 opacity-0 group-hover:opacity-100 transition-opacity w-3 h-3 object-contain"
         />
-      </button>
+      </div>
 
       {/* Minimize button - Yellow */}
       <div
@@ -70,7 +74,7 @@ export const MacWindowControls = ({
         }}
         onClick={handleMinimizeClick}
         aria-label="Minimize window"
-        className="group hover:bg-yellow-600 transition-colors cursor-default"
+        className="group hover:bg-yellow-600 transition-colors cursor-not-allowed"
       >
         <Minus
           size={8}
@@ -87,12 +91,17 @@ export const MacWindowControls = ({
         }}
         onClick={handleMaximizeClick}
         aria-label="Maximize window"
-        className="group hover:bg-green-600 transition-colors cursor-default"
+        className="group hover:bg-green-600 transition-colors cursor-pointer"
       >
-        <Square
+        <img
+          src={maximizeIcon}
+          alt="Maximize"
+          className="w-3 h-3 object-contain"
+        />
+        {/* <Square
           size={6}
           className="text-green-900 opacity-0 group-hover:opacity-100 transition-opacity"
-        />
+        /> */}
       </div>
     </div>
   );

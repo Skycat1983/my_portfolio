@@ -4,12 +4,14 @@ interface WindowsWindowControlsProps {
   onClose?: () => void;
   onMinimize?: () => void;
   onMaximize?: () => void;
+  isMaximized?: boolean;
 }
 
 export const WindowsWindowControls = ({
   onClose,
   onMinimize,
   onMaximize,
+  isMaximized,
 }: WindowsWindowControlsProps) => {
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -42,6 +44,15 @@ export const WindowsWindowControls = ({
     color: "#000",
   };
 
+  const maximiseIcon = !isMaximized ? (
+    <Square size={12} />
+  ) : (
+    <div className="relative">
+      <Square size={12} />
+      <Square size={12} className="absolute top-1 right-1 bg-gray-200" />
+    </div>
+  );
+
   return (
     <div className="flex items-center">
       {/* Minimize button */}
@@ -49,7 +60,7 @@ export const WindowsWindowControls = ({
         style={buttonBaseStyle}
         onClick={handleMinimizeClick}
         aria-label="Minimize window"
-        className="hover:bg-gray-200 transition-colors"
+        className="hover:bg-gray-200 transition-colors cursor-not-allowed"
       >
         <Minus size={14} />
       </div>
@@ -59,9 +70,9 @@ export const WindowsWindowControls = ({
         style={buttonBaseStyle}
         onClick={handleMaximizeClick}
         aria-label="Maximize window"
-        className="hover:bg-gray-200 transition-colors"
+        className="hover:bg-gray-200 transition-colors cursor-pointer"
       >
-        <Square size={12} />
+        {maximiseIcon}
       </div>
 
       {/* Close button */}

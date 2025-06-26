@@ -12,6 +12,7 @@ export interface WindowOperationsActions {
   focusWindow: (windowId: WindowType["windowId"]) => void;
   minimizeWindow: (windowId: WindowType["windowId"]) => boolean;
   maximizeWindow: (windowId: WindowType["windowId"]) => boolean;
+  // toggleMaximizeWindow: (windowId: WindowType["windowId"]) => boolean;
 
   //   ! WINDOW FRAME OPERATIONS
   moveWindow: (
@@ -181,6 +182,18 @@ export const createWindowOperationsSlice = (
       }
     );
   },
+
+  // toggleMaximizeWindow:(windowId: WindowType["windowId"]): boolean => {
+  //   console.log("maximizeWindow: maximizing window", windowId);
+
+  //   return get().updateOneWindow(
+  //     (window: WindowType) => window.windowId === windowId,
+  //     {
+  //       isMaximized: !window.isMaximized,
+  //       isMinimized: false,
+  //     }
+  //   );
+  // },
 
   //   ! WINDOW FRAME OPERATIONS
   /**
