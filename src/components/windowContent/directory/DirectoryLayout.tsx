@@ -7,6 +7,7 @@ import type {
   TerminalEntry,
   BrowserEntry,
   AchievementEntry,
+  GameEntry,
 } from "../../../types/nodeTypes";
 import { IconNode } from "../../nodes/IconNode";
 import { DirectoryNode } from "../../nodes/DirectoryNode";
@@ -17,6 +18,7 @@ import { useNewStore } from "../../../hooks/useStore";
 import { BrowserNode } from "../../nodes/BrowserNode";
 import { AchievementNode } from "../../nodes/AchievementNode";
 import type { OperatingSystem } from "../../../store/systemState/systemSlice";
+import { GTANode } from "../../nodes/GTANode";
 
 type LayoutType = "desktop" | "window";
 
@@ -87,6 +89,9 @@ export const DirectoryLayout = ({
                 achievement={node as AchievementEntry}
               />
             );
+
+          case "game":
+            return <GTANode key={node.id} game={node as GameEntry} />;
 
           default:
             console.warn("Unknown node type:", node);

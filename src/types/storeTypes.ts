@@ -35,8 +35,6 @@ export interface WindowType {
   // Terminal-specific properties (optional on base Window)
   workingDirectory?: string;
   terminalHistory?: string[]; // LEGACY: will be replaced by generic itemHistory
-
-  // Achievement window properties (optional on base Window)
 }
 
 // Narrowed types for specific window types using utility types

@@ -2,6 +2,7 @@ import type { DirectoryWindow, WindowType } from "../../types/storeTypes";
 import { AchievementContent } from "../windowContent/achievements/AchievementContent";
 import { BrowserContent } from "../windowContent/browser/BrowserContent";
 import { DirectoryContent } from "../windowContent/directory/DirectoryContent";
+import GTAVI from "../windowContent/games/GTAVI/GTAVI";
 import { TerminalContent } from "../windowContent/terminal/TerminalContent";
 
 interface WindowContentProps {
@@ -22,5 +23,8 @@ export const WindowContent = ({ window }: WindowContentProps) => {
   }
   if (nodeType === "browser") {
     return <BrowserContent windowId={windowId} />;
+  }
+  if (nodeType === "game") {
+    return <GTAVI windowId={windowId} />;
   }
 };

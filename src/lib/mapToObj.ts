@@ -68,6 +68,13 @@ export const convertMapToObjects = (
         label: mapNode.label,
         image: mapNode.image,
       };
+    } else if (mapNode.type === "game") {
+      return {
+        id: mapNode.id,
+        type: "game",
+        label: mapNode.label,
+        image: mapNode.image,
+      };
     } else {
       // Directory nodes need to recursively build children
       const children: NodeObject[] = mapNode.children.map((childId) =>

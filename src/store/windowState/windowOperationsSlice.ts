@@ -85,6 +85,8 @@ export const createWindowOperationsSlice = (
     let width = 600;
     let height = 400;
 
+    let isMaximized = false;
+
     if (node.type === "directory") {
       width = 600;
       height = 400;
@@ -94,6 +96,10 @@ export const createWindowOperationsSlice = (
     } else if (node.type === "terminal") {
       width = 1000;
       height = 600;
+    } else if (node.type === "game") {
+      width = 1000;
+      height = 600;
+      isMaximized = true;
     }
 
     // Create new window with default position
@@ -108,7 +114,7 @@ export const createWindowOperationsSlice = (
       y,
       zIndex: state.nextZIndex,
       isMinimized: false,
-      isMaximized: false,
+      isMaximized: isMaximized,
       isResizing: false,
       itemHistory: [historyItem],
       currentHistoryIndex: 0,

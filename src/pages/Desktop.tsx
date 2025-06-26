@@ -5,8 +5,6 @@ import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
 import { Weather } from "../components/widgets/Weather";
-import GTA6 from "../components/windowContent/games/GTA6";
-import { GeoGame } from "../components/windowContent/games/GeoGame";
 
 export const Desktop = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
@@ -70,7 +68,7 @@ export const Desktop = () => {
         {openWindows.map((window) => (
           <ResizableWindow key={window.windowId} window={window} />
         ))}
-        <GTA6 />
+        {/* <GTA6 /> */}
         {/* <GeoGame /> */}
 
         {operatingSystem === "mac" && <Weather />}

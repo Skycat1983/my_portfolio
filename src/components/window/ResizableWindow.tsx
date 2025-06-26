@@ -14,7 +14,17 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   window,
   // children,
 }) => {
-  const { windowId, title, width, height, x, y, zIndex, isMinimized } = window;
+  const {
+    windowId,
+    title,
+    width,
+    height,
+    x,
+    y,
+    zIndex,
+    isMinimized,
+    isMaximized,
+  } = window;
   const { onResizeStart } = useWindowResize(window.windowId);
   const focusWindow = useNewStore((s) => s.focusWindow);
 
@@ -22,16 +32,32 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     return null;
   }
 
-  return (
-    <div
-      className="absolute border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden"
-      style={{
+  // Conditional styling based on maximized state
+  const windowStyle = isMaximized
+    ? {
+        left: 0,
+        top: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: zIndex + 1000, // Ensure fullscreen windows are above everything
+      }
+    : {
         left: x,
         top: y,
         width,
         height,
         zIndex,
-      }}
+      };
+
+  // Conditional classes for different window states
+  const windowClasses = isMaximized
+    ? "fixed inset-0 bg-black shadow-none rounded-none border-none"
+    : "absolute border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden";
+
+  return (
+    <div
+      className={windowClasses}
+      style={windowStyle}
       onClick={() => {
         focusWindow(windowId);
       }}
@@ -48,55 +74,59 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
         <WindowContent window={window} />
       </div>
 
-      {/* Resize Handles */}
-      {/* North handle */}
-      <div
-        className="absolute top-0 left-2 right-2 h-2 cursor-n-resize"
-        onPointerDown={onResizeStart("n")}
-      />
+      {/* Resize Handles - only show when not maximized */}
+      {!isMaximized && (
+        <>
+          {/* North handle */}
+          <div
+            className="absolute top-0 left-2 right-2 h-2 cursor-n-resize"
+            onPointerDown={onResizeStart("n")}
+          />
 
-      {/* South handle */}
-      <div
-        className="absolute bottom-0 left-2 right-2 h-2 cursor-s-resize"
-        onPointerDown={onResizeStart("s")}
-      />
+          {/* South handle */}
+          <div
+            className="absolute bottom-0 left-2 right-2 h-2 cursor-s-resize"
+            onPointerDown={onResizeStart("s")}
+          />
 
-      {/* East handle */}
-      <div
-        className="absolute top-2 bottom-2 right-0 w-2 cursor-e-resize"
-        onPointerDown={onResizeStart("e")}
-      />
+          {/* East handle */}
+          <div
+            className="absolute top-2 bottom-2 right-0 w-2 cursor-e-resize"
+            onPointerDown={onResizeStart("e")}
+          />
 
-      {/* West handle */}
-      <div
-        className="absolute top-2 bottom-2 left-0 w-2 cursor-w-resize"
-        onPointerDown={onResizeStart("w")}
-      />
+          {/* West handle */}
+          <div
+            className="absolute top-2 bottom-2 left-0 w-2 cursor-w-resize"
+            onPointerDown={onResizeStart("w")}
+          />
 
-      {/* Corner handles */}
-      {/* Northwest */}
-      <div
-        className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize"
-        onPointerDown={onResizeStart("nw")}
-      />
+          {/* Corner handles */}
+          {/* Northwest */}
+          <div
+            className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize"
+            onPointerDown={onResizeStart("nw")}
+          />
 
-      {/* Northeast */}
-      <div
-        className="absolute top-0 right-0 w-2 h-2 cursor-ne-resize"
-        onPointerDown={onResizeStart("ne")}
-      />
+          {/* Northeast */}
+          <div
+            className="absolute top-0 right-0 w-2 h-2 cursor-ne-resize"
+            onPointerDown={onResizeStart("ne")}
+          />
 
-      {/* Southwest */}
-      <div
-        className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize"
-        onPointerDown={onResizeStart("sw")}
-      />
+          {/* Southwest */}
+          <div
+            className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize"
+            onPointerDown={onResizeStart("sw")}
+          />
 
-      {/* Southeast */}
-      <div
-        className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize"
-        onPointerDown={onResizeStart("se")}
-      />
+          {/* Southeast */}
+          <div
+            className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize"
+            onPointerDown={onResizeStart("se")}
+          />
+        </>
+      )}
     </div>
   );
 };

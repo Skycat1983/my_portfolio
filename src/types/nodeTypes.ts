@@ -128,6 +128,21 @@ export interface TerminalEntry {
   // image: string;
 }
 
+export interface GameObject {
+  id: string;
+  type: "game";
+  label: string;
+  image: string;
+}
+
+export interface GameEntry {
+  id: string;
+  parentId: string | null;
+  type: "game";
+  label: string;
+  image: string;
+}
+
 export type NodeObject =
   | DirectoryObject
   | IconObject
@@ -136,7 +151,8 @@ export type NodeObject =
   | TerminalObject
   | BrowserObject
   | DocumentObject
-  | AchievementObject;
+  | AchievementObject
+  | GameObject;
 
 // OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
@@ -148,7 +164,8 @@ export type NodeEntry =
   | TerminalEntry
   | BrowserEntry
   | DocumentEntry
-  | AchievementEntry;
+  | AchievementEntry
+  | GameEntry;
 
 export interface NodeMap {
   [id: string]: NodeEntry;
