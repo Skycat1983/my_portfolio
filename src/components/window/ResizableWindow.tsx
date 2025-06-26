@@ -37,8 +37,8 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     ? {
         left: 0,
         top: 0,
-        width: "100vw",
-        height: "100vh",
+        width: "w-full",
+        height: "h-full",
         zIndex: zIndex + 1000, // Ensure fullscreen windows are above everything
       }
     : {

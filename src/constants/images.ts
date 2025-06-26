@@ -75,8 +75,18 @@ import GTA6_LOADING from "../assets/wallpapers/gta6_loading.png";
 import GTA6_SCREEN from "../assets/wallpapers/gta6_screenshot.png";
 import WARNING from "../assets/icons_m/warning.png";
 import PLANET from "../assets/icons_m/planet.png";
+import EARTH1 from "../assets/wallpapers/earth1.jpg";
+import EARTH2 from "../assets/wallpapers/earth2.jpg";
 
-export { GTA6_LOGO, GTA6_LOADING, GTA6_SCREEN, WARNING, PLANET };
+export {
+  GTA6_LOGO,
+  GTA6_LOADING,
+  GTA6_SCREEN,
+  WARNING,
+  PLANET,
+  EARTH1,
+  EARTH2,
+};
 
 // Achievements
 import ACHIEVEMENT from "../assets/icons_m/achievement.png";

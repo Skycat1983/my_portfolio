@@ -299,12 +299,12 @@ export const createGameSlice = (
       };
     });
 
-    // If incorrect, end game immediately
+    // If incorrect, don't auto-end - wait for user to click continue
     if (!isCorrect) {
-      console.log("submitAnswer in gameSlice: incorrect answer, ending game");
-      setTimeout(() => {
-        gameSlice.endGame();
-      }, 1500); // Brief delay to show feedback
+      console.log(
+        "submitAnswer in gameSlice: incorrect answer, waiting for user to continue"
+      );
+      // Game will end when user clicks continue button
     }
   },
 

@@ -263,7 +263,7 @@ export const defaultNodes: DirectoryObject = {
         },
         {
           id: "geo",
-          label: "Geo Game",
+          label: "Flag Quest",
           type: "game",
           image: PLANET,
         },
