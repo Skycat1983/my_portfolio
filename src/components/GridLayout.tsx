@@ -6,6 +6,8 @@ interface GridCellProps {
   children: React.ReactNode;
   colSpan?: 1 | 2 | 3 | 4 | 5 | 6;
   rowSpan?: 1 | 2 | 3 | 4;
+  colStart?: 1 | 2 | 3 | 4 | 5 | 6;
+  rowStart?: 1 | 2 | 3 | 4 | 5 | 6;
   className?: string;
   bgColor?: string;
 }
@@ -15,6 +17,8 @@ const GridCell: React.FC<GridCellProps> = ({
   children,
   colSpan = 1,
   rowSpan = 1,
+  colStart,
+  rowStart,
   className = "",
   bgColor = "bg-blue-100",
 }) => {
@@ -22,7 +26,7 @@ const GridCell: React.FC<GridCellProps> = ({
     <div
       className={cn(
         // Base styles
-        "border-2 border-gray-300 rounded-lg p-4 flex items-center justify-center text-center shadow-md hover:shadow-lg transition-shadow duration-200",
+        "text-center shadow-md hover:shadow-lg transition-shadow duration-200",
         // Background color
         bgColor,
         // Column spans - hardcoded to ensure Tailwind includes them
@@ -37,6 +41,20 @@ const GridCell: React.FC<GridCellProps> = ({
         rowSpan === 2 && "row-span-2",
         rowSpan === 3 && "row-span-3",
         rowSpan === 4 && "row-span-4",
+        // Column starts - explicit positioning
+        colStart === 1 && "col-start-1",
+        colStart === 2 && "col-start-2",
+        colStart === 3 && "col-start-3",
+        colStart === 4 && "col-start-4",
+        colStart === 5 && "col-start-5",
+        colStart === 6 && "col-start-6",
+        // Row starts - explicit positioning
+        rowStart === 1 && "row-start-1",
+        rowStart === 2 && "row-start-2",
+        rowStart === 3 && "row-start-3",
+        rowStart === 4 && "row-start-4",
+        rowStart === 5 && "row-start-5",
+        rowStart === 6 && "row-start-6",
         // Custom className
         className
       )}
@@ -60,7 +78,8 @@ const GridLayout: React.FC<GridLayoutProps> = ({
   return (
     <div
       className={cn(
-        "grid grid-cols-6 gap-4 w-full p-6 bg-gradient-to-br from-gray-50 to-gray-100",
+        "grid grid-cols-6 gap-4 w-full h-screen bg-red-100/10",
+        "grid-rows-[auto_1fr_auto]",
         className
       )}
     >
@@ -72,7 +91,7 @@ const GridLayout: React.FC<GridLayoutProps> = ({
 // Demo component showcasing basic grid capabilities
 const GridLayoutDemo: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100 z-9999">
+    <div className="min-h-screen z-9999">
       <div className="p-6">
         <GridLayout className="min-h-96">
           {/* Header spanning full width */}
@@ -149,5 +168,4 @@ const GridLayoutDemo: React.FC = () => {
   );
 };
 
-export { GridLayout, GridCell, GridLayoutDemo };
-export default GridLayoutDemo;
+export { GridCell, GridLayout, GridLayoutDemo };
