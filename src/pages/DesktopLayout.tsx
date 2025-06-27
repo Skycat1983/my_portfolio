@@ -7,7 +7,7 @@ import { useNewStore } from "../hooks/useStore";
 import { Weather } from "../components/widgets/Weather";
 import Dock from "../components/dock/Dock";
 
-export const Desktop = () => {
+export const DesktopLayout = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
@@ -37,7 +37,10 @@ export const Desktop = () => {
         unlockClickOnSomethingAchievement();
       }}
     >
-      <MenubarLayout />
+      <div className="hidden md:block">
+        <MenubarLayout />
+      </div>
+
       <div
         className="p-10 h-full"
         onDragOver={

@@ -1,11 +1,11 @@
 import "./App.css";
-import { Desktop } from "./pages/Desktop";
+import { DesktopLayout } from "./pages/DesktopLayout";
 import { Toast } from "./components/toast/Toast";
 
 function App() {
   return (
     <>
-      <Desktop />
+      <DesktopLayout />
       <Toast />
     </>
   );
