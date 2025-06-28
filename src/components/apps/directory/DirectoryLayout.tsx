@@ -1,24 +1,7 @@
-import type {
-  NodeEntry,
-  EasterEggEntry,
-  IconEntry,
-  DirectoryEntry,
-  LinkEntry,
-  TerminalEntry,
-  BrowserEntry,
-  AchievementEntry,
-  GameEntry,
-} from "../../../types/nodeTypes";
-import { IconNode } from "../../nodes/IconNode";
-import { DirectoryNode } from "../../nodes/DirectoryNode";
-import { LinkNode } from "../../nodes/LinkNode";
-import { TerminalNode } from "../../nodes/TerminalNode";
-import { EasterEggNode } from "../../nodes/EasterEggNode";
+import type { NodeEntry } from "../../../types/nodeTypes";
+import { NodeSwitch } from "../../nodes/NodeSwitch";
 import { useNewStore } from "../../../hooks/useStore";
-import { BrowserNode } from "../../nodes/BrowserNode";
-import { AchievementNode } from "../../nodes/AchievementNode";
 import type { OperatingSystem } from "../../../store/systemState/systemSlice";
-import { GameNode } from "../../nodes/GameNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -35,8 +18,8 @@ const getLayoutClasses = (
   if (layout === "desktop") {
     // Windows wants normal wrapping; everything else keeps wrap-reverse
     const wrapClass =
-      operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse pt-8";
-    return `flex flex-col ${wrapClass} content-start w-full gap-10 h-full`;
+      operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse";
+    return `flex flex-row md:flex-col ${wrapClass} content-start w-full gap-10 h-full`;
   }
   // "window" layout
   return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
@@ -50,59 +33,52 @@ export const DirectoryLayout = ({
   const operatingSystem = useNewStore((s) => s.operatingSystem);
 
   return (
-    <div className={getLayoutClasses(layout, operatingSystem)}>
-      {nodes.map((node) => {
-        switch (node.type) {
-          case "easter-egg":
-            return <EasterEggNode key={node.id} egg={node as EasterEggEntry} />;
-
-          case "icon":
-            return <IconNode key={node.id} icon={node as IconEntry} />;
-
-          case "directory":
-            return (
-              <DirectoryNode
-                key={node.id}
-                nodeEntry={node as DirectoryEntry}
-                layout={layout}
-                parentWindowId={windowId}
-              />
-            );
-
-          case "link":
-            return <LinkNode key={node.id} link={node as LinkEntry} />;
-
-          case "terminal":
-            return (
-              <TerminalNode key={node.id} terminal={node as TerminalEntry} />
-            );
-
-          case "browser":
-            return (
-              <BrowserNode key={node.id} browserEntry={node as BrowserEntry} />
-            );
-
-          case "achievement":
-            return (
-              <AchievementNode
-                key={node.id}
-                achievement={node as AchievementEntry}
-              />
-            );
-
-          case "game":
-            return <GameNode key={node.id} game={node as GameEntry} />;
-
-          default:
-            console.warn("Unknown node type:", node);
-            return null;
-        }
-      })}
-      {!nodes.length && (
-        <div className="flex-1 flex items-center justify-center p-4">
-          <p className="text-gray-500">This folder is empty</p>
-        </div>
-      )}
-    </div>
+    <>
+      <div className="flex flex-row flex-wrap">
+        {nodes.map((node) => (
+          <NodeSwitch key={node.id} node={node} />
+        ))}
+      </div>
+    </>
   );
 };
+
+// const getLayoutClasses = (
+//   layout: LayoutType,
+//   operatingSystem: OperatingSystem
+// ) => {
+//   if (layout === "desktop") {
+//     // Windows wants normal wrapping; everything else keeps wrap-reverse
+//     const wrapClass =
+//       operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse";
+//     return `flex flex-row md:flex-col ${wrapClass} content-start w-full gap-10 h-full`;
+//   }
+//   // "window" layout
+//   return "flex flex-row flex-wrap justify-start items-start w-full gap-4 p-2";
+// };
+
+// export const DirectoryLayout = ({
+//   nodes,
+//   layout = "window",
+//   windowId,
+// }: DirectoryLayoutProps) => {
+//   const operatingSystem = useNewStore((s) => s.operatingSystem);
+
+//   return (
+//     <div className={getLayoutClasses(layout, operatingSystem)}>
+//       {nodes.map((node) => (
+//         <NodeSwitch
+//           key={node.id}
+//           node={node}
+//           layout={layout}
+//           parentWindowId={windowId}
+//         />
+//       ))}
+//       {!nodes.length && (
+//         <div className="flex-1 flex items-center justify-center p-4">
+//           <p className="text-gray-500">This folder is empty</p>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
