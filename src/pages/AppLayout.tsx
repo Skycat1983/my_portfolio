@@ -13,7 +13,7 @@ export const AppLayout = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
-  // const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const rootId = useNewStore((s) => s.rootId);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindows = useNewStore((s) => s.openWindows);
@@ -22,7 +22,7 @@ export const AppLayout = () => {
   const dragHandlers = useNodeDrag();
 
   // desktop children/nodes (using mobileNodes instead for now)
-  // const desktopChildren = getChildrenByParentID(rootId);
+  const desktopChildren = getChildrenByParentID(rootId);
 
   const background =
     operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;
@@ -39,7 +39,7 @@ export const AppLayout = () => {
   const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
   console.log("mobileNodes", mobileNodes);
 
-  const padding = operatingSystem === "mac" ? "pt-10" : "pb-10";
+  const padding = operatingSystem === "mac" ? "lg:pt-10" : "lg:pb-10";
 
   return (
     <div
@@ -87,7 +87,7 @@ export const AppLayout = () => {
 
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
-          <DirectoryLayout nodes={mobileNodes} />
+          <DirectoryLayout nodes={desktopChildren} />
         </div>
 
         {openWindows.map((window) => (

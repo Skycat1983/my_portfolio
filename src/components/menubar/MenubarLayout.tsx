@@ -12,8 +12,8 @@ export const MenubarLayout = () => {
     <div
       className={
         operatingSystem === "mac"
-          ? "absolute top-0 left-0 w-full h-11 bg-neutral-900"
-          : "absolute bottom-0 left-0 w-full h-11 bg-blue-100"
+          ? "absolute top-0 left-0 w-full h-11 bg-neutral-900 hidden md:block"
+          : "absolute bottom-0 left-0 w-full h-11 bg-blue-100 hidden md:block"
       }
     >
       <div className="w-full h-11 bg-neutral-900 flex flex-row justify-between px-4 items-center overflow-hidden">

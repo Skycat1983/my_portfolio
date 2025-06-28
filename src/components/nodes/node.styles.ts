@@ -19,45 +19,45 @@ export const labelClasses = (selected: boolean) =>
 //   " w-full h-full flex flex-col items-center justify-center relative bg-white sm:bg-transparent ";
 // node.styles.ts
 export const tileWrapper = (): string => {
-  const rand = Math.floor(Math.random() * 6) + 1; // 1–6
-  let bgClass: string;
+  // const rand = Math.floor(Math.random() * 6) + 1; // 1–6
+  // let bgClass: string;
 
-  switch (rand) {
-    case 1:
-      bgClass = "bg-pink-100";
-      break;
-    case 2:
-      bgClass = "bg-purple-100";
-      break;
-    case 3:
-      bgClass = "bg-indigo-100";
-      break;
-    case 4:
-      bgClass = "bg-blue-100";
-      break;
-    case 5:
-      bgClass = "bg-green-100";
-      break;
-    case 6:
-      bgClass = "bg-yellow-100";
-      break;
-    default:
-      bgClass = "bg-pink-100";
-  }
+  // switch (rand) {
+  //   case 1:
+  //     bgClass = "bg-pink-100/10";
+  //     break;
+  //   case 2:
+  //     bgClass = "bg-purple-100/10";
+  //     break;
+  //   case 3:
+  //     bgClass = "bg-indigo-100/10";
+  //     break;
+  //   case 4:
+  //     bgClass = "bg-blue-100/10";
+  //     break;
+  //   case 5:
+  //     bgClass = "bg-green-100/10";
+  //     break;
+  //   case 6:
+  //     bgClass = "bg-yellow-100/10";
+  //     break;
+  //   default:
+  //     bgClass = "bg-pink-100/10";
+  // }
 
   return clsx(
     "w-full h-full flex flex-col items-center justify-center relative",
-    bgClass,
+    // bgClass,
     "sm:bg-transparent"
   );
 };
 
 export const tileFrame = "flex flex-col items-center";
 // node.styles.ts
-export const imageSize = "w-full h-auto mx-auto mb-0";
+export const imageSize = "w-full h-auto mx-auto mb-0 rounded-lg";
 
 export const titleBase =
-  "text-sm md:text-md font-bold text-center max-w-full truncate";
+  "text-sm md:text-base  font-bold text-center max-w-[200px] truncate";
 
 // type ContainerOpts = { selected: boolean; drop: boolean };
 
