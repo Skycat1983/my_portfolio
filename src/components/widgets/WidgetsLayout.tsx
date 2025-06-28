@@ -1,25 +1,34 @@
 import CalendarWidget from "./CalendarWidget";
-import DateWidget from "./DateWidget";
-import { Weather } from "./Weather";
+import { Weather } from "./WeatherWidget";
+import { useNewStore } from "../../hooks/useStore";
 
-export const WidgetsLayout = () => {
+const WidgetsLayout = () => {
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-1 md:grid-rows-2 gap-4 w-full h-1/3">
-        {/* Calendar Widget - top left on desktop, hidden on mobile */}
-        {/* <div className="hidden md:block md:col-start-1 md:row-start-1">
+      <div className="bg-red-100/10 flex flex-row md:flex-col gap-4">
+        <Weather />
+        <div className="hidden sm:flex w-full">
           <CalendarWidget />
-        </div> */}
-
-        {/* Date Widget - bottom left on desktop, hidden on mobile */}
-        {/* <div className="hidden md:block md:col-start-1 md:row-start-2">
-          <DateWidget />
-        </div> */}
-
-        {/* Weather Widget - right side on desktop, full width on mobile */}
-        <div className="col-span-1 row-span-1 md:col-span-4 md:col-start-1 md:row-span-2">
-          <Weather />
         </div>
+      </div>
+    </>
+  );
+};
+
+export const Widgets = () => {
+  const operatingSystem = useNewStore((s) => s.operatingSystem);
+
+  const showWidgets = operatingSystem === "mac";
+
+  return (
+    <>
+      {showWidgets && (
+        <div className="hidden sm:block h-auto w-auto">
+          <WidgetsLayout />
+        </div>
+      )}
+      <div className="h-auto w-auto sm:hidden">
+        <WidgetsLayout />
       </div>
     </>
   );

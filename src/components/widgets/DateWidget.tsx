@@ -9,7 +9,7 @@ const DateWidget: React.FC = () => {
   const day = currentDate.getDate();
 
   return (
-    <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 text-white shadow-lg flex flex-col items-center justify-center h-full min-h-32">
+    <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 text-white shadow-lg flex flex-col items-center justify-center h-full min-h-32 w-full">
       {/* Day and Month */}
       <div className="text-center mb-2">
         <p className="text-lg font-medium text-gray-300">

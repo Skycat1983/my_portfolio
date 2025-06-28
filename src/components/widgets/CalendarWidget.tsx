@@ -45,16 +45,16 @@ const CalendarWidget: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-2 md:p-3 text-white shadow-lg h-full flex flex-col">
+    <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl p-2 md:p-3 text-white shadow-lg h-full flex flex-col w-full">
       {/* Header */}
-      {/* <div className="text-center mb-2">
-        <h3 className="text-xs font-medium text-gray-300">
+      <div className="text-center mb-2">
+        <h3 className="text-md font-medium text-gray-300">
           {monthNames[currentMonth]}
         </h3>
-      </div> */}
+      </div>
 
       {/* Days of week header */}
-      {/* <div className="grid grid-cols-7 gap-0.5 mb-1">
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
         {daysOfWeek.map((day, index) => (
           <div
             key={index}
@@ -63,7 +63,7 @@ const CalendarWidget: React.FC = () => {
             {day}
           </div>
         ))}
-      </div> */}
+      </div>
 
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-0.5 flex-1">
