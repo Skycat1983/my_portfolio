@@ -8,6 +8,8 @@ import { Weather } from "../components/widgets/Weather";
 import Dock from "../components/dock/Dock";
 import { GridLayout, GridCell, GridLayoutDemo } from "../components/GridLayout";
 import { MenuBar } from "../components/menubar/MenuBar";
+import { CalendarWidget } from "../components/widgets/CalendarWidget";
+import { WidgetsLayout } from "../components/widgets/WidgetsLayout";
 
 export const AppLayout = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
@@ -42,35 +44,27 @@ export const AppLayout = () => {
       }}
     >
       <MenuBar />
-      {/* main content */}
-      <div className="grid grid-cols-6 grid-rows-4 h-full w-full gap-10 p-10">
-        <div className="col-span-6 row-span-1 md:col-span-2 md:row-span-4 bg-red-100/10 h-full">
-          <p>widgets</p>
+
+      {/* MAIN CONTENT  flex for mobile, grid for desktop */}
+      <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
+        {/* <div className="flex flex-col md:grid grid-cols-6 md:grid-rows-4 h-full w-full gap-10 p-10"> */}
+        {/* widgets */}
+        <div className="col-span-6 row-span-1 md:col-span-2 md:row-span-4 bg-red-100/10 h-auto">
+          <div>
+            <Weather />
+          </div>
+
+          {/* <WidgetsLayout /> */}
         </div>
-        <div className="col-span-6 row-span-4 md:col-span-4 md:row-span-4 bg-blue-100/10 h-full">
-          <p>desktop item</p>
+        {/* desktop nodes */}
+        <div className="col-span-6 row-span-4 md:col-span-4 md:row-span-4 bg-blue-100/10 h-full w-full">
+          <p>desktop items</p>
         </div>
       </div>
     </div>
   );
 };
 
-{
-  /* <GridLayout>
-        <GridCell
-          colSpan={6}
-          className={operatingSystem === "mac" ? "order-first" : "order-last"}
-        >
-          <MenuBar />
-        </GridCell>
-        <GridCell colSpan={2} bgColor="" className="h-full">
-          <p>widgets</p>
-        </GridCell>
-        <GridCell colSpan={4} bgColor="" className="h-full">
-          <p>desktop item</p>
-        </GridCell>
-      </GridLayout> */
-}
 {
   /* <div className="hidden md:block">
         <MenubarLayout />

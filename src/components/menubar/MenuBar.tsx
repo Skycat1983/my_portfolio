@@ -7,7 +7,7 @@ import { WifiIcon } from "../icons/WifiIcon";
 
 export const MenuBar = () => {
   return (
-    <div className="w-full h-11 bg-neutral-900 flex flex-row justify-between px-4 items-center overflow-hidden">
+    <div className="hidden md:flex w-full h-11 bg-neutral-900 flex flex-row justify-between px-4 items-center overflow-hidden">
       <div className="flex flex-row gap-4 items-center">
         <Logo />
         <MenubarOptions />
