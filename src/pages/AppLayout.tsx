@@ -1,17 +1,15 @@
-import { MenubarLayout } from "../components/menubar/MenubarLayout";
-import { DirectoryLayout } from "../components/apps/directory/DirectoryLayout";
 import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
-import { Weather } from "../components/widgets/Weather";
 import Dock from "../components/dock/Dock";
-import { GridLayout, GridCell, GridLayoutDemo } from "../components/GridLayout";
 import { MenuBar } from "../components/menubar/MenuBar";
-import { CalendarWidget } from "../components/widgets/CalendarWidget";
-import { WidgetsLayout } from "../components/widgets/WidgetsLayout";
+import { Widgets } from "../components/widgets/WidgetsLayout";
+import { DirectoryLayout } from "../components/apps/directory/DirectoryLayout";
 
 export const AppLayout = () => {
+  const nodeMap = useNewStore((s) => s.nodeMap);
+  console.log("nodeMap", nodeMap);
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
@@ -32,6 +30,18 @@ export const AppLayout = () => {
   const flexDirection =
     operatingSystem === "mac" ? "flex-col" : "flex-col-reverse";
 
+  const mobileNodeKeys = [
+    "gtaiv",
+    "geo",
+    "achievements",
+    "portfolio",
+    "SkyNot_download",
+    "roboCrop_download",
+  ];
+
+  const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
+  console.log("mobileNodes", mobileNodes);
+
   return (
     <div
       className={`w-screen h-screen bg-gray-900 relative overflow-hidden bg-cover bg-center bg-no-repeat flex ${flexDirection}`}
@@ -45,21 +55,54 @@ export const AppLayout = () => {
     >
       <MenuBar />
 
-      {/* MAIN CONTENT  flex for mobile, grid for desktop */}
-      <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
-        {/* <div className="flex flex-col md:grid grid-cols-6 md:grid-rows-4 h-full w-full gap-10 p-10"> */}
-        {/* widgets */}
-        <div className="col-span-6 row-span-1 md:col-span-2 md:row-span-4 bg-red-100/10 h-auto">
-          <div>
-            <Weather />
-          </div>
+      {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
+      <div
+        className="flex flex-col md:flex-row h-full w-full gap-10 p-10"
+        onDragOver={
+          dragHandlers
+            ? (e) => {
+                return dragHandlers.handleDragOver(e, rootId);
+              }
+            : undefined
+        }
+        onDragEnter={
+          dragHandlers
+            ? (e) => {
+                return dragHandlers.handleDragEnter(e, rootId);
+              }
+            : undefined
+        }
+        onDragLeave={(e) => {
+          return dragHandlers?.handleDragLeave(e);
+        }}
+        onDrop={
+          dragHandlers
+            ? (e) => {
+                return dragHandlers.handleDrop(e, rootId);
+              }
+            : undefined
+        }
+      >
+        {/* WIDGETS */}
+        <Widgets />
 
-          {/* <WidgetsLayout /> */}
+        {/* DESKTOP NODES */}
+        <div className="bg-blue-100/10 h-full w-full">
+          <DirectoryLayout
+            nodes={mobileNodes}
+            layout="desktop"
+            windowId="desktop-root"
+          />
+          {/* {desktopChildren.map((node) => (
+            <NodeSwitch key={node.id} node={node} />
+          ))} */}
         </div>
-        {/* desktop nodes */}
-        <div className="col-span-6 row-span-4 md:col-span-4 md:row-span-4 bg-blue-100/10 h-full w-full">
-          <p>desktop items</p>
-        </div>
+
+        {openWindows.map((window) => (
+          <ResizableWindow key={window.windowId} window={window} />
+        ))}
+
+        <Dock />
       </div>
     </div>
   );

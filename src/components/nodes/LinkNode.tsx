@@ -50,28 +50,29 @@ export const LinkNode = ({ link }: Props) => {
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
-      <div
-        {...nodeBehavior.accessibilityProps}
-        // Click handlers
-        onClick={nodeBehavior.handleClick}
-        onDoubleClick={nodeBehavior.handleDoubleClick}
-        onKeyDown={nodeBehavior.handleKeyDown}
-        // Drag source
-        {...nodeBehavior.dragSourceHandlers}
-        // Drop target (empty for non-directories)
-        {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper} ${containerClasses({
-          selected: nodeBehavior.isSelected,
-          drop: nodeBehavior.isDropTarget,
-        })}`}
-      >
-        <img src={link.image} alt={link.label} className={imageSize} />
+    <>
+      <div className={tileFrame}>
+        <div
+          {...nodeBehavior.accessibilityProps}
+          // Click handlers
+          onClick={nodeBehavior.handleClick}
+          onDoubleClick={nodeBehavior.handleDoubleClick}
+          onKeyDown={nodeBehavior.handleKeyDown}
+          // Drag source
+          {...nodeBehavior.dragSourceHandlers}
+          // Drop target (empty for non-directories)
+          {...nodeBehavior.dropTargetHandlers}
+          className={`${tileWrapper()} ${containerClasses({
+            selected: nodeBehavior.isSelected,
+            drop: nodeBehavior.isDropTarget,
+          })}`}
+        >
+          <img src={link.image} alt={link.label} className={imageSize} />
+        </div>
+        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
+          {link.label}
+        </h2>
       </div>
-
-      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-        {link.label}
-      </h2>
-    </div>
+    </>
   );
 };

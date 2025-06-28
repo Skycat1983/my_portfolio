@@ -59,36 +59,37 @@ export const AchievementNode = ({ achievement }: Props) => {
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
-      <div
-        {...nodeBehavior.accessibilityProps}
-        // Click handlers
-        onClick={nodeBehavior.handleClick}
-        onDoubleClick={nodeBehavior.handleDoubleClick}
-        onKeyDown={nodeBehavior.handleKeyDown}
-        // Drag source
-        {...nodeBehavior.dragSourceHandlers}
-        // Drop target (empty for non-directories)
-        {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper} ${containerClasses({
-          selected: nodeBehavior.isSelected,
-          drop: nodeBehavior.isDropTarget,
-        })} relative`}
-      >
-        <img
-          src={achievement.image}
-          alt={achievement.label}
-          className={imageSize}
-        />
+    <>
+      <div className={tileFrame}>
+        <div
+          {...nodeBehavior.accessibilityProps}
+          // Click handlers
+          onClick={nodeBehavior.handleClick}
+          onDoubleClick={nodeBehavior.handleDoubleClick}
+          onKeyDown={nodeBehavior.handleKeyDown}
+          // Drag source
+          {...nodeBehavior.dragSourceHandlers}
+          // Drop target (empty for non-directories)
+          {...nodeBehavior.dropTargetHandlers}
+          className={`${tileWrapper} ${containerClasses({
+            selected: nodeBehavior.isSelected,
+            drop: nodeBehavior.isDropTarget,
+          })} relative`}
+        >
+          <img
+            src={achievement.image}
+            alt={achievement.label}
+            className={imageSize}
+          />
 
-        {/* Notification Badge */}
-        <NotificationBadge count={unseenAchievements} />
+          {/* Notification Badge */}
+          <NotificationBadge count={unseenAchievements} />
+        </div>
+        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
+          {achievement.label}
+        </h2>
       </div>
-
-      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-        {achievement.label}
-      </h2>
-    </div>
+    </>
   );
 };
 

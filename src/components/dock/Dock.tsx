@@ -11,7 +11,7 @@ import {
   PLANET,
   BIN_EMPTY,
 } from "../../constants/images";
-import { Mail } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 
 interface DockItemData {
   id: string;
@@ -142,6 +142,27 @@ const Dock: React.FC = () => {
     },
   ];
 
+  const mobileDockItems: DockItemData[] = [
+    {
+      id: "phone",
+      label: "Phone",
+      icon: <Phone size={32} className="text-green-400" />,
+      nodeId: "phone",
+    },
+    {
+      id: "browser",
+      label: "Browser",
+      image: operatingSystem === "mac" ? SAFARI : EDGE,
+      nodeId: "browser",
+    },
+    {
+      id: "email",
+      label: "Email",
+      icon: <Mail size={32} className="text-blue-400" />,
+      onClick: () => window.open("mailto:", "_blank"),
+    },
+  ];
+
   const handleItemClick = (item: DockItemData) => {
     console.log("handleItemClick in Dock: clicking item", item.id);
 
@@ -203,8 +224,14 @@ const Dock: React.FC = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
       {/* Dock Background */}
       <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl p-3">
-        <div className="flex items-center space-x-2">
+        <div className="hidden sm:flex items-center space-x-2">
           {dockItems.map((item) => (
+            <DockItem key={item.id} item={item} onItemClick={handleItemClick} />
+          ))}
+        </div>
+
+        <div className="flex items-center space-x-2 sm:hidden">
+          {mobileDockItems.map((item) => (
             <DockItem key={item.id} item={item} onItemClick={handleItemClick} />
           ))}
         </div>

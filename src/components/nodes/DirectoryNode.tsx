@@ -115,7 +115,7 @@ export const DirectoryNode = ({
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (directories accept drops)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper} ${containerClasses({
+        className={`${tileWrapper()} ${containerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
         })}`}

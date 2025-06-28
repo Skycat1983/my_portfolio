@@ -34,7 +34,7 @@ export const DirectoryLayout = ({
 
   return (
     <>
-      <div className="flex flex-row flex-wrap">
+      <div className="grid grid-cols-3 gap-8">
         {nodes.map((node) => (
           <NodeSwitch key={node.id} node={node} />
         ))}

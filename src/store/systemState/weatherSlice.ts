@@ -98,31 +98,33 @@ export const createWeatherSlice = (
     try {
       set({ weatherLoading: true, weatherError: null });
 
+      // ! get last 7 days of weather data for a location
       // compute ISO dates in YYYY-MM-DD
-      const today = new Date();
-      const endDate = today.toISOString().split("T")[0]; // e.g. "2025-06-28"
-      const startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
-        .toISOString()
-        .split("T")[0]; // e.g. "2025-06-21"
+      // const today = new Date();
+      // const endDate = today.toISOString().split("T")[0]; // e.g. "2025-06-28"
+      // const startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
+      //   .toISOString()
+      //   .split("T")[0];
 
-      const historyRes = await fetch(
-        `https://api.weatherapi.com/v1/history.json` +
-          `?key=${apiKey}` +
-          `&q=${location}` +
-          `&dt=${startDate}` +
-          `&end_dt=${endDate}`
-      );
-      const historyData = await historyRes.json();
-      console.log("fetchWeather in weatherSlice: history data", historyData);
+      // const historyRes = await fetch(
+      //   `https://api.weatherapi.com/v1/history.json` +
+      //     `?key=${apiKey}` +
+      //     `&q=${location}` +
+      //     `&dt=${startDate}` +
+      //     `&end_dt=${endDate}`
+      // );
+      // const historyData = await historyRes.json();
+      // console.log("fetchWeather in weatherSlice: history data", historyData);
 
-      const forecastRes = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json` +
-          `?key=${apiKey}` +
-          `&q=${location}` +
-          `&days=3`
-      );
-      const forecastData = await forecastRes.json();
-      console.log("fetchWeather in weatherSlice: forecast data", forecastData);
+      // ! get forecast for next 3 days for a location
+      // const forecastRes = await fetch(
+      //   `https://api.weatherapi.com/v1/forecast.json` +
+      //     `?key=${apiKey}` +
+      //     `&q=${location}` +
+      //     `&days=3`
+      // );
+      // const forecastData = await forecastRes.json();
+      // console.log("fetchWeather in weatherSlice: forecast data", forecastData);
 
       const response = await fetch(
         `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`

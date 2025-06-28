@@ -47,7 +47,7 @@ export const GameNode = ({ game }: Props) => {
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (empty for non-directories)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper} ${containerClasses({
+        className={`${tileWrapper()} ${containerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
         })}`}

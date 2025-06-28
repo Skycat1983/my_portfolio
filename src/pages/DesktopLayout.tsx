@@ -4,7 +4,7 @@ import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
-import { Weather } from "../components/widgets/Weather";
+import { Weather } from "../components/widgets/WeatherWidget";
 import Dock from "../components/dock/Dock";
 
 export const DesktopLayout = () => {
