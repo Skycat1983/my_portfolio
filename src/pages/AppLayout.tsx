@@ -3,7 +3,7 @@ import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
 import Dock from "../components/dock/Dock";
-import { MenuBar } from "../components/menubar/MenuBar";
+import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryLayout } from "../components/apps/directory/DirectoryLayout";
 
@@ -13,7 +13,7 @@ export const AppLayout = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
-  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+  // const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const rootId = useNewStore((s) => s.rootId);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindows = useNewStore((s) => s.openWindows);
@@ -21,14 +21,11 @@ export const AppLayout = () => {
   //enables drag and drop to and from desktop functionality
   const dragHandlers = useNodeDrag();
 
-  // desktop children/nodes
-  const desktopChildren = getChildrenByParentID(rootId);
+  // desktop children/nodes (using mobileNodes instead for now)
+  // const desktopChildren = getChildrenByParentID(rootId);
 
   const background =
     operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;
-
-  const flexDirection =
-    operatingSystem === "mac" ? "flex-col" : "flex-col-reverse";
 
   const mobileNodeKeys = [
     "gtaiv",
@@ -42,9 +39,11 @@ export const AppLayout = () => {
   const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
   console.log("mobileNodes", mobileNodes);
 
+  const padding = operatingSystem === "mac" ? "pt-10" : "pb-10";
+
   return (
     <div
-      className={`w-screen h-screen bg-gray-900 relative overflow-hidden bg-cover bg-center bg-no-repeat flex ${flexDirection}`}
+      className={`w-screen h-screen bg-gray-900 relative overflow-hidden bg-cover bg-center bg-no-repeat ${padding}`}
       style={{
         backgroundImage: `url(${background})`,
       }}
@@ -53,7 +52,7 @@ export const AppLayout = () => {
         unlockClickOnSomethingAchievement();
       }}
     >
-      <MenuBar />
+      <MenubarLayout />
 
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
       <div
@@ -87,15 +86,8 @@ export const AppLayout = () => {
         <Widgets />
 
         {/* DESKTOP NODES */}
-        <div className="bg-blue-100/10 h-full w-full">
-          <DirectoryLayout
-            nodes={mobileNodes}
-            layout="desktop"
-            windowId="desktop-root"
-          />
-          {/* {desktopChildren.map((node) => (
-            <NodeSwitch key={node.id} node={node} />
-          ))} */}
+        <div className="flex-1 min-h-0 w-full">
+          <DirectoryLayout nodes={mobileNodes} />
         </div>
 
         {openWindows.map((window) => (
@@ -107,50 +99,3 @@ export const AppLayout = () => {
     </div>
   );
 };
-
-{
-  /* <div className="hidden md:block">
-        <MenubarLayout />
-      </div>
-
-      <div
-        className="p-10 h-full"
-        onDragOver={
-          dragHandlers
-            ? (e) => {
-                return dragHandlers.handleDragOver(e, rootId);
-              }
-            : undefined
-        }
-        onDragEnter={
-          dragHandlers
-            ? (e) => {
-                return dragHandlers.handleDragEnter(e, rootId);
-              }
-            : undefined
-        }
-        onDragLeave={(e) => {
-          return dragHandlers?.handleDragLeave(e);
-        }}
-        onDrop={
-          dragHandlers
-            ? (e) => {
-                return dragHandlers.handleDrop(e, rootId);
-              }
-            : undefined
-        }
-      >
-        {openWindows.map((window) => (
-          <ResizableWindow key={window.windowId} window={window} />
-        ))}
-
-        {operatingSystem === "mac" && <Weather />}
-        <DirectoryLayout
-          nodes={desktopChildren}
-          layout="desktop"
-          windowId="desktop-root"
-        />
-      </div>
-
-      {operatingSystem === "mac" && <Dock />} */
-}

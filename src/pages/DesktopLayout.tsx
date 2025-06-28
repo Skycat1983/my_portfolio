@@ -75,11 +75,7 @@ export const DesktopLayout = () => {
         {/* <GeoGame /> */}
 
         {operatingSystem === "mac" && <Weather />}
-        <DirectoryLayout
-          nodes={desktopChildren}
-          layout="desktop"
-          windowId="desktop-root"
-        />
+        <DirectoryLayout nodes={desktopChildren} />
       </div>
 
       {/* Dock - positioned outside the main content area to avoid drag/drop conflicts */}

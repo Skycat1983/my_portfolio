@@ -96,6 +96,10 @@ const Dock: React.FC = () => {
     (state) => state.unlockAccessAchievements
   );
 
+  if (operatingSystem === "windows") {
+    return null;
+  }
+
   // Hardcoded dock items with proper images
   const dockItems: DockItemData[] = [
     {
