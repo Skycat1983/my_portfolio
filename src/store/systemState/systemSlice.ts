@@ -43,7 +43,7 @@ const getBreakpoint = (width: number): Breakpoint => {
   return "xl";
 };
 
-const getDeviceTypes = (width: number, breakpoint: Breakpoint) => ({
+const getDeviceTypes = (_width: number, breakpoint: Breakpoint) => ({
   isMobile: breakpoint === "xs" || breakpoint === "sm",
   isTablet: breakpoint === "md",
   isDesktop: breakpoint === "lg" || breakpoint === "xl",
