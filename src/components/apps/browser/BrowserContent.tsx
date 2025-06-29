@@ -12,21 +12,16 @@ interface BrowserContentProps {
 }
 
 export const BrowserContent = ({ windowId }: BrowserContentProps) => {
-  console.log("BrowserContent for window:", windowId);
   const [bookmarked, setBookmarked] = useState(false);
 
   const window = useNewStore((s) => s.getWindowById(windowId));
   const currentPage = window?.itemHistory[window?.currentHistoryIndex];
-
-  console.log("BROWSER currentPage", currentPage);
-  console.log("BROWSER window", window);
 
   // Get window-specific browser state
   // const { currentPage } = useBrowserWindowContent(windowId);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
   const handleBookmarkToggle = () => {
-    console.log("handleBookmarkToggle in BrowserContent: toggling bookmark");
     setBookmarked(!bookmarked);
   };
 

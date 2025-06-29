@@ -16,8 +16,6 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
   const nodeId = window?.nodeId;
   const isTrashWindow = nodeId === "trash";
 
-  console.log("window", window);
-  console.log("window in DirectoryNavigation", window);
   const {
     canGoBackInWindowHistory,
     canGoForwardInWindowHistory,
@@ -50,7 +48,6 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
       if (trashChildren.length > 0) {
         // Delete all nodes in trash
         deleteManyNodes((node) => node.parentId === "trash");
-        console.log("handleEmptyTrash in DirectoryNavigation: emptied trash");
       }
     }
   };
@@ -66,20 +63,15 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
       }}
       onPointerDown={(e) => {
         e.stopPropagation(); // Prevent window drag
-
-        console.log("DirectoryNavigation container pointerDown");
       }}
       onClick={(e) => {
         e.stopPropagation(); // Prevent window focus/drag
-
-        console.warn("DirectoryNavigation container click!!!!!");
       }}
     >
       {/* Back button */}
 
       <div
         onPointerDown={(e) => {
-          console.log("Back button pointerDown");
           e.stopPropagation();
           handleBack(e);
         }}
@@ -106,7 +98,6 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
 
       <div
         onPointerDown={(e) => {
-          console.log("Forward button pointerDown");
           e.stopPropagation(); // Critical: stop window drag
           handleForward(e);
         }}
@@ -135,7 +126,6 @@ export const DirectoryNavigation: React.FC<DirectoryNavigationProps> = ({
       {isTrashWindow && (
         <div
           onPointerDown={(e) => {
-            console.log("Empty trash button pointerDown");
             e.stopPropagation();
             handleEmptyTrash(e);
           }}

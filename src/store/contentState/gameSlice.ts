@@ -197,14 +197,10 @@ export const createGameSlice = (
   },
 
   generateQuestion: () => {
-    console.log("generateQuestion in gameSlice: generating new question");
     const currentState = get() as BaseStoreState & GameState;
 
     // Check if enough countries remain
     if (currentState.remainingCountries.length < currentState.optionsCount) {
-      console.log(
-        "generateQuestion in gameSlice: not enough countries remaining, ending game"
-      );
       const gameSlice = get() as BaseStoreState & GameSlice;
       gameSlice.endGame();
       return;
@@ -237,11 +233,6 @@ export const createGameSlice = (
         !selectedCountries.some((selected) => selected.id === country.id)
     );
 
-    console.log(
-      "generateQuestion in gameSlice: question generated, remaining countries:",
-      remainingAfterQuestion.length
-    );
-
     set((state) => ({
       ...state,
       currentQuestion: question,
@@ -256,7 +247,6 @@ export const createGameSlice = (
   },
 
   submitAnswer: (selectedOption: string) => {
-    console.log("submitAnswer in gameSlice: submitting answer", selectedOption);
     const currentState = get() as BaseStoreState & GameState;
 
     if (
@@ -273,13 +263,6 @@ export const createGameSlice = (
     const isCorrect =
       selectedOption === currentState.currentQuestion.correctAnswer;
     const pointsEarned = isCorrect ? currentState.timeRemaining : 0;
-
-    console.log(
-      "submitAnswer in gameSlice: answer is",
-      isCorrect ? "correct" : "incorrect",
-      "points earned:",
-      pointsEarned
-    );
 
     // Update question with submitted answer
     const updatedQuestion = {
@@ -309,13 +292,11 @@ export const createGameSlice = (
   },
 
   nextQuestion: () => {
-    console.log("nextQuestion in gameSlice: proceeding to next question");
     const gameSlice = get() as BaseStoreState & GameSlice;
     gameSlice.generateQuestion();
   },
 
   startTimer: () => {
-    console.log("startTimer in gameSlice: starting 10 second timer");
     const currentState = get() as BaseStoreState & GameState;
 
     // Clear existing timer if any
@@ -335,7 +316,6 @@ export const createGameSlice = (
   },
 
   stopTimer: () => {
-    console.log("stopTimer in gameSlice: stopping timer");
     const currentState = get() as BaseStoreState & GameState;
 
     if (currentState.timerId) {
@@ -351,9 +331,6 @@ export const createGameSlice = (
     const currentState = get() as BaseStoreState & GameState;
 
     if (currentState.timeRemaining <= 1) {
-      console.log(
-        "decrementTimer in gameSlice: time up, auto-submitting incorrect"
-      );
       // Time's up - auto submit as incorrect
       const gameSlice = get() as BaseStoreState & GameSlice;
       gameSlice.stopTimer();
@@ -370,10 +347,6 @@ export const createGameSlice = (
   },
 
   endGame: () => {
-    console.log(
-      "endGame in gameSlice: ending game, final score:",
-      (get() as BaseStoreState & GameState).currentScore
-    );
     const currentState = get() as BaseStoreState & GameState;
 
     // Stop timer
@@ -390,7 +363,6 @@ export const createGameSlice = (
   },
 
   returnToMenu: () => {
-    console.log("returnToMenu in gameSlice: returning to main menu");
     const gameSlice = get() as BaseStoreState & GameSlice;
     gameSlice.stopTimer();
     gameSlice.resetCurrentGame();
@@ -402,7 +374,6 @@ export const createGameSlice = (
   },
 
   resetCurrentGame: () => {
-    console.log("resetCurrentGame in gameSlice: resetting current game state");
     set((state) => ({
       ...state,
       currentScore: 0,
@@ -414,20 +385,11 @@ export const createGameSlice = (
   },
 
   updateHighScores: (newScore: number) => {
-    console.log(
-      "updateHighScores in gameSlice: updating high scores with",
-      newScore
-    );
     const currentState = get() as BaseStoreState & GameState;
 
     const updatedScores = [...currentState.highScores, newScore]
       .sort((a, b) => b - a) // Descending order
       .slice(0, 5); // Keep top 5
-
-    console.log(
-      "updateHighScores in gameSlice: new high scores:",
-      updatedScores
-    );
 
     set((state) => ({
       ...state,
@@ -436,10 +398,6 @@ export const createGameSlice = (
   },
 
   setOptionsCount: (count: number) => {
-    console.log(
-      "setOptionsCount in gameSlice: setting options count to",
-      count
-    );
     set((state) => ({
       ...state,
       optionsCount: count,

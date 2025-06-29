@@ -17,19 +17,16 @@ export const MacWindowControls = ({
   const maximizeIcon = isMaximized ? DEMAXIMIZE_MAC : MAXIMIZE_MAC;
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("MacWindowControls: close clicked");
     onClose?.();
   };
 
   const handleMinimizeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("MacWindowControls: minimize clicked");
     onMinimize?.();
   };
 
   const handleMaximizeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("MacWindowControls: maximize clicked");
     onMaximize?.();
   };
 

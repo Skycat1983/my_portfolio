@@ -17,10 +17,6 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const urlHistory = browserWindow.itemHistory;
   const i = browserWindow.currentHistoryIndex;
-  console.log("urlHistory browserWindow", browserWindow);
-
-  console.log("urlHistory", urlHistory);
-  console.log("urlHistory[i]", urlHistory[i]);
 
   // const urlHistoryIndex = browserWindow.currentHistoryIndex;
 
@@ -63,7 +59,6 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
 
   const handleUrlClick = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    console.log("handleUrlClick in useBrowserWindow: input clicked, focusing");
     e.currentTarget.focus();
   };
 
@@ -79,8 +74,6 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
   };
 
   const handleNavigateToUrl = () => {
-    console.log("handleNavigateToUrl: navigating based on URL completeness");
-
     // If URL is empty, don't add to history
     if (addressPosition === 0 || url === "") {
       return;

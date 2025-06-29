@@ -1,13 +1,9 @@
 import { ResizeObserver } from "@juggle/resize-observer";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNewStore } from "./useStore";
 
 // Unified hook that provides all screen information
 const useScreenMonitor = () => {
-  const [localDimensions, setLocalDimensions] = useState({
-    width: 0,
-    height: 0,
-  });
   const setScreenDimensions = useNewStore((state) => state.setScreenDimensions);
   const screenDimensions = useNewStore((state) => state.screenDimensions);
 
@@ -20,7 +16,6 @@ const useScreenMonitor = () => {
     const initialHeight = element.clientHeight;
 
     if (initialWidth > 0 && initialHeight > 0) {
-      setLocalDimensions({ width: initialWidth, height: initialHeight });
       setScreenDimensions(initialWidth, initialHeight);
     }
 
@@ -32,20 +27,14 @@ const useScreenMonitor = () => {
       const newWidth = entry.contentRect.width;
       const newHeight = entry.contentRect.height;
 
-      // Only update if dimensions actually changed
-      if (
-        localDimensions.width !== newWidth ||
-        localDimensions.height !== newHeight
-      ) {
-        setLocalDimensions({ width: newWidth, height: newHeight });
-        setScreenDimensions(newWidth, newHeight);
-      }
+      // Update store with new dimensions
+      setScreenDimensions(newWidth, newHeight);
     });
 
     resizeObserver.observe(element);
 
     return () => resizeObserver.unobserve(element);
-  }, [localDimensions.width, localDimensions.height, setScreenDimensions]);
+  }, [setScreenDimensions]);
 
   return {
     ...screenDimensions,

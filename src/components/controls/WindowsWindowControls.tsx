@@ -15,19 +15,16 @@ export const WindowsWindowControls = ({
 }: WindowsWindowControlsProps) => {
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("WindowsWindowControls: close clicked");
     onClose?.();
   };
 
   const handleMinimizeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("WindowsWindowControls: minimize clicked");
     onMinimize?.();
   };
 
   const handleMaximizeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("WindowsWindowControls: maximize clicked");
     onMaximize?.();
   };
 
