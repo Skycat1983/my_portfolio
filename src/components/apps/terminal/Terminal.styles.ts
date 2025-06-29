@@ -6,7 +6,7 @@ export const terminalStyles = {
       "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
     fontSize: "13px",
     lineHeight: "1.4",
-    padding: "8px",
+    padding: "20px",
     overflowY: "auto" as const,
   } as CSSProperties,
 

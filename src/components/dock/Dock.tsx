@@ -163,7 +163,15 @@ const Dock: React.FC = () => {
       id: "email",
       label: "Email",
       icon: <Mail size={32} className="text-blue-400" />,
-      onClick: () => window.open("mailto:", "_blank"),
+      onClick: () => {
+        const email = "hlaoutaris@gmail.com";
+        const subject = "When can you start?";
+        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
+          subject
+        )}`;
+
+        window.location.href = mailtoLink;
+      },
     },
   ];
 

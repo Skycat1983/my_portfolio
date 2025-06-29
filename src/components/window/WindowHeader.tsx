@@ -22,6 +22,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
   // children,
 }) => {
   const operatingSystem = useNewStore((state) => state.operatingSystem);
+  const screenDimensions = useNewStore((state) => state.screenDimensions);
   const window = useNewStore((s) => s.getWindowById(windowId));
   const focusWindow = useNewStore((s) => s.focusWindow);
   const { onDragStart } = useWindowDrag(windowId);
@@ -46,9 +47,18 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
   const flexDirection =
     operatingSystem === "mac" ? "flex-row" : "flex-row-reverse";
 
+  // Mobile-specific styling
+  const mobileHeaderClasses = screenDimensions.isMobile
+    ? "p-2 min-h-[44px]" // Reduced from p-3 and min-h-[56px]
+    : "p-2";
+
+  const mobileTitleClasses = screenDimensions.isMobile
+    ? "text-sm font-medium" // Reduced from text-base
+    : "text-sm font-medium";
+
   return (
     <div
-      className={`absolute w-full bg-gray-100 border-b border-gray-300 p-2 flex ${flexDirection} justify-between items-center cursor-move select-none ${className}`}
+      className={`absolute w-full bg-gray-100 border-b border-gray-300 ${mobileHeaderClasses} flex ${flexDirection} justify-between items-center cursor-move select-none touch-manipulation ${className}`}
       onClick={handleHeaderClick}
       onPointerDown={handleDragStart}
     >
@@ -59,7 +69,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
 
       {/* Title and custom content */}
       <div className="flex items-center min-w-0 mx-4">
-        <span className="text-sm font-medium text-gray-700 truncate">
+        <span className={`text-gray-700 truncate ${mobileTitleClasses}`}>
           {displayTitle}
         </span>
       </div>

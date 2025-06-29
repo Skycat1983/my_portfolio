@@ -2,9 +2,11 @@ import { useNewStore } from "../../hooks/useStore";
 
 import { MacWindowControls } from "../controls/MacWindowControls";
 import { WindowsWindowControls } from "../controls/WindowsWindowControls";
+import { MobileWindowControls } from "../controls/MobileWindowControls";
 
 export const WindowControls = ({ windowId }: { windowId: string }) => {
   const operatingSystem = useNewStore((state) => state.operatingSystem);
+  const screenDimensions = useNewStore((state) => state.screenDimensions);
   const closeWindow = useNewStore((state) => state.closeWindow);
   // const minimizeWindow = useNewStore((state) => state.minimizeWindow);
   const updateWindowById = useNewStore((state) => state.updateWindowById);
@@ -17,6 +19,13 @@ export const WindowControls = ({ windowId }: { windowId: string }) => {
       updateWindowById(windowId, { isMaximized: true });
     }
   };
+
+  // On mobile, always use mobile controls regardless of OS
+  if (screenDimensions.isMobile) {
+    return <MobileWindowControls onClose={() => closeWindow(windowId)} />;
+  }
+
+  // Desktop: use OS-specific controls
   if (operatingSystem === "mac") {
     return (
       <MacWindowControls

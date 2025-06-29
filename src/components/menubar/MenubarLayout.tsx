@@ -16,7 +16,7 @@ export const MenubarLayout = () => {
           : "absolute bottom-0 left-0 w-full h-11 bg-blue-100 hidden md:block"
       }
     >
-      <div className="w-full h-11 bg-neutral-900 flex flex-row justify-between px-4 items-center overflow-hidden">
+      <div className="w-full h-11 bg-neutral-900 flex flex-row justify-between px-4 items-center overflow-hidden px-8">
         <div className="flex flex-row gap-4 items-center">
           <Logo />
           <MenubarOptions />
