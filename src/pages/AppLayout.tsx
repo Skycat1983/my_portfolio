@@ -2,6 +2,7 @@ import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
+import { useScreenMonitor } from "../hooks/useScreenSize";
 import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
@@ -17,6 +18,10 @@ export const AppLayout = () => {
   const rootId = useNewStore((s) => s.rootId);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindows = useNewStore((s) => s.openWindows);
+
+  // Monitor screen dimensions and update store
+  const screenInfo = useScreenMonitor();
+  console.log("screenInfo in AppLayout: ", screenInfo);
 
   //enables drag and drop to and from desktop functionality
   const dragHandlers = useNodeDrag();
@@ -39,7 +44,7 @@ export const AppLayout = () => {
   const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
   console.log("mobileNodes", mobileNodes);
 
-  const padding = operatingSystem === "mac" ? "lg:pt-10" : "lg:pb-10";
+  const padding = operatingSystem === "mac" ? "md:pt-10" : "md:pb-10";
 
   return (
     <div

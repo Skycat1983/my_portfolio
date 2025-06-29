@@ -2,8 +2,34 @@ import type { WindowType } from "../../types/storeTypes";
 import type { SetState, GetState } from "../../types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
 import type { NodeEntry } from "../../types/nodeTypes";
+import type { SystemSlice } from "../systemState/systemSlice";
 
 export type WindowedNode = Exclude<NodeEntry, { type: "icon" | "link" }>;
+
+// Window sizing configuration
+const DEFAULT_WINDOW_SIZES = {
+  directory: { width: 600, height: 400 },
+  browser: { width: 1000, height: 800 },
+  terminal: { width: 1000, height: 600 },
+  game: { width: 1000, height: 600 },
+  achievements: { width: 800, height: 600 },
+} as const;
+
+// Responsive sizing constraints
+const VIEWPORT_CONSTRAINTS = {
+  desktop: {
+    maxWidthRatio: 0.9, // 90% of viewport width
+    maxHeightRatio: 0.8, // 80% of viewport height
+    minWidth: 320, // Minimum window width
+    minHeight: 240, // Minimum window height
+  },
+  mobile: {
+    maxWidthRatio: 1.0, // 100% of viewport width for fullscreen
+    maxHeightRatio: 1.0, // 100% of viewport height for fullscreen
+    minWidth: 320, // Minimum window width
+    minHeight: 240, // Minimum window height
+  },
+} as const;
 
 export interface WindowOperationsActions {
   //   ! WINDOW VISIBILITY OPERATIONS
@@ -57,15 +83,86 @@ export interface WindowOperationsActions {
   // ID-based accessors (built from predicates)
   getWindowById: (id: WindowType["windowId"]) => WindowType | undefined;
   getWindowByNodeId: (nodeId: WindowType["nodeId"]) => WindowType | undefined;
+
+  // Responsive sizing utilities
+  getResponsiveWindowSize: (nodeType: string) => {
+    width: number;
+    height: number;
+  };
 }
 
-export type WindowOperationsSlice = WindowCrudSlice & WindowOperationsActions;
+export type WindowOperationsSlice = WindowCrudSlice &
+  WindowOperationsActions &
+  SystemSlice;
 
 // Window operations slice - builds ID-based operations from predicate-based CRUD
 export const createWindowOperationsSlice = (
   _set: SetState<WindowOperationsSlice>,
   get: GetState<WindowOperationsSlice>
 ): WindowOperationsActions => ({
+  /**
+   * Calculate responsive window size based on screen dimensions and node type
+   */
+  getResponsiveWindowSize: (nodeType: string) => {
+    const state = get();
+    const { screenDimensions } = state;
+    const {
+      width: screenWidth,
+      height: screenHeight,
+      isMobile,
+    } = screenDimensions;
+
+    // For mobile, windows should be fullscreen
+    if (isMobile) {
+      const constraints = VIEWPORT_CONSTRAINTS.mobile;
+      const fullscreenWidth = Math.floor(
+        screenWidth * constraints.maxWidthRatio
+      );
+      const fullscreenHeight = Math.floor(
+        screenHeight * constraints.maxHeightRatio
+      );
+
+      console.log(
+        `getResponsiveWindowSize in windowOperationsSlice (MOBILE): ${nodeType} - Screen: ${screenWidth}x${screenHeight}, Fullscreen: ${fullscreenWidth}x${fullscreenHeight}`
+      );
+
+      return {
+        width: Math.max(constraints.minWidth, fullscreenWidth),
+        height: Math.max(constraints.minHeight, fullscreenHeight),
+      };
+    }
+
+    // For desktop, use default sizes with constraints
+    const constraints = VIEWPORT_CONSTRAINTS.desktop;
+    const defaultSize =
+      DEFAULT_WINDOW_SIZES[nodeType as keyof typeof DEFAULT_WINDOW_SIZES] ||
+      DEFAULT_WINDOW_SIZES.directory;
+
+    // Calculate maximum allowed dimensions
+    const maxWidth = Math.floor(screenWidth * constraints.maxWidthRatio);
+    const maxHeight = Math.floor(screenHeight * constraints.maxHeightRatio);
+
+    // Apply constraints
+    const constrainedWidth = Math.max(
+      constraints.minWidth,
+      Math.min(defaultSize.width, maxWidth)
+    );
+
+    const constrainedHeight = Math.max(
+      constraints.minHeight,
+      Math.min(defaultSize.height, maxHeight)
+    );
+
+    console.log(
+      `getResponsiveWindowSize in windowOperationsSlice (DESKTOP): ${nodeType} - Screen: ${screenWidth}x${screenHeight}, Default: ${defaultSize.width}x${defaultSize.height}, Constrained: ${constrainedWidth}x${constrainedHeight}`
+    );
+
+    return {
+      width: constrainedWidth,
+      height: constrainedHeight,
+    };
+  },
+
   /**
    * Open a new window for a node
    */
@@ -78,32 +175,34 @@ export const createWindowOperationsSlice = (
 
     const nodeId = node.id;
 
-    // this ensures each additional window is offset to maintain visibility of all open windows
-    const count = state.openWindows.length;
-    const x = 100 * (count + 1);
-    const y = 100 * (count + 1);
+    // Use responsive sizing first to determine if we need special positioning
+    const { width, height } = state.getResponsiveWindowSize(node.type);
+    const { screenDimensions } = state;
+    const { isMobile } = screenDimensions;
 
-    let width = 600;
-    let height = 400;
+    // Position windows based on device type
+    let x: number, y: number;
+
+    if (isMobile) {
+      // Mobile windows start at top-left for fullscreen experience
+      x = 0;
+      y = 0;
+    } else {
+      // Desktop windows are offset to maintain visibility of all open windows
+      const count = state.openWindows.length;
+      x = 100 * (count + 1);
+      y = 100 * (count + 1);
+    }
 
     let isMaximized = false;
 
-    if (node.type === "directory") {
-      width = 600;
-      height = 400;
-    } else if (node.type === "browser") {
-      width = 1000;
-      height = 800;
-    } else if (node.type === "terminal") {
-      width = 1000;
-      height = 600;
-    } else if (node.type === "game") {
-      width = 1000;
-      height = 600;
+    // Mobile windows should be maximized by default for fullscreen experience
+    // Game windows should also be maximized by default
+    if (isMobile || node.type === "game") {
       isMaximized = true;
     }
 
-    // Create new window with default position
+    // Create new window with responsive dimensions
     const baseWindow: WindowType = {
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
       title: node.label,

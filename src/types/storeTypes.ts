@@ -1,5 +1,8 @@
 import type { DirectoryEntry, NodeEntry, NodeMap } from "./nodeTypes";
-import type { OperatingSystem } from "../store/systemState/systemSlice";
+import type {
+  OperatingSystem,
+  ScreenDimensions,
+} from "../store/systemState/systemSlice";
 
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
@@ -165,6 +168,7 @@ export interface BaseStoreState {
   nextZIndex: number;
   operatingSystem: OperatingSystem;
   wifiEnabled: boolean;
+  screenDimensions: ScreenDimensions;
 }
 
 export type SetState<T> = (
