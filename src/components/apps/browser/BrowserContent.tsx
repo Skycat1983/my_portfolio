@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bookmark, Settings } from "lucide-react";
 import { useNewStore } from "../../../hooks/useStore";
 import { StartPage } from "./fake_pages/StartPage";
@@ -6,6 +6,7 @@ import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
 import { BrowserNavigation } from "./BrowserNavigation";
 import { OfflinePage } from "./fake_pages/OfflinePage";
+import { theme } from "../../../styles/theme";
 
 interface BrowserContentProps {
   windowId: string;
@@ -13,8 +14,13 @@ interface BrowserContentProps {
 
 export const BrowserContent = ({ windowId }: BrowserContentProps) => {
   const [bookmarked, setBookmarked] = useState(false);
+  const [scrollPositions, setScrollPositions] = useState<
+    Record<string, number>
+  >({});
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const window = useNewStore((s) => s.getWindowById(windowId));
+  const screenDimensions = useNewStore((s) => s.screenDimensions);
   const currentPage = window?.itemHistory[window?.currentHistoryIndex];
 
   // Get window-specific browser state
@@ -24,6 +30,25 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
   const handleBookmarkToggle = () => {
     setBookmarked(!bookmarked);
   };
+
+  // Track scroll position for current page
+  const handleScroll = () => {
+    if (contentRef.current && currentPage) {
+      const scrollTop = contentRef.current.scrollTop;
+      setScrollPositions((prev) => ({
+        ...prev,
+        [currentPage]: scrollTop,
+      }));
+    }
+  };
+
+  // Restore scroll position when page changes
+  useEffect(() => {
+    if (contentRef.current && currentPage) {
+      const savedScrollPosition = scrollPositions[currentPage] || 0;
+      contentRef.current.scrollTop = savedScrollPosition;
+    }
+  }, [currentPage, scrollPositions]);
 
   // Render different pages based on currentPage state
   const renderPageContent = () => {
@@ -40,13 +65,85 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
     }
   };
 
+  // Theme-based styles for buttons
+  const mobileToolbarButtonStyle = {
+    padding: "8px",
+    backgroundColor: theme.colors.white,
+    border: `1px solid ${theme.colors.gray[300]}`,
+    color: theme.colors.gray[700],
+    borderRadius: "8px",
+    transition: "all 0.2s ease",
+    cursor: "pointer",
+  };
+
+  // Mobile: Navigation at bottom, Desktop: Navigation at top
+  if (screenDimensions.isMobile) {
+    return (
+      <div className="h-full flex flex-col bg-white pt-10">
+        {/* Page content area - takes full height minus navigation */}
+        <div
+          ref={contentRef}
+          className="flex-1 overflow-auto p-4"
+          onScroll={handleScroll}
+        >
+          {renderPageContent()}
+        </div>
+
+        {/* Mobile Navigation at Bottom */}
+        <BrowserNavigation windowId={windowId} />
+
+        {/* Mobile bottom toolbar - simplified */}
+        <div
+          className="h-12 border-t flex items-center justify-center px-4"
+          style={{
+            backgroundColor: theme.colors.gray[50],
+            borderTopColor: theme.colors.gray[200],
+          }}
+        >
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleBookmarkToggle}
+              style={mobileToolbarButtonStyle}
+              className="touch-manipulation hover:bg-gray-100"
+              aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
+            >
+              <Bookmark
+                size={20}
+                style={{
+                  color: bookmarked
+                    ? theme.colors.blue[500]
+                    : theme.colors.gray[500],
+                  fill: bookmarked ? theme.colors.blue[500] : "none",
+                }}
+              />
+            </button>
+            <button
+              style={mobileToolbarButtonStyle}
+              className="touch-manipulation hover:bg-gray-100"
+              aria-label="Settings"
+            >
+              <Settings size={20} style={{ color: theme.colors.gray[500] }} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop: Navigation at top (original layout)
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Browser Navigation/Address Bar */}
       <BrowserNavigation windowId={windowId} />
 
       {/* Page content area */}
-      <div className="flex-1 overflow-auto p-6">{renderPageContent()}</div>
+      <div
+        ref={contentRef}
+        className="flex-1 overflow-auto p-6"
+        onScroll={handleScroll}
+      >
+        {renderPageContent()}
+      </div>
 
       {/* Bottom toolbar */}
       <div className="h-10 bg-gray-100 border-t border-gray-200 flex items-center justify-between px-4">

@@ -14,6 +14,7 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
 
   // Use new generic history system
   const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
+  const screenDimensions = useNewStore((s) => s.screenDimensions);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const urlHistory = browserWindow.itemHistory;
   const i = browserWindow.currentHistoryIndex;
@@ -99,56 +100,83 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
     }
   };
 
+  // Mobile-specific styles
   const addressBarStyle: React.CSSProperties = {
-    height: "50px",
+    height: screenDimensions.isMobile ? "60px" : "50px",
     display: "flex",
     alignItems: "center",
-    padding: "0 12px",
-    gap: "8px",
+    padding: screenDimensions.isMobile ? "0 16px" : "0 12px",
+    gap: screenDimensions.isMobile ? "12px" : "8px",
     background: "linear-gradient(to bottom, #f9fafb, #f3f4f6)",
     borderBottom: "1px solid #e5e7eb",
   };
 
+  // Mobile-friendly button styles
+  const mobileButtonStyles = screenDimensions.isMobile
+    ? {
+        ...browserButtonStyles,
+        width: "44px",
+        height: "44px",
+        borderRadius: "8px",
+      }
+    : browserButtonStyles;
+
+  // Mobile-friendly input styles
+  const mobileInputStyle = screenDimensions.isMobile
+    ? {
+        ...urlInputStyle,
+        height: "44px",
+        fontSize: "16px", // Prevents zoom on iOS
+        borderRadius: "8px",
+      }
+    : urlInputStyle;
+
   return (
     <div style={addressBarStyle}>
       <button
-        style={browserButtonStyles}
+        style={mobileButtonStyles}
         title="Back"
         onClick={handleBack}
         disabled={!canGoBackInWindowHistory(windowId)}
         className={cn(
-          "hover:bg-gray-200 transition-colors",
+          "hover:bg-gray-200 transition-colors touch-manipulation",
           !canGoBackInWindowHistory(windowId) && "opacity-50 cursor-not-allowed"
         )}
       >
-        <ChevronLeft size={14} />
+        <ChevronLeft size={screenDimensions.isMobile ? 20 : 14} />
       </button>
 
       <button
-        style={browserButtonStyles}
+        style={mobileButtonStyles}
         title="Forward"
         onClick={handleForward}
         disabled={!canGoForwardInWindowHistory(windowId)}
         className={cn(
-          "hover:bg-gray-200 transition-colors",
+          "hover:bg-gray-200 transition-colors touch-manipulation",
           !canGoForwardInWindowHistory(windowId) &&
             "opacity-50 cursor-not-allowed"
         )}
       >
-        <ChevronRight size={14} />
+        <ChevronRight size={screenDimensions.isMobile ? 20 : 14} />
       </button>
 
-      <button
-        style={browserButtonStyles}
-        title="Refresh"
-        //  onClick={handleRefreshClick}
-        className="hover:bg-gray-200 transition-colors"
-      >
-        <RotateCcw size={14} />
-      </button>
+      {/* Hide refresh button on mobile to save space */}
+      {!screenDimensions.isMobile && (
+        <button
+          style={mobileButtonStyles}
+          title="Refresh"
+          //  onClick={handleRefreshClick}
+          className="hover:bg-gray-200 transition-colors touch-manipulation"
+        >
+          <RotateCcw size={screenDimensions.isMobile ? 20 : 14} />
+        </button>
+      )}
 
       <div className="flex items-center flex-1 relative">
-        <Shield size={14} className="absolute left-3 text-green-500" />
+        <Shield
+          size={screenDimensions.isMobile ? 18 : 14}
+          className="absolute left-3 text-green-500"
+        />
         <input
           type="text"
           value={url}
@@ -156,8 +184,11 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
           onKeyDown={handleUrlKeyDown}
           onClick={handleUrlClick}
           onPointerDown={(e) => e.stopPropagation()}
-          style={urlInputStyle}
-          className="pl-8"
+          style={mobileInputStyle}
+          className={cn(
+            screenDimensions.isMobile ? "pl-10" : "pl-8",
+            "w-full touch-manipulation"
+          )}
           placeholder="Start typing to visit the site…"
           autoComplete="off"
           spellCheck={false}

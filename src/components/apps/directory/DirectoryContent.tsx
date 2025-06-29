@@ -22,7 +22,7 @@ export const DirectoryContent = ({ window }: { window: DirectoryWindow }) => {
 
   return (
     <div
-      className="w-full h-full"
+      className="w-full h-full p-10"
       // Add drag event tracking to directory content
       onDragOver={(e) => {
         // Use drag handlers to handle drops on directory content (empty space)
