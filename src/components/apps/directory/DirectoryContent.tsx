@@ -13,9 +13,11 @@ export const DirectoryContent = ({ nodeId }: { nodeId: string }) => {
   // Add drag handlers for the directory content (like Desktop does for root)
   const dragHandlers = useNodeDrag();
 
+  const padding = isWindow ? "p-10" : "p-0";
+
   return (
     <div
-      className="w-full h-full p-10"
+      className={`w-full h-full ${padding}`}
       // Add drag event tracking to directory content
       onDragOver={(e) => {
         // Use drag handlers to handle drops on directory content (empty space)

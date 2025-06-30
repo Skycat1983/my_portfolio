@@ -1,4 +1,3 @@
-import { useNodeDrag } from "../components/nodes/hooks/useNodeDrag";
 import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
@@ -6,18 +5,14 @@ import { useScreenMonitor } from "../hooks/useScreenSize";
 import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
-import { DirectoryLayout } from "../components/apps/directory/DirectoryLayout";
 import { DirectoryContent } from "../components/apps/directory/DirectoryContent";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
-  const screenDimensions = useNewStore((s) => s.screenDimensions);
-
   console.log("nodeMap", nodeMap);
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
-  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const rootId = useNewStore((s) => s.rootId);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindows = useNewStore((s) => s.openWindows);
@@ -26,30 +21,22 @@ export const AppLayout = () => {
   const screenInfo = useScreenMonitor();
   console.log("screenInfo in AppLayout: ", screenInfo);
 
-  // desktop children/nodes (using mobileNodes instead for now)
-  const desktopChildren = getChildrenByParentID(rootId);
-
   const background =
     operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;
 
-  const mobileNodeKeys = [
-    "gtaiv",
-    "geo",
-    "achievements",
-    "portfolio",
-    "SkyNot_download",
-    "roboCrop_download",
-  ];
+  // const mobileNodeKeys = [
+  //   "gtaiv",
+  //   "geo",
+  //   "achievements",
+  //   "portfolio",
+  //   "SkyNot_download",
+  //   "roboCrop_download",
+  // ];
 
-  const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
-  console.log("mobileNodes", mobileNodes);
+  // const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
+  // console.log("mobileNodes", mobileNodes);
 
   const padding = operatingSystem === "mac" ? "md:pt-10" : "md:pb-10";
-
-  const nodesToRender = desktopChildren;
-  // const nodesToRender = screenDimensions.isMobile
-  //   ? mobileNodes
-  //   : desktopChildren;
 
   return (
     <div
@@ -70,7 +57,7 @@ export const AppLayout = () => {
         <Widgets />
 
         {/* DESKTOP NODES */}
-        <div className="flex-1 min-h-0 w-full bg-red-100/20">
+        <div className="flex-1 min-h-0 w-full">
           {/* <DirectoryLayout nodes={nodesToRender} /> */}
           <DirectoryContent nodeId={rootId} />
         </div>

@@ -27,7 +27,6 @@ export interface WindowType {
   currentHistoryIndex: number; // Current position in history
 
   // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
-  currentPath?: string;
   navigationHistory?: string[];
 
   // Browser-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
@@ -67,9 +66,6 @@ export type DirectoryWindow = Required<
     | "x"
     | "y"
     | "zIndex"
-    | "currentPath"
-    // | "canGoBack"
-    // | "canGoForward"
     | "navigationHistory"
     | "currentHistoryIndex"
   >
