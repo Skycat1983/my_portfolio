@@ -1,4 +1,4 @@
-import type { WindowType } from "../../types/storeTypes";
+import type { WindowContentProps } from "../../types/storeTypes";
 import { AchievementContent } from "../apps/achievements/AchievementContent";
 import { BrowserContent } from "../apps/browser/BrowserContent";
 import { DirectoryContent } from "../apps/directory/DirectoryContent";
@@ -6,13 +6,23 @@ import GTAVI from "../apps/games/GTAVI/GTAVI";
 import { GeoGame } from "../apps/games/GeoGame/GeoGame";
 import { TerminalContent } from "../apps/terminal/TerminalContent";
 
-interface WindowContentProps {
-  window: WindowType;
-}
-
 export const WindowContent = ({ window }: WindowContentProps) => {
   const { windowId, nodeType, nodeId } = window;
-  console.log("WindowContent", window);
+  console.log("WindowContent in WindowContent.tsx: ", window);
+
+  // NEW: Check if window has a custom component (takes priority)
+  if (window.component) {
+    console.log(
+      "WindowContent: rendering custom component for windowId",
+      windowId
+    );
+    const CustomComponent = window.component;
+    return <CustomComponent window={window} />;
+  }
+
+  // EXISTING: Fallback to current logic (unchanged for backward compatibility)
+  console.log("WindowContent: using fallback logic for nodeType", nodeType);
+
   if (nodeType === "terminal") {
     return <TerminalContent />;
   }
@@ -32,4 +42,13 @@ export const WindowContent = ({ window }: WindowContentProps) => {
     console.log("GeoGame: windowId", windowId);
     return <GeoGame windowId={windowId} />;
   }
+
+  // Fallback for unknown types
+  console.warn(
+    "WindowContent: no component found for nodeType",
+    nodeType,
+    "nodeId",
+    nodeId
+  );
+  return null;
 };

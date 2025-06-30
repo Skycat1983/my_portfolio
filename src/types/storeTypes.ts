@@ -3,6 +3,12 @@ import type {
   OperatingSystem,
   ScreenDimensions,
 } from "../store/systemState/systemSlice";
+import type { ComponentType } from "react";
+
+// Interface for props that window content components receive
+export interface WindowContentProps {
+  window: WindowType;
+}
 
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
@@ -25,6 +31,9 @@ export interface WindowType {
   // Generic history properties (new unified approach)
   itemHistory: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
   currentHistoryIndex: number; // Current position in history
+
+  // Flexible component rendering (new approach)
+  component?: ComponentType<WindowContentProps>; // Optional custom component for window content
 
   // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
   navigationHistory?: string[];
