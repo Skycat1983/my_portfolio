@@ -24,6 +24,7 @@ import {
   TROPHY1,
   GTA6_LOGO,
   PLANET,
+  DOCUMENT,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -248,6 +249,13 @@ export const defaultNodes: DirectoryObject = {
           type: "link",
           url: REVIEW,
         },
+        {
+          id: "new-document",
+          label: "New Document",
+          image: DOCUMENT,
+          type: "document",
+          componentKey: "documentEditor",
+        },
       ],
     },
     {
@@ -275,6 +283,13 @@ export const defaultNodes: DirectoryObject = {
       label: "Achievements",
       type: "achievement",
       image: TROPHY1,
+    },
+    {
+      id: "test-custom-app",
+      label: "Custom App Test",
+      type: "directory",
+      componentKey: "testCustom",
+      children: [],
     },
   ],
 };

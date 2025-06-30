@@ -5,9 +5,13 @@ import { DirectoryContent } from "../apps/directory/DirectoryContent";
 import GTAVI from "../apps/games/GTAVI/GTAVI";
 import { GeoGame } from "../apps/games/GeoGame/GeoGame";
 import { TerminalContent } from "../apps/terminal/TerminalContent";
+import { getWindowComponent } from "./WindowComponentRegistry";
+import { useNewStore } from "../../hooks/useStore";
 
 export const WindowContent = ({ window }: WindowContentProps) => {
   const { windowId, nodeType, nodeId } = window;
+  const nodeMap = useNewStore((s) => s.nodeMap);
+
   console.log("WindowContent in WindowContent.tsx: ", window);
 
   // NEW: Check if window has a custom component (takes priority)
@@ -18,6 +22,33 @@ export const WindowContent = ({ window }: WindowContentProps) => {
     );
     const CustomComponent = window.component;
     return <CustomComponent window={window} />;
+  }
+
+  // NEW: Check if the node has a componentKey and look up in registry
+  const node = nodeMap[nodeId];
+  if (node && "componentKey" in node && node.componentKey) {
+    console.log(
+      "WindowContent: checking componentKey",
+      node.componentKey,
+      "for nodeId",
+      nodeId
+    );
+    const RegistryComponent = getWindowComponent(node.componentKey);
+    if (RegistryComponent) {
+      console.log(
+        "WindowContent: rendering registry component",
+        node.componentKey,
+        "for windowId",
+        windowId
+      );
+      return <RegistryComponent window={window} />;
+    } else {
+      console.warn(
+        "WindowContent: componentKey",
+        node.componentKey,
+        "not found in registry"
+      );
+    }
   }
 
   // EXISTING: Fallback to current logic (unchanged for backward compatibility)

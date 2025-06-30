@@ -8,6 +8,7 @@ import type {
   BrowserEntry,
   AchievementEntry,
   GameEntry,
+  DocumentEntry,
 } from "../../types/nodeTypes";
 import { IconNode } from "./IconNode";
 import { DirectoryNode } from "./DirectoryNode";
@@ -17,6 +18,7 @@ import { EasterEggNode } from "./EasterEggNode";
 import { BrowserNode } from "./BrowserNode";
 import { AchievementNode } from "./AchievementNode";
 import { GameNode } from "./GameNode";
+import { DocumentNode } from "./DocumentNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -64,6 +66,9 @@ export const NodeSwitch = ({
 
     case "game":
       return <GameNode key={node.id} game={node as GameEntry} />;
+
+    case "document":
+      return <DocumentNode key={node.id} document={node as DocumentEntry} />;
 
     default:
       console.warn("Unknown node type:", node);

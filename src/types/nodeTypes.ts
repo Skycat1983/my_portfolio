@@ -7,6 +7,7 @@ export interface DirectoryObject {
   label: string;
   // image: string;
   children: NodeObject[];
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface DirectoryEntry {
@@ -16,6 +17,7 @@ export interface DirectoryEntry {
   type: "directory";
   label: string;
   // image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface AchievementObject {
@@ -23,6 +25,7 @@ export interface AchievementObject {
   type: "achievement";
   label: string;
   image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface AchievementEntry {
@@ -31,6 +34,7 @@ export interface AchievementEntry {
   type: "achievement";
   label: string;
   image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface DocumentObject {
@@ -38,6 +42,7 @@ export interface DocumentObject {
   type: "document";
   label: string;
   image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface DocumentEntry {
@@ -46,12 +51,14 @@ export interface DocumentEntry {
   type: "document";
   label: string;
   image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface BrowserObject {
   id: string;
   type: "browser";
   label: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface BrowserEntry {
@@ -59,6 +66,7 @@ export interface BrowserEntry {
   parentId: string | null;
   type: "browser";
   label: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface IconObject {
@@ -118,6 +126,7 @@ export interface TerminalObject {
   type: "terminal";
   label: string;
   // image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface TerminalEntry {
@@ -126,6 +135,7 @@ export interface TerminalEntry {
   type: "terminal";
   label: string;
   // image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface GameObject {
@@ -133,6 +143,7 @@ export interface GameObject {
   type: "game";
   label: string;
   image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export interface GameEntry {
@@ -141,6 +152,7 @@ export interface GameEntry {
   type: "game";
   label: string;
   image: string;
+  componentKey?: string; // Optional custom component identifier
 }
 
 export type NodeObject =

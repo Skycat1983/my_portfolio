@@ -10,6 +10,7 @@ import {
   GTA6_LOGO,
   PLANET,
   BIN_EMPTY,
+  DOCUMENT,
 } from "../../constants/images";
 import { Mail, Phone } from "lucide-react";
 
@@ -114,11 +115,12 @@ const Dock: React.FC = () => {
       icon: <Mail size={32} className="text-blue-400" />,
       onClick: () => window.open("mailto:", "_blank"),
     },
+
     {
-      id: "terminal",
-      label: "Terminal",
-      image: TERMINAL,
-      nodeId: "terminal",
+      id: "new-document",
+      label: "New Document",
+      image: DOCUMENT,
+      nodeId: "new-document",
     },
     {
       id: "achievements",
@@ -132,11 +134,18 @@ const Dock: React.FC = () => {
       image: GTA6_LOGO,
       nodeId: "gtaiv",
     },
+
     {
       id: "geo-game",
       label: "Flag Quest",
       image: PLANET,
       nodeId: "geo",
+    },
+    {
+      id: "terminal",
+      label: "Terminal",
+      image: TERMINAL,
+      nodeId: "terminal",
     },
     {
       id: "trash",

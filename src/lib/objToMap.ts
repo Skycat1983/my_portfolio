@@ -31,6 +31,7 @@ export const convertObjectsToMap = (
         children: [],
         type: "directory",
         label: nodeObj.label,
+        componentKey: nodeObj.componentKey,
       } as DirectoryEntry;
 
       // Process children for directories
@@ -72,6 +73,7 @@ export const convertObjectsToMap = (
         parentId,
         type: "terminal",
         label: nodeObj.label,
+        componentKey: nodeObj.componentKey,
       } as TerminalEntry;
     } else if (nodeObj.type === "browser") {
       mapNode = {
@@ -79,6 +81,7 @@ export const convertObjectsToMap = (
         parentId,
         type: "browser",
         label: nodeObj.label,
+        componentKey: nodeObj.componentKey,
       } as BrowserEntry;
     } else if (nodeObj.type === "document") {
       mapNode = {
@@ -87,6 +90,7 @@ export const convertObjectsToMap = (
         type: "document",
         label: nodeObj.label,
         image: nodeObj.image,
+        componentKey: nodeObj.componentKey, // Preserve componentKey
       } as DocumentEntry;
     } else if (nodeObj.type === "achievement") {
       mapNode = {
@@ -95,6 +99,7 @@ export const convertObjectsToMap = (
         type: "achievement",
         label: nodeObj.label,
         image: nodeObj.image,
+        componentKey: nodeObj.componentKey,
       } as AchievementEntry;
     } else if (nodeObj.type === "game") {
       mapNode = {
@@ -103,6 +108,7 @@ export const convertObjectsToMap = (
         type: "game",
         label: nodeObj.label,
         image: nodeObj.image,
+        componentKey: nodeObj.componentKey,
       } as GameEntry;
     } else {
       throw new Error(`Unknown node type: ${(nodeObj as NodeObject).type}`);
