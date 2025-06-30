@@ -4,10 +4,28 @@ import { useNewStore } from "../../../hooks/useStore";
 
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];
+  isWindow?: boolean;
 };
 
-export const DirectoryLayout = ({ nodes }: DirectoryLayoutProps) => {
+export const DirectoryLayout = ({
+  nodes,
+  isWindow = false,
+}: DirectoryLayoutProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
+
+  // Window directory layout
+  if (isWindow) {
+    return (
+      <div className="w-full h-full flex justify-start items-start gap-6 flex-wrap">
+        {nodes.map((node) => (
+          <div key={node.id} className="w-20 flex-shrink-0">
+            <NodeSwitch node={node} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+  // Desktop/Mobile home page directory layout
 
   return (
     <>

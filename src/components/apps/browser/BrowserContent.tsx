@@ -7,6 +7,7 @@ import { QueuePage } from "./fake_pages/QueuePage";
 import { BrowserNavigation } from "./BrowserNavigation";
 import { OfflinePage } from "./fake_pages/OfflinePage";
 import { theme } from "../../../styles/theme";
+import { Button } from "../../ui/button";
 
 interface BrowserContentProps {
   windowId: string;
@@ -101,7 +102,7 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
           }}
         >
           <div className="flex items-center gap-4">
-            <button
+            <Button
               onClick={handleBookmarkToggle}
               style={mobileToolbarButtonStyle}
               className="touch-manipulation hover:bg-gray-100"
@@ -116,7 +117,7 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
                   fill: bookmarked ? theme.colors.blue[500] : "none",
                 }}
               />
-            </button>
+            </Button>
             <button
               style={mobileToolbarButtonStyle}
               className="touch-manipulation hover:bg-gray-100"

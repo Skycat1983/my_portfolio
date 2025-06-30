@@ -38,7 +38,7 @@ export const DirectoryContent = ({ window }: { window: DirectoryWindow }) => {
         return dragHandlers.handleDrop(e, nodeId);
       }}
     >
-      <DirectoryLayout nodes={children} />
+      <DirectoryLayout nodes={children} isWindow={true} />
     </div>
   );
 };
