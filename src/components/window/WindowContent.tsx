@@ -1,4 +1,4 @@
-import type { DirectoryWindow, WindowType } from "../../types/storeTypes";
+import type { WindowType } from "../../types/storeTypes";
 import { AchievementContent } from "../apps/achievements/AchievementContent";
 import { BrowserContent } from "../apps/browser/BrowserContent";
 import { DirectoryContent } from "../apps/directory/DirectoryContent";
@@ -17,7 +17,7 @@ export const WindowContent = ({ window }: WindowContentProps) => {
     return <TerminalContent />;
   }
   if (nodeType === "directory") {
-    return <DirectoryContent window={window as DirectoryWindow} />;
+    return <DirectoryContent nodeId={nodeId} />;
   }
   if (nodeType === "achievement") {
     return <AchievementContent />;

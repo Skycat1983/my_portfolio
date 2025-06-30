@@ -7,9 +7,12 @@ import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryLayout } from "../components/apps/directory/DirectoryLayout";
+import { DirectoryContent } from "../components/apps/directory/DirectoryContent";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
+  const screenDimensions = useNewStore((s) => s.screenDimensions);
+
   console.log("nodeMap", nodeMap);
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
@@ -22,9 +25,6 @@ export const AppLayout = () => {
   // Monitor screen dimensions and update store
   const screenInfo = useScreenMonitor();
   console.log("screenInfo in AppLayout: ", screenInfo);
-
-  //enables drag and drop to and from desktop functionality
-  const dragHandlers = useNodeDrag();
 
   // desktop children/nodes (using mobileNodes instead for now)
   const desktopChildren = getChildrenByParentID(rootId);
@@ -46,6 +46,11 @@ export const AppLayout = () => {
 
   const padding = operatingSystem === "mac" ? "md:pt-10" : "md:pb-10";
 
+  const nodesToRender = desktopChildren;
+  // const nodesToRender = screenDimensions.isMobile
+  //   ? mobileNodes
+  //   : desktopChildren;
+
   return (
     <div
       className={`w-screen h-screen bg-gray-900 relative overflow-hidden bg-cover bg-center bg-no-repeat ${padding}`}
@@ -60,39 +65,14 @@ export const AppLayout = () => {
       <MenubarLayout />
 
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
-      <div
-        className="flex flex-col md:flex-row h-full w-full gap-10 p-10"
-        onDragOver={
-          dragHandlers
-            ? (e) => {
-                return dragHandlers.handleDragOver(e, rootId);
-              }
-            : undefined
-        }
-        onDragEnter={
-          dragHandlers
-            ? (e) => {
-                return dragHandlers.handleDragEnter(e, rootId);
-              }
-            : undefined
-        }
-        onDragLeave={(e) => {
-          return dragHandlers?.handleDragLeave(e);
-        }}
-        onDrop={
-          dragHandlers
-            ? (e) => {
-                return dragHandlers.handleDrop(e, rootId);
-              }
-            : undefined
-        }
-      >
+      <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
         {/* WIDGETS */}
         <Widgets />
 
         {/* DESKTOP NODES */}
-        <div className="flex-1 min-h-0 w-full">
-          <DirectoryLayout nodes={desktopChildren} />
+        <div className="flex-1 min-h-0 w-full bg-red-100/20">
+          {/* <DirectoryLayout nodes={nodesToRender} /> */}
+          <DirectoryContent nodeId={rootId} />
         </div>
 
         {openWindows.map((window) => (

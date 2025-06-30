@@ -1,24 +1,17 @@
 import { useNewStore } from "../../../hooks/useStore";
 import { useNodeDrag } from "../../nodes/hooks/useNodeDrag";
 
-import type { DirectoryWindow } from "../../../types/storeTypes";
 import { DirectoryLayout } from "./DirectoryLayout";
 
-export const DirectoryContent = ({ window }: { window: DirectoryWindow }) => {
-  const { nodeId, windowId } = window;
+export const DirectoryContent = ({ nodeId }: { nodeId: string }) => {
+  const rootId = useNewStore((s) => s.rootId);
+  const isWindow = nodeId !== rootId;
+
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const children = getChildrenByParentID(nodeId);
 
   // Add drag handlers for the directory content (like Desktop does for root)
   const dragHandlers = useNodeDrag();
-
-  console.log("DIR_CONTENT_00: DirectoryContent setup", {
-    windowId,
-    nodeId,
-    childrenCount: children.length,
-    hasDragHandlers: !!dragHandlers,
-  });
-  console.log("children", children);
 
   return (
     <div
@@ -38,7 +31,7 @@ export const DirectoryContent = ({ window }: { window: DirectoryWindow }) => {
         return dragHandlers.handleDrop(e, nodeId);
       }}
     >
-      <DirectoryLayout nodes={children} isWindow={true} />
+      <DirectoryLayout nodes={children} isWindow={isWindow} />
     </div>
   );
 };

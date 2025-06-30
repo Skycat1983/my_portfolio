@@ -24,6 +24,7 @@ export const useNodeEvents = ({
   const unlockPortfolioDeletedAchievement = useNewStore(
     (s) => s.unlockPortfolioDeletedAchievement
   );
+  const screenDimensions = useNewStore((s) => s.screenDimensions);
 
   // ─────────── drag & drop functionality ───────────
   const dragHandlers = useNodeDrag();
@@ -42,9 +43,24 @@ export const useNodeEvents = ({
 
   // ─────────── base click handler ───────────
   const handleClick = useCallback(() => {
-    log("single-click");
-    selectOneNode(id);
-  }, [id, selectOneNode, log]);
+    // On touch devices (mobile + tablet), single click activates immediately
+    // On desktop with mouse/trackpad, single click selects (double click to activate)
+    if (screenDimensions.isMobile || screenDimensions.isTablet) {
+      log("single-click-activate-touch");
+      selectOneNode(id);
+      onActivate?.();
+    } else {
+      log("single-click-select-desktop");
+      selectOneNode(id);
+    }
+  }, [
+    id,
+    selectOneNode,
+    log,
+    onActivate,
+    screenDimensions.isMobile,
+    screenDimensions.isTablet,
+  ]);
 
   // ─────────── activation handler (double-click and Enter) ───────────
   const handleDoubleClick = useCallback(() => {
