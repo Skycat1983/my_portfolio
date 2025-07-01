@@ -164,21 +164,7 @@ export const createButtonStyle = (
 };
 
 // Browser toolbar button helper
-export const createBrowserToolbarStyle = (isMobile: boolean = false) => {
-  const base = theme.button.browserToolbar.base;
-
-  if (isMobile) {
-    return {
-      ...base,
-      width: "44px",
-      height: "44px",
-    };
-  }
-
-  return base;
-};
 
 // Browser toolbar hover class (for CSS)
-export const browserToolbarHoverClass = "hover:bg-theme-gray-100";
 
 export default theme;
