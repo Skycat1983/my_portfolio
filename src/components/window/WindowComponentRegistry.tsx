@@ -3,6 +3,7 @@ import type { WindowContentProps } from "../../types/storeTypes";
 import { DocumentEditor } from "../apps/document/DocumentEditor";
 import { WhatsAppMain } from "../apps/whatsApp";
 import { Finder } from "../apps/finder/Finder";
+import { TerminalContent } from "../apps/terminal/TerminalContent";
 
 // Component registry mapping component keys to React components
 export const WINDOW_COMPONENT_REGISTRY: Record<
@@ -12,6 +13,7 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   testCustom: WhatsAppMain,
   documentEditor: DocumentEditor,
   finder: Finder,
+  terminal: TerminalContent,
   // Add more custom components here as needed
   // customEditor: CustomEditorComponent,
   // customDashboard: CustomDashboardComponent,

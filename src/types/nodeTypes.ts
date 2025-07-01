@@ -2,7 +2,6 @@
 
 export interface BaseNodeObject {
   id: string;
-  // this determines behaviour of the node events (click, drag, drop, etc.)
   type: string;
   label: string;
   image: string;
@@ -38,7 +37,7 @@ export interface DirectoryObject {
   id: string;
   type: "directory";
   label: string;
-  // image: string;
+  image?: string;
   children: NodeObject[];
   componentKey?: string; // Optional custom component identifier
 }
@@ -49,7 +48,7 @@ export interface DirectoryEntry {
   children: string[];
   type: "directory";
   label: string;
-  // image: string;
+  image?: string;
   componentKey?: string; // Optional custom component identifier
 }
 

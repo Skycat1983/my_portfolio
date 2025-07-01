@@ -6,7 +6,6 @@ import type {
   IconEntry,
   LinkEntry,
   EasterEggEntry,
-  DirectoryObject,
   TerminalEntry,
   BrowserEntry,
   DocumentEntry,
@@ -17,7 +16,7 @@ import type {
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
 export const convertObjectsToMap = (
-  rootObject: DirectoryObject
+  rootObject: NodeObject
 ): { nodeMap: NodeMap; rootId: string } => {
   const nodeMap: NodeMap = {};
 

@@ -25,8 +25,11 @@ import {
   GTA6_LOGO,
   PLANET,
   DOCUMENT,
-  WHATSAPP,
   FINDER,
+  TERMINAL,
+  SAFARI,
+  MAPS,
+  FOLDER_MAC,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -40,280 +43,356 @@ const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
  * Objects are intuitive to write/read, Maps enable advanced desktop functionality
  */
 
-// HUMAN-READABLE DATA DEFINITION
-export const defaultNodes: DirectoryObject = {
-  id: "desktop-root",
+export interface BaseNodeObject {
+  id: string;
+  type: string;
+  label: string;
+  image: string;
+}
+
+export interface BaseNodeEntry {
+  id: string;
+  parentId: string | null;
+  type: string;
+  label: string;
+  image: string;
+}
+
+// HUMAN-READABLE DATA DEFINITION - UNIFIED ROOT STRUCTURE
+export const rootNodes: DirectoryObject = {
+  id: "system-root",
   type: "directory",
-  label: "Desktop",
+  label: "System",
   children: [
     {
-      id: "finder",
-      label: "Finder",
-      type: "app",
-      image: FINDER,
-      componentKey: "finder",
-    },
-    {
-      id: "browser",
-      label: "Internet",
-      type: "browser",
-    },
-    {
-      id: "terminal",
-      label: "Terminal",
-      type: "terminal",
-    },
-    {
-      id: "trash",
-      label: "Trash",
+      id: "desktop-root",
       type: "directory",
+      label: "Desktop",
       children: [
         {
-          id: "egg",
-          label: "EE",
-          image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
-          type: "easter-egg",
-          currentImageIndex: 0,
-          isBroken: false,
+          id: "browser",
+          label: "Internet",
+          type: "browser",
         },
-      ],
-    },
-    {
-      id: "portfolio",
-      label: "Portfolio",
-      type: "directory",
-      children: [
         {
-          id: "laoutaris",
-          label: "Laoutaris",
+          id: "terminal",
+          label: "Terminal",
+          type: "terminal",
+        },
+        {
+          id: "trash",
+          label: "Trash",
           type: "directory",
           children: [
             {
-              id: "laoutaris_code",
-              label: "Code",
-              image: GITHUB,
-              type: "link",
-              url: "https://github.com/Skycat1983/laoutaris-nextjs",
-            },
-            {
-              id: "laoutaris_website",
-              label: "Website",
-              image: JL1,
-              type: "link",
-              url: "https://laoutaris-nextjs.vercel.app/",
+              id: "egg",
+              label: "EE",
+              image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
+              type: "easter-egg",
+              currentImageIndex: 0,
+              isBroken: false,
             },
           ],
         },
         {
-          id: "robocrop", // TODO: change to robo-crop
-          label: "RoboCrop",
+          id: "portfolio",
+          label: "Portfolio",
           type: "directory",
           children: [
             {
-              id: "roboCrop_code",
-              label: "Code",
-              image: GITHUB,
-              type: "link",
-              url: "https://github.com/Skycat1983/RoboCrop",
+              id: "laoutaris",
+              label: "Laoutaris",
+              type: "directory",
+              children: [
+                {
+                  id: "laoutaris_code",
+                  label: "Code",
+                  image: GITHUB,
+                  type: "link",
+                  url: "https://github.com/Skycat1983/laoutaris-nextjs",
+                },
+                {
+                  id: "laoutaris_website",
+                  label: "Website",
+                  image: JL1,
+                  type: "link",
+                  url: "https://laoutaris-nextjs.vercel.app/",
+                },
+              ],
             },
             {
-              id: "roboCrop_download",
-              label: "Download",
-              image: ROBOCROP,
-              type: "link",
-              url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
+              id: "robocrop", // TODO: change to robo-crop
+              label: "RoboCrop",
+              type: "directory",
+              children: [
+                {
+                  id: "roboCrop_code",
+                  label: "Code",
+                  image: GITHUB,
+                  type: "link",
+                  url: "https://github.com/Skycat1983/RoboCrop",
+                },
+                {
+                  id: "roboCrop_download",
+                  label: "Download",
+                  image: ROBOCROP,
+                  type: "link",
+                  url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
+                },
+              ],
+            },
+            {
+              id: "skynot",
+              label: "SkyNot",
+              type: "directory",
+              children: [
+                {
+                  id: "SkyNot_code",
+                  label: "Code",
+                  image: GITHUB,
+                  type: "link",
+                  url: "https://github.com/Skycat1983/SkyNot",
+                },
+                {
+                  id: "SkyNot_download",
+                  label: "Download",
+                  image: SKYNOT,
+                  type: "link",
+                  url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
+                },
+              ],
+            },
+            {
+              id: "dashboard",
+              label: "Dashboard",
+              type: "directory",
+              children: [
+                {
+                  id: "Dashboard_code",
+                  label: "Code",
+                  image: GITHUB,
+                  type: "link",
+                  url: "https://github.com/Skycat1983/Dashboard",
+                },
+              ],
             },
           ],
         },
         {
-          id: "skynot",
-          label: "SkyNot",
+          id: "stack",
+          label: "Stack",
           type: "directory",
           children: [
             {
-              id: "SkyNot_code",
-              label: "Code",
-              image: GITHUB,
-              type: "link",
-              url: "https://github.com/Skycat1983/SkyNot",
+              id: "react",
+              label: "React",
+              image: REACT,
+              type: "icon",
+              info: "React is a JavaScript library for building user interfaces.",
             },
             {
-              id: "SkyNot_download",
-              label: "Download",
-              image: SKYNOT,
-              type: "link",
-              url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
+              id: "typescript",
+              label: "TypeScript",
+              image: TYPESCRIPT,
+              type: "icon",
+              info: "TypeScript is a superset of JavaScript that adds static typing.",
+            },
+            {
+              id: "nodejs",
+              label: "Node.js",
+              image: NODEJS,
+              type: "icon",
+              info: "Node.js is a runtime environment for executing JavaScript code outside of a browser.",
+            },
+            {
+              id: "mongodb",
+              label: "MongoDB",
+              image: MONGODB,
+              type: "icon",
+              info: "MongoDB is a NoSQL database that uses JSON-like documents with schemas.",
+            },
+            {
+              id: "jest",
+              label: "Jest",
+              image: JEST,
+              type: "icon",
+              info: "Jest is a JavaScript testing framework.",
+            },
+            {
+              id: "postman",
+              label: "Postman",
+              image: POSTMAN,
+              type: "icon",
+              info: "Postman is a tool for testing APIs.",
+            },
+            {
+              id: "tailwind",
+              label: "Tailwind",
+              image: TAILWIND,
+              type: "icon",
+              info: "Tailwind is a CSS framework.",
+            },
+            {
+              id: "firebase",
+              label: "Firebase",
+              image: FIREBASE,
+              type: "icon",
+              info: "Firebase is a backend as a service platform.",
+            },
+            {
+              id: "javascript",
+              label: "JavaScript",
+              image: JAVASCRIPT,
+              type: "icon",
+              info: "JavaScript is a programming language.",
             },
           ],
         },
         {
-          id: "dashboard",
-          label: "Dashboard",
+          id: "documents",
+          label: "Documents",
           type: "directory",
           children: [
             {
-              id: "Dashboard_code",
-              label: "Code",
-              image: GITHUB,
+              id: "resume",
+              label: "Resume",
+              image: PDF,
               type: "link",
-              url: "https://github.com/Skycat1983/Dashboard",
+              url: RESUME,
+            },
+            {
+              id: "recommendation",
+              label: "Recommendation",
+              image: PDF,
+              type: "link",
+              url: RECOMMENDATIONS,
+            },
+            {
+              id: "review",
+              label: "Review",
+              image: IMAGE1,
+              type: "link",
+              url: REVIEW,
             },
           ],
         },
+        {
+          id: "games",
+          label: "Games",
+          type: "directory",
+          children: [
+            {
+              id: "gtaiv",
+              label: "GTAVI",
+              type: "game",
+              image: GTA6_LOGO,
+            },
+            {
+              id: "geo",
+              label: "Flag Quest",
+              type: "game",
+              image: PLANET,
+            },
+          ],
+        },
+        {
+          id: "achievements",
+          label: "Achievements",
+          type: "achievement",
+          image: TROPHY1,
+        },
+        {
+          id: "pages",
+          label: "Pages",
+          image: DOCUMENT,
+          type: "document",
+          componentKey: "documentEditor",
+        },
+        // {
+        //   id: "whatsapp",
+        //   label: "WhatsApp",
+        //   type: "directory",
+        //   // image: WHATSAPP,
+        //   componentKey: "whatsApp",
+        //   children: [],
+        // },
+        // {
+        //   id: "test-custom-app",
+        //   label: "Custom App Test",
+        //   type: "directory",
+        //   componentKey: "testCustom",
+        //   children: [],
+        // },
       ],
     },
     {
-      id: "stack",
-      label: "Stack",
+      id: "dock-root",
+      label: "Dock",
       type: "directory",
+      image: FOLDER_MAC,
+      componentKey: "dock",
       children: [
         {
-          id: "react",
-          label: "React",
-          image: REACT,
-          type: "icon",
-          info: "React is a JavaScript library for building user interfaces.",
+          id: "finder",
+          label: "Finder",
+          type: "app",
+          image: FINDER,
+          componentKey: "finder",
         },
         {
-          id: "typescript",
-          label: "TypeScript",
-          image: TYPESCRIPT,
-          type: "icon",
-          info: "TypeScript is a superset of JavaScript that adds static typing.",
+          id: "maps",
+          label: "Maps",
+          type: "app",
+          image: MAPS,
+          componentKey: "maps",
         },
         {
-          id: "nodejs",
-          label: "Node.js",
-          image: NODEJS,
-          type: "icon",
-          info: "Node.js is a runtime environment for executing JavaScript code outside of a browser.",
+          id: "pages-dock",
+          label: "Pages",
+          type: "app",
+          image: DOCUMENT,
+          componentKey: "documentEditor",
         },
         {
-          id: "mongodb",
-          label: "MongoDB",
-          image: MONGODB,
-          type: "icon",
-          info: "MongoDB is a NoSQL database that uses JSON-like documents with schemas.",
+          id: "achievements-dock",
+          label: "Achievements",
+          type: "app",
+          image: TROPHY1,
+          componentKey: "achievements",
         },
         {
-          id: "jest",
-          label: "Jest",
-          image: JEST,
-          type: "icon",
-          info: "Jest is a JavaScript testing framework.",
+          id: "terminal-dock",
+          label: "Terminal",
+          type: "app",
+          image: TERMINAL,
+          componentKey: "terminal",
         },
         {
-          id: "postman",
-          label: "Postman",
-          image: POSTMAN,
-          type: "icon",
-          info: "Postman is a tool for testing APIs.",
-        },
-        {
-          id: "tailwind",
-          label: "Tailwind",
-          image: TAILWIND,
-          type: "icon",
-          info: "Tailwind is a CSS framework.",
-        },
-        {
-          id: "firebase",
-          label: "Firebase",
-          image: FIREBASE,
-          type: "icon",
-          info: "Firebase is a backend as a service platform.",
-        },
-        {
-          id: "javascript",
-          label: "JavaScript",
-          image: JAVASCRIPT,
-          type: "icon",
-          info: "JavaScript is a programming language.",
+          id: "browser-dock",
+          label: "Internet",
+          type: "app",
+          image: SAFARI,
+          componentKey: "browser",
         },
       ],
-    },
-    {
-      id: "documents",
-      label: "Documents",
-      type: "directory",
-      children: [
-        {
-          id: "resume",
-          label: "Resume",
-          image: PDF,
-          type: "link",
-          url: RESUME,
-        },
-        {
-          id: "recommendation",
-          label: "Recommendation",
-          image: PDF,
-          type: "link",
-          url: RECOMMENDATIONS,
-        },
-        {
-          id: "review",
-          label: "Review",
-          image: IMAGE1,
-          type: "link",
-          url: REVIEW,
-        },
-      ],
-    },
-    {
-      id: "games",
-      label: "Games",
-      type: "directory",
-      children: [
-        {
-          id: "gtaiv",
-          label: "GTAVI",
-          type: "game",
-          image: GTA6_LOGO,
-        },
-        {
-          id: "geo",
-          label: "Flag Quest",
-          type: "game",
-          image: PLANET,
-        },
-      ],
-    },
-
-    {
-      id: "achievements",
-      label: "Achievements",
-      type: "achievement",
-      image: TROPHY1,
-    },
-    // {
-    //   id: "whatsapp",
-    //   label: "WhatsApp",
-    //   type: "directory",
-    //   // image: WHATSAPP,
-    //   componentKey: "whatsApp",
-    //   children: [],
-    // },
-    {
-      id: "test-custom-app",
-      label: "Custom App Test",
-      type: "directory",
-      componentKey: "testCustom",
-      children: [],
-    },
-    {
-      id: "pages",
-      label: "Pages",
-      image: DOCUMENT,
-      type: "document",
-      componentKey: "documentEditor",
     },
   ],
 };
 
+// Keep legacy export for backwards compatibility during transition
+export const defaultNodes: DirectoryObject = rootNodes
+  .children[0] as DirectoryObject;
+
+// this is the only way i could think to do this
+export const dockNodes = [rootNodes.children[1]];
+
 // Export the broken egg image for use in other components
 export { EGG_BROKEN };
 
-// OPERATIONAL MAP READY FOR USE
+// OPERATIONAL MAP READY FOR USE - Now includes both desktop and dock nodes
 export const { nodeMap: defaultNodeMap, rootId: defaultRootId } =
-  convertObjectsToMap(defaultNodes);
+  convertObjectsToMap(rootNodes);
+
+// Legacy support - desktop root ID for components that expect it
+export const desktopRootId = "desktop-root";
+export const dockRootId = "dock-root";
