@@ -3,11 +3,13 @@ import type {
   OperatingSystem,
   ScreenDimensions,
 } from "../store/systemState/systemSlice";
-import type { ComponentType } from "react";
 
 // Interface for props that window content components receive
+// Note: This is now flexible - components can define their own prop interfaces
 export interface WindowContentProps {
-  window: WindowType;
+  windowId: string;
+  nodeId: string;
+  window?: WindowType; // Optional for backward compatibility
 }
 
 // Full Window interface with ALL possible properties across all window types
@@ -33,7 +35,7 @@ export interface WindowType {
   currentHistoryIndex: number; // Current position in history
 
   // Flexible component rendering (new approach)
-  component?: ComponentType<WindowContentProps>; // Optional custom component for window content
+  componentKey?: string; // Optional component key for registry lookup
 
   // Document-specific properties (for document persistence)
   documentConfig?: DocumentConfig; // Optional document configuration for saved documents

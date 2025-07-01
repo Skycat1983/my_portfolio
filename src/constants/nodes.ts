@@ -30,6 +30,7 @@ import {
   SAFARI,
   MAPS,
   FOLDER_MAC,
+  WHATSAPP,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -308,21 +309,13 @@ export const rootNodes: DirectoryObject = {
           type: "document",
           componentKey: "documentEditor",
         },
-        // {
-        //   id: "whatsapp",
-        //   label: "WhatsApp",
-        //   type: "directory",
-        //   // image: WHATSAPP,
-        //   componentKey: "whatsApp",
-        //   children: [],
-        // },
-        // {
-        //   id: "test-custom-app",
-        //   label: "Custom App Test",
-        //   type: "directory",
-        //   componentKey: "testCustom",
-        //   children: [],
-        // },
+        {
+          id: "whatsapp",
+          label: "WhatsApp",
+          type: "app",
+          image: WHATSAPP,
+          componentKey: "whatsApp",
+        },
       ],
     },
     {

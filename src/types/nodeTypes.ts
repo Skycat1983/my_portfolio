@@ -1,5 +1,7 @@
 // TODO: these types could be 'Entry extends BaseNodeObject' and just add the parentId?
 
+import type { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
+
 export interface BaseNodeObject {
   id: string;
   type: string;
@@ -20,7 +22,7 @@ export interface AppObject {
   type: "app";
   label: string;
   image: string;
-  componentKey: string; // Optional custom component identifier
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional custom component identifier
 }
 
 export interface AppEntry {
@@ -29,7 +31,7 @@ export interface AppEntry {
   type: "app";
   label: string;
   image: string;
-  componentKey: string; // Optional custom component identifier
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional custom component identifier
 }
 
 // HUMAN-READABLE OBJECT TYPES
