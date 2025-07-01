@@ -9,6 +9,7 @@ import type {
   AchievementEntry,
   GameEntry,
   DocumentEntry,
+  AppEntry,
 } from "../../types/nodeTypes";
 import { IconNode } from "./IconNode";
 import { DirectoryNode } from "./DirectoryNode";
@@ -19,6 +20,7 @@ import { BrowserNode } from "./BrowserNode";
 import { AchievementNode } from "./AchievementNode";
 import { GameNode } from "./GameNode";
 import { DocumentNode } from "./DocumentNode";
+import { AppNode } from "./AppNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -69,6 +71,9 @@ export const NodeSwitch = ({
 
     case "document":
       return <DocumentNode key={node.id} document={node as DocumentEntry} />;
+
+    case "app":
+      return <AppNode key={node.id} app={node as AppEntry} />;
 
     default:
       console.warn("Unknown node type:", node);
