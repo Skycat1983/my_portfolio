@@ -1,4 +1,8 @@
-import { BACKGROUND_MAC, BACKGROUND_WIN } from "../constants/images";
+import {
+  BACKGROUND_IPHONE,
+  BACKGROUND_MAC,
+  BACKGROUND_WIN,
+} from "../constants/images";
 import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
 import { useScreenMonitor } from "../hooks/useScreenSize";
@@ -9,7 +13,7 @@ import { DirectoryContent } from "../components/apps/directory/DirectoryContent"
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
-  console.log("nodeMap", nodeMap);
+  console.log("DocumentEditor: nodeMap", nodeMap);
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
@@ -19,22 +23,14 @@ export const AppLayout = () => {
 
   // Monitor screen dimensions and update store
   const screenInfo = useScreenMonitor();
-  console.log("screenInfo in AppLayout: ", screenInfo);
 
-  const background =
-    operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;
+  const { isMobile } = screenInfo;
 
-  // const mobileNodeKeys = [
-  //   "gtaiv",
-  //   "geo",
-  //   "achievements",
-  //   "portfolio",
-  //   "SkyNot_download",
-  //   "roboCrop_download",
-  // ];
-
-  // const mobileNodes = mobileNodeKeys.map((key) => nodeMap[key]);
-  // console.log("mobileNodes", mobileNodes);
+  const background = isMobile
+    ? BACKGROUND_IPHONE
+    : operatingSystem === "mac"
+    ? BACKGROUND_MAC
+    : BACKGROUND_WIN;
 
   const padding = operatingSystem === "mac" ? "md:pt-10" : "md:pb-10";
 

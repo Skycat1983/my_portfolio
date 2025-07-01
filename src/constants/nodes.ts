@@ -25,6 +25,8 @@ import {
   GTA6_LOGO,
   PLANET,
   DOCUMENT,
+  WHATSAPP,
+  FINDER,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -44,6 +46,13 @@ export const defaultNodes: DirectoryObject = {
   type: "directory",
   label: "Desktop",
   children: [
+    {
+      id: "finder",
+      label: "Finder",
+      type: "app",
+      image: FINDER,
+      componentKey: "finder",
+    },
     {
       id: "browser",
       label: "Internet",
@@ -249,13 +258,6 @@ export const defaultNodes: DirectoryObject = {
           type: "link",
           url: REVIEW,
         },
-        {
-          id: "new-document",
-          label: "New Document",
-          image: DOCUMENT,
-          type: "document",
-          componentKey: "documentEditor",
-        },
       ],
     },
     {
@@ -284,12 +286,27 @@ export const defaultNodes: DirectoryObject = {
       type: "achievement",
       image: TROPHY1,
     },
+    // {
+    //   id: "whatsapp",
+    //   label: "WhatsApp",
+    //   type: "directory",
+    //   // image: WHATSAPP,
+    //   componentKey: "whatsApp",
+    //   children: [],
+    // },
     {
       id: "test-custom-app",
       label: "Custom App Test",
       type: "directory",
       componentKey: "testCustom",
       children: [],
+    },
+    {
+      id: "pages",
+      label: "Pages",
+      image: DOCUMENT,
+      type: "document",
+      componentKey: "documentEditor",
     },
   ],
 };

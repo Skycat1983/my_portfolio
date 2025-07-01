@@ -1,4 +1,4 @@
-import type { WindowType } from "../../types/storeTypes";
+import type { DocumentConfig, WindowType } from "../../types/storeTypes";
 import type { SetState, GetState } from "../../types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
 import type { NodeEntry } from "../../types/nodeTypes";
@@ -41,6 +41,12 @@ export interface WindowOperationsActions {
     node: WindowedNode,
     historyItem: string,
     component: ComponentType<WindowContentProps>
+  ) => void;
+  // NEW: Open window with document configuration
+  openWindowWithDocumentConfig: (
+    node: WindowedNode,
+    historyItem: string,
+    documentConfig?: DocumentConfig
   ) => void;
   closeWindow: (windowId: WindowType["windowId"]) => void;
   focusWindow: (windowId: WindowType["windowId"]) => void;
@@ -228,6 +234,75 @@ export const createWindowOperationsSlice = (
       currentHistoryIndex: 0,
     };
 
+    state.createOneWindow(baseWindow);
+  },
+
+  /**
+   * Open a new window for a node with document configuration
+   */
+  openWindowWithDocumentConfig: (
+    node: WindowedNode,
+    historyItem: string,
+    documentConfig?: DocumentConfig
+  ): void => {
+    const state = get();
+
+    if (!node) {
+      return;
+    }
+
+    const nodeId = node.id;
+
+    // Use responsive sizing first to determine if we need special positioning
+    const { width, height } = state.getResponsiveWindowSize(node.type);
+    const { screenDimensions } = state;
+    const { isMobile } = screenDimensions;
+
+    // Position windows based on device type
+    let x: number, y: number;
+
+    if (isMobile) {
+      // Mobile windows start at top-left for fullscreen experience
+      x = 0;
+      y = 0;
+    } else {
+      // Desktop windows are offset to maintain visibility of all open windows
+      const count = state.openWindows.length;
+      x = 100 * (count + 1);
+      y = 100 * (count + 1);
+    }
+
+    let isMaximized = false;
+
+    // Mobile windows should be maximized by default for fullscreen experience
+    // Game windows should also be maximized by default
+    if (isMobile || node.type === "game") {
+      isMaximized = true;
+    }
+
+    // Create new window with responsive dimensions and document configuration
+    const baseWindow: WindowType = {
+      windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
+      title: node.label,
+      nodeId,
+      nodeType: node.type,
+      width,
+      height,
+      x,
+      y,
+      zIndex: state.nextZIndex,
+      isMinimized: false,
+      isMaximized: isMaximized,
+      isResizing: false,
+      itemHistory: [historyItem],
+      currentHistoryIndex: 0,
+      documentConfig: documentConfig, // Include document configuration
+    };
+
+    console.log(
+      "openWindowWithDocumentConfig: creating window with config",
+      documentConfig
+    );
     state.createOneWindow(baseWindow);
   },
 

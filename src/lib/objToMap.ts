@@ -12,6 +12,7 @@ import type {
   DocumentEntry,
   AchievementEntry,
   GameEntry,
+  AppEntry,
 } from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
@@ -110,6 +111,15 @@ export const convertObjectsToMap = (
         image: nodeObj.image,
         componentKey: nodeObj.componentKey,
       } as GameEntry;
+    } else if (nodeObj.type === "app") {
+      mapNode = {
+        id: nodeObj.id,
+        parentId,
+        type: "app",
+        label: nodeObj.label,
+        image: nodeObj.image,
+        componentKey: nodeObj.componentKey,
+      } as AppEntry;
     } else {
       throw new Error(`Unknown node type: ${(nodeObj as NodeObject).type}`);
     }

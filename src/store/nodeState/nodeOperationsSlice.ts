@@ -1,6 +1,11 @@
-import type { NodeEntry, DirectoryEntry } from "../../types/nodeTypes";
+import type {
+  NodeEntry,
+  DirectoryEntry,
+  DocumentEntry,
+} from "../../types/nodeTypes";
 import type { SetState, GetState } from "../../types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
+import type { DocumentRegistrySlice } from "../contentState/documentRegistrySlice";
 
 export interface NodeOperationsActions {
   // ID-based accessors (built from predicates)
@@ -37,8 +42,8 @@ export type NodeOperationsSlice = NodeOperationsActions;
 
 // Node operations slice - builds ID-based operations from predicate-based CRUD
 export const createNodeOperationsSlice = (
-  _set: SetState<NodeCrudSlice>,
-  get: GetState<NodeCrudSlice>
+  _set: SetState<NodeCrudSlice & DocumentRegistrySlice>,
+  get: GetState<NodeCrudSlice & DocumentRegistrySlice>
 ): NodeOperationsSlice => ({
   /**
    * Get a node by its ID (builds on findOneNode)
@@ -81,10 +86,27 @@ export const createNodeOperationsSlice = (
 
   /**
    * Delete a node by its ID (builds on deleteOneNodeByPredicate)
+   * Also handles cleanup of document registry entries for document nodes
    */
   deleteNodeByID: (nodeId: NodeEntry["id"]): boolean => {
     console.log("deleteNodeByID: deleting node", nodeId);
-    return get().deleteOneNode((node: NodeEntry) => node.id === nodeId);
+
+    const state = get();
+    const node = state.findOneNode((n: NodeEntry) => n.id === nodeId);
+
+    // Clean up document registry if this is a document node with saved config
+    if (node?.type === "document") {
+      const documentNode = node as DocumentEntry;
+      if (documentNode.documentConfigId) {
+        console.log(
+          "deleteNodeByID: cleaning up document config",
+          documentNode.documentConfigId
+        );
+        state.deleteDocumentConfig(documentNode.documentConfigId);
+      }
+    }
+
+    return state.deleteOneNode((node: NodeEntry) => node.id === nodeId);
   },
 
   /**

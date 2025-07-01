@@ -1,4 +1,37 @@
-// TODO: these types could be 'Entry extends Object' and just add the parentId?
+// TODO: these types could be 'Entry extends BaseNodeObject' and just add the parentId?
+
+export interface BaseNodeObject {
+  id: string;
+  // this determines behaviour of the node events (click, drag, drop, etc.)
+  type: string;
+  label: string;
+  image: string;
+}
+
+export interface BaseNodeEntry {
+  id: string;
+  parentId: string | null;
+  type: string;
+  label: string;
+  image: string;
+}
+
+export interface AppObject {
+  id: string;
+  type: "app";
+  label: string;
+  image: string;
+  componentKey: string; // Optional custom component identifier
+}
+
+export interface AppEntry {
+  id: string;
+  parentId: string | null;
+  type: "app";
+  label: string;
+  image: string;
+  componentKey: string; // Optional custom component identifier
+}
 
 // HUMAN-READABLE OBJECT TYPES
 export interface DirectoryObject {
@@ -43,6 +76,7 @@ export interface DocumentObject {
   label: string;
   image: string;
   componentKey?: string; // Optional custom component identifier
+  documentConfigId?: string; // Optional reference to document registry config
 }
 
 export interface DocumentEntry {
@@ -52,6 +86,7 @@ export interface DocumentEntry {
   label: string;
   image: string;
   componentKey?: string; // Optional custom component identifier
+  documentConfigId?: string; // Optional reference to document registry config
 }
 
 export interface BrowserObject {
@@ -164,7 +199,8 @@ export type NodeObject =
   | BrowserObject
   | DocumentObject
   | AchievementObject
-  | GameObject;
+  | GameObject
+  | AppObject;
 
 // OPERATIONAL MAP TYPES - Discriminated Union Interfaces
 
@@ -177,7 +213,8 @@ export type NodeEntry =
   | BrowserEntry
   | DocumentEntry
   | AchievementEntry
-  | GameEntry;
+  | GameEntry
+  | AppEntry;
 
 export interface NodeMap {
   [id: string]: NodeEntry;

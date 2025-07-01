@@ -64,7 +64,11 @@ export const createNodeCrudSlice = (
 
   // Create operations (pure - no business logic)
   createOneNode: (node: NodeEntry): boolean => {
-    console.log("createOneNode in nodeCrudSlice: creating node", node.id);
+    // console.log("createOneNode in nodeCrudSlice: creating node", node.id);
+    console.log(
+      "DocumentEditor: createOneNode in nodeCrudSlice: creating node",
+      node
+    );
 
     const currentState = get();
 

@@ -14,12 +14,14 @@ export interface ScreenDimensions {
 }
 
 export interface SystemState {
+  theme: "light" | "dark";
   operatingSystem: OperatingSystem;
   wifiEnabled: boolean;
   screenDimensions: ScreenDimensions;
 }
 
 interface SystemActions {
+  toggleTheme: () => void;
   toggleOS: () => void;
   toggleWifi: () => void;
   setScreenDimensions: (width: number, height: number) => void;
@@ -52,6 +54,7 @@ const getDeviceTypes = (_width: number, breakpoint: Breakpoint) => ({
 export const createSystemSlice = (
   set: SetState<BaseStoreState>
 ): SystemSlice => ({
+  theme: "dark",
   operatingSystem: "mac",
   wifiEnabled: true,
   screenDimensions: {
@@ -66,6 +69,10 @@ export const createSystemSlice = (
         : false,
     isDesktop: typeof window !== "undefined" ? window.innerWidth >= 1024 : true,
   },
+  toggleTheme: () =>
+    set((state) => ({
+      theme: state.theme === "light" ? "dark" : "light",
+    })),
   toggleOS: () =>
     set((state) => ({
       operatingSystem: state.operatingSystem === "mac" ? "windows" : "mac",

@@ -35,6 +35,9 @@ export interface WindowType {
   // Flexible component rendering (new approach)
   component?: ComponentType<WindowContentProps>; // Optional custom component for window content
 
+  // Document-specific properties (for document persistence)
+  documentConfig?: DocumentConfig; // Optional document configuration for saved documents
+
   // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
   navigationHistory?: string[];
 
@@ -163,8 +166,42 @@ export interface DirectoryWindowLegacy extends WindowType {
   currentHistoryIndex: number;
 }
 
+// Document Registry Types for persistent document storage
+export type TextAlignment = "left" | "center" | "right" | "justify";
+
+export interface TextStyle {
+  fontFamily: string;
+  fontSize: number;
+  isBold: boolean;
+  isItalic: boolean;
+  isUnderlined: boolean;
+  color: string;
+  textAlign: TextAlignment;
+}
+
+export interface DocumentConfig {
+  id: string; // Unique config identifier
+  content: string; // Document text content
+  textStyle: TextStyle; // Font, size, colors, alignment
+  pageSettings: {
+    backgroundColor: string; // Page background color
+  };
+  metadata: {
+    title: string;
+    createdAt: Date;
+    modifiedAt: Date;
+    wordCount: number;
+    charCount: number;
+  };
+}
+
+export interface DocumentRegistryState {
+  configs: Map<string, DocumentConfig>;
+}
+
 // Base store state interface that slices can reference
 export interface BaseStoreState {
+  theme: "light" | "dark";
   nodeMap: NodeMap;
   rootId: string;
   selectedNodeId: string | null;

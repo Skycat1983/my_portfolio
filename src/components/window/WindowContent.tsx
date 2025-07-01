@@ -2,6 +2,7 @@ import type { WindowContentProps } from "../../types/storeTypes";
 import { AchievementContent } from "../apps/achievements/AchievementContent";
 import { BrowserContent } from "../apps/browser/BrowserContent";
 import { DirectoryContent } from "../apps/directory/DirectoryContent";
+import { DocumentEditor } from "../apps/document/DocumentEditor";
 import GTAVI from "../apps/games/GTAVI/GTAVI";
 import { GeoGame } from "../apps/games/GeoGame/GeoGame";
 import { TerminalContent } from "../apps/terminal/TerminalContent";
@@ -65,6 +66,9 @@ export const WindowContent = ({ window }: WindowContentProps) => {
   }
   if (nodeType === "browser") {
     return <BrowserContent windowId={windowId} />;
+  }
+  if (nodeType === "document") {
+    return <DocumentEditor window={window} />;
   }
   if (nodeId === "gtaiv") {
     return <GTAVI windowId={windowId} />;
