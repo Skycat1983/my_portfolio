@@ -1,4 +1,4 @@
-import type { WindowContentProps } from "../../types/storeTypes";
+import type { WindowType } from "../../types/storeTypes";
 import { AchievementContent } from "../apps/achievements/AchievementContent";
 import { BrowserContent } from "../apps/browser/BrowserContent";
 import { DirectoryContent } from "../apps/directory/DirectoryContent";
@@ -9,27 +9,49 @@ import { TerminalContent } from "../apps/terminal/TerminalContent";
 import { getWindowComponent } from "./WindowComponentRegistry";
 import { useNewStore } from "../../hooks/useStore";
 
-export const WindowContent = ({ window }: WindowContentProps) => {
+export const WindowContent = ({ window }: { window: WindowType }) => {
   const { windowId, nodeType, nodeId } = window;
   const nodeMap = useNewStore((s) => s.nodeMap);
 
   console.log("WindowContent in WindowContent.tsx: ", window);
 
-  // NEW: Check if window has a custom component (takes priority)
-  if (window.component) {
+  // NEW: Check if window has a componentKey (takes priority)
+  if (window.componentKey) {
     console.log(
-      "WindowContent: rendering custom component for windowId",
+      "WindowContent: checking window componentKey",
+      window.componentKey,
+      "for windowId",
       windowId
     );
-    const CustomComponent = window.component;
-    return <CustomComponent window={window} />;
+    const RegistryComponent = getWindowComponent(window.componentKey);
+    if (RegistryComponent) {
+      console.log(
+        "WindowContent: rendering registry component",
+        window.componentKey,
+        "for windowId",
+        windowId
+      );
+      return (
+        <RegistryComponent
+          windowId={windowId}
+          nodeId={nodeId}
+          window={window}
+        />
+      );
+    } else {
+      console.warn(
+        "WindowContent: window componentKey",
+        window.componentKey,
+        "not found in registry"
+      );
+    }
   }
 
   // NEW: Check if the node has a componentKey and look up in registry
   const node = nodeMap[nodeId];
   if (node && "componentKey" in node && node.componentKey) {
     console.log(
-      "WindowContent: checking componentKey",
+      "WindowContent: checking node componentKey",
       node.componentKey,
       "for nodeId",
       nodeId
@@ -42,10 +64,16 @@ export const WindowContent = ({ window }: WindowContentProps) => {
         "for windowId",
         windowId
       );
-      return <RegistryComponent window={window} />;
+      return (
+        <RegistryComponent
+          windowId={windowId}
+          nodeId={nodeId}
+          window={window}
+        />
+      );
     } else {
       console.warn(
-        "WindowContent: componentKey",
+        "WindowContent: node componentKey",
         node.componentKey,
         "not found in registry"
       );
@@ -65,10 +93,12 @@ export const WindowContent = ({ window }: WindowContentProps) => {
     return <AchievementContent />;
   }
   if (nodeType === "browser") {
-    return <BrowserContent windowId={windowId} />;
+    return <BrowserContent />;
   }
   if (nodeType === "document") {
-    return <DocumentEditor window={window} />;
+    return (
+      <DocumentEditor windowId={windowId} nodeId={nodeId} window={window} />
+    );
   }
   if (nodeId === "gtaiv") {
     return <GTAVI windowId={windowId} />;

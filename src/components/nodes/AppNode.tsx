@@ -15,22 +15,33 @@ import { titleBase } from "./node.styles";
 type Props = { app: AppEntry };
 
 export const AppNode = ({ app }: Props) => {
+  const { id, componentKey } = app;
+  console.log("APP_NODE_01: app", id, componentKey);
   // ─────────── node-specific store actions ───────────
   // const openTerminal = useNewStore((s) => s.openTerminal);
-  const openWindow = useNewStore((s) => s.openWindow);
+  const openWindowWithComponentKey = useNewStore(
+    (s) => s.openWindowWithComponentKey
+  );
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
   const focusWindow = useNewStore((s) => s.focusWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    const windowAlreadyOpen = getWindowByNodeId(app.id);
+    const windowAlreadyOpen = getWindowByNodeId(id);
 
     if (windowAlreadyOpen) {
       focusWindow(windowAlreadyOpen.windowId);
       return;
     }
-    openWindow(app, app.id);
-  }, [app, getWindowByNodeId, openWindow, focusWindow]);
+    openWindowWithComponentKey(app, id, componentKey);
+  }, [
+    id,
+    app,
+    getWindowByNodeId,
+    openWindowWithComponentKey,
+    focusWindow,
+    componentKey,
+  ]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
@@ -38,7 +49,10 @@ export const AppNode = ({ app }: Props) => {
     nodeType: app.label,
     enableLogging: true,
     onActivate: handleActivate,
+    parentId: app.parentId,
   });
+
+  const showLabel = app.parentId !== "dock-root";
 
   // ─────────── render ───────────
   return (
@@ -61,9 +75,11 @@ export const AppNode = ({ app }: Props) => {
         <img src={app.image} alt={app.label} className={imageSize} />
       </div>
 
-      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-        {app.label}
-      </h2>
+      {showLabel && (
+        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
+          {app.label}
+        </h2>
+      )}
     </div>
   );
 };

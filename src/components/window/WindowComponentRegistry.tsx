@@ -1,30 +1,30 @@
-import type { ComponentType } from "react";
-import type { WindowContentProps } from "../../types/storeTypes";
+import React from "react";
 import { DocumentEditor } from "../apps/document/DocumentEditor";
-import { WhatsAppMain } from "../apps/whatsApp";
+import { WhatsAppMain } from "../apps/whatsApp/WhatsAppMain";
 import { Finder } from "../apps/finder/Finder";
 import { TerminalContent } from "../apps/terminal/TerminalContent";
+import { BrowserContent } from "../apps/browser/BrowserContent";
+import type { WindowContentProps } from "../../types/storeTypes";
 
 // Component registry mapping component keys to React components
+// Note: Components can define their own prop interfaces
 export const WINDOW_COMPONENT_REGISTRY: Record<
   string,
-  ComponentType<WindowContentProps>
+  React.ComponentType<WindowContentProps>
 > = {
-  testCustom: WhatsAppMain,
   documentEditor: DocumentEditor,
   finder: Finder,
   terminal: TerminalContent,
-  // Add more custom components here as needed
-  // customEditor: CustomEditorComponent,
-  // customDashboard: CustomDashboardComponent,
+  browser: BrowserContent,
+  whatsApp: WhatsAppMain,
 };
 
 // Type-safe function to get component by key
-export const getWindowComponent = (
-  componentKey: string
-): ComponentType<WindowContentProps> | undefined => {
-  return WINDOW_COMPONENT_REGISTRY[componentKey];
-};
+// export const getWindowComponent = (
+//   componentKey: string
+// ): React.ComponentType<WindowContentProps> | undefined => {
+//   return WINDOW_COMPONENT_REGISTRY[componentKey];
+// };
 
 // Get all available component keys (useful for debugging/development)
 export const getAvailableComponentKeys = (): string[] => {

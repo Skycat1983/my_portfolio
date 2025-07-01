@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import type { WindowContentProps } from "../../../types/storeTypes";
+import type { WindowContentProps, WindowType } from "../../../types/storeTypes";
 import { useNewStore } from "../../../hooks/useStore";
 import {
   AlignLeft,
@@ -39,25 +39,31 @@ const COLOR_PALETTE = [
   { name: "Pink", value: "#EC4899" },
   { name: "Gray", value: "#6B7280" },
 ];
+const DEFAULT_TEXT_STYLE: TextStyle = {
+  fontFamily: "Times New Roman",
+  fontSize: 14,
+  isBold: false,
+  isItalic: false,
+  isUnderlined: false,
+  color: "#000000",
+  textAlign: "left",
+};
+interface DocumentEditorProps {
+  windowId: WindowType["windowId"];
+  nodeId: WindowType["nodeId"];
+}
 
-export const DocumentEditor = ({ window }: WindowContentProps) => {
+export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const [content, setContent] = useState("");
   const [isModified, setIsModified] = useState(false);
   const [pageBackgroundColor, setPageBackgroundColor] = useState("#FFFFFF");
   const [showTextColorPicker, setShowTextColorPicker] = useState(false);
   const [showPageColorPicker, setShowPageColorPicker] = useState(false);
-  const [textStyle, setTextStyle] = useState<TextStyle>({
-    fontFamily: "Times New Roman",
-    fontSize: 14,
-    isBold: false,
-    isItalic: false,
-    isUnderlined: false,
-    color: "#000000",
-    textAlign: "left",
-  });
+  const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
 
   // Store actions for save functionality
-  const saveLocation = useNewStore((s) => s.rootId);
+  const windowData = useNewStore((s) => s.getWindowById(windowId));
+  // const saveLocation = useNewStore((s) => s.rootId);
   const generateConfigId = useNewStore((s) => s.generateConfigId);
   const setDocumentConfig = useNewStore((s) => s.setDocumentConfig);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
@@ -70,13 +76,13 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
 
   // Initialize document state from window configuration if available
   useEffect(() => {
-    if (window.documentConfig) {
+    if (windowData?.documentConfig) {
       console.log(
         "DocumentEditor: initializing from saved config",
-        window.documentConfig
+        windowData.documentConfig
       );
 
-      const config = window.documentConfig;
+      const config = windowData.documentConfig;
       setContent(config.content);
       setTextStyle(config.textStyle);
       setPageBackgroundColor(config.pageSettings.backgroundColor);
@@ -90,10 +96,14 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
     } else {
       console.log("DocumentEditor: initializing new document with defaults");
     }
-  }, [window.documentConfig]);
+  }, [windowData?.documentConfig]);
+
+  if (!windowData) {
+    return null;
+  }
 
   // Responsive logic based on window width
-  const windowWidth = window.width;
+  const windowWidth = windowData.width;
   const showLabels = windowWidth > 900; // Hide labels when window is narrow
   const showColourPickers = windowWidth > 750;
 
@@ -124,20 +134,20 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
     const charCount = content.length;
 
     // Check if this is an existing document or new document
-    const isExistingDocument = !!window.documentConfig;
+    const isExistingDocument = !!windowData.documentConfig;
 
     if (isExistingDocument) {
       // Update existing document configuration
-      const configId = window.documentConfig!.id;
+      const configId = windowData.documentConfig!.id;
       const updatedConfig = {
-        ...window.documentConfig!,
+        ...windowData.documentConfig!,
         content,
         textStyle,
         pageSettings: {
           backgroundColor: pageBackgroundColor,
         },
         metadata: {
-          ...window.documentConfig!.metadata,
+          ...windowData.documentConfig!.metadata,
           modifiedAt: now,
           wordCount,
           charCount,
@@ -151,7 +161,7 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
       setDocumentConfig(configId, updatedConfig);
 
       // Update window with new config
-      updateWindowById(window.windowId, {
+      updateWindowById(windowData.windowId, {
         documentConfig: updatedConfig,
       });
     } else {
@@ -166,7 +176,7 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
           backgroundColor: pageBackgroundColor,
         },
         metadata: {
-          title: window.title,
+          title: windowData.title,
           createdAt: now,
           modifiedAt: now,
           wordCount,
@@ -178,7 +188,7 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
       setDocumentConfig(configId, newConfig);
 
       // Create new document node (save to root directory for now)
-      const currentNode = getNodeByID(window.nodeId);
+      const currentNode = getNodeByID(windowData.nodeId);
       const savedDocumentId = `saved-doc-${Date.now()}`;
 
       if (currentNode) {
@@ -195,37 +205,28 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
           id: savedDocumentId,
           parentId: saveLocation, // Save to root directory
           type: "document" as const,
-          label: window.title + " (Saved)",
+          label: (windowData.title || "Document") + " (Saved)",
           image: documentImage,
           documentConfigId: configId, // Link to the saved configuration
         };
 
-        console.log(
-          "DocumentEditor: creating new document node",
-          savedDocumentId
-        );
+        console.log("DocumentEditor: creating document node", savedDocumentId);
         createOneNode(newDocumentNode);
 
-        // Update window to reference the new saved node instead of template
-        updateWindowById(window.windowId, {
+        // Update current window to reference the saved document
+        updateWindowById(windowData.windowId, {
           nodeId: savedDocumentId,
+          title: (windowData.title || "Document") + " (Saved)",
           documentConfig: newConfig,
-          title: window.title + " (Saved)", // Indicate it's saved
         });
       }
-
-      console.log(
-        "DocumentEditor: document saved as new file with",
-        wordCount,
-        "words"
-      );
     }
 
     setIsModified(false);
-    console.log("DocumentEditor: save completed for window", window.windowId);
+    console.log("DocumentEditor: document saved successfully");
   };
 
-  // Close color pickers when clicking outside
+  // Click outside handlers for color pickers
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -242,30 +243,35 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Auto-focus the textarea when component mounts
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus();
+    if (showTextColorPicker || showPageColorPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, []);
+  }, [showTextColorPicker, showPageColorPicker]);
 
-  // Generate CSS styles for the textarea
-  const textareaStyles: React.CSSProperties = {
-    fontFamily: textStyle.fontFamily,
-    fontSize: `${textStyle.fontSize}px`,
-    fontWeight: textStyle.isBold ? "bold" : "normal",
-    fontStyle: textStyle.isItalic ? "italic" : "normal",
-    textDecoration: textStyle.isUnderlined ? "underline" : "none",
-    color: textStyle.color,
-    textAlign: textStyle.textAlign,
-    lineHeight: "1.6",
-    backgroundColor: pageBackgroundColor,
-  };
+  // Word and character count
+  const wordCount = content
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+  const charCount = content.length;
 
+  // Font options
+  const fontOptions = [
+    "Times New Roman",
+    "Arial",
+    "Helvetica",
+    "Georgia",
+    "Verdana",
+    "Courier New",
+  ];
+
+  // Size options
+  const sizeOptions = [
+    8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72,
+  ];
+
+  // Format button component
   const FormatButton = ({
     active,
     onClick,
@@ -278,18 +284,20 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
     title: string;
   }) => (
     <button
+      type="button"
       onClick={onClick}
       title={title}
-      className={`w-8 h-8 flex items-center justify-center rounded text-sm font-medium transition-colors ${
+      className={`px-3 py-1 text-sm font-medium border border-gray-300 ${
         active
-          ? "bg-blue-100 text-blue-700 border border-blue-300"
-          : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
+          ? "bg-blue-500 text-white border-blue-500"
+          : "bg-white text-gray-700 hover:bg-gray-50"
       }`}
     >
       {children}
     </button>
   );
 
+  // Color picker dropdown component
   const ColorPickerDropdown = ({
     isOpen,
     onToggle,
@@ -307,32 +315,31 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
     title: string;
     containerRef: React.RefObject<HTMLDivElement | null>;
   }) => (
-    <div className="relative" ref={containerRef}>
-      <div
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
         onClick={onToggle}
         title={title}
-        className="w-8 h-8 flex items-center justify-center rounded bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
+        className="p-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
       >
         <Icon size={16} />
-      </div>
-
+      </button>
       {isOpen && (
-        <div className="absolute top-10 left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-[200px]">
-          <div className="grid grid-cols-5 gap-3">
+        <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-gray-300 shadow-lg z-50">
+          <div className="grid grid-cols-5 gap-1">
             {COLOR_PALETTE.map((color) => (
               <button
                 key={color.value}
+                type="button"
                 onClick={() => {
                   onChange(color.value);
                   onToggle();
                 }}
-                title={color.name}
-                className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${
-                  value === color.value
-                    ? "border-blue-500 shadow-lg ring-2 ring-blue-200"
-                    : "border-gray-300"
+                className={`w-6 h-6 rounded-full border-2 hover:scale-110 transition-transform ${
+                  value === color.value ? "border-gray-600" : "border-gray-300"
                 }`}
                 style={{ backgroundColor: color.value }}
+                title={color.name}
               />
             ))}
           </div>
@@ -342,75 +349,66 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
   );
 
   return (
-    <div className="h-full bg-gray-50 flex flex-col">
-      {/* Modern Toolbar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
-        <div className="flex justify-center items-center gap-4 flex-nowrap overflow-x-auto">
-          {/* Save Button - Icon Only */}
-          <div
-            onClick={handleSave}
-            title={isModified ? "Save document" : "Document saved"}
-            className={`w-8 h-8 flex items-center justify-center rounded transition-colors flex-shrink-0 bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer ${
-              isModified
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-100 text-red-500 cursor-not-allowed"
-            }`}
-            // disabled={!isModified}
-          >
-            <Save size={16} className="text-gray-700" />
-          </div>
-
-          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-
-          {/* Font Family */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+    <div className="h-full w-full flex flex-col bg-gray-100">
+      {/* Toolbar */}
+      <div className="bg-white border-b border-gray-300 p-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Font family */}
+          <div className="flex items-center gap-2">
             {showLabels && (
-              <span className="text-sm text-gray-600 whitespace-nowrap">
-                Font:
-              </span>
+              <label className="text-sm font-medium text-gray-700">Font:</label>
             )}
             <select
               value={textStyle.fontFamily}
               onChange={(e) => updateTextStyle({ fontFamily: e.target.value })}
-              className="px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white min-w-[140px] text-gray-800"
+              className="border border-gray-300 rounded px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Times New Roman">Times New Roman</option>
-              <option value="Arial">Arial</option>
-              <option value="Helvetica">Helvetica</option>
-              <option value="Georgia">Georgia</option>
+              {fontOptions.map((font) => (
+                <option key={font} value={font}>
+                  {font}
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Font Size Controls */}
-          <div className="flex items-center gap-1 flex-shrink-0">
+          {/* Font size */}
+          <div className="flex items-center gap-2">
             {showLabels && (
-              <span className="text-sm text-gray-600 whitespace-nowrap">
-                Size:
-              </span>
+              <label className="text-sm font-medium text-gray-700">Size:</label>
             )}
-            <button
-              onClick={() => adjustFontSize(-1)}
-              className="w-7 h-7 flex items-center justify-center rounded bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 text-sm"
-              title="Decrease font size"
+            <select
+              value={textStyle.fontSize}
+              onChange={(e) =>
+                updateTextStyle({ fontSize: parseInt(e.target.value) })
+              }
+              className="border border-gray-300 rounded px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              −
-            </button>
-            <div className="px-2 py-1 min-w-[40px] text-center text-sm border border-gray-200 bg-white text-gray-800 rounded">
-              {textStyle.fontSize}
+              {sizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            <div className="flex">
+              <button
+                type="button"
+                onClick={() => adjustFontSize(-1)}
+                className="px-2 py-1 text-xs border border-gray-300 bg-white hover:bg-gray-50 border-r-0"
+              >
+                −
+              </button>
+              <button
+                type="button"
+                onClick={() => adjustFontSize(1)}
+                className="px-2 py-1 text-xs border border-gray-300 bg-white hover:bg-gray-50"
+              >
+                +
+              </button>
             </div>
-            <button
-              onClick={() => adjustFontSize(1)}
-              className="w-7 h-7 flex items-center justify-center rounded bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 text-sm"
-              title="Increase font size"
-            >
-              +
-            </button>
           </div>
 
-          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-
-          {/* Format Buttons */}
-          <div className="flex items-center gap-1 flex-shrink-0">
+          {/* Format buttons */}
+          <div className="flex">
             <FormatButton
               active={textStyle.isBold}
               onClick={() => toggleFormat("isBold")}
@@ -418,7 +416,6 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
             >
               <strong>B</strong>
             </FormatButton>
-
             <FormatButton
               active={textStyle.isItalic}
               onClick={() => toggleFormat("isItalic")}
@@ -426,7 +423,6 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
             >
               <em>I</em>
             </FormatButton>
-
             <FormatButton
               active={textStyle.isUnderlined}
               onClick={() => toggleFormat("isUnderlined")}
@@ -436,164 +432,127 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
             </FormatButton>
           </div>
 
+          {/* Alignment buttons */}
+          <div className="flex">
+            <button
+              type="button"
+              onClick={() => updateTextStyle({ textAlign: "left" })}
+              title="Align Left"
+              className={`p-2 border border-gray-300 border-r-0 ${
+                textStyle.textAlign === "left"
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <AlignLeft size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => updateTextStyle({ textAlign: "center" })}
+              title="Align Center"
+              className={`p-2 border border-gray-300 border-r-0 ${
+                textStyle.textAlign === "center"
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <AlignCenter size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => updateTextStyle({ textAlign: "right" })}
+              title="Align Right"
+              className={`p-2 border border-gray-300 ${
+                textStyle.textAlign === "right"
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <AlignRight size={16} />
+            </button>
+          </div>
+
+          {/* Color controls */}
           {showColourPickers && (
-            <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-          )}
-          {/* Text Color Picker */}
-          {showColourPickers && (
-            <div className="flex-shrink-0">
+            <div className="flex gap-1">
               <ColorPickerDropdown
                 isOpen={showTextColorPicker}
                 onToggle={() => setShowTextColorPicker(!showTextColorPicker)}
                 value={textStyle.color}
                 onChange={(color) => updateTextStyle({ color })}
                 icon={Pen}
-                title="Text color"
+                title="Text Color"
                 containerRef={textColorRef}
               />
-            </div>
-          )}
-
-          {/* Page Background Color Picker */}
-          {showColourPickers && (
-            <div className="flex-shrink-0">
               <ColorPickerDropdown
                 isOpen={showPageColorPicker}
                 onToggle={() => setShowPageColorPicker(!showPageColorPicker)}
                 value={pageBackgroundColor}
                 onChange={setPageBackgroundColor}
                 icon={PaintBucket}
-                title="Page background color"
+                title="Page Background Color"
                 containerRef={pageColorRef}
               />
             </div>
           )}
 
-          <div className="w-px h-8 bg-gray-200 flex-shrink-0" />
-
-          {/* Text Alignment - Icons Only */}
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <div
-              onClick={() => updateTextStyle({ textAlign: "left" })}
-              title="Align left"
-              className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
-                textStyle.textAlign === "left"
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-              }`}
-            >
-              <AlignLeft size={16} />
-            </div>
-
-            <div
-              onClick={() => updateTextStyle({ textAlign: "center" })}
-              title="Center"
-              className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
-                textStyle.textAlign === "center"
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-              }`}
-            >
-              <AlignCenter size={16} />
-            </div>
-
-            <div
-              onClick={() => updateTextStyle({ textAlign: "right" })}
-              title="Align right"
-              className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
-                textStyle.textAlign === "right"
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-              }`}
-            >
-              <AlignRight size={16} />
-            </div>
-
-            {/* <div
-              onClick={() => updateTextStyle({ textAlign: "justify" })}
-              title="Justify"
-              className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
-                textStyle.textAlign === "justify"
-                  ? "bg-gray-700 text-white"
-                  : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
-              }`}
-            >
-              <AlignJustify size={16} />
-            </div> */}
-          </div>
-
-          {/* Document Stats - Will be hidden on very small screens */}
-          {/* {windowWidth > 600 && (
-            <div className="ml-auto text-xs text-gray-500 bg-gray-50 px-3 py-1 rounded flex-shrink-0">
-              {content.length} chars •{" "}
-              {content.split(/\s+/).filter((word) => word.length > 0).length}{" "}
-              words
-            </div>
-          )} */}
-        </div>
-      </div>
-
-      {/* Document Area */}
-      <div className="flex-1 p-8 overflow-auto bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          {/* Document Paper */}
-          <div
-            className="shadow-lg min-h-[800px] rounded-lg overflow-hidden"
-            style={{ backgroundColor: pageBackgroundColor }}
+          {/* Save button */}
+          <button
+            type="button"
+            onClick={handleSave}
+            className={`ml-auto flex items-center gap-2 px-4 py-2 rounded text-sm font-medium ${
+              isModified
+                ? "bg-blue-500 text-white hover:bg-blue-600"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            disabled={!isModified}
+            title="Save Document"
           >
-            {/* Document Header */}
-            {/* <div className="border-b border-gray-100 px-8 py-4 bg-gray-50/80 rounded-t-lg">
-              <div className="flex items-center justify-between">
-                <h1 className="text-lg font-semibold text-gray-800">
-                  {isModified && <span className="text-orange-500">•</span>}
-                </h1>
-                <div className="text-sm text-gray-400">
-                  {new Date().toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </div>
-              </div>
-            </div> */}
-
-            {/* Document Content */}
-            <div className="p-8">
-              <textarea
-                ref={textareaRef}
-                value={content}
-                onChange={handleContentChange}
-                className="w-full min-h-[600px] p-6 border-none resize-none outline-none"
-                style={textareaStyles}
-                placeholder="Start typing your document..."
-                spellCheck="true"
-              />
-            </div>
-          </div>
-
-          {/* Page Info */}
-          <div className="mt-4 text-center text-sm text-gray-400">
-            Page 1 • {Math.ceil(content.length / 3000)} pages estimated
-          </div>
+            <Save size={16} />
+          </button>
         </div>
       </div>
 
-      {/* Status Bar */}
-      <div className="bg-white border-t border-gray-200 px-4 py-2 text-xs text-gray-500 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <span>Ready {isModified ? "• Modified" : "• Saved"}</span>
-          <span>•</span>
-          <span>
-            {textStyle.fontFamily} {textStyle.fontSize}pt
-          </span>
-          <span>•</span>
-          <span>
-            Background:{" "}
-            {COLOR_PALETTE.find((c) => c.value === pageBackgroundColor)?.name ||
-              "Custom"}
-          </span>
+      {/* Document area */}
+      <div className="flex-1 p-8 overflow-auto">
+        <div
+          className="max-w-4xl mx-auto bg-white shadow-lg"
+          style={{ backgroundColor: pageBackgroundColor }}
+        >
+          {/* Document header */}
+          <div className="p-8 border-b border-gray-200">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              {windowData.title}
+            </h1>
+            {windowWidth > 600 && (
+              <div className="text-sm text-gray-500">
+                {wordCount} words • {charCount} characters
+                {isModified && " • Modified"}
+              </div>
+            )}
+          </div>
+
+          {/* Document content */}
+          <div className="p-8">
+            <textarea
+              ref={textareaRef}
+              value={content}
+              onChange={handleContentChange}
+              placeholder="Start writing your document..."
+              className="w-full h-96 resize-none border-none outline-none bg-transparent"
+              style={{
+                fontFamily: textStyle.fontFamily,
+                fontSize: `${textStyle.fontSize}px`,
+                fontWeight: textStyle.isBold ? "bold" : "normal",
+                fontStyle: textStyle.isItalic ? "italic" : "normal",
+                textDecoration: textStyle.isUnderlined ? "underline" : "none",
+                color: textStyle.color,
+                textAlign: textStyle.textAlign,
+                lineHeight: 1.6,
+              }}
+            />
+          </div>
         </div>
-        <div>Document Editor v1.0</div>
       </div>
     </div>
   );
