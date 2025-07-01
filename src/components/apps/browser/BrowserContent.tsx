@@ -9,24 +9,30 @@ import { OfflinePage } from "./fake_pages/OfflinePage";
 import { theme } from "../../../styles/theme";
 import { Button } from "../../ui/button";
 
-interface BrowserContentProps {
-  windowId: string;
-}
-
-export const BrowserContent = ({ windowId }: BrowserContentProps) => {
+export const BrowserContent = () => {
   const [bookmarked, setBookmarked] = useState(false);
   const [scrollPositions, setScrollPositions] = useState<
     Record<string, number>
   >({});
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) => s.getWindowByNodeId("browser"));
   const screenDimensions = useNewStore((s) => s.screenDimensions);
   const currentPage = window?.itemHistory[window?.currentHistoryIndex];
-
-  // Get window-specific browser state
-  // const { currentPage } = useBrowserWindowContent(windowId);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
+
+  // Restore scroll position when page changes
+  useEffect(() => {
+    if (contentRef.current && currentPage) {
+      const savedScrollPosition = scrollPositions[currentPage] || 0;
+      contentRef.current.scrollTop = savedScrollPosition;
+    }
+  }, [currentPage, scrollPositions]);
+
+  if (!window) {
+    return null;
+  }
+  const { windowId } = window;
 
   const handleBookmarkToggle = () => {
     setBookmarked(!bookmarked);
@@ -42,14 +48,6 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
       }));
     }
   };
-
-  // Restore scroll position when page changes
-  useEffect(() => {
-    if (contentRef.current && currentPage) {
-      const savedScrollPosition = scrollPositions[currentPage] || 0;
-      contentRef.current.scrollTop = savedScrollPosition;
-    }
-  }, [currentPage, scrollPositions]);
 
   // Render different pages based on currentPage state
   const renderPageContent = () => {

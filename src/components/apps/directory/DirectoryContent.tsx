@@ -2,10 +2,10 @@ import { useNewStore } from "../../../hooks/useStore";
 import { useNodeDrag } from "../../nodes/hooks/useNodeDrag";
 
 import { DirectoryLayout } from "./DirectoryLayout";
+import { desktopRootId } from "../../../constants/nodes";
 
 export const DirectoryContent = ({ nodeId }: { nodeId: string }) => {
-  const rootId = useNewStore((s) => s.rootId);
-  const isWindow = nodeId !== rootId;
+  const isWindow = nodeId !== desktopRootId;
 
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const children = getChildrenByParentID(nodeId);
