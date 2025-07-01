@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { WindowContentProps } from "../../../types/storeTypes";
+import { useNewStore } from "../../../hooks/useStore";
 import {
   AlignLeft,
   AlignCenter,
@@ -21,6 +22,10 @@ interface TextStyle {
   textAlign: TextAlignment;
 }
 
+// now we need to handle choosing a name and location  on save. naturally the name will have to be recorded in the label. the location will require a bit more logic to it.
+
+// i am wondering if the most robust way to do this is to
+
 // Predefined color palette
 const COLOR_PALETTE = [
   { name: "Black", value: "#000000" },
@@ -36,9 +41,7 @@ const COLOR_PALETTE = [
 ];
 
 export const DocumentEditor = ({ window }: WindowContentProps) => {
-  const [content, setContent] = useState(
-    "Welcome to Document Editor\n\nThis is a professional document editing experience similar to Microsoft Word or Apple Pages. Use the toolbar above to format your text.\n\nStart typing to create your document..."
-  );
+  const [content, setContent] = useState("");
   const [isModified, setIsModified] = useState(false);
   const [pageBackgroundColor, setPageBackgroundColor] = useState("#FFFFFF");
   const [showTextColorPicker, setShowTextColorPicker] = useState(false);
@@ -53,9 +56,41 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
     textAlign: "left",
   });
 
+  // Store actions for save functionality
+  const saveLocation = useNewStore((s) => s.rootId);
+  const generateConfigId = useNewStore((s) => s.generateConfigId);
+  const setDocumentConfig = useNewStore((s) => s.setDocumentConfig);
+  const updateWindowById = useNewStore((s) => s.updateWindowById);
+  const createOneNode = useNewStore((s) => s.createOneNode);
+  const getNodeByID = useNewStore((s) => s.getNodeByID);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const textColorRef = useRef<HTMLDivElement>(null);
   const pageColorRef = useRef<HTMLDivElement>(null);
+
+  // Initialize document state from window configuration if available
+  useEffect(() => {
+    if (window.documentConfig) {
+      console.log(
+        "DocumentEditor: initializing from saved config",
+        window.documentConfig
+      );
+
+      const config = window.documentConfig;
+      setContent(config.content);
+      setTextStyle(config.textStyle);
+      setPageBackgroundColor(config.pageSettings.backgroundColor);
+      setIsModified(false); // Document is saved, so not modified initially
+
+      console.log(
+        "DocumentEditor: loaded document with",
+        config.metadata.wordCount,
+        "words"
+      );
+    } else {
+      console.log("DocumentEditor: initializing new document with defaults");
+    }
+  }, [window.documentConfig]);
 
   // Responsive logic based on window width
   const windowWidth = window.width;
@@ -82,13 +117,112 @@ export const DocumentEditor = ({ window }: WindowContentProps) => {
   };
 
   const handleSave = () => {
+    const now = new Date();
+    const wordCount = content
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
+    const charCount = content.length;
+
+    // Check if this is an existing document or new document
+    const isExistingDocument = !!window.documentConfig;
+
+    if (isExistingDocument) {
+      // Update existing document configuration
+      const configId = window.documentConfig!.id;
+      const updatedConfig = {
+        ...window.documentConfig!,
+        content,
+        textStyle,
+        pageSettings: {
+          backgroundColor: pageBackgroundColor,
+        },
+        metadata: {
+          ...window.documentConfig!.metadata,
+          modifiedAt: now,
+          wordCount,
+          charCount,
+        },
+      };
+
+      console.log(
+        "DocumentEditor: updating existing document config",
+        configId
+      );
+      setDocumentConfig(configId, updatedConfig);
+
+      // Update window with new config
+      updateWindowById(window.windowId, {
+        documentConfig: updatedConfig,
+      });
+    } else {
+      console.log("DocumentEditor: creating new document config");
+      // Create new document configuration for first-time save
+      const configId = generateConfigId();
+      const newConfig = {
+        id: configId,
+        content,
+        textStyle,
+        pageSettings: {
+          backgroundColor: pageBackgroundColor,
+        },
+        metadata: {
+          title: window.title,
+          createdAt: now,
+          modifiedAt: now,
+          wordCount,
+          charCount,
+        },
+      };
+
+      console.log("DocumentEditor: creating new document config", configId);
+      setDocumentConfig(configId, newConfig);
+
+      // Create new document node (save to root directory for now)
+      const currentNode = getNodeByID(window.nodeId);
+      const savedDocumentId = `saved-doc-${Date.now()}`;
+
+      if (currentNode) {
+        // Get image from current node if it has one, otherwise use default document image
+        let documentImage = "/src/assets/icons_m/document.png";
+        if ("image" in currentNode) {
+          // Handle both string and string[] image types
+          documentImage = Array.isArray(currentNode.image)
+            ? currentNode.image[0]
+            : currentNode.image;
+        }
+
+        const newDocumentNode = {
+          id: savedDocumentId,
+          parentId: saveLocation, // Save to root directory
+          type: "document" as const,
+          label: window.title + " (Saved)",
+          image: documentImage,
+          documentConfigId: configId, // Link to the saved configuration
+        };
+
+        console.log(
+          "DocumentEditor: creating new document node",
+          savedDocumentId
+        );
+        createOneNode(newDocumentNode);
+
+        // Update window to reference the new saved node instead of template
+        updateWindowById(window.windowId, {
+          nodeId: savedDocumentId,
+          documentConfig: newConfig,
+          title: window.title + " (Saved)", // Indicate it's saved
+        });
+      }
+
+      console.log(
+        "DocumentEditor: document saved as new file with",
+        wordCount,
+        "words"
+      );
+    }
+
     setIsModified(false);
-    console.log("Document saved:", {
-      windowId: window.windowId,
-      content,
-      style: textStyle,
-      pageBackground: pageBackgroundColor,
-    });
+    console.log("DocumentEditor: save completed for window", window.windowId);
   };
 
   // Close color pickers when clicking outside

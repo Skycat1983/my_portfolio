@@ -16,9 +16,12 @@ type Props = { document: DocumentEntry };
 export const DocumentNode = ({ document }: Props) => {
   console.log("DocumentNode");
   // ─────────── node-specific store actions ───────────
-  const openWindow = useNewStore((s) => s.openWindow);
+  const openWindowWithDocumentConfig = useNewStore(
+    (s) => s.openWindowWithDocumentConfig
+  );
   const focusWindow = useNewStore((s) => s.focusWindow);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
+  const getDocumentConfig = useNewStore((s) => s.getDocumentConfig);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -29,8 +32,27 @@ export const DocumentNode = ({ document }: Props) => {
       return;
     }
 
-    openWindow(document, document.label);
-  }, [document, getWindowByNodeId, focusWindow, openWindow]);
+    // Check if document has saved configuration
+    const documentConfig = document.documentConfigId
+      ? getDocumentConfig(document.documentConfigId)
+      : undefined;
+
+    console.log(
+      "DocumentNode: opening document",
+      document.id,
+      "with config:",
+      documentConfig
+    );
+
+    // Open window with document configuration
+    openWindowWithDocumentConfig(document, document.label, documentConfig);
+  }, [
+    document,
+    getWindowByNodeId,
+    focusWindow,
+    openWindowWithDocumentConfig,
+    getDocumentConfig,
+  ]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
