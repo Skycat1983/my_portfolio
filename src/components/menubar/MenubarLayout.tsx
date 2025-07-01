@@ -5,6 +5,7 @@ import { Logo } from "../icons/LogoIcon";
 import { useNewStore } from "../../hooks/useStore";
 import { GITHUB_SMALL, LINKEDIN_SMALL } from "../../constants/images";
 import { WifiIcon } from "../icons/WifiIcon";
+import ThemeToggle from "./ThemeToggle";
 
 export const MenubarLayout = () => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
@@ -12,16 +13,17 @@ export const MenubarLayout = () => {
     <div
       className={
         operatingSystem === "mac"
-          ? "absolute top-0 left-0 w-full h-11 bg-neutral-900 hidden md:block"
-          : "absolute bottom-0 left-0 w-full h-11 bg-blue-100 hidden md:block"
+          ? "absolute top-0 left-0 w-full h-11 bg-background hidden md:block"
+          : "absolute bottom-0 left-0 w-full h-11 bg-background hidden md:block"
       }
     >
-      <div className="w-full h-11 bg-neutral-900 flex flex-row justify-between px-4 items-center overflow-hidden px-8">
+      <div className="w-full h-11 bg-background text-foreground flex flex-row justify-between px-4 items-center overflow-hidden px-8">
         <div className="flex flex-row gap-4 items-center">
           <Logo />
           <MenubarOptions />
         </div>
         <div className="flex flex-row items-center">
+          <ThemeToggle />
           <WifiIcon />
           <Social
             imgPath={LINKEDIN_SMALL}

@@ -27,8 +27,9 @@ import BIN_FULL from "../assets/icons_m/bin_full.png";
 import FOLDER_MAC from "../assets/icons_m/folder_os.png";
 import FOLDER_WIN from "../assets/icons_m/folder_ms.png";
 import FINDER from "../assets/icons_m/finder.png";
+import MAPS from "../assets/icons_m/maps.png";
 
-export { BIN_EMPTY, BIN_FULL, FOLDER_MAC, FOLDER_WIN, FINDER };
+export { BIN_EMPTY, BIN_FULL, FOLDER_MAC, FOLDER_WIN, FINDER, MAPS };
 
 // Apps
 import TERMINAL from "../assets/icons_m/terminal.png";

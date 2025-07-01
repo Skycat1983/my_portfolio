@@ -6,13 +6,13 @@ import { ResizableWindow } from "../components/window/ResizableWindow";
 import { useNewStore } from "../hooks/useStore";
 import { Weather } from "../components/widgets/WeatherWidget";
 import Dock from "../components/dock/Dock";
+import { desktopRootId } from "../constants/nodes";
 
 export const DesktopLayout = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
-  const rootId = useNewStore((s) => s.rootId);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindows = useNewStore((s) => s.openWindows);
 
@@ -20,7 +20,7 @@ export const DesktopLayout = () => {
   const dragHandlers = useNodeDrag();
 
   // desktop children/nodes
-  const desktopChildren = getChildrenByParentID(rootId);
+  const desktopChildren = getChildrenByParentID(desktopRootId);
 
   const background =
     operatingSystem === "mac" ? BACKGROUND_MAC : BACKGROUND_WIN;
@@ -46,14 +46,14 @@ export const DesktopLayout = () => {
         onDragOver={
           dragHandlers
             ? (e) => {
-                return dragHandlers.handleDragOver(e, rootId);
+                return dragHandlers.handleDragOver(e, desktopRootId);
               }
             : undefined
         }
         onDragEnter={
           dragHandlers
             ? (e) => {
-                return dragHandlers.handleDragEnter(e, rootId);
+                return dragHandlers.handleDragEnter(e, desktopRootId);
               }
             : undefined
         }
@@ -63,7 +63,7 @@ export const DesktopLayout = () => {
         onDrop={
           dragHandlers
             ? (e) => {
-                return dragHandlers.handleDrop(e, rootId);
+                return dragHandlers.handleDrop(e, desktopRootId);
               }
             : undefined
         }

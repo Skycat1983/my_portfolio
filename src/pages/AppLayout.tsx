@@ -10,6 +10,7 @@ import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryContent } from "../components/apps/directory/DirectoryContent";
+import { desktopRootId } from "../constants/nodes";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -17,7 +18,6 @@ export const AppLayout = () => {
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
-  const rootId = useNewStore((s) => s.rootId);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindows = useNewStore((s) => s.openWindows);
 
@@ -55,7 +55,7 @@ export const AppLayout = () => {
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
           {/* <DirectoryLayout nodes={nodesToRender} /> */}
-          <DirectoryContent nodeId={rootId} />
+          <DirectoryContent nodeId={desktopRootId} />
         </div>
 
         {openWindows.map((window) => (

@@ -7,6 +7,7 @@ type NodeBehaviorConfig = {
   nodeType: string;
   enableLogging?: boolean;
   onActivate?: () => void;
+  parentId?: string | null;
 };
 
 export const useNodeEvents = ({
@@ -14,6 +15,7 @@ export const useNodeEvents = ({
   nodeType,
   enableLogging = false,
   onActivate,
+  parentId,
 }: NodeBehaviorConfig) => {
   // ─────────── store actions & state ───────────
   const selectOneNode = useNewStore((s) => s.selectOneNode);
@@ -45,7 +47,11 @@ export const useNodeEvents = ({
   const handleClick = useCallback(() => {
     // On touch devices (mobile + tablet), single click activates immediately
     // On desktop with mouse/trackpad, single click selects (double click to activate)
-    if (screenDimensions.isMobile || screenDimensions.isTablet) {
+    if (
+      screenDimensions.isMobile ||
+      screenDimensions.isTablet ||
+      parentId === "dock-root"
+    ) {
       log("single-click-activate-touch");
       selectOneNode(id);
       onActivate?.();
@@ -60,6 +66,7 @@ export const useNodeEvents = ({
     onActivate,
     screenDimensions.isMobile,
     screenDimensions.isTablet,
+    parentId,
   ]);
 
   // ─────────── activation handler (double-click and Enter) ───────────

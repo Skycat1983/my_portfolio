@@ -3,8 +3,6 @@ import type { SetState, GetState } from "../../types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
 import type { NodeEntry } from "../../types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
-import type { WindowContentProps } from "../../types/storeTypes";
-import type { ComponentType } from "react";
 
 export type WindowedNode = Exclude<NodeEntry, { type: "icon" | "link" }>;
 
@@ -36,11 +34,11 @@ const VIEWPORT_CONSTRAINTS = {
 export interface WindowOperationsActions {
   //   ! WINDOW VISIBILITY OPERATIONS
   openWindow: (node: WindowedNode, historyItem: string) => void;
-  // NEW: Open window with custom component
-  openWindowWithComponent: (
+  // NEW: Open window with custom component key
+  openWindowWithComponentKey: (
     node: WindowedNode,
     historyItem: string,
-    component: ComponentType<WindowContentProps>
+    componentKey: string
   ) => void;
   // NEW: Open window with document configuration
   openWindowWithDocumentConfig: (
@@ -585,11 +583,11 @@ export const createWindowOperationsSlice = (
     );
   },
 
-  // NEW: Open window with custom component
-  openWindowWithComponent: (
+  // NEW: Open window with custom component key
+  openWindowWithComponentKey: (
     node: WindowedNode,
     historyItem: string,
-    component: ComponentType<WindowContentProps>
+    componentKey: string
   ) => {
     const state = get();
 
@@ -626,7 +624,7 @@ export const createWindowOperationsSlice = (
       isMaximized = true;
     }
 
-    // Create new window with responsive dimensions and custom component
+    // Create new window with responsive dimensions and custom component key
     const baseWindow: WindowType = {
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
       title: node.label,
@@ -642,7 +640,7 @@ export const createWindowOperationsSlice = (
       isResizing: false,
       itemHistory: [historyItem],
       currentHistoryIndex: 0,
-      component, // Custom component for this window
+      componentKey, // Custom component key for this window
     };
 
     state.createOneWindow(baseWindow);

@@ -4,6 +4,7 @@ import { Social } from "./Social";
 import { Logo } from "../icons/LogoIcon";
 import { GITHUB_SMALL, LINKEDIN_SMALL } from "../../constants/images";
 import { WifiIcon } from "../icons/WifiIcon";
+import ThemeToggle from "./ThemeToggle";
 
 export const MenuBar = () => {
   return (
@@ -13,6 +14,7 @@ export const MenuBar = () => {
         <MenubarOptions />
       </div>
       <div className="flex flex-row items-center">
+        <ThemeToggle />
         <WifiIcon />
         <Social
           imgPath={LINKEDIN_SMALL}
