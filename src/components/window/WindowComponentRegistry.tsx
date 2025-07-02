@@ -5,9 +5,10 @@ import { Finder } from "../finder/Finder";
 import { TerminalContent } from "../applications/terminal/TerminalContent";
 import { BrowserContent } from "../applications/browser/BrowserContent";
 import type { WindowContentProps } from "@/types/storeTypes";
-import { GeoGame } from "../applications/games/GeoGame/GeoGame";
-import GTAVI from "../applications/games/GTAVI/GTAVI";
+import { GeoGame } from "../applications/geoGame/GeoGame";
+import GTAVI from "../applications/GTAVI/GTAVI";
 import { AchievementContent } from "../applications/achievements/AchievementContent";
+import { Map } from "../applications/map/Map";
 
 // Component registry mapping component keys to React components
 // Note: Components can define their own prop interfaces
@@ -24,6 +25,7 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   geoGame: GeoGame,
   gtaVi: GTAVI,
   achievements: AchievementContent,
+  maps: Map,
 };
 
 // Type-safe function to get component by key
