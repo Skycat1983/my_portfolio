@@ -54,6 +54,7 @@ export const FinderView: React.FC<FinderViewProps> = ({
         align="end"
         sideOffset={4}
         style={{ zIndex: menuZ }}
+        className="bg-neutral-900"
       >
         <DropdownMenuRadioGroup
           value={view}

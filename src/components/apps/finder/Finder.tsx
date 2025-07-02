@@ -3,23 +3,30 @@ import { FinderHeader } from "./FinderHeader";
 import { FinderBody } from "./FinderBody";
 import { useNewStore } from "../../../hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
-import { desktopRootId } from "../../../constants/nodes";
 
-export const Finder = ({ windowId }: { windowId: string }) => {
+export const Finder = ({
+  windowId,
+  nodeId,
+}: {
+  windowId: string;
+  nodeId: string;
+}) => {
+  // const nodeMap = useNewStore((s) => s.nodeMap);
   const window = useNewStore((s) => s.getWindowById(windowId));
   const [input, setInput] = React.useState("");
   const [view, setView] = React.useState<"icons" | "list" | "columns">("icons");
-  const nodeMap = useNewStore((s) => s.nodeMap);
-  const selectedNodeId = useNewStore((s) => s.selectedNodeId);
   const zIndex = window?.zIndex ?? 0;
-  const defaultLocation = desktopRootId;
-  const findMany = useNewStore((s) => s.findManyNodes);
-  const desktopNodes = findMany((n) => n.parentId === defaultLocation);
-  const allNodes = Object.values(nodeMap);
 
-  const nodesToFiler = input.length > 0 ? allNodes : desktopNodes;
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+  const children = getChildrenByParentID(nodeId);
+  // // const defaultLocation = desktopRootId;
+  // const findMany = useNewStore((s) => s.findManyNodes);
+  // // const desktopNodes = findMany((n) => n.parentId === defaultLocation);
+  // const allNodes = Object.values(nodeMap);
 
-  const filteredNodes = nodesToFiler.filter((node) =>
+  // const nodesToFiler = input.length > 0 ? allNodes : desktopNodes;
+
+  const filteredNodes = children.filter((node) =>
     node.label.toLowerCase().includes(input.toLowerCase())
   );
 
@@ -34,11 +41,12 @@ export const Finder = ({ windowId }: { windowId: string }) => {
         input={input}
         setInput={setInput}
       />
-      <NodeDropZoneWrapper nodeId={"finder"} shrinkToFit={false}>
+      <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
         <FinderBody
           nodes={filteredNodes}
           view={view}
-          rootId={defaultLocation}
+          rootId={nodeId}
+          windowId={windowId}
         />
       </NodeDropZoneWrapper>
     </div>
