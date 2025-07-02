@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNodeEvents } from "./hooks/useNodeEvents";
+import { useNodeEvents } from "../nodes/hooks/useNodeEvents";
 import { useNewStore } from "@/hooks/useStore";
 import type { AchievementEntry } from "@/types/nodeTypes";
 import {
@@ -9,7 +9,7 @@ import {
   tileFrame,
   tileWrapper,
   titleBase,
-} from "./node.styles";
+} from "../nodes/node.styles";
 
 type Props = { achievement: AchievementEntry };
 

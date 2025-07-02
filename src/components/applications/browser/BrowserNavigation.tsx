@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
-import { useWindowHistory } from "@/components/window/hooks/useWindowHistory";
+import { useWindowHistory } from "@/components/unused/useWindowHistory";
 import { useNewStore } from "@/hooks/useStore";
 import { PREDEFINED_ADDRESS } from "@/constants/urls";
 
