@@ -75,9 +75,9 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
       </div>
 
       <div className="flex justify-end items-center space-x-1 min-w-[10px]">
-        {nodeType === "directory" && (
+        {/* {nodeType === "directory" && (
           <DirectoryNavigation windowId={windowId} />
-        )}
+        )} */}
       </div>
     </div>
   );

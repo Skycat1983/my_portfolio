@@ -6,7 +6,7 @@ import BACKGROUND_IPHONE from "../assets/wallpapers/iphone_wallpaper.png";
 export { BACKGROUND_MAC, BACKGROUND_WIN, BACKGROUND_IPHONE };
 
 // Profile icons
-import GITHUB from "../assets/icons_m/github.png";
+import GITHUB from "../assets/icons_m/github_black.png";
 import LINKEDIN from "../assets/icons_m/linked_in2.png";
 
 export { GITHUB, LINKEDIN };
@@ -26,7 +26,7 @@ import BIN_EMPTY from "../assets/icons_m/bin_empty.png";
 import BIN_FULL from "../assets/icons_m/bin_full.png";
 import FOLDER_MAC from "../assets/icons_m/folder_os.png";
 import FOLDER_WINDOWS from "../assets/icons_m/folder_ms.png";
-import FINDER from "../assets/icons_m/finder.png";
+import FINDER from "../assets/icons_m/finder_large.png";
 import MAPS from "../assets/icons_m/maps.png";
 
 export { BIN_EMPTY, BIN_FULL, FOLDER_MAC, FOLDER_WINDOWS, FINDER, MAPS };

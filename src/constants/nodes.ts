@@ -27,6 +27,7 @@ import {
   BIN_EMPTY,
   PAGES,
   WORD,
+  LINKEDIN,
 } from "./images";
 import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
@@ -296,14 +297,14 @@ export const rootNodes: DirectoryObject = {
           alternativeImage: WORD,
           componentKey: "documentEditor",
         },
-        {
-          id: "whatsapp",
-          label: "WhatsApp",
-          type: "application",
-          image: WHATSAPP,
-          alternativeImage: null,
-          componentKey: "whatsApp",
-        },
+        // {
+        //   id: "whatsapp",
+        //   label: "WhatsApp",
+        //   type: "application",
+        //   image: WHATSAPP,
+        //   alternativeImage: null,
+        //   componentKey: "whatsApp",
+        // },
       ],
     },
     {
@@ -338,6 +339,30 @@ export const rootNodes: DirectoryObject = {
           image: PAGES,
           alternativeImage: WORD,
           componentKey: "documentEditor",
+        },
+        {
+          id: "github-dock",
+          label: "GitHub",
+          type: "link",
+          image: GITHUB,
+          alternativeImage: null,
+          url: "https://github.com/Skycat1983",
+        },
+        {
+          id: "linkedin-dock",
+          label: "LinkedIn",
+          type: "link",
+          image: LINKEDIN,
+          alternativeImage: null,
+          url: "https://www.linkedin.com/in/skycat1983/",
+        },
+        {
+          id: "whatsapp-dock",
+          label: "WhatsApp",
+          type: "application",
+          image: WHATSAPP,
+          alternativeImage: null,
+          componentKey: "whatsApp",
         },
         {
           id: "achievements-dock",

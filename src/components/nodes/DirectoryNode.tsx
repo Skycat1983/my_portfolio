@@ -34,7 +34,9 @@ export const DirectoryNode = ({
 
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const openWindow = useNewStore((s) => s.openWindow);
+  const openWindowWithComponentKey = useNewStore(
+    (s) => s.openWindowWithComponentKey
+  );
   const focusWindow = useNewStore((s) => s.focusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
@@ -51,7 +53,11 @@ export const DirectoryNode = ({
 
     // Context-aware navigation logic
     if (layout === "desktop" || !parentWindowId) {
-      openWindow(nodeEntry, nodeEntry.id);
+      openWindowWithComponentKey(
+        nodeEntry,
+        nodeEntry.id,
+        nodeEntry.componentKey
+      );
     } else {
       const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
       const success = updateWindowById(parentWindowId, {
@@ -61,14 +67,18 @@ export const DirectoryNode = ({
         currentHistoryIndex: newHistoryIndex,
       });
       if (!success) {
-        openWindow(nodeEntry, nodeEntry.id);
+        openWindowWithComponentKey(
+          nodeEntry,
+          nodeEntry.id,
+          nodeEntry.componentKey
+        );
       }
     }
   }, [
     getWindowByNodeId,
     layout,
     parentWindowId,
-    openWindow,
+    openWindowWithComponentKey,
     focusWindow,
     updateWindowById,
     window,
