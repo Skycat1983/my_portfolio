@@ -1,17 +1,16 @@
 import type { NodeEntry } from "../../../types/nodeTypes";
 import { NodeSwitch } from "../../nodes/NodeSwitch";
 import { useNewStore } from "../../../hooks/useStore";
+import { desktopRootId } from "../../../constants/nodes";
 
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];
-  isWindow?: boolean;
+  windowId: string;
 };
 
-export const DirectoryLayout = ({
-  nodes,
-  isWindow = false,
-}: DirectoryLayoutProps) => {
+export const DirectoryLayout = ({ nodes, windowId }: DirectoryLayoutProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
+  const isWindow = windowId !== desktopRootId;
 
   // Window directory layout
   if (isWindow) {
@@ -19,7 +18,7 @@ export const DirectoryLayout = ({
       <div className="w-full h-full flex justify-start items-start gap-6 flex-wrap">
         {nodes.map((node) => (
           <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} />
+            <NodeSwitch node={node} windowId={windowId} />
           </div>
         ))}
       </div>
@@ -34,7 +33,7 @@ export const DirectoryLayout = ({
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
           {nodes.map((node) => (
             <div key={node.id} className="w-20 md:w-24">
-              <NodeSwitch node={node} />
+              <NodeSwitch node={node} windowId={windowId} />
             </div>
           ))}
         </div>
@@ -48,7 +47,7 @@ export const DirectoryLayout = ({
       >
         {nodes.map((node) => (
           <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} />
+            <NodeSwitch node={node} windowId={windowId} />
           </div>
         ))}
       </div>

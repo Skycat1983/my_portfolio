@@ -17,18 +17,18 @@ type LayoutType = "desktop" | "window";
 type Props = {
   nodeEntry: DirectoryEntry;
   layout?: LayoutType;
-  parentWindowId: string;
+  windowId: string;
 };
 
 export const DirectoryNode = ({
   nodeEntry,
   layout = "window",
-  parentWindowId,
+  windowId,
 }: Props) => {
   console.log("DIR_NODE_01: DirectoryNode rendering", {
     nodeId: nodeEntry.id,
     layout,
-    parentWindowId,
+    windowId,
     nodeLabel: nodeEntry.label,
   });
 
@@ -40,7 +40,7 @@ export const DirectoryNode = ({
   const focusWindow = useNewStore((s) => s.focusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
-  const window = useNewStore((s) => s.getWindowById(parentWindowId));
+  const window = useNewStore((s) => s.getWindowById(windowId));
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -52,7 +52,7 @@ export const DirectoryNode = ({
     }
 
     // Context-aware navigation logic
-    if (layout === "desktop" || !parentWindowId) {
+    if (layout === "desktop" || !windowId) {
       openWindowWithComponentKey(
         nodeEntry,
         nodeEntry.id,
@@ -60,7 +60,7 @@ export const DirectoryNode = ({
       );
     } else {
       const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
-      const success = updateWindowById(parentWindowId, {
+      const success = updateWindowById(windowId, {
         nodeId: nodeEntry.id,
         title: nodeEntry.label,
         itemHistory: [...(window?.itemHistory || []), nodeEntry.id],
@@ -77,7 +77,7 @@ export const DirectoryNode = ({
   }, [
     getWindowByNodeId,
     layout,
-    parentWindowId,
+    windowId,
     openWindowWithComponentKey,
     focusWindow,
     updateWindowById,

@@ -5,23 +5,23 @@ import type {
   LinkEntry,
   ApplicationEntry,
 } from "../../types/nodeTypes";
-import { DirectoryNode } from "./DirectoryNode";
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
 import { ApplicationNode } from "./ApplicationNode";
+import { FinderNode } from "./FinderNode";
 
 type LayoutType = "desktop" | "window";
 
 type NodeSwitchProps = {
   node: NodeEntry;
   layout?: LayoutType;
-  parentWindowId?: string;
+  windowId: string;
 };
 
 export const NodeSwitch = ({
   node,
   layout = "window",
-  parentWindowId,
+  windowId,
 }: NodeSwitchProps) => {
   switch (node.type) {
     case "easter-egg":
@@ -29,11 +29,11 @@ export const NodeSwitch = ({
 
     case "directory":
       return (
-        <DirectoryNode
+        <FinderNode
           key={node.id}
           nodeEntry={node as DirectoryEntry}
           layout={layout}
-          parentWindowId={parentWindowId || ""}
+          windowId={windowId}
         />
       );
 

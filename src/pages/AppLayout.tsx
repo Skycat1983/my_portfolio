@@ -55,7 +55,7 @@ export const AppLayout = () => {
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
           {/* <DirectoryLayout nodes={nodesToRender} /> */}
-          <DirectoryContent nodeId={desktopRootId} />
+          <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} />
         </div>
 
         {openWindows.map((window) => (

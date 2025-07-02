@@ -10,40 +10,37 @@ import {
   titleBase,
   tileFrame,
 } from "./node.styles";
-import {
-  BIN_EMPTY,
-  BIN_FULL,
-  FOLDER_MAC,
-  FOLDER_WIN,
-} from "../../constants/images";
+import { BIN_EMPTY, BIN_FULL, FINDER } from "../../constants/images";
 
 type LayoutType = "desktop" | "window";
 
 type Props = {
   nodeEntry: DirectoryEntry;
   layout?: LayoutType;
-  parentWindowId: string;
+  windowId: string;
 };
 
 export const FinderNode = ({
   nodeEntry,
   layout = "window",
-  parentWindowId,
+  windowId,
 }: Props) => {
   console.log("DIR_NODE_01: DirectoryNode rendering", {
     nodeId: nodeEntry.id,
     layout,
-    parentWindowId,
+    windowId,
     nodeLabel: nodeEntry.label,
   });
 
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const openWindow = useNewStore((s) => s.openWindow);
+  const openWindowWithComponentKey = useNewStore(
+    (s) => s.openWindowWithComponentKey
+  );
   const focusWindow = useNewStore((s) => s.focusWindow);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
-  const window = useNewStore((s) => s.getWindowById(parentWindowId));
+  const window = useNewStore((s) => s.getWindowById(windowId));
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -55,25 +52,33 @@ export const FinderNode = ({
     }
 
     // Context-aware navigation logic
-    if (layout === "desktop" || !parentWindowId) {
-      openWindow(nodeEntry, nodeEntry.id);
+    if (layout === "desktop" || !windowId) {
+      openWindowWithComponentKey(
+        nodeEntry,
+        nodeEntry.id,
+        nodeEntry.componentKey
+      );
     } else {
       const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
-      const success = updateWindowById(parentWindowId, {
+      const success = updateWindowById(windowId, {
         nodeId: nodeEntry.id,
         title: nodeEntry.label,
         itemHistory: [...(window?.itemHistory || []), nodeEntry.id],
         currentHistoryIndex: newHistoryIndex,
       });
       if (!success) {
-        openWindow(nodeEntry, nodeEntry.id);
+        openWindowWithComponentKey(
+          nodeEntry,
+          nodeEntry.id,
+          nodeEntry.componentKey
+        );
       }
     }
   }, [
     getWindowByNodeId,
     layout,
-    parentWindowId,
-    openWindow,
+    windowId,
+    openWindowWithComponentKey,
     focusWindow,
     updateWindowById,
     window,
@@ -92,7 +97,10 @@ export const FinderNode = ({
   // ─────────── image resolution logic ───────────
   console.log("directory", nodeEntry);
 
-  let folderImage = operatingSystem === "mac" ? FOLDER_MAC : FOLDER_WIN;
+  let folderImage =
+    operatingSystem === "mac"
+      ? nodeEntry.image
+      : nodeEntry.alternativeImage ?? nodeEntry.image;
 
   if (nodeEntry.id === "trash") {
     folderImage = BIN_EMPTY;
@@ -100,6 +108,9 @@ export const FinderNode = ({
     if (nodeEntry.children.length > 0) {
       folderImage = BIN_FULL;
     }
+  }
+  if (nodeEntry.id === "finder") {
+    folderImage = FINDER;
   }
 
   // ─────────── render ───────────

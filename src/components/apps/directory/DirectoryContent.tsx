@@ -4,7 +4,15 @@ import { useNodeDrag } from "../../nodes/hooks/useNodeDrag";
 import { DirectoryLayout } from "./DirectoryLayout";
 import { desktopRootId } from "../../../constants/nodes";
 
-export const DirectoryContent = ({ nodeId }: { nodeId: string }) => {
+interface DirectoryContentProps {
+  windowId: string;
+  nodeId: string;
+}
+
+export const DirectoryContent = ({
+  windowId,
+  nodeId,
+}: DirectoryContentProps) => {
   const isWindow = nodeId !== desktopRootId;
 
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
@@ -33,7 +41,7 @@ export const DirectoryContent = ({ nodeId }: { nodeId: string }) => {
         return dragHandlers.handleDrop(e, nodeId);
       }}
     >
-      <DirectoryLayout nodes={children} isWindow={isWindow} />
+      <DirectoryLayout nodes={children} windowId={windowId} />
     </div>
   );
 };

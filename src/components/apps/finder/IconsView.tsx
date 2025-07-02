@@ -1,13 +1,13 @@
-import React from "react";
 import type { NodeEntry } from "../../../types/nodeTypes";
 import { NodeSwitch } from "../../nodes/NodeSwitch";
 import { useNewStore } from "../../../hooks/useStore";
 
 interface IconsViewProps {
   nodes: NodeEntry[];
+  windowId: string;
 }
 
-export const IconsView = ({ nodes }: IconsViewProps) => {
+export const IconsView = ({ nodes, windowId }: IconsViewProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
 
   return (
@@ -17,7 +17,7 @@ export const IconsView = ({ nodes }: IconsViewProps) => {
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
           {nodes.map((node) => (
             <div key={node.id} className="w-20 md:w-24">
-              <NodeSwitch node={node} layout="window" parentWindowId="finder" />
+              <NodeSwitch node={node} layout="window" windowId={windowId} />
             </div>
           ))}
         </div>
@@ -31,7 +31,7 @@ export const IconsView = ({ nodes }: IconsViewProps) => {
       >
         {nodes.map((node) => (
           <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} layout="window" parentWindowId="finder" />
+            <NodeSwitch node={node} layout="window" windowId={windowId} />
           </div>
         ))}
       </div>

@@ -81,6 +81,54 @@ export const rootNodes: DirectoryObject = {
       label: "Desktop",
       children: [
         {
+          id: "depth1",
+          type: "directory",
+          image: FOLDER_MAC,
+          alternativeImage: FOLDER_WINDOWS,
+          componentKey: "finder",
+          label: "Depth 1",
+          children: [
+            {
+              id: "depth2",
+              type: "directory",
+              image: FOLDER_MAC,
+              alternativeImage: FOLDER_WINDOWS,
+              componentKey: "finder",
+              label: "Depth 2",
+              children: [
+                {
+                  id: "depth3",
+                  type: "directory",
+                  image: FOLDER_MAC,
+                  alternativeImage: FOLDER_WINDOWS,
+                  componentKey: "finder",
+                  label: "Depth 3",
+                  children: [
+                    {
+                      id: "depth4",
+                      type: "directory",
+                      image: FOLDER_MAC,
+                      alternativeImage: FOLDER_WINDOWS,
+                      componentKey: "finder",
+                      label: "Depth 4",
+                      children: [],
+                    },
+                    {
+                      id: "depth4-1",
+                      type: "directory",
+                      image: FOLDER_MAC,
+                      alternativeImage: FOLDER_WINDOWS,
+                      componentKey: "finder",
+                      label: "Depth 4",
+                      children: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
           id: "browser",
           label: "Internet",
           type: "application",

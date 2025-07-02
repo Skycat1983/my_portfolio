@@ -42,10 +42,3 @@ export const NodeDropZoneWrapper = ({
     </div>
   );
 };
-
-// console.log("NODE_DROP_ZONE_01: nodeId", nodeId);
-// console.log("NODE_DROP_ZONE_01: isWindow", isWindow);
-// console.log("NODE_DROP_ZONE_01: rootId", rootId);
-// console.log("NODE_DROP_ZONE_01: children", children);
-// console.log("NODE_DROP_ZONE_01: padding", padding);
-// console.log("NODE_DROP_ZONE_01: dragHandlers", dragHandlers);
