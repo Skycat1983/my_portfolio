@@ -169,7 +169,7 @@ export interface DirectoryWindowLegacy extends WindowType {
 }
 
 // Document Registry Types for persistent document storage
-export type TextAlignment = "left" | "center" | "right" | "justify";
+export type TextAlignment = "left" | "center" | "right";
 
 export interface TextStyle {
   fontFamily: string;

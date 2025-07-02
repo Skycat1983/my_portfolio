@@ -20,11 +20,11 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
 };
 
 // Type-safe function to get component by key
-// export const getWindowComponent = (
-//   componentKey: string
-// ): React.ComponentType<WindowContentProps> | undefined => {
-//   return WINDOW_COMPONENT_REGISTRY[componentKey];
-// };
+export const getWindowComponent = (
+  componentKey: string
+): React.ComponentType<WindowContentProps> | undefined => {
+  return WINDOW_COMPONENT_REGISTRY[componentKey];
+};
 
 // Get all available component keys (useful for debugging/development)
 export const getAvailableComponentKeys = (): string[] => {
