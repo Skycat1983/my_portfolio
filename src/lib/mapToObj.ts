@@ -16,77 +16,55 @@ export const convertMapToObjects = (
       throw new Error(`Node with id '${nodeId}' not found in map`);
     }
 
-    if (mapNode.type === "icon") {
-      // App nodes have no children
-      return {
-        id: mapNode.id,
-        type: "icon",
-        label: mapNode.label,
-        image: mapNode.image,
-        info: mapNode.info,
-      };
-    } else if (mapNode.type === "link") {
-      return {
-        id: mapNode.id,
-        type: "link",
-        label: mapNode.label,
-        image: mapNode.image,
-        url: mapNode.url,
-      } as LinkObject;
-    } else if (mapNode.type === "easter-egg") {
-      return {
-        id: mapNode.id,
-        type: "easter-egg",
-        label: mapNode.label,
-        image: mapNode.image,
-        currentImageIndex: mapNode.currentImageIndex,
-        isBroken: mapNode.isBroken,
-      };
-    } else if (mapNode.type === "terminal") {
-      return {
-        id: mapNode.id,
-        type: "terminal",
-        label: mapNode.label,
-      };
-    } else if (mapNode.type === "browser") {
-      return {
-        id: mapNode.id,
-        type: "browser",
-        label: mapNode.label,
-      };
-    } else if (mapNode.type === "document") {
-      return {
-        id: mapNode.id,
-        type: "document",
-        label: mapNode.label,
-        image: mapNode.image,
-      };
-    } else if (mapNode.type === "achievement") {
-      return {
-        id: mapNode.id,
-        type: "achievement",
-        label: mapNode.label,
-        image: mapNode.image,
-      };
-    } else if (mapNode.type === "game") {
-      return {
-        id: mapNode.id,
-        type: "game",
-        label: mapNode.label,
-        image: mapNode.image,
-      };
-    } else {
-      // Directory nodes need to recursively build children
-      const children: NodeObject[] = mapNode.children.map((childId) =>
-        buildObject(childId)
-      );
+    switch (mapNode.type) {
+      case "application":
+        return {
+          id: mapNode.id,
+          type: "application",
+          label: mapNode.label,
+          image: mapNode.image,
+          componentKey: mapNode.componentKey,
+        };
 
-      return {
-        id: mapNode.id,
-        type: "directory",
-        label: mapNode.label,
-        children,
-      };
+      case "link":
+        return {
+          id: mapNode.id,
+          type: "link",
+          label: mapNode.label,
+          image: mapNode.image,
+          url: mapNode.url,
+        } as LinkObject;
+
+      case "easter-egg":
+        return {
+          id: mapNode.id,
+          type: "easter-egg",
+          label: mapNode.label,
+          image: mapNode.image,
+          currentImageIndex: mapNode.currentImageIndex,
+          isBroken: mapNode.isBroken,
+        };
+
+      case "directory": {
+        // Directory nodes need to recursively build children
+        const children: NodeObject[] = mapNode.children.map((childId) =>
+          buildObject(childId)
+        );
+
+        return {
+          id: mapNode.id,
+          type: "directory",
+          label: mapNode.label,
+          image: mapNode.image,
+          componentKey: mapNode.componentKey,
+          children,
+        };
+      }
+
+      default:
+        throw new Error(
+          `Unknown node type: ${(mapNode as { type: string }).type}`
+        );
     }
   };
 

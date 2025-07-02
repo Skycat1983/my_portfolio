@@ -1,26 +1,14 @@
 import type {
   NodeEntry,
   EasterEggEntry,
-  IconEntry,
   DirectoryEntry,
   LinkEntry,
-  TerminalEntry,
-  BrowserEntry,
-  AchievementEntry,
-  GameEntry,
-  DocumentEntry,
-  AppEntry,
+  ApplicationEntry,
 } from "../../types/nodeTypes";
-import { IconNode } from "./IconNode";
 import { DirectoryNode } from "./DirectoryNode";
 import { LinkNode } from "./LinkNode";
-import { TerminalNode } from "./TerminalNode";
 import { EasterEggNode } from "./EasterEggNode";
-import { BrowserNode } from "./BrowserNode";
-import { AchievementNode } from "./AchievementNode";
-import { GameNode } from "./GameNode";
-import { DocumentNode } from "./DocumentNode";
-import { AppNode } from "./AppNode";
+import { AppNode } from "./ApplicationNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -39,9 +27,6 @@ export const NodeSwitch = ({
     case "easter-egg":
       return <EasterEggNode key={node.id} egg={node as EasterEggEntry} />;
 
-    case "icon":
-      return <IconNode key={node.id} icon={node as IconEntry} />;
-
     case "directory":
       return (
         <DirectoryNode
@@ -55,25 +40,8 @@ export const NodeSwitch = ({
     case "link":
       return <LinkNode key={node.id} link={node as LinkEntry} />;
 
-    case "terminal":
-      return <TerminalNode key={node.id} terminal={node as TerminalEntry} />;
-
-    case "browser":
-      return <BrowserNode key={node.id} browserEntry={node as BrowserEntry} />;
-
-    case "achievement":
-      return (
-        <AchievementNode key={node.id} achievement={node as AchievementEntry} />
-      );
-
-    case "game":
-      return <GameNode key={node.id} game={node as GameEntry} />;
-
-    case "document":
-      return <DocumentNode key={node.id} document={node as DocumentEntry} />;
-
-    case "app":
-      return <AppNode key={node.id} app={node as AppEntry} />;
+    case "application":
+      return <AppNode key={node.id} app={node as ApplicationEntry} />;
 
     default:
       console.warn("Unknown node type:", node);

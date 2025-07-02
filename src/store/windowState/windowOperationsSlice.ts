@@ -4,7 +4,8 @@ import type { WindowCrudSlice } from "./windowCrudSlice";
 import type { NodeEntry } from "../../types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
 
-export type WindowedNode = Exclude<NodeEntry, { type: "icon" | "link" }>;
+// Simplified windowed node type - only directories and applications can open windows
+export type WindowedNode = Exclude<NodeEntry, { type: "easter-egg" | "link" }>;
 
 // Window sizing configuration
 const DEFAULT_WINDOW_SIZES = {
@@ -209,8 +210,11 @@ export const createWindowOperationsSlice = (
     let isMaximized = false;
 
     // Mobile windows should be maximized by default for fullscreen experience
-    // Game windows should also be maximized by default
-    if (isMobile || node.type === "game") {
+    // Game applications should also be maximized by default
+    const isGameApp =
+      node.type === "application" &&
+      (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
+    if (isMobile || isGameApp) {
       isMaximized = true;
     }
 
@@ -273,8 +277,11 @@ export const createWindowOperationsSlice = (
     let isMaximized = false;
 
     // Mobile windows should be maximized by default for fullscreen experience
-    // Game windows should also be maximized by default
-    if (isMobile || node.type === "game") {
+    // Game applications should also be maximized by default
+    const isGameApp =
+      node.type === "application" &&
+      (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
+    if (isMobile || isGameApp) {
       isMaximized = true;
     }
 
@@ -619,8 +626,11 @@ export const createWindowOperationsSlice = (
     let isMaximized = false;
 
     // Mobile windows should be maximized by default for fullscreen experience
-    // Game windows should also be maximized by default
-    if (isMobile || node.type === "game") {
+    // Game applications should also be maximized by default
+    const isGameApp =
+      node.type === "application" &&
+      (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
+    if (isMobile || isGameApp) {
       isMaximized = true;
     }
 

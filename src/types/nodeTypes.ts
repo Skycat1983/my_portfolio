@@ -1,222 +1,86 @@
-// TODO: these types could be 'Entry extends BaseNodeObject' and just add the parentId?
-
 import type { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
+// NEW SIMPLIFIED TYPE SYSTEM
+export type NodeType = "easter-egg" | "application" | "directory" | "link";
+
+// BASE INTERFACES
 export interface BaseNodeObject {
   id: string;
-  type: string;
+  type: NodeType;
   label: string;
-  image: string;
 }
 
-export interface BaseNodeEntry {
-  id: string;
+export interface BaseNodeEntry extends BaseNodeObject {
   parentId: string | null;
-  type: string;
-  label: string;
-  image: string;
 }
 
-export interface AppObject {
-  id: string;
-  type: "app";
-  label: string;
-  image: string;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional custom component identifier
-}
-
-export interface AppEntry {
-  id: string;
-  parentId: string | null;
-  type: "app";
-  label: string;
-  image: string;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional custom component identifier
-}
-
-// HUMAN-READABLE OBJECT TYPES
-export interface DirectoryObject {
-  id: string;
+// OBJECT TYPES (Human-readable nested structure)
+export interface DirectoryObject extends BaseNodeObject {
   type: "directory";
-  label: string;
-  image?: string;
+  image: string; // Required for directories
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   children: NodeObject[];
-  componentKey?: string; // Optional custom component identifier
 }
 
-export interface DirectoryEntry {
-  id: string;
-  parentId: string | null;
-  children: string[];
+export interface ApplicationObject extends BaseNodeObject {
+  type: "application";
+  image: string; // Required for applications
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+}
+
+export interface LinkObject extends BaseNodeObject {
+  type: "link";
+  image: string; // Required for links
+  url: string;
+}
+
+export interface EasterEggObject extends BaseNodeObject {
+  type: "easter-egg";
+  image: string[]; // Array for easter eggs
+  currentImageIndex: number;
+  isBroken: boolean;
+}
+
+// ENTRY TYPES (Flat map structure with parentId)
+export interface DirectoryEntry extends BaseNodeEntry {
   type: "directory";
-  label: string;
-  image?: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
-export interface AchievementObject {
-  id: string;
-  type: "achievement";
-  label: string;
   image: string;
-  componentKey?: string; // Optional custom component identifier
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+  children: string[]; // Array of child IDs
 }
 
-export interface AchievementEntry {
-  id: string;
-  parentId: string | null;
-  type: "achievement";
-  label: string;
+export interface ApplicationEntry extends BaseNodeEntry {
+  type: "application";
   image: string;
-  componentKey?: string; // Optional custom component identifier
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
 }
 
-export interface DocumentObject {
-  id: string;
-  type: "document";
-  label: string;
-  image: string;
-  componentKey?: string; // Optional custom component identifier
-  documentConfigId?: string; // Optional reference to document registry config
-}
-
-export interface DocumentEntry {
-  id: string;
-  parentId: string | null;
-  type: "document";
-  label: string;
-  image: string;
-  componentKey?: string; // Optional custom component identifier
-  documentConfigId?: string; // Optional reference to document registry config
-}
-
-export interface BrowserObject {
-  id: string;
-  type: "browser";
-  label: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
-export interface BrowserEntry {
-  id: string;
-  parentId: string | null;
-  type: "browser";
-  label: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
-export interface IconObject {
-  id: string;
-  type: "icon";
-  label: string;
-  image: string;
-  info: string;
-}
-
-export interface IconEntry {
-  id: string;
-  parentId: string | null;
-  type: "icon";
-  label: string;
-  image: string;
-  info: string;
-}
-
-export interface LinkObject {
-  id: string;
+export interface LinkEntry extends BaseNodeEntry {
   type: "link";
-  label: string;
   image: string;
   url: string;
 }
 
-export interface LinkEntry {
-  id: string;
-  parentId: string | null;
-  type: "link";
-  label: string;
-  image: string;
-  url: string;
-}
-
-export interface EasterEggObject {
-  id: string;
+export interface EasterEggEntry extends BaseNodeEntry {
   type: "easter-egg";
-  label: string;
-  image: string[];
-  currentImageIndex: number;
-  isBroken: boolean;
-}
-export interface EasterEggEntry {
-  id: string;
-  parentId: string | null;
-  type: "easter-egg";
-  label: string;
   image: string[];
   currentImageIndex: number;
   isBroken: boolean;
 }
 
-export interface TerminalObject {
-  id: string;
-  type: "terminal";
-  label: string;
-  // image: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
-export interface TerminalEntry {
-  id: string;
-  parentId: string | null;
-  type: "terminal";
-  label: string;
-  // image: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
-export interface GameObject {
-  id: string;
-  type: "game";
-  label: string;
-  image: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
-export interface GameEntry {
-  id: string;
-  parentId: string | null;
-  type: "game";
-  label: string;
-  image: string;
-  componentKey?: string; // Optional custom component identifier
-}
-
+// UNION TYPES
 export type NodeObject =
   | DirectoryObject
-  | IconObject
+  | ApplicationObject
   | LinkObject
-  | EasterEggObject
-  | TerminalObject
-  | BrowserObject
-  | DocumentObject
-  | AchievementObject
-  | GameObject
-  | AppObject;
-
-// OPERATIONAL MAP TYPES - Discriminated Union Interfaces
-
+  | EasterEggObject;
 export type NodeEntry =
   | DirectoryEntry
-  | IconEntry
+  | ApplicationEntry
   | LinkEntry
-  | EasterEggEntry
-  | TerminalEntry
-  | BrowserEntry
-  | DocumentEntry
-  | AchievementEntry
-  | GameEntry
-  | AppEntry;
+  | EasterEggEntry;
 
+// NODE MAP TYPE
 export interface NodeMap {
   [id: string]: NodeEntry;
 }

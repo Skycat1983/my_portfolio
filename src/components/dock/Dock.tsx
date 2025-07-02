@@ -100,60 +100,6 @@ const Dock: React.FC = () => {
 
   const dockNodes = getChildrenByParentID(dockRootId);
 
-  // Hardcoded dock items with proper images
-  // const dockItems: DockItemData[] = [
-  //   {
-  //     id: "browser",
-  //     label: "Browser",
-  //     image: operatingSystem === "mac" ? SAFARI : EDGE,
-  //     nodeId: "browser",
-  //   },
-  //   {
-  //     id: "email",
-  //     label: "Email",
-  //     icon: <Mail size={32} className="text-blue-400" />,
-  //     onClick: () => window.open("mailto:", "_blank"),
-  //   },
-
-  //   {
-  //     id: "new-document",
-  //     label: "New Document",
-  //     image: DOCUMENT,
-  //     nodeId: "new-document",
-  //   },
-  //   {
-  //     id: "achievements",
-  //     label: "Achievements",
-  //     image: TROPHY1,
-  //     nodeId: "achievements",
-  //   },
-  //   {
-  //     id: "gtavi",
-  //     label: "GTAVI",
-  //     image: GTA6_LOGO,
-  //     nodeId: "gtaiv",
-  //   },
-
-  //   {
-  //     id: "geo-game",
-  //     label: "Flag Quest",
-  //     image: PLANET,
-  //     nodeId: "geo",
-  //   },
-  //   {
-  //     id: "terminal",
-  //     label: "Terminal",
-  //     image: TERMINAL,
-  //     nodeId: "terminal",
-  //   },
-  //   {
-  //     id: "trash",
-  //     label: "Trash",
-  //     image: BIN_EMPTY, // Could dynamically switch to BIN_FULL if trash has items
-  //     nodeId: "trash",
-  //   },
-  // ];
-
   const mobileDockItems: DockItemData[] = [
     {
       id: "phone",
@@ -216,26 +162,28 @@ const Dock: React.FC = () => {
       }
 
       // Handle specific node types with their proper starting values
-      if (node.type === "browser") {
+      if (node.type === "application" && node.componentKey === "browser") {
         const startPageUrl = "";
         openWindow(node as WindowedNode, startPageUrl);
-      } else if (node.type === "terminal") {
+      } else if (
+        node.type === "application" &&
+        node.componentKey === "terminal"
+      ) {
         openWindow(node as WindowedNode, node.id);
-      } else if (node.type === "achievement") {
+      } else if (
+        node.type === "application" &&
+        node.componentKey === "achievements"
+      ) {
         // Reset the notification counter when achievement is opened
         if (unseenAchievements > 0) {
           markAchievementsAsSeen();
         }
         unlockAccessAchievements();
         openWindow(node as WindowedNode, node.id);
-      } else if (node.type === "game") {
+      } else if (node.type === "application") {
         openWindow(node as WindowedNode, node.label);
       } else if (node.type === "directory") {
         openWindow(node as WindowedNode, node.label);
-      } else if (node.type !== "icon") {
-        // For any other windowed nodes
-        const windowedNode = node as WindowedNode;
-        openWindow(windowedNode, node.label);
       }
     }
   };

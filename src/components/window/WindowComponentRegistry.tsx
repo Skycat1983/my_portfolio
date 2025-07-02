@@ -5,6 +5,9 @@ import { Finder } from "../apps/finder/Finder";
 import { TerminalContent } from "../apps/terminal/TerminalContent";
 import { BrowserContent } from "../apps/browser/BrowserContent";
 import type { WindowContentProps } from "../../types/storeTypes";
+import { GeoGame } from "../apps/games/GeoGame/GeoGame";
+import GTAVI from "../apps/games/GTAVI/GTAVI";
+import { AchievementContent } from "../apps/achievements/AchievementContent";
 
 // Component registry mapping component keys to React components
 // Note: Components can define their own prop interfaces
@@ -17,6 +20,10 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   terminal: TerminalContent,
   browser: BrowserContent,
   whatsApp: WhatsAppMain,
+  directory: Finder,
+  geoGame: GeoGame,
+  gtaVi: GTAVI,
+  achievements: AchievementContent,
 };
 
 // Type-safe function to get component by key

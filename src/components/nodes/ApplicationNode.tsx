@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
 
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { AppEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
   imageSize,
@@ -11,8 +10,9 @@ import {
   tileWrapper,
 } from "./node.styles";
 import { titleBase } from "./node.styles";
+import type { ApplicationEntry } from "../../types/nodeTypes";
 
-type Props = { app: AppEntry };
+type Props = { app: ApplicationEntry };
 
 export const AppNode = ({ app }: Props) => {
   const { id, componentKey } = app;

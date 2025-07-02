@@ -11,15 +11,15 @@ import {
   JL1,
   IMAGE1,
   PDF,
-  REACT,
-  TYPESCRIPT,
-  NODEJS,
-  MONGODB,
-  JEST,
-  POSTMAN,
-  TAILWIND,
-  FIREBASE,
-  JAVASCRIPT,
+  // REACT,
+  // TYPESCRIPT,
+  // NODEJS,
+  // MONGODB,
+  // JEST,
+  // POSTMAN,
+  // TAILWIND,
+  // FIREBASE,
+  // JAVASCRIPT,
   EGG_BROKEN,
   TROPHY1,
   GTA6_LOGO,
@@ -32,6 +32,7 @@ import {
   FOLDER_MAC,
   WHATSAPP,
 } from "./images";
+import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
 
@@ -44,46 +45,60 @@ const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
  * Objects are intuitive to write/read, Maps enable advanced desktop functionality
  */
 
+type NodeType = "easter-egg" | "application" | "directory" | "link";
+
 export interface BaseNodeObject {
   id: string;
-  type: string;
+  type: NodeType;
   label: string;
   image: string;
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
 }
 
 export interface BaseNodeEntry {
   id: string;
   parentId: string | null;
-  type: string;
+  type: NodeType;
   label: string;
   image: string;
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
 }
 
 // HUMAN-READABLE DATA DEFINITION - UNIFIED ROOT STRUCTURE
 export const rootNodes: DirectoryObject = {
   id: "system-root",
   type: "directory",
+  image: FOLDER_MAC,
+  componentKey: "finder",
   label: "System",
   children: [
     {
       id: "desktop-root",
       type: "directory",
+      image: FOLDER_MAC,
+      componentKey: "finder",
       label: "Desktop",
       children: [
         {
           id: "browser",
           label: "Internet",
-          type: "browser",
+          type: "application",
+          image: SAFARI,
+          componentKey: "browser",
         },
         {
           id: "terminal",
           label: "Terminal",
-          type: "terminal",
+          type: "application",
+          image: TERMINAL,
+          componentKey: "terminal",
         },
         {
           id: "trash",
           label: "Trash",
           type: "directory",
+          image: FOLDER_MAC,
+          componentKey: "finder",
           children: [
             {
               id: "egg",
@@ -99,11 +114,15 @@ export const rootNodes: DirectoryObject = {
           id: "portfolio",
           label: "Portfolio",
           type: "directory",
+          image: FOLDER_MAC,
+          componentKey: "finder",
           children: [
             {
               id: "laoutaris",
               label: "Laoutaris",
               type: "directory",
+              image: FOLDER_MAC,
+              componentKey: "finder",
               children: [
                 {
                   id: "laoutaris_code",
@@ -125,6 +144,8 @@ export const rootNodes: DirectoryObject = {
               id: "robocrop", // TODO: change to robo-crop
               label: "RoboCrop",
               type: "directory",
+              image: FOLDER_MAC,
+              componentKey: "finder",
               children: [
                 {
                   id: "roboCrop_code",
@@ -146,6 +167,8 @@ export const rootNodes: DirectoryObject = {
               id: "skynot",
               label: "SkyNot",
               type: "directory",
+              image: FOLDER_MAC,
+              componentKey: "finder",
               children: [
                 {
                   id: "SkyNot_code",
@@ -167,6 +190,8 @@ export const rootNodes: DirectoryObject = {
               id: "dashboard",
               label: "Dashboard",
               type: "directory",
+              image: FOLDER_MAC,
+              componentKey: "finder",
               children: [
                 {
                   id: "Dashboard_code",
@@ -179,80 +204,13 @@ export const rootNodes: DirectoryObject = {
             },
           ],
         },
-        {
-          id: "stack",
-          label: "Stack",
-          type: "directory",
-          children: [
-            {
-              id: "react",
-              label: "React",
-              image: REACT,
-              type: "icon",
-              info: "React is a JavaScript library for building user interfaces.",
-            },
-            {
-              id: "typescript",
-              label: "TypeScript",
-              image: TYPESCRIPT,
-              type: "icon",
-              info: "TypeScript is a superset of JavaScript that adds static typing.",
-            },
-            {
-              id: "nodejs",
-              label: "Node.js",
-              image: NODEJS,
-              type: "icon",
-              info: "Node.js is a runtime environment for executing JavaScript code outside of a browser.",
-            },
-            {
-              id: "mongodb",
-              label: "MongoDB",
-              image: MONGODB,
-              type: "icon",
-              info: "MongoDB is a NoSQL database that uses JSON-like documents with schemas.",
-            },
-            {
-              id: "jest",
-              label: "Jest",
-              image: JEST,
-              type: "icon",
-              info: "Jest is a JavaScript testing framework.",
-            },
-            {
-              id: "postman",
-              label: "Postman",
-              image: POSTMAN,
-              type: "icon",
-              info: "Postman is a tool for testing APIs.",
-            },
-            {
-              id: "tailwind",
-              label: "Tailwind",
-              image: TAILWIND,
-              type: "icon",
-              info: "Tailwind is a CSS framework.",
-            },
-            {
-              id: "firebase",
-              label: "Firebase",
-              image: FIREBASE,
-              type: "icon",
-              info: "Firebase is a backend as a service platform.",
-            },
-            {
-              id: "javascript",
-              label: "JavaScript",
-              image: JAVASCRIPT,
-              type: "icon",
-              info: "JavaScript is a programming language.",
-            },
-          ],
-        },
+
         {
           id: "documents",
           label: "Documents",
           type: "directory",
+          image: FOLDER_MAC,
+          componentKey: "finder",
           children: [
             {
               id: "resume",
@@ -281,38 +239,43 @@ export const rootNodes: DirectoryObject = {
           id: "games",
           label: "Games",
           type: "directory",
+          image: FOLDER_MAC,
+          componentKey: "finder",
           children: [
             {
               id: "gtaiv",
               label: "GTAVI",
-              type: "game",
+              type: "application",
               image: GTA6_LOGO,
+              componentKey: "gtaVi",
             },
             {
               id: "geo",
               label: "Flag Quest",
-              type: "game",
+              type: "application",
               image: PLANET,
+              componentKey: "geoGame",
             },
           ],
         },
         {
           id: "achievements",
           label: "Achievements",
-          type: "achievement",
+          type: "application",
           image: TROPHY1,
+          componentKey: "achievements",
         },
         {
           id: "pages",
           label: "Pages",
+          type: "application",
           image: DOCUMENT,
-          type: "document",
           componentKey: "documentEditor",
         },
         {
           id: "whatsapp",
           label: "WhatsApp",
-          type: "app",
+          type: "application",
           image: WHATSAPP,
           componentKey: "whatsApp",
         },
@@ -328,42 +291,50 @@ export const rootNodes: DirectoryObject = {
         {
           id: "finder",
           label: "Finder",
-          type: "app",
+          type: "directory",
           image: FINDER,
           componentKey: "finder",
+          children: [],
         },
+        // {
+        //   id: "finder",
+        //   label: "Finder",
+        //   type: "app",
+        //   image: FINDER,
+        //   componentKey: "finder",
+        // },
         {
           id: "maps",
           label: "Maps",
-          type: "app",
+          type: "application",
           image: MAPS,
           componentKey: "maps",
         },
         {
           id: "pages-dock",
           label: "Pages",
-          type: "app",
+          type: "application",
           image: DOCUMENT,
           componentKey: "documentEditor",
         },
         {
           id: "achievements-dock",
           label: "Achievements",
-          type: "app",
+          type: "application",
           image: TROPHY1,
           componentKey: "achievements",
         },
         {
           id: "terminal-dock",
           label: "Terminal",
-          type: "app",
+          type: "application",
           image: TERMINAL,
           componentKey: "terminal",
         },
         {
           id: "browser-dock",
           label: "Internet",
-          type: "app",
+          type: "application",
           image: SAFARI,
           componentKey: "browser",
         },
@@ -389,3 +360,74 @@ export const { nodeMap: defaultNodeMap, rootId: defaultRootId } =
 // Legacy support - desktop root ID for components that expect it
 export const desktopRootId = "desktop-root";
 export const dockRootId = "dock-root";
+
+// {
+//   id: "stack",
+//   label: "Stack",
+//   type: "directory",
+//   children: [
+//     {
+//       id: "react",
+//       label: "React",
+//       image: REACT,
+//       type: "icon",
+//       info: "React is a JavaScript library for building user interfaces.",
+//     },
+//     {
+//       id: "typescript",
+//       label: "TypeScript",
+//       image: TYPESCRIPT,
+//       type: "icon",
+//       info: "TypeScript is a superset of JavaScript that adds static typing.",
+//     },
+//     {
+//       id: "nodejs",
+//       label: "Node.js",
+//       image: NODEJS,
+//       type: "icon",
+//       info: "Node.js is a runtime environment for executing JavaScript code outside of a browser.",
+//     },
+//     {
+//       id: "mongodb",
+//       label: "MongoDB",
+//       image: MONGODB,
+//       type: "icon",
+//       info: "MongoDB is a NoSQL database that uses JSON-like documents with schemas.",
+//     },
+//     {
+//       id: "jest",
+//       label: "Jest",
+//       image: JEST,
+//       type: "icon",
+//       info: "Jest is a JavaScript testing framework.",
+//     },
+//     {
+//       id: "postman",
+//       label: "Postman",
+//       image: POSTMAN,
+//       type: "icon",
+//       info: "Postman is a tool for testing APIs.",
+//     },
+//     {
+//       id: "tailwind",
+//       label: "Tailwind",
+//       image: TAILWIND,
+//       type: "icon",
+//       info: "Tailwind is a CSS framework.",
+//     },
+//     {
+//       id: "firebase",
+//       label: "Firebase",
+//       image: FIREBASE,
+//       type: "icon",
+//       info: "Firebase is a backend as a service platform.",
+//     },
+//     {
+//       id: "javascript",
+//       label: "JavaScript",
+//       image: JAVASCRIPT,
+//       type: "icon",
+//       info: "JavaScript is a programming language.",
+//     },
+//   ],
+// },
