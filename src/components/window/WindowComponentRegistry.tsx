@@ -9,6 +9,7 @@ import { GeoGame } from "../applications/geoGame/GeoGame";
 import GTAVI from "../applications/GTAVI/GTAVI";
 import { AchievementContent } from "../applications/achievements/AchievementContent";
 import { Map } from "../applications/map/Map";
+import Calculator from "../applications/calculator/Calculator";
 
 // Component registry mapping component keys to React components
 // Note: Components can define their own prop interfaces
@@ -26,6 +27,7 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   gtaVi: GTAVI,
   achievements: AchievementContent,
   maps: Map,
+  calculator: Calculator,
 };
 
 // Type-safe function to get component by key

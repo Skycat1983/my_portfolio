@@ -28,8 +28,17 @@ import FOLDER_MAC from "../assets/icons_m/folder_os.png";
 import FOLDER_WINDOWS from "../assets/icons_m/folder_ms.png";
 import FINDER from "../assets/icons_m/finder_large.png";
 import MAPS from "../assets/icons_m/maps.png";
+import CALCULATOR from "../assets/icons_m/calculator.png";
 
-export { BIN_EMPTY, BIN_FULL, FOLDER_MAC, FOLDER_WINDOWS, FINDER, MAPS };
+export {
+  BIN_EMPTY,
+  BIN_FULL,
+  FOLDER_MAC,
+  FOLDER_WINDOWS,
+  FINDER,
+  MAPS,
+  CALCULATOR,
+};
 
 // Apps
 import TERMINAL from "../assets/icons_m/terminal.png";

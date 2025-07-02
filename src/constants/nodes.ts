@@ -28,6 +28,7 @@ import {
   PAGES,
   WORD,
   LINKEDIN,
+  CALCULATOR,
 } from "./images";
 import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
@@ -379,6 +380,14 @@ export const rootNodes: DirectoryObject = {
           image: MAPS,
           alternativeImage: null,
           componentKey: "maps",
+        },
+        {
+          id: "calculator",
+          label: "Calculator",
+          type: "application",
+          image: CALCULATOR,
+          alternativeImage: null,
+          componentKey: "calculator",
         },
         {
           id: "pages-dock",
