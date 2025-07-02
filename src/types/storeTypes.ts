@@ -1,4 +1,9 @@
-import type { DirectoryEntry, NodeEntry, NodeMap } from "./nodeTypes";
+import type {
+  ApplicationEntry,
+  DirectoryEntry,
+  NodeEntry,
+  NodeMap,
+} from "./nodeTypes";
 import type {
   OperatingSystem,
   ScreenDimensions,
@@ -15,7 +20,7 @@ export interface WindowContentProps {
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
   //! Core window properties
-  windowId: string;
+  windowId: ApplicationEntry["id"];
   title: string;
   nodeId: NodeEntry["id"];
   nodeType: string;

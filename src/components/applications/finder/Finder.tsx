@@ -40,6 +40,7 @@ export const Finder = ({
         onChangeView={setView}
         input={input}
         setInput={setInput}
+        windowId={windowId}
       />
       <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
         <FinderBody

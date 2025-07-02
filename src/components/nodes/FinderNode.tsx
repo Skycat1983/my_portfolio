@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useNewStore } from "../../hooks/useStore";
 import { useNodeEvents } from "./hooks/useNodeEvents";
+import { useFinderHistory } from "../applications/finder/hooks/useFinderHistory";
 import type { DirectoryEntry } from "../../types/nodeTypes";
 import {
   containerClasses,
@@ -38,9 +39,10 @@ export const FinderNode = ({
     (s) => s.openWindowWithComponentKey
   );
   const focusWindow = useNewStore((s) => s.focusWindow);
-  const updateWindowById = useNewStore((s) => s.updateWindowById);
   const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
-  const window = useNewStore((s) => s.getWindowById(windowId));
+
+  // Always call the hook (React rules), but only use when in window context
+  const finderHistory = useFinderHistory(windowId || "dummy");
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -53,20 +55,17 @@ export const FinderNode = ({
 
     // Context-aware navigation logic
     if (layout === "desktop" || !windowId) {
+      // Desktop context: open new window
       openWindowWithComponentKey(
         nodeEntry,
         nodeEntry.id,
         nodeEntry.componentKey
       );
     } else {
-      const newHistoryIndex = (window?.currentHistoryIndex ?? 0) + 1;
-      const success = updateWindowById(windowId, {
-        nodeId: nodeEntry.id,
-        title: nodeEntry.label,
-        itemHistory: [...(window?.itemHistory || []), nodeEntry.id],
-        currentHistoryIndex: newHistoryIndex,
-      });
+      // Window context: use finder history for navigation
+      const success = finderHistory.navigateToNode(nodeEntry.id);
       if (!success) {
+        // Fallback: open new window if navigation fails
         openWindowWithComponentKey(
           nodeEntry,
           nodeEntry.id,
@@ -80,8 +79,7 @@ export const FinderNode = ({
     windowId,
     openWindowWithComponentKey,
     focusWindow,
-    updateWindowById,
-    window,
+    finderHistory,
     nodeEntry,
   ]);
 

@@ -9,6 +9,7 @@ type FinderHeaderProps = {
   onChangeView: (v: "icons" | "list" | "columns") => void;
   input: string;
   setInput: (v: string) => void;
+  windowId: string;
 };
 
 export const FinderHeader: React.FC<FinderHeaderProps> = ({
@@ -17,10 +18,11 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
   onChangeView,
   input,
   setInput,
+  windowId,
 }) => {
   return (
     <div className="flex flex-row h-auto items-center justify-between gap-10 bg-black p-2">
-      <FinderNavigation windowId="finder" />
+      <FinderNavigation windowId={windowId} />
 
       <Input
         placeholder="Search"

@@ -1,8 +1,8 @@
 import React from "react";
 
 import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
-import { useWindowHistory } from "../../window/hooks/useWindowHistory";
-import { useNewStore } from "../../../hooks/useStore";
+import { useWindowHistory } from "../window/hooks/useWindowHistory";
+import { useNewStore } from "../../hooks/useStore";
 
 interface DirectoryNavigationProps {
   windowId: string;

@@ -1,13 +1,13 @@
 import React from "react";
-import { DocumentEditor } from "../apps/document/DocumentEditor";
-import { WhatsAppMain } from "../apps/whatsApp/WhatsAppMain";
-import { Finder } from "../apps/finder/Finder";
-import { TerminalContent } from "../apps/terminal/TerminalContent";
-import { BrowserContent } from "../apps/browser/BrowserContent";
+import { DocumentEditor } from "../applications/document/DocumentEditor";
+import { WhatsAppMain } from "../applications/whatsApp/WhatsAppMain";
+import { Finder } from "../applications/finder/Finder";
+import { TerminalContent } from "../applications/terminal/TerminalContent";
+import { BrowserContent } from "../applications/browser/BrowserContent";
 import type { WindowContentProps } from "../../types/storeTypes";
-import { GeoGame } from "../apps/games/GeoGame/GeoGame";
-import GTAVI from "../apps/games/GTAVI/GTAVI";
-import { AchievementContent } from "../apps/achievements/AchievementContent";
+import { GeoGame } from "../applications/games/GeoGame/GeoGame";
+import GTAVI from "../applications/games/GTAVI/GTAVI";
+import { AchievementContent } from "../applications/achievements/AchievementContent";
 
 // Component registry mapping component keys to React components
 // Note: Components can define their own prop interfaces

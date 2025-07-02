@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
-import { useWindowHistory } from "../../window/hooks/useWindowHistory";
+import { useFinderHistory } from "./hooks/useFinderHistory";
 import { useNewStore } from "../../../hooks/useStore";
 
 interface FinderNavigationProps {
@@ -18,26 +18,22 @@ export const FinderNavigation: React.FC<FinderNavigationProps> = ({
   const nodeId = window?.nodeId;
   const isTrashWindow = nodeId === "trash";
 
-  const {
-    canGoBackInWindowHistory,
-    canGoForwardInWindowHistory,
-    handleGoBackInWindowHistory,
-    handleGoForwardInWindowHistory,
-  } = useWindowHistory(windowId);
+  const { canGoBack, canGoForward, goBack, goForward } =
+    useFinderHistory(windowId);
 
   const handleBack = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (canGoBackInWindowHistory(windowId)) {
-      handleGoBackInWindowHistory();
+    if (canGoBack) {
+      goBack();
     }
   };
 
   const handleForward = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (canGoForwardInWindowHistory(windowId)) {
-      handleGoForwardInWindowHistory();
+    if (canGoForward) {
+      goForward();
     }
   };
 
@@ -86,7 +82,7 @@ export const FinderNavigation: React.FC<FinderNavigationProps> = ({
         className={`
           ${buttonSize} rounded transition-colors touch-manipulation
           ${
-            canGoBackInWindowHistory(windowId)
+            canGoBack
               ? "bg-white hover:bg-gray-100 border-gray-300 cursor-pointer active:scale-95"
               : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-50"
           }
@@ -95,9 +91,7 @@ export const FinderNavigation: React.FC<FinderNavigationProps> = ({
         <ChevronLeft
           size={iconSize}
           className={
-            canGoBackInWindowHistory(windowId)
-              ? "text-gray-700 dark:text-gray-300"
-              : "text-gray-400"
+            canGoBack ? "text-gray-700 dark:text-gray-300" : "text-gray-400"
           }
         />
       </div>
@@ -113,7 +107,7 @@ export const FinderNavigation: React.FC<FinderNavigationProps> = ({
         className={`
           ${buttonSize} rounded transition-colors touch-manipulation
           ${
-            canGoForwardInWindowHistory(windowId)
+            canGoForward
               ? "bg-white hover:bg-gray-100 border-gray-300 cursor-pointer active:scale-95"
               : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-50"
           }
@@ -122,9 +116,7 @@ export const FinderNavigation: React.FC<FinderNavigationProps> = ({
         <ChevronRight
           size={iconSize}
           className={
-            canGoForwardInWindowHistory(windowId)
-              ? "text-gray-700 dark:text-gray-300"
-              : "text-gray-400"
+            canGoForward ? "text-gray-700 dark:text-gray-300" : "text-gray-400"
           }
         />
       </div>

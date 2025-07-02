@@ -45,9 +45,6 @@ export const NodeSwitch = ({
         <ApplicationNode key={node.id} application={node as ApplicationEntry} />
       );
 
-    // case "directory":
-    //   return <ApplicationNode key={node.id} application={node as DirectoryEntry} />;
-
     default:
       console.warn("Unknown node type:", node);
       return null;

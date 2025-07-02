@@ -2,8 +2,8 @@ import React from "react";
 import { useWindowResize } from "./hooks/useWindowResize";
 import { WindowHeader } from "./WindowHeader";
 import type { WindowType } from "../../types/storeTypes";
-import { WindowContent } from "./WindowContent";
 import { useNewStore } from "../../hooks/useStore";
+import { getWindowComponent } from "./WindowComponentRegistry";
 
 interface ResizableWindowProps {
   window: WindowType;
@@ -16,6 +16,8 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
 }) => {
   const {
     windowId,
+    nodeId,
+    componentKey,
     title,
     width,
     height,
@@ -28,9 +30,11 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   const { onResizeStart } = useWindowResize(window.windowId);
   const focusWindow = useNewStore((s) => s.focusWindow);
 
-  if (isMinimized) {
+  if (isMinimized || !componentKey) {
     return null;
   }
+
+  const RegistryComponent = getWindowComponent(componentKey);
 
   const windowStyle = isMaximized
     ? {
@@ -62,15 +66,19 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
       }}
     >
       {/* Window Header with drag functionality */}
-      <WindowHeader
-        windowId={windowId}
-        title={title}
-        nodeType={window.nodeType}
-      />
+      <WindowHeader windowId={windowId} title={title} />
 
       {/* Window Content */}
       <div className="pt-9 h-full overflow-auto bg-neutral-600">
-        <WindowContent window={window} />
+        {RegistryComponent ? (
+          <RegistryComponent
+            windowId={windowId}
+            nodeId={nodeId}
+            window={window}
+          />
+        ) : (
+          <div>No component found</div>
+        )}
       </div>
 
       {/* Resize Handles - only show when not maximized */}

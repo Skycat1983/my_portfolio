@@ -3,6 +3,7 @@ import type { SetState, GetState } from "../../types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
 import type { NodeEntry } from "../../types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
+import type { HistorySlice } from "../contentState/historySlice";
 
 // Simplified windowed node type - only directories and applications can open windows
 export type WindowedNode = Exclude<NodeEntry, { type: "easter-egg" | "link" }>;
@@ -106,7 +107,8 @@ export interface WindowOperationsActions {
 
 export type WindowOperationsSlice = WindowCrudSlice &
   WindowOperationsActions &
-  SystemSlice;
+  SystemSlice &
+  HistorySlice;
 
 // Window operations slice - builds ID-based operations from predicate-based CRUD
 export const createWindowOperationsSlice = (
@@ -312,11 +314,37 @@ export const createWindowOperationsSlice = (
   },
 
   /**
-   * Close a window (alias for deleteWindowById for API consistency)
+   * Close a window and clean up associated history
    */
   closeWindow: (windowId: WindowType["windowId"]): void => {
     console.log("closeWindow: closing window", windowId);
-    get().deleteOneWindow((window: WindowType) => window.windowId === windowId);
+
+    const state = get();
+
+    // Clean up finder history for this window if it exists
+    const finderHistoryId = `finder-${windowId}`;
+    if (state.historyExists(finderHistoryId)) {
+      console.log("closeWindow: cleaning up finder history", finderHistoryId);
+      state.deleteHistory(finderHistoryId);
+    }
+
+    const browserHistoryId = `browser-${windowId}`;
+    if (state.historyExists(browserHistoryId)) {
+      console.log("closeWindow: cleaning up browser history", browserHistoryId);
+      state.deleteHistory(browserHistoryId);
+    }
+
+    const terminalHistoryId = `terminal-${windowId}`;
+    if (state.historyExists(terminalHistoryId)) {
+      console.log(
+        "closeWindow: cleaning up terminal history",
+        terminalHistoryId
+      );
+      state.deleteHistory(terminalHistoryId);
+    }
+
+    // Finally, delete the window itself
+    state.deleteOneWindow((window: WindowType) => window.windowId === windowId);
   },
 
   /**

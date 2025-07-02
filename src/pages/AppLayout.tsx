@@ -9,7 +9,7 @@ import { useScreenMonitor } from "../hooks/useScreenSize";
 import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
-import { DirectoryContent } from "../components/apps/directory/DirectoryContent";
+import { DirectoryContent } from "../components/applications/directory/DirectoryContent";
 import { desktopRootId } from "../constants/nodes";
 
 export const AppLayout = () => {
@@ -54,8 +54,8 @@ export const AppLayout = () => {
 
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
-          {/* <DirectoryLayout nodes={nodesToRender} /> */}
           <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} />
+          {/* <ListView nodes={nodes} /> */}
         </div>
 
         {openWindows.map((window) => (

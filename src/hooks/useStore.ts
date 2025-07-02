@@ -20,6 +20,10 @@ import {
   createDocumentRegistrySlice,
   type DocumentRegistrySlice,
 } from "../store/contentState/documentRegistrySlice";
+import {
+  createHistorySlice,
+  type HistorySlice,
+} from "../store/contentState/historySlice";
 
 import {
   createSystemSlice,
@@ -69,7 +73,8 @@ export interface NewDesktopStore
     GameSlice,
     SystemSlice,
     WeatherSlice,
-    DocumentRegistrySlice {}
+    DocumentRegistrySlice,
+    HistorySlice {}
 
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // {operating system}
@@ -96,4 +101,6 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createWeatherSlice(set),
   // {document registry}
   ...createDocumentRegistrySlice(set, get),
+  // {generic history management}
+  ...createHistorySlice(set, get),
 }));

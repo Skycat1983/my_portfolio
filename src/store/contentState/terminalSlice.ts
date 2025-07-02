@@ -12,8 +12,8 @@ interface TerminalState {
 
 interface TerminalActions {
   setCurrentWorkingDirectory: (directory: string) => void;
-  addToHistory: (command: string) => void;
-  clearHistory: () => void;
+  addTerminalCommand: (command: string) => void;
+  clearTerminalHistory: () => void;
   // Terminal filesystem commands
   resolvePath: (path: string, currentDir: string) => string | null;
   terminalLs: (
@@ -51,8 +51,8 @@ export const createTerminalSlice = (
     }));
   },
 
-  addToHistory: (command: string) => {
-    console.log("addToHistory in terminalSlice: adding command", command);
+  addTerminalCommand: (command: string) => {
+    console.log("addTerminalCommand in terminalSlice: adding command", command);
     set((state) => {
       const terminalState = state as BaseStoreState & TerminalState;
       return {
@@ -62,8 +62,8 @@ export const createTerminalSlice = (
     });
   },
 
-  clearHistory: () => {
-    console.log("clearHistory in terminalSlice: clearing history");
+  clearTerminalHistory: () => {
+    console.log("clearTerminalHistory in terminalSlice: clearing history");
     set((state) => ({
       ...state,
       terminalHistory: [],
