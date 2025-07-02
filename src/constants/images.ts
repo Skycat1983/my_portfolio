@@ -25,11 +25,11 @@ export { MAXIMIZE_MAC, DEMAXIMIZE_MAC };
 import BIN_EMPTY from "../assets/icons_m/bin_empty.png";
 import BIN_FULL from "../assets/icons_m/bin_full.png";
 import FOLDER_MAC from "../assets/icons_m/folder_os.png";
-import FOLDER_WIN from "../assets/icons_m/folder_ms.png";
+import FOLDER_WINDOWS from "../assets/icons_m/folder_ms.png";
 import FINDER from "../assets/icons_m/finder.png";
 import MAPS from "../assets/icons_m/maps.png";
 
-export { BIN_EMPTY, BIN_FULL, FOLDER_MAC, FOLDER_WIN, FINDER, MAPS };
+export { BIN_EMPTY, BIN_FULL, FOLDER_MAC, FOLDER_WINDOWS, FINDER, MAPS };
 
 // Apps
 import TERMINAL from "../assets/icons_m/terminal.png";
@@ -111,9 +111,10 @@ export { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3, EGG_BROKEN };
 import PDF from "../assets/icons_m/pdf.png";
 import IMAGE1 from "../assets/icons_m/image1.png";
 import IMAGE2 from "../assets/icons_m/image2.png";
-import DOCUMENT from "../assets/icons_m/document.png";
+import PAGES from "../assets/icons_m/document.png";
+import WORD from "../assets/icons_m/word.png";
 
-export { PDF, IMAGE1, IMAGE2, DOCUMENT };
+export { PDF, IMAGE1, IMAGE2, PAGES, WORD };
 
 // my portfolio icons
 import JL1 from "../assets/icons_m/JL1.png";

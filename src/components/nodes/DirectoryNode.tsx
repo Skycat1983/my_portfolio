@@ -10,12 +10,7 @@ import {
   titleBase,
   tileFrame,
 } from "./node.styles";
-import {
-  BIN_EMPTY,
-  BIN_FULL,
-  FOLDER_MAC,
-  FOLDER_WIN,
-} from "../../constants/images";
+import { BIN_EMPTY, BIN_FULL, FINDER } from "../../constants/images";
 
 type LayoutType = "desktop" | "window";
 
@@ -92,7 +87,10 @@ export const DirectoryNode = ({
   // ─────────── image resolution logic ───────────
   console.log("directory", nodeEntry);
 
-  let folderImage = operatingSystem === "mac" ? FOLDER_MAC : FOLDER_WIN;
+  let folderImage =
+    operatingSystem === "mac"
+      ? nodeEntry.image
+      : nodeEntry.alternativeImage ?? nodeEntry.image;
 
   if (nodeEntry.id === "trash") {
     folderImage = BIN_EMPTY;
@@ -100,6 +98,9 @@ export const DirectoryNode = ({
     if (nodeEntry.children.length > 0) {
       folderImage = BIN_FULL;
     }
+  }
+  if (nodeEntry.id === "finder") {
+    folderImage = FINDER;
   }
 
   // ─────────── render ───────────

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import type { WindowType } from "../../../types/storeTypes";
 import { useNewStore } from "../../../hooks/useStore";
 import { desktopRootId } from "../../../constants/nodes";
-import { DOCUMENT } from "../../../constants/images";
+import { PAGES, WORD } from "../../../constants/images";
 
 // Import the new components
 import { DocumentHeader } from "./DocumentHeader";
 import { DocumentContent } from "./DocumentContent";
 import { DocumentFooter } from "./DocumentFooter";
+import type { ApplicationEntry } from "../../../types/nodeTypes";
 
 type TextAlignment = "left" | "center" | "right";
 
@@ -213,7 +214,8 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
 
       if (currentNode) {
         // Get image from current node if it has one, otherwise use default document image
-        const documentImage = DOCUMENT;
+        const documentImage = PAGES;
+        const documentAlternativeImage = WORD;
 
         // Generate unique label for the document
         const uniqueLabel = generateUniqueLabel(documentLabel, desktopRootId);
@@ -221,9 +223,11 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
         const newDocumentNode = {
           id: savedDocumentId,
           parentId: desktopRootId, // Save to root directory
-          type: "document" as const,
+          type: "application" as const,
           label: uniqueLabel,
           image: documentImage,
+          alternativeImage: documentAlternativeImage,
+          componentKey: "documentEditor",
           documentConfigId: configId, // Link to the saved configuration
         };
 
@@ -233,7 +237,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
           "with label",
           uniqueLabel
         );
-        createOneNode(newDocumentNode);
+        createOneNode(newDocumentNode as ApplicationEntry);
 
         // Update current window to reference the saved document
         updateWindowById(windowData.windowId, {

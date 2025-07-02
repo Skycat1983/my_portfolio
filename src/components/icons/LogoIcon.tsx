@@ -12,6 +12,7 @@ export const Logo = () => {
     (operatingSystem === "mac" ? " cursor-pointer  w-6 h-6" : " w-8 h-8");
 
   const handleClick = () => {
+    console.log("LogoIcon: handleClick");
     toggleOS();
     unlockOperatingSystemAchievement();
   };

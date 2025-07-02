@@ -8,6 +8,8 @@ export interface BaseNodeObject {
   id: string;
   type: NodeType;
   label: string;
+  image?: string;
+  alternativeImage: string | null; // For state-dependent icon switching (null = no alternative)
 }
 
 export interface BaseNodeEntry extends BaseNodeObject {
@@ -18,6 +20,7 @@ export interface BaseNodeEntry extends BaseNodeObject {
 export interface DirectoryObject extends BaseNodeObject {
   type: "directory";
   image: string; // Required for directories
+  alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   children: NodeObject[];
 }
@@ -25,17 +28,21 @@ export interface DirectoryObject extends BaseNodeObject {
 export interface ApplicationObject extends BaseNodeObject {
   type: "application";
   image: string; // Required for applications
+  alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
 }
 
 export interface LinkObject extends BaseNodeObject {
   type: "link";
   image: string; // Required for links
+  alternativeImage: string | null;
   url: string;
 }
 
-export interface EasterEggObject extends BaseNodeObject {
+export interface EasterEggObject {
+  id: string;
   type: "easter-egg";
+  label: string;
   image: string[]; // Array for easter eggs
   currentImageIndex: number;
   isBroken: boolean;
@@ -45,6 +52,7 @@ export interface EasterEggObject extends BaseNodeObject {
 export interface DirectoryEntry extends BaseNodeEntry {
   type: "directory";
   image: string;
+  alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   children: string[]; // Array of child IDs
 }
@@ -52,17 +60,22 @@ export interface DirectoryEntry extends BaseNodeEntry {
 export interface ApplicationEntry extends BaseNodeEntry {
   type: "application";
   image: string;
+  alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
 }
 
 export interface LinkEntry extends BaseNodeEntry {
   type: "link";
   image: string;
+  alternativeImage: string | null;
   url: string;
 }
 
-export interface EasterEggEntry extends BaseNodeEntry {
+export interface EasterEggEntry {
+  id: string;
+  parentId: string | null;
   type: "easter-egg";
+  label: string;
   image: string[];
   currentImageIndex: number;
   isBroken: boolean;

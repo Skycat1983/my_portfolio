@@ -8,7 +8,7 @@ import type {
 import { DirectoryNode } from "./DirectoryNode";
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
-import { AppNode } from "./ApplicationNode";
+import { ApplicationNode } from "./ApplicationNode";
 
 type LayoutType = "desktop" | "window";
 
@@ -41,7 +41,12 @@ export const NodeSwitch = ({
       return <LinkNode key={node.id} link={node as LinkEntry} />;
 
     case "application":
-      return <AppNode key={node.id} app={node as ApplicationEntry} />;
+      return (
+        <ApplicationNode key={node.id} application={node as ApplicationEntry} />
+      );
+
+    // case "directory":
+    //   return <ApplicationNode key={node.id} application={node as DirectoryEntry} />;
 
     default:
       console.warn("Unknown node type:", node);

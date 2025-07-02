@@ -23,6 +23,7 @@ export const convertMapToObjects = (
           type: "application",
           label: mapNode.label,
           image: mapNode.image,
+          alternativeImage: mapNode.alternativeImage ?? null,
           componentKey: mapNode.componentKey,
         };
 
@@ -32,6 +33,7 @@ export const convertMapToObjects = (
           type: "link",
           label: mapNode.label,
           image: mapNode.image,
+          alternativeImage: mapNode.alternativeImage ?? null,
           url: mapNode.url,
         } as LinkObject;
 
@@ -56,6 +58,7 @@ export const convertMapToObjects = (
           type: "directory",
           label: mapNode.label,
           image: mapNode.image,
+          alternativeImage: mapNode.alternativeImage ?? null,
           componentKey: mapNode.componentKey,
           children,
         };

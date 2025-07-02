@@ -26,6 +26,7 @@ export const convertObjectsToMap = (
           type: "directory",
           label: nodeObj.label,
           image: nodeObj.image,
+          alternativeImage: nodeObj.alternativeImage ?? null,
           componentKey: nodeObj.componentKey,
           children: [], // Will be populated below
         } as DirectoryEntry;
@@ -44,6 +45,7 @@ export const convertObjectsToMap = (
           type: "application",
           label: nodeObj.label,
           image: nodeObj.image,
+          alternativeImage: nodeObj.alternativeImage ?? null,
           componentKey: nodeObj.componentKey,
         } as ApplicationEntry;
         break;
@@ -55,6 +57,7 @@ export const convertObjectsToMap = (
           type: "link",
           label: nodeObj.label,
           image: nodeObj.image,
+          alternativeImage: nodeObj.alternativeImage ?? null,
           url: nodeObj.url,
         } as LinkEntry;
         break;

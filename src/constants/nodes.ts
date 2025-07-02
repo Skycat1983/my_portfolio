@@ -11,26 +11,22 @@ import {
   JL1,
   IMAGE1,
   PDF,
-  // REACT,
-  // TYPESCRIPT,
-  // NODEJS,
-  // MONGODB,
-  // JEST,
-  // POSTMAN,
-  // TAILWIND,
-  // FIREBASE,
-  // JAVASCRIPT,
   EGG_BROKEN,
   TROPHY1,
   GTA6_LOGO,
   PLANET,
-  DOCUMENT,
   FINDER,
   TERMINAL,
   SAFARI,
   MAPS,
   FOLDER_MAC,
+  FOLDER_WINDOWS,
   WHATSAPP,
+  EDGE,
+  BIN_FULL,
+  BIN_EMPTY,
+  PAGES,
+  WORD,
 } from "./images";
 import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
@@ -44,6 +40,8 @@ const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
  
  * Objects are intuitive to write/read, Maps enable advanced desktop functionality
  */
+
+// TODO: add one more type, something that consults function registry. this can be used for easter eggs but also for the 'send me email' thing
 
 type NodeType = "easter-egg" | "application" | "directory" | "link";
 
@@ -69,6 +67,7 @@ export const rootNodes: DirectoryObject = {
   id: "system-root",
   type: "directory",
   image: FOLDER_MAC,
+  alternativeImage: null,
   componentKey: "finder",
   label: "System",
   children: [
@@ -76,6 +75,7 @@ export const rootNodes: DirectoryObject = {
       id: "desktop-root",
       type: "directory",
       image: FOLDER_MAC,
+      alternativeImage: null,
       componentKey: "finder",
       label: "Desktop",
       children: [
@@ -84,6 +84,7 @@ export const rootNodes: DirectoryObject = {
           label: "Internet",
           type: "application",
           image: SAFARI,
+          alternativeImage: EDGE,
           componentKey: "browser",
         },
         {
@@ -91,13 +92,15 @@ export const rootNodes: DirectoryObject = {
           label: "Terminal",
           type: "application",
           image: TERMINAL,
+          alternativeImage: null,
           componentKey: "terminal",
         },
         {
           id: "trash",
           label: "Trash",
           type: "directory",
-          image: FOLDER_MAC,
+          image: BIN_EMPTY,
+          alternativeImage: BIN_FULL,
           componentKey: "finder",
           children: [
             {
@@ -115,6 +118,7 @@ export const rootNodes: DirectoryObject = {
           label: "Portfolio",
           type: "directory",
           image: FOLDER_MAC,
+          alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
           children: [
             {
@@ -122,12 +126,14 @@ export const rootNodes: DirectoryObject = {
               label: "Laoutaris",
               type: "directory",
               image: FOLDER_MAC,
+              alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
               children: [
                 {
                   id: "laoutaris_code",
                   label: "Code",
                   image: GITHUB,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/laoutaris-nextjs",
                 },
@@ -135,6 +141,7 @@ export const rootNodes: DirectoryObject = {
                   id: "laoutaris_website",
                   label: "Website",
                   image: JL1,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://laoutaris-nextjs.vercel.app/",
                 },
@@ -145,12 +152,14 @@ export const rootNodes: DirectoryObject = {
               label: "RoboCrop",
               type: "directory",
               image: FOLDER_MAC,
+              alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
               children: [
                 {
                   id: "roboCrop_code",
                   label: "Code",
                   image: GITHUB,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/RoboCrop",
                 },
@@ -158,6 +167,7 @@ export const rootNodes: DirectoryObject = {
                   id: "roboCrop_download",
                   label: "Download",
                   image: ROBOCROP,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
                 },
@@ -168,12 +178,14 @@ export const rootNodes: DirectoryObject = {
               label: "SkyNot",
               type: "directory",
               image: FOLDER_MAC,
+              alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
               children: [
                 {
                   id: "SkyNot_code",
                   label: "Code",
                   image: GITHUB,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/SkyNot",
                 },
@@ -181,6 +193,7 @@ export const rootNodes: DirectoryObject = {
                   id: "SkyNot_download",
                   label: "Download",
                   image: SKYNOT,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
                 },
@@ -191,12 +204,14 @@ export const rootNodes: DirectoryObject = {
               label: "Dashboard",
               type: "directory",
               image: FOLDER_MAC,
+              alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
               children: [
                 {
                   id: "Dashboard_code",
                   label: "Code",
                   image: GITHUB,
+                  alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/Dashboard",
                 },
@@ -210,12 +225,14 @@ export const rootNodes: DirectoryObject = {
           label: "Documents",
           type: "directory",
           image: FOLDER_MAC,
+          alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
           children: [
             {
               id: "resume",
               label: "Resume",
               image: PDF,
+              alternativeImage: null,
               type: "link",
               url: RESUME,
             },
@@ -223,6 +240,7 @@ export const rootNodes: DirectoryObject = {
               id: "recommendation",
               label: "Recommendation",
               image: PDF,
+              alternativeImage: null,
               type: "link",
               url: RECOMMENDATIONS,
             },
@@ -230,6 +248,7 @@ export const rootNodes: DirectoryObject = {
               id: "review",
               label: "Review",
               image: IMAGE1,
+              alternativeImage: null,
               type: "link",
               url: REVIEW,
             },
@@ -240,6 +259,7 @@ export const rootNodes: DirectoryObject = {
           label: "Games",
           type: "directory",
           image: FOLDER_MAC,
+          alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
           children: [
             {
@@ -247,6 +267,7 @@ export const rootNodes: DirectoryObject = {
               label: "GTAVI",
               type: "application",
               image: GTA6_LOGO,
+              alternativeImage: null,
               componentKey: "gtaVi",
             },
             {
@@ -254,6 +275,7 @@ export const rootNodes: DirectoryObject = {
               label: "Flag Quest",
               type: "application",
               image: PLANET,
+              alternativeImage: null,
               componentKey: "geoGame",
             },
           ],
@@ -263,13 +285,15 @@ export const rootNodes: DirectoryObject = {
           label: "Achievements",
           type: "application",
           image: TROPHY1,
+          alternativeImage: null,
           componentKey: "achievements",
         },
         {
           id: "pages",
           label: "Pages",
           type: "application",
-          image: DOCUMENT,
+          image: PAGES,
+          alternativeImage: WORD,
           componentKey: "documentEditor",
         },
         {
@@ -277,6 +301,7 @@ export const rootNodes: DirectoryObject = {
           label: "WhatsApp",
           type: "application",
           image: WHATSAPP,
+          alternativeImage: null,
           componentKey: "whatsApp",
         },
       ],
@@ -286,6 +311,7 @@ export const rootNodes: DirectoryObject = {
       label: "Dock",
       type: "directory",
       image: FOLDER_MAC,
+      alternativeImage: FOLDER_WINDOWS,
       componentKey: "dock",
       children: [
         {
@@ -293,28 +319,24 @@ export const rootNodes: DirectoryObject = {
           label: "Finder",
           type: "directory",
           image: FINDER,
+          alternativeImage: null,
           componentKey: "finder",
           children: [],
         },
-        // {
-        //   id: "finder",
-        //   label: "Finder",
-        //   type: "app",
-        //   image: FINDER,
-        //   componentKey: "finder",
-        // },
         {
           id: "maps",
           label: "Maps",
           type: "application",
           image: MAPS,
+          alternativeImage: null,
           componentKey: "maps",
         },
         {
           id: "pages-dock",
           label: "Pages",
           type: "application",
-          image: DOCUMENT,
+          image: PAGES,
+          alternativeImage: WORD,
           componentKey: "documentEditor",
         },
         {
@@ -322,6 +344,7 @@ export const rootNodes: DirectoryObject = {
           label: "Achievements",
           type: "application",
           image: TROPHY1,
+          alternativeImage: null,
           componentKey: "achievements",
         },
         {
@@ -329,6 +352,7 @@ export const rootNodes: DirectoryObject = {
           label: "Terminal",
           type: "application",
           image: TERMINAL,
+          alternativeImage: null,
           componentKey: "terminal",
         },
         {
@@ -336,6 +360,7 @@ export const rootNodes: DirectoryObject = {
           label: "Internet",
           type: "application",
           image: SAFARI,
+          alternativeImage: null,
           componentKey: "browser",
         },
       ],

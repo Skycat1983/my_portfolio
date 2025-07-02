@@ -12,11 +12,12 @@ import {
 import { titleBase } from "./node.styles";
 import type { ApplicationEntry } from "../../types/nodeTypes";
 
-type Props = { app: ApplicationEntry };
+type Props = { application: ApplicationEntry };
 
-export const AppNode = ({ app }: Props) => {
-  const { id, componentKey } = app;
-  console.log("APP_NODE_01: app", id, componentKey);
+export const ApplicationNode = ({ application }: Props) => {
+  const { id, componentKey } = application;
+  const operatingSystem = useNewStore((s) => s.operatingSystem);
+  console.log("APP_NODE_01: app", id, componentKey, application);
   // ─────────── node-specific store actions ───────────
   // const openTerminal = useNewStore((s) => s.openTerminal);
   const openWindowWithComponentKey = useNewStore(
@@ -33,10 +34,10 @@ export const AppNode = ({ app }: Props) => {
       focusWindow(windowAlreadyOpen.windowId);
       return;
     }
-    openWindowWithComponentKey(app, id, componentKey);
+    openWindowWithComponentKey(application, id, componentKey);
   }, [
     id,
-    app,
+    application,
     getWindowByNodeId,
     openWindowWithComponentKey,
     focusWindow,
@@ -45,14 +46,20 @@ export const AppNode = ({ app }: Props) => {
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
-    id: app.id,
-    nodeType: app.label,
+    id: application.id,
+    nodeType: application.label,
     enableLogging: true,
     onActivate: handleActivate,
-    parentId: app.parentId,
+    parentId: application.parentId,
   });
 
-  const showLabel = app.parentId !== "dock-root";
+  const showLabel = application.parentId !== "dock-root";
+  const image =
+    operatingSystem === "mac"
+      ? application.image
+      : application.alternativeImage
+      ? application.alternativeImage
+      : application.image;
 
   // ─────────── render ───────────
   return (
@@ -72,12 +79,12 @@ export const AppNode = ({ app }: Props) => {
           drop: nodeBehavior.isDropTarget,
         })}`}
       >
-        <img src={app.image} alt={app.label} className={imageSize} />
+        <img src={image} alt={application.label} className={imageSize} />
       </div>
 
       {showLabel && (
         <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-          {app.label}
+          {application.label}
         </h2>
       )}
     </div>
