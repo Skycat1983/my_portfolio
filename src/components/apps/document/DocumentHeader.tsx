@@ -1,10 +1,10 @@
-import React from "react";
 import { Separator } from "../../ui/separator";
 import { FontControls } from "./FontControls";
 import { TextFormattingControls } from "./TextFormattingControls";
 import { AlignmentControls } from "./AlignmentControls";
 import { ColorControls } from "./ColorControls";
 import { SaveButton } from "./SaveButton";
+import { ZoomControls } from "./ZoomControls";
 
 type TextAlignment = "left" | "center" | "right";
 
@@ -23,10 +23,13 @@ interface DocumentHeaderProps {
   pageBackgroundColor: string;
   isModified: boolean;
   windowWidth: number;
+  zoom: number;
   onTextStyleUpdate: (updates: Partial<TextStyle>) => void;
   onPageColorChange: (color: string) => void;
   onSave: () => void;
   onModified: () => void;
+  onZoomChange: (zoom: number) => void;
+  onZoomReset: () => void;
   nextZIndex: number;
 }
 
@@ -35,10 +38,13 @@ export const DocumentHeader = ({
   pageBackgroundColor,
   isModified,
   windowWidth,
+  zoom,
   onTextStyleUpdate,
   onPageColorChange,
   onSave,
   onModified,
+  onZoomChange,
+  onZoomReset,
   nextZIndex,
 }: DocumentHeaderProps) => {
   // Responsive logic based on window width
@@ -55,9 +61,9 @@ export const DocumentHeader = ({
 
   return (
     <div className="bg-white border-b border-gray-300 p-3">
-      <div className="flex items-center gap-3 overflow-x-auto">
+      <div className="flex items-center justify-center gap-3 overflow-x-auto">
         {/* Save button - always visible, aligned to the right */}
-        <div className="mr-auto">
+        <div className="">
           <SaveButton
             isModified={isModified}
             onSave={onSave}
@@ -116,6 +122,14 @@ export const DocumentHeader = ({
             />
           </>
         )}
+
+        {/* Zoom controls */}
+        <Separator orientation="vertical" className="h-6" />
+        <ZoomControls
+          zoom={zoom}
+          onZoomChange={onZoomChange}
+          onZoomReset={onZoomReset}
+        />
       </div>
     </div>
   );

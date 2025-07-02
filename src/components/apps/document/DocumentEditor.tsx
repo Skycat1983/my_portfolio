@@ -40,6 +40,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
   const [isModified, setIsModified] = useState(false);
   const [pageBackgroundColor, setPageBackgroundColor] = useState("#FFFFFF");
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
+  const [zoom, setZoom] = useState(1.0); // 100% zoom by default
 
   // Store actions for save functionality
   const windowData = useNewStore((s) => s.getWindowById(windowId));
@@ -99,6 +100,17 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
   const handleModified = () => {
     setIsModified(true);
   };
+
+  const handleZoomChange = (newZoom: number) => {
+    setZoom(newZoom);
+  };
+
+  const handleZoomReset = () => {
+    setZoom(1.0);
+  };
+
+  // Calculate effective font size with zoom
+  const effectiveFontSize = textStyle.fontSize * zoom;
 
   const handleSave = () => {
     const now = new Date();
@@ -202,10 +214,13 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
         pageBackgroundColor={pageBackgroundColor}
         isModified={isModified}
         windowWidth={windowWidth}
+        zoom={zoom}
         onTextStyleUpdate={updateTextStyle}
         onPageColorChange={handlePageColorChange}
         onSave={handleSave}
         onModified={handleModified}
+        onZoomChange={handleZoomChange}
+        onZoomReset={handleZoomReset}
         nextZIndex={nextZIndex}
       />
 
@@ -213,6 +228,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
       <DocumentContent
         content={content}
         textStyle={textStyle}
+        effectiveFontSize={effectiveFontSize}
         pageBackgroundColor={pageBackgroundColor}
         onChange={handleContentChange}
       />

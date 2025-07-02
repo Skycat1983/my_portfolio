@@ -15,6 +15,7 @@ interface TextStyle {
 interface DocumentContentProps {
   content: string;
   textStyle: TextStyle;
+  effectiveFontSize: number;
   pageBackgroundColor: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
@@ -22,16 +23,26 @@ interface DocumentContentProps {
 export const DocumentContent = ({
   content,
   textStyle,
+  effectiveFontSize,
   pageBackgroundColor,
   onChange,
 }: DocumentContentProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // A4 dimensions: 210mm x 297mm
+  // Base A4 dimensions: 210mm x 297mm
   // At 96 DPI: 794px x 1123px
   // Scaled down to fit better in viewport: ~600px x 850px
-  const pageWidth = 600;
-  const pageHeight = 850;
+  const basePageWidth = 600;
+  const basePageHeight = 850;
+  const basePadding = 64; // 12 * 4 (3rem in px)
+
+  // Calculate zoom from effectiveFontSize / textStyle.fontSize
+  const zoom = effectiveFontSize / textStyle.fontSize;
+
+  // Scale page dimensions and padding with zoom
+  const pageWidth = basePageWidth * zoom;
+  const pageHeight = basePageHeight * zoom;
+  const padding = basePadding * zoom;
 
   return (
     <div className="flex-1 p-8 overflow-auto bg-gray-100">
@@ -45,7 +56,7 @@ export const DocumentContent = ({
           }}
         >
           {/* Document content */}
-          <div className="p-12 h-full">
+          <div className="h-full" style={{ padding: `${padding}px` }}>
             <textarea
               ref={textareaRef}
               value={content}
@@ -54,7 +65,7 @@ export const DocumentContent = ({
               className="w-full h-full resize-none border-none outline-none bg-transparent"
               style={{
                 fontFamily: textStyle.fontFamily,
-                fontSize: `${textStyle.fontSize}px`,
+                fontSize: `${effectiveFontSize}px`,
                 fontWeight: textStyle.isBold ? "bold" : "normal",
                 fontStyle: textStyle.isItalic ? "italic" : "normal",
                 textDecoration: textStyle.isUnderlined ? "underline" : "none",
