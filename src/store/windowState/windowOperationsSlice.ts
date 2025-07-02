@@ -626,11 +626,8 @@ export const createWindowOperationsSlice = (
     let isMaximized = false;
 
     // Mobile windows should be maximized by default for fullscreen experience
-    // Game applications should also be maximized by default
-    const isGameApp =
-      node.type === "application" &&
-      (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
-    if (isMobile || isGameApp) {
+    // Game windows should also be maximized by default
+    if (isMobile || node.id === "application-gtaVi") {
       isMaximized = true;
     }
 

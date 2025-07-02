@@ -34,6 +34,10 @@ export interface WindowType {
   itemHistory: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
   currentHistoryIndex: number; // Current position in history
 
+  // Finder-specific preview state (for column navigation)
+  previewPath?: string[]; // Preview path for column navigation (not yet committed to history)
+  previewDepth?: number; // Depth of current preview selection
+
   // Flexible component rendering (new approach)
   componentKey?: string; // Optional component key for registry lookup
 

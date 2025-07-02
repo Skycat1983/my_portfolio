@@ -81,7 +81,7 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   // {node business (derived from operations)}
   ...createNodeBusinessSlice(set, get),
 
-  ...createSelectionSlice(set),
+  ...createSelectionSlice(set, get),
   // {window base crud}
   ...createWindowCrudSlice(set, get),
   // {window operations (derived from window crud)}
