@@ -1,4 +1,4 @@
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 export const useMobileNodes = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);

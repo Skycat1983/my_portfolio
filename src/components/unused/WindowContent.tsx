@@ -1,4 +1,4 @@
-import type { WindowType } from "../../types/storeTypes";
+import type { WindowType } from "@/types/storeTypes";
 import { getWindowComponent } from "../window/WindowComponentRegistry";
 
 export const WindowContent = ({ window }: { window: WindowType }) => {

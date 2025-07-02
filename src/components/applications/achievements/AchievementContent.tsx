@@ -1,5 +1,5 @@
-import { useNewStore } from "../../../hooks/useStore";
-import ACHIEVEMENT from "../../../assets/icons_m/achievement.png";
+import { useNewStore } from "@/hooks/useStore";
+import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
 
 interface Achievement {
   id: string;

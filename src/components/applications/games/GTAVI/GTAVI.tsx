@@ -2,10 +2,10 @@ import {
   GTA6_LOADING,
   GTA6_SCREEN,
   GTA6_LOGO,
-} from "../../../../constants/images";
+} from "@/constants/images";
 import { useEffect, useState } from "react";
-import { useNewStore } from "../../../../hooks/useStore";
-import type { WindowType } from "../../../../types/storeTypes";
+import { useNewStore } from "@/hooks/useStore";
+import type { WindowType } from "@/types/storeTypes";
 import { ModernLoader } from "./ModernLoader";
 import { ErrorModal } from "./ErrorModal";
 

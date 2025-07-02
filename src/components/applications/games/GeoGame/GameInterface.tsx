@@ -1,5 +1,5 @@
-import { useNewStore } from "../../../../hooks/useStore";
-import { EARTH1 } from "../../../../constants/images";
+import { useNewStore } from "@/hooks/useStore";
+import { EARTH1 } from "@/constants/images";
 import { TimerDisplay } from "./TimerDisplay";
 
 const gameBackgroundImage = EARTH1;

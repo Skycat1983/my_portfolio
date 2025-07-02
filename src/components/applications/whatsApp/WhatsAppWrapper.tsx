@@ -1,5 +1,5 @@
 import React from "react";
-import type { WindowContentProps } from "../../../types/storeTypes";
+import type { WindowContentProps } from "@/types/storeTypes";
 import { WhatsAppMain } from "./WhatsAppMain";
 
 export const WhatsAppWrapper: React.FC<WindowContentProps> = ({ window }) => {

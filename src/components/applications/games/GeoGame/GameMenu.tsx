@@ -1,5 +1,5 @@
-import { useNewStore } from "../../../../hooks/useStore";
-import { EARTH2, PLANET } from "../../../../constants/images";
+import { useNewStore } from "@/hooks/useStore";
+import { EARTH2, PLANET } from "@/constants/images";
 
 const titleBackgroundImage = EARTH2;
 

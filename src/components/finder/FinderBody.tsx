@@ -1,4 +1,4 @@
-import type { NodeEntry } from "../../../types/nodeTypes";
+import type { NodeEntry } from "@/types/nodeTypes";
 import { IconsView } from "./IconsView";
 import { ColumnsView } from "./ColumnsView";
 import { ListView } from "./ListView";

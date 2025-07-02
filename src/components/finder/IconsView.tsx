@@ -1,6 +1,6 @@
-import type { NodeEntry } from "../../../types/nodeTypes";
-import { NodeSwitch } from "../../nodes/NodeSwitch";
-import { useNewStore } from "../../../hooks/useStore";
+import type { NodeEntry } from "@/types/nodeTypes";
+import { NodeSwitch } from "../nodes/NodeSwitch";
+import { useNewStore } from "@/hooks/useStore";
 
 interface IconsViewProps {
   nodes: NodeEntry[];

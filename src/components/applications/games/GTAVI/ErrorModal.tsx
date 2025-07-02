@@ -1,4 +1,4 @@
-import { WARNING } from "../../../../constants/images";
+import { WARNING } from "@/constants/images";
 
 interface ErrorModalProps {
   operatingSystem: "windows" | "macos";

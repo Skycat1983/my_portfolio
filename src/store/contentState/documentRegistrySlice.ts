@@ -1,8 +1,8 @@
 import type {
   DocumentConfig,
   DocumentRegistryState,
-} from "../../types/storeTypes";
-import type { SetState, GetState } from "../../types/storeTypes";
+} from "@/types/storeTypes";
+import type { SetState, GetState } from "@/types/storeTypes";
 
 export interface DocumentRegistryActions {
   // Core registry operations

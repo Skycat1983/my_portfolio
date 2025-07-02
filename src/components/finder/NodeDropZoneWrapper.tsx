@@ -1,5 +1,5 @@
-import { useNewStore } from "../../../hooks/useStore";
-import { useNodeDrag } from "../../nodes/hooks/useNodeDrag";
+import { useNewStore } from "@/hooks/useStore";
+import { useNodeDrag } from "../nodes/hooks/useNodeDrag";
 
 interface NodeDropZoneProps {
   nodeId: string;

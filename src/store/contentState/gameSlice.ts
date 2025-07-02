@@ -2,7 +2,7 @@ import type {
   BaseStoreState,
   SetState,
   GetState,
-} from "../../types/storeTypes";
+} from "@/types/storeTypes";
 
 // Country data structure from API
 interface Country {

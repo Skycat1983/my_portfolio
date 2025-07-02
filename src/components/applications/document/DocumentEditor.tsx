@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import type { WindowType } from "../../../types/storeTypes";
-import { useNewStore } from "../../../hooks/useStore";
-import { desktopRootId } from "../../../constants/nodes";
-import { PAGES, WORD } from "../../../constants/images";
+import type { WindowType } from "@/types/storeTypes";
+import { useNewStore } from "@/hooks/useStore";
+import { desktopRootId } from "@/constants/nodes";
+import { PAGES, WORD } from "@/constants/images";
 
 // Import the new components
 import { DocumentHeader } from "./DocumentHeader";
 import { DocumentContent } from "./DocumentContent";
 import { DocumentFooter } from "./DocumentFooter";
-import type { ApplicationEntry } from "../../../types/nodeTypes";
+import type { ApplicationEntry } from "@/types/nodeTypes";
 
 type TextAlignment = "left" | "center" | "right";
 

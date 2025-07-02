@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { EasterEggEntry } from "../../types/nodeTypes";
+import type { EasterEggEntry } from "@/types/nodeTypes";
 import {
   containerClasses,
   labelClasses,

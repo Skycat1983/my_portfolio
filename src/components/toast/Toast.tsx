@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { Toaster } from "../ui/sonner";
-import ACHIEVEMENT from "../../assets/icons_m/achievement.png";
+import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
 
 // Create trophy icon component
 const TrophyIcon = () => (

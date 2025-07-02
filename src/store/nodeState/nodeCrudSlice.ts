@@ -1,10 +1,10 @@
-import { defaultNodeMap, defaultRootId } from "../../constants/nodes";
-import type { NodeEntry, NodeMap } from "../../types/nodeTypes";
+import { defaultNodeMap, defaultRootId } from "@/constants/nodes";
+import type { NodeEntry, NodeMap } from "@/types/nodeTypes";
 import type {
   BaseStoreState,
   SetState,
   GetState,
-} from "../../types/storeTypes";
+} from "@/types/storeTypes";
 
 interface NodeState {
   nodeMap: NodeMap;

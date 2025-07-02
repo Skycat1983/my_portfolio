@@ -1,5 +1,5 @@
 import { X, Minus } from "lucide-react";
-import { DEMAXIMIZE_MAC, MAXIMIZE_MAC } from "../../constants/images";
+import { DEMAXIMIZE_MAC, MAXIMIZE_MAC } from "@/constants/images";
 
 interface MacWindowControlsProps {
   onClose?: () => void;

@@ -1,12 +1,12 @@
 import React from "react";
-import { useNewStore } from "../../hooks/useStore";
-import type { LinkEntry } from "../../types/nodeTypes";
-import type { WindowedNode } from "../../store/windowState/windowOperationsSlice";
-import { SAFARI, EDGE } from "../../constants/images";
+import { useNewStore } from "@/hooks/useStore";
+import type { LinkEntry } from "@/types/nodeTypes";
+import type { WindowedNode } from "@/store/windowState/windowOperationsSlice";
+import { SAFARI, EDGE } from "@/constants/images";
 import { Mail, Phone } from "lucide-react";
-import { dockRootId } from "../../constants/nodes";
-import { NodeSwitch } from "../nodes/NodeSwitch";
+import { dockRootId } from "@/constants/nodes";
 import { DockItem } from "./DockItem";
+import { NodeSwitch } from "../nodes/NodeSwitch";
 
 export interface DockItemData {
   id: string;
@@ -143,7 +143,7 @@ const Dock: React.FC = () => {
               key={item.id}
               className={`w-${nodeDiameter} h-${nodeDiameter}`}
             >
-              <NodeSwitch node={item} />
+              <NodeSwitch node={item} layout="dock" windowId={dockRootId} />
               {/* <DockItem key={item.id} item={item} onItemClick={handleItemClick} /> */}
             </div>
           ))}

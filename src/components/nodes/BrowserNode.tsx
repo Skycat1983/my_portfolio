@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { BrowserEntry } from "../../types/nodeTypes";
+import type { BrowserEntry } from "@/types/nodeTypes";
 import {
   containerClasses,
   imageSize,
@@ -10,7 +10,7 @@ import {
   titleBase,
   tileFrame,
 } from "./node.styles";
-import { EDGE, SAFARI } from "../../constants/images";
+import { EDGE, SAFARI } from "@/constants/images";
 
 type Props = { browserEntry: BrowserEntry };
 

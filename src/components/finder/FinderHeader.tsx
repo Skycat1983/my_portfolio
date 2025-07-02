@@ -1,6 +1,6 @@
 import React from "react";
 import { FinderNavigation } from "./FinderNavigation";
-import { Input } from "../../ui/input";
+import { Input } from "../ui/input";
 import { FinderView } from "./FinderView";
 
 type FinderHeaderProps = {

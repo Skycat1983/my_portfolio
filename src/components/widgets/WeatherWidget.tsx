@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 export const Weather = () => {
   const { weather, weatherLoading, weatherError, fetchWeather } = useNewStore();

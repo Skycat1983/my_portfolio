@@ -1,5 +1,5 @@
 import { AlertCircle } from "lucide-react";
-import { useNewStore } from "../../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 interface IncompletePageProps {
   windowId: string;

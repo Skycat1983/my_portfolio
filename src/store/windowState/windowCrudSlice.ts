@@ -1,7 +1,7 @@
-import { defaultNodeMap } from "../../constants/nodes";
-import type { NodeMap } from "../../types/nodeTypes";
-import type { WindowType } from "../../types/storeTypes";
-import type { SetState, GetState } from "../../types/storeTypes";
+import { defaultNodeMap } from "@/constants/nodes";
+import type { NodeMap } from "@/types/nodeTypes";
+import type { WindowType } from "@/types/storeTypes";
+import type { SetState, GetState } from "@/types/storeTypes";
 
 interface WindowState {
   nodeMap: NodeMap;

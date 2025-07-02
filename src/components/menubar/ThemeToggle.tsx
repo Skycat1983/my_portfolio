@@ -1,4 +1,4 @@
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect } from "react";

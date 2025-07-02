@@ -1,10 +1,10 @@
 import React from "react";
 import { DocumentEditor } from "../applications/document/DocumentEditor";
 import { WhatsAppMain } from "../applications/whatsApp/WhatsAppMain";
-import { Finder } from "../applications/finder/Finder";
+import { Finder } from "../finder/Finder";
 import { TerminalContent } from "../applications/terminal/TerminalContent";
 import { BrowserContent } from "../applications/browser/BrowserContent";
-import type { WindowContentProps } from "../../types/storeTypes";
+import type { WindowContentProps } from "@/types/storeTypes";
 import { GeoGame } from "../applications/games/GeoGame/GeoGame";
 import GTAVI from "../applications/games/GTAVI/GTAVI";
 import { AchievementContent } from "../applications/achievements/AchievementContent";

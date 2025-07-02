@@ -2,7 +2,7 @@ import React from "react";
 
 import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { useFinderHistory } from "./hooks/useFinderHistory";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 interface FinderNavigationProps {
   windowId: string;

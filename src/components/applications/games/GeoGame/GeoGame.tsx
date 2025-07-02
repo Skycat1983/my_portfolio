@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNewStore } from "../../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { GameMenu } from "./GameMenu";
 import { GameInterface } from "./GameInterface";
 import { GameOverScreen } from "./GameOverScreen";

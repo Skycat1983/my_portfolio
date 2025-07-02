@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Bookmark, Settings } from "lucide-react";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { StartPage } from "./fake_pages/StartPage";
 import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
 import { BrowserNavigation } from "./BrowserNavigation";
 import { OfflinePage } from "./fake_pages/OfflinePage";
-import { theme } from "../../../styles/theme";
-import { Button } from "../../ui/button";
+import { theme } from "@/styles/theme";
+import { Button } from "@/components/ui/button";
 
 export const BrowserContent = () => {
   const [bookmarked, setBookmarked] = useState(false);

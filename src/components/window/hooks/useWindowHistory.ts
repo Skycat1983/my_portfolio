@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import type { WindowType } from "../../../types/storeTypes";
-import { useNewStore } from "../../../hooks/useStore";
+import type { WindowType } from "@/types/storeTypes";
+import { useNewStore } from "@/hooks/useStore";
 
 export const useWindowHistory = (windowId: WindowType["windowId"]) => {
   console.log("useDirectoryWindow windowId", windowId);

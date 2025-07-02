@@ -1,8 +1,8 @@
-import { useNewStore } from "../../../hooks/useStore";
-import { useNodeDrag } from "../../nodes/hooks/useNodeDrag";
+import { useNewStore } from "@/hooks/useStore";
+import { useNodeDrag } from "@/components/nodes/hooks/useNodeDrag";
 
 import { DirectoryLayout } from "./DirectoryLayout";
-import { desktopRootId } from "../../../constants/nodes";
+import { desktopRootId } from "@/constants/nodes";
 
 interface DirectoryContentProps {
   windowId: string;

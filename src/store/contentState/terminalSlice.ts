@@ -2,8 +2,8 @@ import type {
   BaseStoreState,
   SetState,
   GetState,
-} from "../../types/storeTypes";
-import type { NodeEntry, DirectoryEntry } from "../../types/nodeTypes";
+} from "@/types/storeTypes";
+import type { NodeEntry, DirectoryEntry } from "@/types/nodeTypes";
 
 interface TerminalState {
   currentWorkingDirectory: string;

@@ -1,7 +1,7 @@
-import type { NodeEntry } from "../../../types/nodeTypes";
-import { NodeSwitch } from "../../nodes/NodeSwitch";
-import { useNewStore } from "../../../hooks/useStore";
-import { desktopRootId } from "../../../constants/nodes";
+import type { NodeEntry } from "@/types/nodeTypes";
+import { useNewStore } from "@/hooks/useStore";
+import { desktopRootId } from "@/constants/nodes";
+import { NodeSwitch } from "@/components/nodes/NodeSwitch";
 
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];

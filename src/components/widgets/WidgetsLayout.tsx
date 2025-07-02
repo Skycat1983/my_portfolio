@@ -1,6 +1,6 @@
 import CalendarWidget from "./CalendarWidget";
 import { Weather } from "./WeatherWidget";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 const WidgetsLayout = () => {
   return (

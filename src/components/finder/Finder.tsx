@@ -1,7 +1,7 @@
 import React from "react";
 import { FinderHeader } from "./FinderHeader";
 import { FinderBody } from "./FinderBody";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 
 export const Finder = ({

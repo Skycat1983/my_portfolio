@@ -1,11 +1,11 @@
 import React from "react";
 import { Pen, PaintBucket } from "lucide-react";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 interface ColorControlsProps {
   textColor: string;

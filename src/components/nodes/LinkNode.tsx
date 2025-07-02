@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { LinkEntry } from "../../types/nodeTypes";
+import type { LinkEntry } from "@/types/nodeTypes";
 import {
   containerClasses,
   imageSize,
@@ -9,7 +9,7 @@ import {
   tileWrapper,
   titleBase,
 } from "./node.styles";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 type Props = { link: LinkEntry };
 

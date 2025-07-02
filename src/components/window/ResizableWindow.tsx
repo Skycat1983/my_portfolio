@@ -1,8 +1,8 @@
 import React from "react";
 import { useWindowResize } from "./hooks/useWindowResize";
 import { WindowHeader } from "./WindowHeader";
-import type { WindowType } from "../../types/storeTypes";
-import { useNewStore } from "../../hooks/useStore";
+import type { WindowType } from "@/types/storeTypes";
+import { useNewStore } from "@/hooks/useStore";
 import { getWindowComponent } from "./WindowComponentRegistry";
 
 interface ResizableWindowProps {

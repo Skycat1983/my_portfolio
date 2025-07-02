@@ -1,6 +1,6 @@
 import React from "react";
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 
 type TextAlignment = "left" | "center" | "right";
 

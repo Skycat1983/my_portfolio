@@ -1,7 +1,7 @@
 // interface AchievementsState {}
 
-import type { SetState } from "../../types/storeTypes";
-import type { NewDesktopStore } from "../../hooks/useStore";
+import type { SetState } from "@/types/storeTypes";
+import type { NewDesktopStore } from "@/hooks/useStore";
 
 interface AchievementState {
   // 1. Click on something

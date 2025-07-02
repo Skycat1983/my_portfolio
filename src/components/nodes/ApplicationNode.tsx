@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import {
@@ -10,7 +10,7 @@ import {
   tileWrapper,
 } from "./node.styles";
 import { titleBase } from "./node.styles";
-import type { ApplicationEntry } from "../../types/nodeTypes";
+import type { ApplicationEntry } from "@/types/nodeTypes";
 
 type Props = { application: ApplicationEntry };
 

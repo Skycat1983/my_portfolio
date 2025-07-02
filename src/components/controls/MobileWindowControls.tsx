@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { createButtonStyle } from "../../styles/theme";
+import { createButtonStyle } from "@/styles/theme";
 
 interface MobileWindowControlsProps {
   onClose?: () => void;

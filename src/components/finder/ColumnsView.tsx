@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
-import { useNewStore } from "../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 export const ColumnsView = ({ windowId }: { windowId: string }) => {
   // Use window history for column navigation (per-window state)

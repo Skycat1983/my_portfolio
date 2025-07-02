@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
-import { cn } from "../../../lib/utils";
+import { cn } from "@/lib/utils";
 import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
-import { useWindowHistory } from "../../window/hooks/useWindowHistory";
-import { useNewStore } from "../../../hooks/useStore";
-import { PREDEFINED_ADDRESS } from "../../../constants/urls";
+import { useWindowHistory } from "@/components/window/hooks/useWindowHistory";
+import { useNewStore } from "@/hooks/useStore";
+import { PREDEFINED_ADDRESS } from "@/constants/urls";
 
 interface BrowserNavigationProps {
   windowId: string;

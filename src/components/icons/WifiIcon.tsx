@@ -1,5 +1,5 @@
 import { Wifi, WifiOff } from "lucide-react";
-import { useNewStore } from "../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 
 export const WifiIcon = () => {
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);

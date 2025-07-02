@@ -1,5 +1,5 @@
 import React from "react";
-import type { NodeEntry } from "../../../types/nodeTypes";
+import type { NodeEntry } from "@/types/nodeTypes";
 
 interface ListViewProps {
   nodes: NodeEntry[];

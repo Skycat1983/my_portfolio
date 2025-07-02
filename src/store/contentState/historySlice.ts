@@ -1,4 +1,4 @@
-import type { SetState, GetState } from "../../types/storeTypes";
+import type { SetState, GetState } from "@/types/storeTypes";
 
 // Generic history instance that can store any type of items
 export interface HistoryInstance<T = unknown> {

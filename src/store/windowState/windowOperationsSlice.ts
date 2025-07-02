@@ -1,7 +1,7 @@
-import type { DocumentConfig, WindowType } from "../../types/storeTypes";
-import type { SetState, GetState } from "../../types/storeTypes";
+import type { DocumentConfig, WindowType } from "@/types/storeTypes";
+import type { SetState, GetState } from "@/types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
-import type { NodeEntry } from "../../types/nodeTypes";
+import type { NodeEntry } from "@/types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
 import type { HistorySlice } from "../contentState/historySlice";
 

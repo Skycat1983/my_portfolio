@@ -1,5 +1,5 @@
-import { LOGO_MAC, LOGO_MS } from "../../constants/images";
-import { useNewStore } from "../../hooks/useStore";
+import { LOGO_MAC, LOGO_MS } from "@/constants/images";
+import { useNewStore } from "@/hooks/useStore";
 
 export const Logo = () => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);

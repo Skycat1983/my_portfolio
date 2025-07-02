@@ -2,8 +2,8 @@ import type {
   NodeEntry,
   DirectoryEntry,
   DocumentEntry,
-} from "../../types/nodeTypes";
-import type { SetState, GetState } from "../../types/storeTypes";
+} from "@/types/nodeTypes";
+import type { SetState, GetState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { DocumentRegistrySlice } from "../contentState/documentRegistrySlice";
 

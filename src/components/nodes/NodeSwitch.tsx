@@ -4,13 +4,13 @@ import type {
   DirectoryEntry,
   LinkEntry,
   ApplicationEntry,
-} from "../../types/nodeTypes";
+} from "@/types/nodeTypes";
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
 import { ApplicationNode } from "./ApplicationNode";
 import { FinderNode } from "./FinderNode";
 
-type LayoutType = "desktop" | "window";
+type LayoutType = "desktop" | "window" | "dock";
 
 type NodeSwitchProps = {
   node: NodeEntry;

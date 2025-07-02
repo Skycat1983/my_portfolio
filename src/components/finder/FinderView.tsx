@@ -7,8 +7,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-} from "../../ui/dropdown-menu";
-import { Button } from "../../ui/button";
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 import { Columns3, Grid2x2, List, UnfoldVertical } from "lucide-react";
 
 export type FinderViewProps = {

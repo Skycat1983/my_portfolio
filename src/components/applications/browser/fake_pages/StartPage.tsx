@@ -1,5 +1,5 @@
 import { Globe, Search, Star, Download } from "lucide-react";
-import { useNewStore } from "../../../../hooks/useStore";
+import { useNewStore } from "@/hooks/useStore";
 import { useEffect, useState } from "react";
 
 export const StartPage = () => {

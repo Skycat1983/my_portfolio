@@ -2,7 +2,7 @@ import { DisplayDate } from "./DisplayDate";
 import { MenubarOptions } from "./MenubarOptions";
 import { Social } from "./Social";
 import { Logo } from "../icons/LogoIcon";
-import { GITHUB_SMALL, LINKEDIN_SMALL } from "../../constants/images";
+import { GITHUB_SMALL, LINKEDIN_SMALL } from "@/constants/images";
 import { WifiIcon } from "../icons/WifiIcon";
 import ThemeToggle from "./ThemeToggle";
 

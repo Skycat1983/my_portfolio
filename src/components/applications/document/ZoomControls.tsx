@@ -1,5 +1,5 @@
 import { ZoomIn, ZoomOut } from "lucide-react";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 
 interface ZoomControlsProps {
   zoom: number;
