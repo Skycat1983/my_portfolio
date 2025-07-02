@@ -41,6 +41,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
   const [pageBackgroundColor, setPageBackgroundColor] = useState("#FFFFFF");
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
   const [zoom, setZoom] = useState(1.0); // 100% zoom by default
+  const [documentLabel, setDocumentLabel] = useState("Untitled");
 
   // Store actions for save functionality
   const windowData = useNewStore((s) => s.getWindowById(windowId));
@@ -49,6 +50,8 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
   const updateWindowById = useNewStore((s) => s.updateWindowById);
   const createOneNode = useNewStore((s) => s.createOneNode);
   const getNodeByID = useNewStore((s) => s.getNodeByID);
+  const generateUniqueLabel = useNewStore((s) => s.generateUniqueLabel);
+  const updateNodeByID = useNewStore((s) => s.updateNodeByID);
 
   // Initialize document state from window configuration if available
   useEffect(() => {
@@ -62,6 +65,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
       setContent(config.content);
       setTextStyle(config.textStyle);
       setPageBackgroundColor(config.pageSettings.backgroundColor);
+      setDocumentLabel(config.metadata.title || "Untitled");
       setIsModified(false); // Document is saved, so not modified initially
 
       console.log(
@@ -109,6 +113,10 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
     setZoom(1.0);
   };
 
+  const handleLabelChange = (newLabel: string) => {
+    setDocumentLabel(newLabel);
+  };
+
   // Calculate effective font size with zoom
   const effectiveFontSize = textStyle.fontSize * zoom;
 
@@ -125,6 +133,30 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
     if (isExistingDocument) {
       // Update existing document configuration
       const configId = windowData.documentConfig!.id;
+
+      // Get the current node to update its label
+      const nodeId = windowData.nodeId;
+      const currentNode = getNodeByID(nodeId);
+      let finalDocumentLabel = documentLabel;
+
+      if (currentNode && nodeId && currentNode.parentId !== null) {
+        // Generate unique label for the current directory
+        finalDocumentLabel = generateUniqueLabel(
+          documentLabel,
+          currentNode.parentId
+        );
+
+        // Update the node's label
+        updateNodeByID(nodeId, {
+          label: finalDocumentLabel,
+        });
+
+        console.log(
+          "DocumentEditor: updated node label to",
+          finalDocumentLabel
+        );
+      }
+
       const updatedConfig = {
         ...windowData.documentConfig!,
         content,
@@ -134,6 +166,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
         },
         metadata: {
           ...windowData.documentConfig!.metadata,
+          title: finalDocumentLabel,
           modifiedAt: now,
           wordCount,
           charCount,
@@ -148,6 +181,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
 
       // Update window with new config
       updateWindowById(windowData.windowId, {
+        title: finalDocumentLabel,
         documentConfig: updatedConfig,
       });
     } else {
@@ -162,7 +196,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
           backgroundColor: pageBackgroundColor,
         },
         metadata: {
-          title: windowData.title,
+          title: documentLabel,
           createdAt: now,
           modifiedAt: now,
           wordCount,
@@ -181,22 +215,30 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
         // Get image from current node if it has one, otherwise use default document image
         const documentImage = DOCUMENT;
 
+        // Generate unique label for the document
+        const uniqueLabel = generateUniqueLabel(documentLabel, desktopRootId);
+
         const newDocumentNode = {
           id: savedDocumentId,
           parentId: desktopRootId, // Save to root directory
           type: "document" as const,
-          label: (windowData.title || "Document") + " (Saved)",
+          label: uniqueLabel,
           image: documentImage,
           documentConfigId: configId, // Link to the saved configuration
         };
 
-        console.log("DocumentEditor: creating document node", savedDocumentId);
+        console.log(
+          "DocumentEditor: creating document node",
+          savedDocumentId,
+          "with label",
+          uniqueLabel
+        );
         createOneNode(newDocumentNode);
 
         // Update current window to reference the saved document
         updateWindowById(windowData.windowId, {
           nodeId: savedDocumentId,
-          title: (windowData.title || "Document") + " (Saved)",
+          title: uniqueLabel,
           documentConfig: newConfig,
         });
       }
@@ -222,6 +264,8 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
         onZoomChange={handleZoomChange}
         onZoomReset={handleZoomReset}
         nextZIndex={nextZIndex}
+        documentLabel={documentLabel}
+        onLabelChange={handleLabelChange}
       />
 
       {/* Document content area */}

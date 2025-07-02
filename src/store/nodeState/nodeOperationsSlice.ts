@@ -34,6 +34,7 @@ export interface NodeOperationsActions {
     descendantId: NodeEntry["id"]
   ) => boolean;
   isNodeInTrash: (nodeId: NodeEntry["id"]) => boolean;
+  generateUniqueLabel: (baseLabel: string, parentId: string) => string;
 }
 
 export type NodeOperationsSlice = NodeOperationsActions;
@@ -171,5 +172,77 @@ export const createNodeOperationsSlice = (
   isNodeInTrash: (nodeId: NodeEntry["id"]): boolean => {
     const node = get().findOneNode((n: NodeEntry) => n.id === nodeId);
     return node?.parentId === "trash";
+  },
+
+  /**
+   * Generate a unique label for a node within a given parent directory
+   * Handles duplicate names by appending (1), (2), etc.
+   * Scalable for any parent directory and node type
+   */
+  generateUniqueLabel: (baseLabel: string, parentId: string): string => {
+    console.log(
+      "generateUniqueLabel: checking for duplicates of",
+      baseLabel,
+      "in",
+      parentId
+    );
+
+    const state = get();
+
+    // Find all nodes in the parent directory with labels that match our pattern
+    const existingNodes = state.findManyNodes((node: NodeEntry) => {
+      if (node.parentId !== parentId) return false;
+
+      // Check for exact match or numbered variations
+      if (node.label === baseLabel) return true;
+
+      // Check for pattern like "baseLabel (1)", "baseLabel (2)", etc.
+      const numberPattern = new RegExp(
+        `^${baseLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} \\((\\d+)\\)$`
+      );
+      return numberPattern.test(node.label);
+    });
+
+    if (existingNodes.length === 0) {
+      console.log("generateUniqueLabel: no duplicates found, using", baseLabel);
+      return baseLabel;
+    }
+
+    // Extract numbers from existing duplicates
+    const usedNumbers = new Set<number>();
+    let hasExactMatch = false;
+
+    existingNodes.forEach((node) => {
+      if (node.label === baseLabel) {
+        hasExactMatch = true;
+      } else {
+        const numberPattern = new RegExp(
+          `^${baseLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} \\((\\d+)\\)$`
+        );
+        const match = node.label.match(numberPattern);
+        if (match) {
+          usedNumbers.add(parseInt(match[1], 10));
+        }
+      }
+    });
+
+    // If there's no exact match, we can use the base label
+    if (!hasExactMatch) {
+      console.log(
+        "generateUniqueLabel: no exact match found, using",
+        baseLabel
+      );
+      return baseLabel;
+    }
+
+    // Find the lowest available number starting from 1
+    let counter = 1;
+    while (usedNumbers.has(counter)) {
+      counter++;
+    }
+
+    const uniqueLabel = `${baseLabel} (${counter})`;
+    console.log("generateUniqueLabel: generated unique label", uniqueLabel);
+    return uniqueLabel;
   },
 });

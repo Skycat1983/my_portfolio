@@ -5,6 +5,7 @@ import { AlignmentControls } from "./AlignmentControls";
 import { ColorControls } from "./ColorControls";
 import { SaveButton } from "./SaveButton";
 import { ZoomControls } from "./ZoomControls";
+import { DocumentLabelInput } from "./DocumentLabelInput";
 
 type TextAlignment = "left" | "center" | "right";
 
@@ -24,12 +25,14 @@ interface DocumentHeaderProps {
   isModified: boolean;
   windowWidth: number;
   zoom: number;
+  documentLabel: string;
   onTextStyleUpdate: (updates: Partial<TextStyle>) => void;
   onPageColorChange: (color: string) => void;
   onSave: () => void;
   onModified: () => void;
   onZoomChange: (zoom: number) => void;
   onZoomReset: () => void;
+  onLabelChange: (label: string) => void;
   nextZIndex: number;
 }
 
@@ -39,12 +42,14 @@ export const DocumentHeader = ({
   isModified,
   windowWidth,
   zoom,
+  documentLabel,
   onTextStyleUpdate,
   onPageColorChange,
   onSave,
   onModified,
   onZoomChange,
   onZoomReset,
+  onLabelChange,
   nextZIndex,
 }: DocumentHeaderProps) => {
   // Responsive logic based on window width
@@ -70,6 +75,14 @@ export const DocumentHeader = ({
             windowWidth={windowWidth}
           />
         </div>
+        {/* Document Label Input */}
+        <DocumentLabelInput
+          label={documentLabel}
+          onLabelChange={onLabelChange}
+          onModified={onModified}
+        />
+        <Separator orientation="vertical" className="h-6" />
+
         {/* Font controls */}
         {showFontControls && (
           <>

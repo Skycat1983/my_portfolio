@@ -1,4 +1,3 @@
-import React from "react";
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { Button } from "../../ui/button";
 

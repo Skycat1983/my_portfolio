@@ -1,4 +1,3 @@
-import React from "react";
 import { Save } from "lucide-react";
 import { Button } from "../../ui/button";
 
@@ -11,8 +10,8 @@ interface SaveButtonProps {
 export const SaveButton = ({
   isModified,
   onSave,
-  windowWidth,
-}: SaveButtonProps) => {
+}: // windowWidth,
+SaveButtonProps) => {
   return (
     <Button
       onClick={onSave}
@@ -26,7 +25,7 @@ export const SaveButton = ({
       title="Save Document"
     >
       <Save size={16} className="" />
-      <span className={`${windowWidth > 1000 ? "block" : "hidden"}`}>Save</span>
+      {/* <span className={`${windowWidth > 1000 ? "block" : "hidden"}`}>Save</span> */}
     </Button>
   );
 };
