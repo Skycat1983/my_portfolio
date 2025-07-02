@@ -9,8 +9,10 @@ import {
   PaintBucket,
   Save,
 } from "lucide-react";
+import { desktopRootId } from "../../../constants/nodes";
+import { DOCUMENT } from "../../../constants/images";
 
-type TextAlignment = "left" | "center" | "right" | "justify";
+type TextAlignment = "left" | "center" | "right";
 
 interface TextStyle {
   fontFamily: string;
@@ -193,17 +195,11 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
 
       if (currentNode) {
         // Get image from current node if it has one, otherwise use default document image
-        let documentImage = "/src/assets/icons_m/document.png";
-        if ("image" in currentNode) {
-          // Handle both string and string[] image types
-          documentImage = Array.isArray(currentNode.image)
-            ? currentNode.image[0]
-            : currentNode.image;
-        }
+        const documentImage = DOCUMENT;
 
         const newDocumentNode = {
           id: savedDocumentId,
-          parentId: saveLocation, // Save to root directory
+          parentId: desktopRootId, // Save to root directory
           type: "document" as const,
           label: (windowData.title || "Document") + " (Saved)",
           image: documentImage,
@@ -251,10 +247,10 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   }, [showTextColorPicker, showPageColorPicker]);
 
   // Word and character count
-  const wordCount = content
-    .split(/\s+/)
-    .filter((word) => word.length > 0).length;
-  const charCount = content.length;
+  // const wordCount = content
+  //   .split(/\s+/)
+  //   .filter((word) => word.length > 0).length;
+  // const charCount = content.length;
 
   // Font options
   const fontOptions = [
@@ -519,21 +515,8 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
           className="max-w-4xl mx-auto bg-white shadow-lg"
           style={{ backgroundColor: pageBackgroundColor }}
         >
-          {/* Document header */}
-          <div className="p-8 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              {windowData.title}
-            </h1>
-            {windowWidth > 600 && (
-              <div className="text-sm text-gray-500">
-                {wordCount} words • {charCount} characters
-                {isModified && " • Modified"}
-              </div>
-            )}
-          </div>
-
           {/* Document content */}
-          <div className="p-8">
+          <div className="p-24">
             <textarea
               ref={textareaRef}
               value={content}
