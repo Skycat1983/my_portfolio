@@ -58,19 +58,14 @@ export const FinderNode = ({
       // Desktop context: open new window
       openWindowWithComponentKey(
         nodeEntry,
-        nodeEntry.id,
+        // nodeEntry.id,
         nodeEntry.componentKey
       );
     } else {
       // Window context: use finder history for navigation
       const success = finderHistory.navigateToNode(nodeEntry.id);
       if (!success) {
-        // Fallback: open new window if navigation fails
-        openWindowWithComponentKey(
-          nodeEntry,
-          nodeEntry.id,
-          nodeEntry.componentKey
-        );
+        openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey);
       }
     }
   }, [

@@ -8,6 +8,7 @@ import type {
 } from "@/types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
 import type { HistorySlice } from "../contentState/historySlice";
+import { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
 
 // Simplified windowed node type - only directories and applications can open windows
 export type WindowedNode = Exclude<NodeEntry, { type: "easter-egg" | "link" }>;
@@ -41,7 +42,7 @@ export interface WindowOperationsActions {
   //   ! WINDOW VISIBILITY OPERATIONS
   openWindowWithComponentKey: (
     node: WindowedNode,
-    historyItem: string,
+    // historyItem: string,
     componentKey: string
   ) => void;
   // NEW: Open window with document configuration (only for document nodes)
@@ -427,7 +428,10 @@ export const createWindowOperationsSlice = (
   },
 
   // NEW: Open window with custom component key
-  openWindowWithComponentKey: (node: WindowedNode, componentKey: string) => {
+  openWindowWithComponentKey: (
+    node: WindowedNode,
+    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY
+  ) => {
     const state = get();
 
     if (!node) {
@@ -520,74 +524,3 @@ export const createWindowOperationsSlice = (
     return foundWindow;
   },
 });
-
-// /**
-//  * Open a new window for a node
-//  */
-// openWindow: (node: WindowedNode, historyItem: string): void => {
-//   const state = get();
-
-//   if (!node) {
-//     return;
-//   }
-
-//   const nodeId = node.id;
-
-//   // Use responsive sizing first to determine if we need special positioning
-//   const { width, height } = state.getResponsiveWindowSize(node.type);
-//   const { screenDimensions } = state;
-//   const { isMobile } = screenDimensions;
-
-//   // Position windows based on device type
-//   let x: number, y: number;
-
-//   if (isMobile) {
-//     // Mobile windows start at top-left for fullscreen experience
-//     x = 0;
-//     y = 0;
-//   } else {
-//     // Desktop windows are offset to maintain visibility of all open windows
-//     const count = state.openWindows.length;
-//     x = 100 * (count + 1);
-//     y = 100 * (count + 1);
-//   }
-
-//   let isMaximized = false;
-
-//   // Mobile windows should be maximized by default for fullscreen experience
-//   // Game applications should also be maximized by default
-//   const isGameApp =
-//     node.type === "application" &&
-//     (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
-//   if (isMobile || isGameApp) {
-//     isMaximized = true;
-//   }
-
-//   // Create new window with responsive dimensions
-//   const baseWindow: WindowType = {
-//     windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
-//     title: node.label,
-//     nodeId,
-//     applicationId:
-//       node.type === "application"
-//         ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
-//         : undefined, // Set applicationId for application nodes
-//     nodeType: node.type,
-//     width,
-//     height,
-//     x,
-//     y,
-//     zIndex: state.nextZIndex,
-//     isMinimized: false,
-//     isMaximized: isMaximized,
-//     isResizing: false,
-//   };
-
-//   console.log(
-//     "openWindow: creating window with applicationId",
-//     baseWindow.applicationId,
-//     "for node",
-//     node
-//   );
-//   state.createOneWindow(baseWindow);
-// },
