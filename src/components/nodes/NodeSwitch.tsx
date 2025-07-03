@@ -5,12 +5,14 @@ import type {
   LinkEntry,
   ApplicationEntry,
   FunctionEntry,
+  DocumentEntry,
 } from "@/types/nodeTypes";
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
 import { ApplicationNode } from "./ApplicationNode";
 import { FinderNode } from "./FinderNode";
 import { FunctionNode } from "./FunctionNode";
+import { DocumentNode } from "./DocumentNode";
 
 type LayoutType = "desktop" | "window" | "dock";
 
@@ -49,6 +51,9 @@ export const NodeSwitch = ({
 
     case "function":
       return <FunctionNode key={node.id} node={node as FunctionEntry} />;
+
+    case "document":
+      return <DocumentNode key={node.id} document={node as DocumentEntry} />;
 
     default:
       console.warn("Unknown node type:", node);

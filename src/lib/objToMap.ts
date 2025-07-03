@@ -7,6 +7,7 @@ import type {
   EasterEggEntry,
   ApplicationEntry,
   FunctionEntry,
+  DocumentEntry,
 } from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
@@ -97,6 +98,21 @@ export const convertObjectsToMap = (
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
         } as FunctionEntry;
+        break;
+
+      case "document":
+        mapNode = {
+          id: nodeObj.id,
+          parentId,
+          type: "document",
+          label: nodeObj.label,
+          image: nodeObj.image,
+          alternativeImage: nodeObj.alternativeImage ?? null,
+          applicationId: nodeObj.applicationId,
+          documentConfigId: nodeObj.documentConfigId,
+          macExtension: nodeObj.macExtension,
+          windowsExtension: nodeObj.windowsExtension,
+        } as DocumentEntry;
         break;
 
       default:

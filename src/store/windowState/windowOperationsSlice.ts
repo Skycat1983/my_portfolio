@@ -1,7 +1,11 @@
 import type { DocumentConfig, WindowType } from "@/types/storeTypes";
 import type { SetState, GetState } from "@/types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
-import type { NodeEntry } from "@/types/nodeTypes";
+import type {
+  NodeEntry,
+  ApplicationEntry,
+  DocumentEntry,
+} from "@/types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
 import type { HistorySlice } from "../contentState/historySlice";
 
@@ -35,18 +39,16 @@ const VIEWPORT_CONSTRAINTS = {
 
 export interface WindowOperationsActions {
   //   ! WINDOW VISIBILITY OPERATIONS
-  openWindow: (node: WindowedNode, historyItem: string) => void;
-  // NEW: Open window with custom component key
   openWindowWithComponentKey: (
     node: WindowedNode,
     historyItem: string,
     componentKey: string
   ) => void;
-  // NEW: Open window with document configuration
+  // NEW: Open window with document configuration (only for document nodes)
   openWindowWithDocumentConfig: (
-    node: WindowedNode,
-    historyItem: string,
-    documentConfig?: DocumentConfig
+    documentNode: DocumentEntry,
+    applicationNode: ApplicationEntry,
+    documentConfig: DocumentConfig
   ) => void;
   closeWindow: (windowId: WindowType["windowId"]) => void;
   focusWindow: (windowId: WindowType["windowId"]) => void;
@@ -69,20 +71,6 @@ export interface WindowOperationsActions {
   setWindowBounds: (
     windowId: WindowType["windowId"],
     bounds: { x: number; y: number; width: number; height: number }
-  ) => boolean;
-
-  // ! WINDOW HISTORY OPERATIONS
-  canGoBackInWindowHistory: (windowId: WindowType["windowId"]) => boolean;
-  canGoForwardInWindowHistory: (windowId: WindowType["windowId"]) => boolean;
-  decrementWindowHistoryIndex: (windowId: WindowType["windowId"]) => boolean;
-  incrementWindowHistoryIndex: (windowId: WindowType["windowId"]) => boolean;
-  getLocationInHistory: (windowId: WindowType["windowId"]) => string;
-
-  // History navigation
-
-  addToWindowHistory: (
-    windowId: WindowType["windowId"],
-    item: string
   ) => boolean;
 
   updateWindowById: (
@@ -180,96 +168,27 @@ export const createWindowOperationsSlice = (
   },
 
   /**
-   * Open a new window for a node
-   */
-  openWindow: (node: WindowedNode, historyItem: string): void => {
-    const state = get();
-
-    if (!node) {
-      return;
-    }
-
-    const nodeId = node.id;
-
-    // Use responsive sizing first to determine if we need special positioning
-    const { width, height } = state.getResponsiveWindowSize(node.type);
-    const { screenDimensions } = state;
-    const { isMobile } = screenDimensions;
-
-    // Position windows based on device type
-    let x: number, y: number;
-
-    if (isMobile) {
-      // Mobile windows start at top-left for fullscreen experience
-      x = 0;
-      y = 0;
-    } else {
-      // Desktop windows are offset to maintain visibility of all open windows
-      const count = state.openWindows.length;
-      x = 100 * (count + 1);
-      y = 100 * (count + 1);
-    }
-
-    let isMaximized = false;
-
-    // Mobile windows should be maximized by default for fullscreen experience
-    // Game applications should also be maximized by default
-    const isGameApp =
-      node.type === "application" &&
-      (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
-    if (isMobile || isGameApp) {
-      isMaximized = true;
-    }
-
-    // Create new window with responsive dimensions
-    const baseWindow: WindowType = {
-      windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
-      title: node.label,
-      nodeId,
-      applicationId:
-        node.type === "application"
-          ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
-          : undefined, // Set applicationId for application nodes
-      nodeType: node.type,
-      width,
-      height,
-      x,
-      y,
-      zIndex: state.nextZIndex,
-      isMinimized: false,
-      isMaximized: isMaximized,
-      isResizing: false,
-      itemHistory: [historyItem],
-      currentHistoryIndex: 0,
-    };
-
-    console.log(
-      "openWindow: creating window with applicationId",
-      baseWindow.applicationId,
-      "for node",
-      node
-    );
-    state.createOneWindow(baseWindow);
-  },
-
-  /**
    * Open a new window for a node with document configuration
    */
   openWindowWithDocumentConfig: (
-    node: WindowedNode,
-    historyItem: string,
-    documentConfig?: DocumentConfig
+    documentNode: DocumentEntry,
+    applicationNode: ApplicationEntry,
+    documentConfig: DocumentConfig
   ): void => {
     const state = get();
+    console.log(
+      "openWindowWithDocumentConfig: opening window with document config",
+      documentConfig
+    );
 
-    if (!node) {
+    if (!documentNode) {
       return;
     }
 
-    const nodeId = node.id;
+    const nodeId = documentNode.id;
 
     // Use responsive sizing first to determine if we need special positioning
-    const { width, height } = state.getResponsiveWindowSize(node.type);
+    const { width, height } = state.getResponsiveWindowSize(documentNode.type);
     const { screenDimensions } = state;
     const { isMobile } = screenDimensions;
 
@@ -291,23 +210,21 @@ export const createWindowOperationsSlice = (
 
     // Mobile windows should be maximized by default for fullscreen experience
     // Game applications should also be maximized by default
-    const isGameApp =
-      node.type === "application" &&
-      (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
-    if (isMobile || isGameApp) {
+    if (isMobile) {
       isMaximized = true;
     }
 
     // Create new window with responsive dimensions and document configuration
     const baseWindow: WindowType = {
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
-      title: node.label,
+      title: documentNode.label,
       nodeId,
       applicationId:
-        node.type === "application"
-          ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+        applicationNode.type === "application"
+          ? (applicationNode as import("@/types/nodeTypes").ApplicationEntry)
+              .applicationId
           : undefined, // Set applicationId for application nodes
-      nodeType: node.type,
+      nodeType: documentNode.type,
       width,
       height,
       x,
@@ -316,8 +233,7 @@ export const createWindowOperationsSlice = (
       isMinimized: false,
       isMaximized: isMaximized,
       isResizing: false,
-      itemHistory: [historyItem],
-      currentHistoryIndex: 0,
+      componentKey: "documentEditor",
       documentConfig: documentConfig, // Include document configuration
     };
 
@@ -413,18 +329,6 @@ export const createWindowOperationsSlice = (
     );
   },
 
-  // toggleMaximizeWindow:(windowId: WindowType["windowId"]): boolean => {
-  //   console.log("maximizeWindow: maximizing window", windowId);
-
-  //   return get().updateOneWindow(
-  //     (window: WindowType) => window.windowId === windowId,
-  //     {
-  //       isMaximized: !window.isMaximized,
-  //       isMinimized: false,
-  //     }
-  //   );
-  // },
-
   //   ! WINDOW FRAME OPERATIONS
   /**
    * Move a window to specific coordinates
@@ -486,117 +390,6 @@ export const createWindowOperationsSlice = (
     );
   },
 
-  //   ! WINDOW HISTORY OPERATIONS
-  canGoBackInWindowHistory: (windowId: WindowType["windowId"]): boolean => {
-    const state = get();
-    const window = state.getWindowById(windowId);
-    return (window?.currentHistoryIndex ?? 0) > 0;
-  },
-  canGoForwardInWindowHistory: (windowId: WindowType["windowId"]): boolean => {
-    const state = get();
-    const window = state.getWindowById(windowId);
-    return (
-      (window?.currentHistoryIndex ?? 0) < (window?.itemHistory.length ?? 0) - 1
-    );
-  },
-  /**
-   * Navigate back in window's history - simple index decrement
-   */
-  decrementWindowHistoryIndex: (windowId: WindowType["windowId"]): boolean => {
-    // console.log("navigateBackInHistory: navigating back in window", windowId);
-
-    const state = get();
-    const window = state.getWindowById(windowId);
-
-    if (!window) {
-      console.log("navigateBackInHistory: window not found", windowId);
-      return false;
-    }
-
-    const { itemHistory, currentHistoryIndex } = window;
-
-    if (currentHistoryIndex <= 0 || itemHistory.length === 0) {
-      // console.log("navigateBackInHistory: cannot go back", windowId);
-      return false;
-    }
-
-    // Simple index decrement
-    const newIndex = currentHistoryIndex - 1;
-
-    return state.updateWindowById(windowId, {
-      currentHistoryIndex: newIndex,
-    });
-  },
-
-  /**
-   * Navigate forward in window's history - simple index increment
-   */
-  incrementWindowHistoryIndex: (windowId: WindowType["windowId"]): boolean => {
-    console.log("goForwardInHistory: navigating forward in window", windowId);
-
-    const state = get();
-    const window = state.getWindowById(windowId);
-
-    if (!window) {
-      console.log("navigateForwardInHistory: window not found", windowId);
-      return false;
-    }
-
-    const { itemHistory, currentHistoryIndex } = window;
-
-    if (currentHistoryIndex >= itemHistory.length - 1) {
-      console.log("navigateForwardInHistory: cannot go forward", windowId);
-      return false;
-    }
-
-    // Simple index increment
-    const newIndex = currentHistoryIndex + 1;
-
-    return state.updateWindowById(windowId, {
-      currentHistoryIndex: newIndex,
-    });
-  },
-  getLocationInHistory: (windowId: WindowType["windowId"]): string => {
-    const state = get();
-    const window = state.getWindowById(windowId);
-    return window?.itemHistory[window?.currentHistoryIndex ?? 0] ?? "";
-  },
-
-  /**
-   * Add item to window's history and navigate to it
-   */
-  addToWindowHistory: (
-    windowId: WindowType["windowId"],
-    item: string
-  ): boolean => {
-    console.log(
-      "addToWindowHistory: adding item to window",
-      windowId,
-      "item:",
-      item
-    );
-
-    const state = get();
-    const window = state.getWindowById(windowId);
-
-    if (!window) {
-      console.log("addToWindowHistory: window not found", windowId);
-      return false;
-    }
-
-    const currentHistory = window.itemHistory || [];
-    const currentIndex = window.currentHistoryIndex ?? -1;
-
-    // Add to history and navigate (remove any forward history if we're in the middle)
-    const newHistory = [...currentHistory.slice(0, currentIndex + 1), item];
-    const newIndex = newHistory.length - 1;
-
-    return state.updateWindowById(windowId, {
-      itemHistory: newHistory,
-      currentHistoryIndex: newIndex,
-    });
-  },
-
   /**
    * Check if a window is open for a specific node
    */
@@ -634,11 +427,7 @@ export const createWindowOperationsSlice = (
   },
 
   // NEW: Open window with custom component key
-  openWindowWithComponentKey: (
-    node: WindowedNode,
-    historyItem: string,
-    componentKey: string
-  ) => {
+  openWindowWithComponentKey: (node: WindowedNode, componentKey: string) => {
     const state = get();
 
     if (!node) {
@@ -692,8 +481,6 @@ export const createWindowOperationsSlice = (
       isMinimized: false,
       isMaximized: isMaximized,
       isResizing: false,
-      itemHistory: [historyItem],
-      currentHistoryIndex: 0,
       componentKey, // Custom component key for this window
     };
 
@@ -733,3 +520,74 @@ export const createWindowOperationsSlice = (
     return foundWindow;
   },
 });
+
+// /**
+//  * Open a new window for a node
+//  */
+// openWindow: (node: WindowedNode, historyItem: string): void => {
+//   const state = get();
+
+//   if (!node) {
+//     return;
+//   }
+
+//   const nodeId = node.id;
+
+//   // Use responsive sizing first to determine if we need special positioning
+//   const { width, height } = state.getResponsiveWindowSize(node.type);
+//   const { screenDimensions } = state;
+//   const { isMobile } = screenDimensions;
+
+//   // Position windows based on device type
+//   let x: number, y: number;
+
+//   if (isMobile) {
+//     // Mobile windows start at top-left for fullscreen experience
+//     x = 0;
+//     y = 0;
+//   } else {
+//     // Desktop windows are offset to maintain visibility of all open windows
+//     const count = state.openWindows.length;
+//     x = 100 * (count + 1);
+//     y = 100 * (count + 1);
+//   }
+
+//   let isMaximized = false;
+
+//   // Mobile windows should be maximized by default for fullscreen experience
+//   // Game applications should also be maximized by default
+//   const isGameApp =
+//     node.type === "application" &&
+//     (node.componentKey === "gtaVi" || node.componentKey === "geoGame");
+//   if (isMobile || isGameApp) {
+//     isMaximized = true;
+//   }
+
+//   // Create new window with responsive dimensions
+//   const baseWindow: WindowType = {
+//     windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
+//     title: node.label,
+//     nodeId,
+//     applicationId:
+//       node.type === "application"
+//         ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+//         : undefined, // Set applicationId for application nodes
+//     nodeType: node.type,
+//     width,
+//     height,
+//     x,
+//     y,
+//     zIndex: state.nextZIndex,
+//     isMinimized: false,
+//     isMaximized: isMaximized,
+//     isResizing: false,
+//   };
+
+//   console.log(
+//     "openWindow: creating window with applicationId",
+//     baseWindow.applicationId,
+//     "for node",
+//     node
+//   );
+//   state.createOneWindow(baseWindow);
+// },

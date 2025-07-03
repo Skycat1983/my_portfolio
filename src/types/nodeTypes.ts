@@ -2,6 +2,7 @@ import type {
   NODE_FUNCTION_REGISTRY,
   WINDOW_COMPONENT_REGISTRY,
 } from "../components/window/WindowComponentRegistry";
+import type { DOCUMENT_CONFIG_REGISTRY } from "../constants/documents";
 
 // NEW SIMPLIFIED TYPE SYSTEM
 export type NodeType =
@@ -9,7 +10,8 @@ export type NodeType =
   | "application"
   | "directory"
   | "link"
-  | "function";
+  | "function"
+  | "document";
 
 // BASE INTERFACES
 export interface BaseNodeObject {
@@ -42,14 +44,22 @@ export type EasterEggExtensions =
   | MacEasterEggExtensions
   | WindowsEasterEggExtensions;
 
+export type MacDocumentExtensions = ".txt";
+export type WindowsDocumentExtensions = ".txt";
+export type DocumentExtensions =
+  | MacDocumentExtensions
+  | WindowsDocumentExtensions;
+
 export type MacExtensions =
   | MacApplicationExtensions
   | MacLinkExtensions
-  | MacEasterEggExtensions;
+  | MacEasterEggExtensions
+  | MacDocumentExtensions;
 export type WindowsExtensions =
   | WindowsApplicationExtensions
   | WindowsLinkExtensions
-  | WindowsEasterEggExtensions;
+  | WindowsEasterEggExtensions
+  | WindowsDocumentExtensions;
 
 export interface BaseNodeEntry extends BaseNodeObject {
   parentId: string | null;
@@ -157,19 +167,41 @@ export interface FunctionEntry extends BaseNodeEntry {
   windowsExtension: WindowsApplicationExtensions;
 }
 
+export interface DocumentObject extends BaseNodeObject {
+  type: "document";
+  image: string; // Required for documents
+  alternativeImage: string | null;
+  applicationId: string; // Application that handles this document type
+  documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
+  macExtension: MacDocumentExtensions;
+  windowsExtension: WindowsDocumentExtensions;
+}
+
+export interface DocumentEntry extends BaseNodeEntry {
+  type: "document";
+  image: string;
+  alternativeImage: string | null;
+  applicationId: string; // Application that handles this document type
+  documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
+  macExtension: MacDocumentExtensions;
+  windowsExtension: WindowsDocumentExtensions;
+}
+
 // UNION TYPES
 export type NodeObject =
   | DirectoryObject
   | ApplicationObject
   | LinkObject
   | EasterEggObject
-  | FunctionObject;
+  | FunctionObject
+  | DocumentObject;
 export type NodeEntry =
   | DirectoryEntry
   | ApplicationEntry
   | LinkEntry
   | EasterEggEntry
-  | FunctionEntry;
+  | FunctionEntry
+  | DocumentEntry;
 
 // NODE MAP TYPE
 export interface NodeMap {

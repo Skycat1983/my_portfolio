@@ -1,11 +1,12 @@
 import React from "react";
 import { useNewStore } from "@/hooks/useStore";
-import type { LinkEntry } from "@/types/nodeTypes";
-import type { WindowedNode } from "@/store/windowState/windowOperationsSlice";
-import { SAFARI, EDGE } from "@/constants/images";
-import { Mail, Phone } from "lucide-react";
+// import type { LinkEntry } from "@/types/nodeTypes";
+// import type { WindowedNode } from "@/store/windowState/windowOperationsSlice";
+// import { SAFARI, EDGE } from "@/constants/images";
+// import { Mail, Phone } from "lucide-react";
+// import { DockItem } from "./DockItem";
+
 import { dockRootId } from "@/constants/nodes";
-import { DockItem } from "./DockItem";
 import { NodeSwitch } from "../nodes/NodeSwitch";
 
 export interface DockItemData {
@@ -18,23 +19,25 @@ export interface DockItemData {
 }
 
 const Dock: React.FC = () => {
-  const openWindow = useNewStore((state) => state.openWindow);
-  const getNodeByID = useNewStore((state) => state.getNodeByID);
-  const getWindowByNodeId = useNewStore((state) => state.getWindowByNodeId);
-  const getWindowByApplicationId = useNewStore(
-    (state) => state.getWindowByApplicationId
-  );
-  const focusWindow = useNewStore((state) => state.focusWindow);
   const operatingSystem = useNewStore((state) => state.operatingSystem);
 
-  // Achievement-specific state for proper handling
-  const unseenAchievements = useNewStore((state) => state.unseenAchievements);
-  const markAchievementsAsSeen = useNewStore(
-    (state) => state.markAchievementsAsSeen
-  );
-  const unlockAccessAchievements = useNewStore(
-    (state) => state.unlockAccessAchievements
-  );
+  // // Achievement-specific state for proper handling
+  // const unseenAchievements = useNewStore((state) => state.unseenAchievements);
+  // const markAchievementsAsSeen = useNewStore(
+  //   (state) => state.markAchievementsAsSeen
+  // );
+  // const unlockAccessAchievements = useNewStore(
+  //   (state) => state.unlockAccessAchievements
+  // );
+  // const openWindowWithComponentKey = useNewStore(
+  //   (state) => state.openWindowWithComponentKey
+  // );
+  // const getNodeByID = useNewStore((state) => state.getNodeByID);
+  // const getWindowByNodeId = useNewStore((state) => state.getWindowByNodeId);
+  // const getWindowByApplicationId = useNewStore(
+  //   (state) => state.getWindowByApplicationId
+  // );
+  // const focusWindow = useNewStore((state) => state.focusWindow);
 
   const getChildrenByParentID = useNewStore(
     (state) => state.getChildrenByParentID
@@ -46,102 +49,102 @@ const Dock: React.FC = () => {
 
   const dockNodes = getChildrenByParentID(dockRootId);
 
-  const mobileDockItems: DockItemData[] = [
-    {
-      id: "phone",
-      label: "Phone",
-      icon: <Phone size={32} className="text-green-400" />,
-      nodeId: "phone",
-    },
-    {
-      id: "browser",
-      label: "Browser",
-      image: operatingSystem === "mac" ? SAFARI : EDGE,
-      nodeId: "browser",
-    },
-    {
-      id: "email",
-      label: "Email",
-      icon: <Mail size={32} className="text-blue-400" />,
-      onClick: () => {
-        const email = "hlaoutaris@gmail.com";
-        const subject = "When can you start?";
-        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
-          subject
-        )}`;
+  // const mobileDockItems: DockItemData[] = [
+  //   {
+  //     id: "phone",
+  //     label: "Phone",
+  //     icon: <Phone size={32} className="text-green-400" />,
+  //     nodeId: "phone",
+  //   },
+  //   {
+  //     id: "browser",
+  //     label: "Browser",
+  //     image: operatingSystem === "mac" ? SAFARI : EDGE,
+  //     nodeId: "browser",
+  //   },
+  //   {
+  //     id: "email",
+  //     label: "Email",
+  //     icon: <Mail size={32} className="text-blue-400" />,
+  //     onClick: () => {
+  //       const email = "hlaoutaris@gmail.com";
+  //       const subject = "When can you start?";
+  //       const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
+  //         subject
+  //       )}`;
 
-        window.location.href = mailtoLink;
-      },
-    },
-  ];
+  //       window.location.href = mailtoLink;
+  //     },
+  //   },
+  // ];
 
-  const handleItemClick = (item: DockItemData) => {
-    console.log("handleItemClick in Dock: clicking item", item.id);
+  // const handleItemClick = (item: DockItemData) => {
+  //   console.log("handleItemClick in Dock: clicking item", item.id);
 
-    // Handle custom actions (like email)
-    if (item.onClick) {
-      item.onClick();
-      return;
-    }
+  //   // Handle custom actions (like email)
+  //   if (item.onClick) {
+  //     item.onClick();
+  //     return;
+  //   }
 
-    // Handle node-based items
-    if (item.nodeId) {
-      const node = getNodeByID(item.nodeId);
-      if (!node) {
-        console.warn("Node not found:", item.nodeId);
-        return;
-      }
+  //   // Handle node-based items
+  //   if (item.nodeId) {
+  //     const node = getNodeByID(item.nodeId);
+  //     if (!node) {
+  //       console.warn("Node not found:", item.nodeId);
+  //       return;
+  //     }
 
-      // Check if window already exists for this node
-      // For application nodes, use applicationId for focus logic
-      let existingWindow;
-      if (node.type === "application") {
-        existingWindow = getWindowByApplicationId(
-          (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
-        );
-      } else {
-        existingWindow = getWindowByNodeId(item.nodeId);
-      }
+  //     // Check if window already exists for this node
+  //     // For application nodes, use applicationId for focus logic
+  //     let existingWindow;
+  //     if (node.type === "application") {
+  //       existingWindow = getWindowByApplicationId(
+  //         (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+  //       );
+  //     } else {
+  //       existingWindow = getWindowByNodeId(item.nodeId);
+  //     }
 
-      if (existingWindow) {
-        focusWindow(existingWindow.windowId);
-        return;
-      }
+  //     if (existingWindow) {
+  //       focusWindow(existingWindow.windowId);
+  //       return;
+  //     }
 
-      // Handle different node types
-      if (node.type === "link") {
-        // Open external links in new tab
-        const linkNode = node as LinkEntry;
-        window.open(linkNode.url, "_blank", "noopener,noreferrer");
-        return;
-      }
+  //     // Handle different node types
+  //     if (node.type === "link") {
+  //       // Open external links in new tab
+  //       const linkNode = node as LinkEntry;
+  //       window.open(linkNode.url, "_blank", "noopener,noreferrer");
+  //       return;
+  //     }
 
-      // Handle specific node types with their proper starting values
-      if (node.type === "application" && node.componentKey === "browser") {
-        const startPageUrl = "";
-        openWindow(node as WindowedNode, startPageUrl);
-      } else if (
-        node.type === "application" &&
-        node.componentKey === "terminal"
-      ) {
-        openWindow(node as WindowedNode, node.id);
-      } else if (
-        node.type === "application" &&
-        node.componentKey === "achievements"
-      ) {
-        // Reset the notification counter when achievement is opened
-        if (unseenAchievements > 0) {
-          markAchievementsAsSeen();
-        }
-        unlockAccessAchievements();
-        openWindow(node as WindowedNode, node.id);
-      } else if (node.type === "application") {
-        openWindow(node as WindowedNode, node.label);
-      } else if (node.type === "directory") {
-        openWindow(node as WindowedNode, node.label);
-      }
-    }
-  };
+  //     // Handle specific node types with their proper starting values
+  //     if (node.type === "application" && node.componentKey === "browser") {
+  //       const startPageUrl = "";
+  //       openWindowWithComponentKey(node as WindowedNode, startPageUrl);
+  //     } else if (
+  //       node.type === "application" &&
+  //       node.componentKey === "terminal"
+  //     ) {
+  //       openWindow(node as WindowedNode, node.id);
+  //     } else if (
+  //       node.type === "application" &&
+  //       node.componentKey === "achievements"
+  //     ) {
+  //       // Reset the notification counter when achievement is opened
+  //       if (unseenAchievements > 0) {
+  //         markAchievementsAsSeen();
+  //       }
+  //       unlockAccessAchievements();
+  //       openWindow(node as WindowedNode, node.id);
+  //     } else if (node.type === "application") {
+  //       openWindow(node as WindowedNode, node.label);
+  //     } else if (node.type === "directory") {
+  //       openWindow(node as WindowedNode, node.label);
+  //     }
+  //   }
+  // };
 
   const nodeDiameter = 16;
 
@@ -161,11 +164,11 @@ const Dock: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex items-center space-x-2 sm:hidden">
+        {/* <div className="flex items-center space-x-2 sm:hidden">
           {mobileDockItems.map((item) => (
             <DockItem key={item.id} item={item} onItemClick={handleItemClick} />
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import type {
   OperatingSystem,
   ScreenDimensions,
 } from "../store/systemState/systemSlice";
+import type { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
 
 // Interface for props that window content components receive
 // Note: This is now flexible - components can define their own prop interfaces
@@ -37,30 +38,14 @@ export interface WindowType {
   isResizing?: boolean;
 
   // Generic history properties (new unified approach)
-  itemHistory: string[]; // Generic history array - URLs for browser, paths for directory, commands for terminal
-  currentHistoryIndex: number; // Current position in history
 
   // Finder-specific preview state (for column navigation)
-  previewPath?: string[]; // Preview path for column navigation (not yet committed to history)
-  previewDepth?: number; // Depth of current preview selection
 
   // Flexible component rendering (new approach)
-  componentKey?: string; // Optional component key for registry lookup
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional component key for registry lookup
 
   // Document-specific properties (for document persistence)
   documentConfig?: DocumentConfig; // Optional document configuration for saved documents
-
-  // Directory-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
-  navigationHistory?: string[];
-
-  // Browser-specific properties (optional on base Window) - LEGACY: will be replaced by generic properties
-  // TODO: remove this
-  url?: string;
-  bookmarks?: string[];
-
-  // Terminal-specific properties (optional on base Window)
-  workingDirectory?: string;
-  terminalHistory?: string[]; // LEGACY: will be replaced by generic itemHistory
 }
 
 // Narrowed types for specific window types using utility types
@@ -90,8 +75,6 @@ export type DirectoryWindow = Required<
     | "x"
     | "y"
     | "zIndex"
-    | "navigationHistory"
-    | "currentHistoryIndex"
   >
 > & {
   nodeType: "directory";
@@ -110,19 +93,13 @@ export type BrowserWindow = Required<
     | "x"
     | "y"
     | "zIndex"
-    | "url"
-    | "itemHistory"
-    | "currentHistoryIndex"
     // | "currentItem"
     // | "canGoBack"
     // | "canGoForward"
   >
 > & {
   nodeType: "browser";
-} & Pick<
-    WindowType,
-    "isMinimized" | "isMaximized" | "isResizing" | "bookmarks"
-  >;
+} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
 
 export type TerminalWindow = Required<
   Pick<
@@ -136,19 +113,13 @@ export type TerminalWindow = Required<
     | "x"
     | "y"
     | "zIndex"
-    | "workingDirectory"
-    | "itemHistory"
-    | "currentHistoryIndex"
     // | "currentItem"
     // | "canGoBack"
     // | "canGoForward"
   >
 > & {
   nodeType: "terminal";
-} & Pick<
-    WindowType,
-    "isMinimized" | "isMaximized" | "isResizing" | "terminalHistory"
-  >;
+} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
 
 export type AchievementWindow = Required<
   Pick<
@@ -166,17 +137,6 @@ export type AchievementWindow = Required<
 > & {
   nodeType: "achievements";
 } & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
-
-// Legacy DirectoryWindow interface (can be removed once everything uses the new types)
-export interface DirectoryWindowLegacy extends WindowType {
-  nodeType: "directory";
-  nodeId: DirectoryEntry["id"];
-  currentPath: string;
-  canGoBack: boolean;
-  canGoForward: boolean;
-  navigationHistory: string[];
-  currentHistoryIndex: number;
-}
 
 // Document Registry Types for persistent document storage
 export type TextAlignment = "left" | "center" | "right";
