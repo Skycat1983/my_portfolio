@@ -1,14 +1,22 @@
-import type { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
+import type {
+  NODE_FUNCTION_REGISTRY,
+  WINDOW_COMPONENT_REGISTRY,
+} from "../components/window/WindowComponentRegistry";
 
 // NEW SIMPLIFIED TYPE SYSTEM
-export type NodeType = "easter-egg" | "application" | "directory" | "link";
+export type NodeType =
+  | "easter-egg"
+  | "application"
+  | "directory"
+  | "link"
+  | "function";
 
 // BASE INTERFACES
 export interface BaseNodeObject {
   id: string;
   type: NodeType;
   label: string;
-  image?: string;
+  image: string;
   alternativeImage: string | null; // For state-dependent icon switching (null = no alternative)
 }
 
@@ -30,13 +38,6 @@ export interface ApplicationObject extends BaseNodeObject {
   image: string; // Required for applications
   alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
-}
-
-export interface LinkObject extends BaseNodeObject {
-  type: "link";
-  image: string; // Required for links
-  alternativeImage: string | null;
-  url: string;
 }
 
 export interface EasterEggObject {
@@ -64,11 +65,34 @@ export interface ApplicationEntry extends BaseNodeEntry {
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
 }
 
+export interface LinkObject extends BaseNodeObject {
+  type: "link";
+  image: string; // Required for links
+  alternativeImage: string | null;
+  url: string;
+  // functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+}
+
 export interface LinkEntry extends BaseNodeEntry {
   type: "link";
   image: string;
   alternativeImage: string | null;
   url: string;
+  // functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+}
+
+export interface FunctionObject extends BaseNodeObject {
+  type: "function";
+  image: string;
+  alternativeImage: string | null;
+  functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+}
+
+export interface FunctionEntry extends BaseNodeEntry {
+  type: "function";
+  image: string;
+  alternativeImage: string | null;
+  functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
 }
 
 export interface EasterEggEntry {
@@ -86,12 +110,14 @@ export type NodeObject =
   | DirectoryObject
   | ApplicationObject
   | LinkObject
-  | EasterEggObject;
+  | EasterEggObject
+  | FunctionObject;
 export type NodeEntry =
   | DirectoryEntry
   | ApplicationEntry
   | LinkEntry
-  | EasterEggEntry;
+  | EasterEggEntry
+  | FunctionEntry;
 
 // NODE MAP TYPE
 export interface NodeMap {

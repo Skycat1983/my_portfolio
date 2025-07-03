@@ -30,11 +30,29 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   calculator: Calculator,
 };
 
+export const NODE_FUNCTION_REGISTRY = {
+  test: () => {
+    console.log("test");
+  },
+  emailMe: () => {
+    const email = "hlaoutaris@gmail.com";
+    const subject = "When can you start?";
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+    window.location.href = mailtoLink;
+  },
+};
+
 // Type-safe function to get component by key
 export const getWindowComponent = (
   componentKey: string
 ): React.ComponentType<WindowContentProps> | undefined => {
   return WINDOW_COMPONENT_REGISTRY[componentKey];
+};
+
+export const getNodeFunction = (
+  functionKey: keyof typeof NODE_FUNCTION_REGISTRY
+) => {
+  return NODE_FUNCTION_REGISTRY[functionKey];
 };
 
 // Get all available component keys (useful for debugging/development)

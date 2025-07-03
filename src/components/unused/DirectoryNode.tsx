@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
-import { useNodeEvents } from "./hooks/useNodeEvents";
+import { useNodeEvents } from "../nodes/hooks/useNodeEvents";
 import type { DirectoryEntry } from "@/types/nodeTypes";
 import {
   containerClasses,
@@ -9,7 +9,7 @@ import {
   tileWrapper,
   titleBase,
   tileFrame,
-} from "./node.styles";
+} from "../nodes/node.styles";
 import { BIN_EMPTY, BIN_FULL, FINDER } from "@/constants/images";
 
 type LayoutType = "desktop" | "window";

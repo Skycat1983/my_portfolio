@@ -6,6 +6,7 @@ import type {
   LinkEntry,
   EasterEggEntry,
   ApplicationEntry,
+  FunctionEntry,
 } from "../types/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
@@ -59,6 +60,7 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           url: nodeObj.url,
+          // functionKey: nodeObj.functionKey,
         } as LinkEntry;
         break;
 
@@ -72,6 +74,18 @@ export const convertObjectsToMap = (
           currentImageIndex: nodeObj.currentImageIndex,
           isBroken: nodeObj.isBroken,
         } as EasterEggEntry;
+        break;
+
+      case "function":
+        mapNode = {
+          id: nodeObj.id,
+          parentId,
+          type: "function",
+          label: nodeObj.label,
+          image: nodeObj.image,
+          alternativeImage: nodeObj.alternativeImage ?? null,
+          functionKey: nodeObj.functionKey,
+        } as FunctionEntry;
         break;
 
       default:

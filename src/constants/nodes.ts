@@ -29,6 +29,7 @@ import {
   WORD,
   LINKEDIN,
   CALCULATOR,
+  MAIL,
 } from "./images";
 import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
@@ -45,7 +46,12 @@ const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
 
 // TODO: add one more type, something that consults function registry. this can be used for easter eggs but also for the 'send me email' thing
 
-type NodeType = "easter-egg" | "application" | "directory" | "link";
+type NodeType =
+  | "easter-egg"
+  | "application"
+  | "directory"
+  | "link"
+  | "function";
 
 export interface BaseNodeObject {
   id: string;
@@ -372,6 +378,14 @@ export const rootNodes: DirectoryObject = {
           alternativeImage: null,
           componentKey: "finder",
           children: [],
+        },
+        {
+          id: "mail",
+          label: "Mail",
+          type: "function",
+          image: MAIL,
+          alternativeImage: null,
+          functionKey: "emailMe",
         },
         {
           id: "maps",
