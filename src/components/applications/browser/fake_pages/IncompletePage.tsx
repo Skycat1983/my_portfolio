@@ -7,9 +7,9 @@ interface IncompletePageProps {
 
 export const IncompletePage = ({ windowId }: IncompletePageProps) => {
   const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
-  const lastUrl = browserWindow.itemHistory[browserWindow.currentHistoryIndex];
+  const lastUrl = browserWindow.url || "";
 
-  // Get the current URL from this window's history
+  // Get the current URL from this window's URL property
 
   return (
     <div className="max-w-4xl mx-auto text-center">

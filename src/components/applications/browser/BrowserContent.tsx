@@ -8,6 +8,9 @@ import { BrowserNavigation } from "./BrowserNavigation";
 import { OfflinePage } from "./fake_pages/OfflinePage";
 import { theme } from "@/styles/theme";
 import { Button } from "@/components/ui/button";
+import { useBrowserHistory } from "./hooks/useBrowserHistory";
+
+// TODO: when we click on 'search' we should focus on the search bar
 
 export const BrowserContent = () => {
   const [bookmarked, setBookmarked] = useState(false);
@@ -18,8 +21,11 @@ export const BrowserContent = () => {
 
   const window = useNewStore((s) => s.getWindowByNodeId("browser"));
   const screenDimensions = useNewStore((s) => s.screenDimensions);
-  const currentPage = window?.itemHistory[window?.currentHistoryIndex];
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
+
+  // Use browser history to get current page URL
+  const browserHistory = useBrowserHistory(window?.windowId || "");
+  const currentPage = browserHistory.currentUrl || "";
 
   // Restore scroll position when page changes
   useEffect(() => {

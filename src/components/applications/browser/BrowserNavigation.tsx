@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, RotateCcw, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
-import { useWindowHistory } from "@/components/unused/useWindowHistory";
+import { useBrowserHistory } from "./hooks/useBrowserHistory";
 import { useNewStore } from "@/hooks/useStore";
 import { PREDEFINED_ADDRESS } from "@/constants/urls";
 
@@ -12,50 +12,28 @@ interface BrowserNavigationProps {
 export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
   const predefinedAddress = PREDEFINED_ADDRESS;
 
-  // Use new generic history system
+  // Use new browser history system
   const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
   const screenDimensions = useNewStore((s) => s.screenDimensions);
   const updateWindowById = useNewStore((s) => s.updateWindowById);
-  const urlHistory = browserWindow.itemHistory;
-  const i = browserWindow.currentHistoryIndex;
-
-  // const urlHistoryIndex = browserWindow.currentHistoryIndex;
 
   // Get URL from store instead of local state
   const url = browserWindow.url || "";
   const addressPosition = url?.length ?? 0;
 
-  const {
-    canGoBackInWindowHistory,
-    canGoForwardInWindowHistory,
-    handleGoBackInWindowHistory,
-    handleGoForwardInWindowHistory,
-  } = useWindowHistory(windowId);
+  // Use new browser history hook
+  const browserHistory = useBrowserHistory(windowId);
 
   const handleBack = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (canGoBackInWindowHistory(windowId)) {
-      handleGoBackInWindowHistory();
-
-      if (urlHistory[i]) {
-        updateWindowById(windowId, { url: urlHistory[i - 1] });
-      }
-    }
+    browserHistory.goBack();
   };
 
   const handleForward = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (canGoForwardInWindowHistory(windowId)) {
-      handleGoForwardInWindowHistory();
-      // Get the URL from the current history position after navigation
-      const getLocationInHistory = useNewStore.getState().getLocationInHistory;
-      const urlAtCurrentPosition = getLocationInHistory(windowId);
-      if (urlAtCurrentPosition) {
-        updateWindowById(windowId, { url: urlAtCurrentPosition });
-      }
-    }
+    browserHistory.goForward();
   };
 
   const handleUrlClick = (e: React.MouseEvent<HTMLInputElement>) => {
@@ -80,11 +58,8 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
       return;
     }
 
-    // Add current URL to history and navigate to it
-    updateWindowById(windowId, {
-      itemHistory: [...urlHistory, url],
-      currentHistoryIndex: urlHistory.length,
-    });
+    // Add current URL to history using new browser history
+    browserHistory.navigateToUrl(url);
   };
 
   const handleUrlKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -137,10 +112,10 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
         style={mobileButtonStyles}
         title="Back"
         onClick={handleBack}
-        disabled={!canGoBackInWindowHistory(windowId)}
+        disabled={!browserHistory.canGoBack}
         className={cn(
           "hover:bg-gray-200 transition-colors touch-manipulation",
-          !canGoBackInWindowHistory(windowId) && "opacity-50 cursor-not-allowed"
+          !browserHistory.canGoBack && "opacity-50 cursor-not-allowed"
         )}
       >
         <ChevronLeft size={screenDimensions.isMobile ? 20 : 14} />
@@ -150,11 +125,10 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
         style={mobileButtonStyles}
         title="Forward"
         onClick={handleForward}
-        disabled={!canGoForwardInWindowHistory(windowId)}
+        disabled={!browserHistory.canGoForward}
         className={cn(
           "hover:bg-gray-200 transition-colors touch-manipulation",
-          !canGoForwardInWindowHistory(windowId) &&
-            "opacity-50 cursor-not-allowed"
+          !browserHistory.canGoForward && "opacity-50 cursor-not-allowed"
         )}
       >
         <ChevronRight size={screenDimensions.isMobile ? 20 : 14} />
