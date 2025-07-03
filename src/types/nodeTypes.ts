@@ -20,6 +20,37 @@ export interface BaseNodeObject {
   alternativeImage: string | null; // For state-dependent icon switching (null = no alternative)
 }
 
+export type MacDirectoryExtensions = null;
+export type WindowsDirectoryExtensions = null;
+export type DirectoryExtensions =
+  | MacDirectoryExtensions
+  | WindowsDirectoryExtensions;
+
+export type MacLinkExtensions = ".webloc" | ".png" | ".jpg" | ".pdf";
+export type WindowsLinkExtensions = ".url" | ".png" | ".jpg" | ".pdf";
+export type LinkExtensions = MacLinkExtensions | WindowsLinkExtensions;
+
+export type MacApplicationExtensions = ".app" | ".command" | ".txt";
+export type WindowsApplicationExtensions = ".exe" | ".bat" | ".txt";
+export type ApplicationExtensions =
+  | MacApplicationExtensions
+  | WindowsApplicationExtensions;
+
+export type MacEasterEggExtensions = ".egg";
+export type WindowsEasterEggExtensions = ".egg";
+export type EasterEggExtensions =
+  | MacEasterEggExtensions
+  | WindowsEasterEggExtensions;
+
+export type MacExtensions =
+  | MacApplicationExtensions
+  | MacLinkExtensions
+  | MacEasterEggExtensions;
+export type WindowsExtensions =
+  | WindowsApplicationExtensions
+  | WindowsLinkExtensions
+  | WindowsEasterEggExtensions;
+
 export interface BaseNodeEntry extends BaseNodeObject {
   parentId: string | null;
 }
@@ -30,7 +61,19 @@ export interface DirectoryObject extends BaseNodeObject {
   image: string; // Required for directories
   alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+  macExtension: MacDirectoryExtensions;
+  windowsExtension: WindowsDirectoryExtensions;
   children: NodeObject[];
+}
+// ENTRY TYPES (Flat map structure with parentId)
+export interface DirectoryEntry extends BaseNodeEntry {
+  type: "directory";
+  image: string;
+  alternativeImage: string | null;
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+  macExtension: MacDirectoryExtensions;
+  windowsExtension: WindowsDirectoryExtensions;
+  children: string[]; // Array of child IDs
 }
 
 export interface ApplicationObject extends BaseNodeObject {
@@ -38,6 +81,19 @@ export interface ApplicationObject extends BaseNodeObject {
   image: string; // Required for applications
   alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+  applicationId: string; // Application identity separate from node identity
+  macExtension: MacApplicationExtensions;
+  windowsExtension: WindowsApplicationExtensions;
+}
+
+export interface ApplicationEntry extends BaseNodeEntry {
+  type: "application";
+  image: string;
+  alternativeImage: string | null;
+  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+  applicationId: string; // Application identity separate from node identity
+  macExtension: MacApplicationExtensions;
+  windowsExtension: WindowsApplicationExtensions;
 }
 
 export interface EasterEggObject {
@@ -47,52 +103,8 @@ export interface EasterEggObject {
   image: string[]; // Array for easter eggs
   currentImageIndex: number;
   isBroken: boolean;
-}
-
-// ENTRY TYPES (Flat map structure with parentId)
-export interface DirectoryEntry extends BaseNodeEntry {
-  type: "directory";
-  image: string;
-  alternativeImage: string | null;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
-  children: string[]; // Array of child IDs
-}
-
-export interface ApplicationEntry extends BaseNodeEntry {
-  type: "application";
-  image: string;
-  alternativeImage: string | null;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
-}
-
-export interface LinkObject extends BaseNodeObject {
-  type: "link";
-  image: string; // Required for links
-  alternativeImage: string | null;
-  url: string;
-  // functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
-}
-
-export interface LinkEntry extends BaseNodeEntry {
-  type: "link";
-  image: string;
-  alternativeImage: string | null;
-  url: string;
-  // functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
-}
-
-export interface FunctionObject extends BaseNodeObject {
-  type: "function";
-  image: string;
-  alternativeImage: string | null;
-  functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
-}
-
-export interface FunctionEntry extends BaseNodeEntry {
-  type: "function";
-  image: string;
-  alternativeImage: string | null;
-  functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+  macExtension: MacEasterEggExtensions;
+  windowsExtension: WindowsEasterEggExtensions;
 }
 
 export interface EasterEggEntry {
@@ -103,6 +115,46 @@ export interface EasterEggEntry {
   image: string[];
   currentImageIndex: number;
   isBroken: boolean;
+  macExtension: MacEasterEggExtensions;
+  windowsExtension: WindowsEasterEggExtensions;
+}
+
+export interface LinkObject extends BaseNodeObject {
+  type: "link";
+  image: string; // Required for links
+  alternativeImage: string | null;
+  url: string;
+  macExtension: MacLinkExtensions;
+  windowsExtension: WindowsLinkExtensions;
+  // functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+}
+
+export interface LinkEntry extends BaseNodeEntry {
+  type: "link";
+  image: string;
+  alternativeImage: string | null;
+  url: string;
+  macExtension: MacLinkExtensions;
+  windowsExtension: WindowsLinkExtensions;
+  // functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+}
+
+export interface FunctionObject extends BaseNodeObject {
+  type: "function";
+  image: string;
+  alternativeImage: string | null;
+  functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+  macExtension: MacApplicationExtensions;
+  windowsExtension: WindowsApplicationExtensions;
+}
+
+export interface FunctionEntry extends BaseNodeEntry {
+  type: "function";
+  image: string;
+  alternativeImage: string | null;
+  functionKey: keyof typeof NODE_FUNCTION_REGISTRY;
+  macExtension: MacApplicationExtensions;
+  windowsExtension: WindowsApplicationExtensions;
 }
 
 // UNION TYPES

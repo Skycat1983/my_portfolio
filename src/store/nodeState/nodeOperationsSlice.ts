@@ -1,7 +1,7 @@
 import type {
   NodeEntry,
   DirectoryEntry,
-  DocumentEntry,
+  ApplicationEntry,
 } from "@/types/nodeTypes";
 import type { SetState, GetState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
@@ -96,8 +96,8 @@ export const createNodeOperationsSlice = (
     const node = state.findOneNode((n: NodeEntry) => n.id === nodeId);
 
     // Clean up document registry if this is a document node with saved config
-    if (node?.type === "document") {
-      const documentNode = node as DocumentEntry;
+    if (node?.macExtension === ".txt" || node?.windowsExtension === ".txt") {
+      const documentNode = node as ApplicationEntry;
       if (documentNode.documentConfigId) {
         console.log(
           "deleteNodeByID: cleaning up document config",

@@ -97,6 +97,7 @@ export interface WindowOperationsActions {
   // ID-based accessors (built from predicates)
   getWindowById: (id: WindowType["windowId"]) => WindowType | undefined;
   getWindowByNodeId: (nodeId: WindowType["nodeId"]) => WindowType | undefined;
+  getWindowByApplicationId: (applicationId: string) => WindowType | undefined;
 
   // Responsive sizing utilities
   getResponsiveWindowSize: (nodeType: string) => {
@@ -225,6 +226,10 @@ export const createWindowOperationsSlice = (
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
       title: node.label,
       nodeId,
+      applicationId:
+        node.type === "application"
+          ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+          : undefined, // Set applicationId for application nodes
       nodeType: node.type,
       width,
       height,
@@ -238,6 +243,12 @@ export const createWindowOperationsSlice = (
       currentHistoryIndex: 0,
     };
 
+    console.log(
+      "openWindow: creating window with applicationId",
+      baseWindow.applicationId,
+      "for node",
+      node
+    );
     state.createOneWindow(baseWindow);
   },
 
@@ -292,6 +303,10 @@ export const createWindowOperationsSlice = (
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
       title: node.label,
       nodeId,
+      applicationId:
+        node.type === "application"
+          ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+          : undefined, // Set applicationId for application nodes
       nodeType: node.type,
       width,
       height,
@@ -664,6 +679,10 @@ export const createWindowOperationsSlice = (
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
       title: node.label,
       nodeId,
+      applicationId:
+        node.type === "application"
+          ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+          : undefined, // Set applicationId for application nodes
       nodeType: node.type,
       width,
       height,
@@ -678,6 +697,39 @@ export const createWindowOperationsSlice = (
       componentKey, // Custom component key for this window
     };
 
+    console.log(
+      "openWindowWithComponentKey: creating window with applicationId",
+      baseWindow.applicationId,
+      "for node",
+      node
+    );
+
     state.createOneWindow(baseWindow);
+  },
+
+  /**
+   * Get window by application ID (for focus/duplicate logic)
+   */
+  getWindowByApplicationId: (applicationId: string): WindowType | undefined => {
+    const state = get();
+    console.log(
+      "getWindowByApplicationId: searching for applicationId",
+      applicationId
+    );
+    console.log(
+      "getWindowByApplicationId: current windows",
+      state.openWindows.map((w) => ({
+        windowId: w.windowId,
+        nodeId: w.nodeId,
+        applicationId: w.applicationId,
+      }))
+    );
+
+    const foundWindow = state.findOneWindow(
+      (window: WindowType) => window.applicationId === applicationId
+    );
+
+    console.log("getWindowByApplicationId: found window", foundWindow);
+    return foundWindow;
   },
 });

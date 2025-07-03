@@ -1,14 +1,16 @@
-import { EASTER_EGG1, EASTER_EGG2, EASTER_EGG3 } from "@/constants/images";
+import {
+  EASTER_EGG1,
+  EASTER_EGG2,
+  EASTER_EGG3,
+  FOLDER_MAC,
+  FOLDER_WINDOWS,
+} from "@/constants/images";
 import type {
   NodeEntry,
   DirectoryEntry,
   EasterEggEntry,
 } from "@/types/nodeTypes";
-import type {
-  SetState,
-  GetState,
-  BaseStoreState,
-} from "@/types/storeTypes";
+import type { SetState, GetState, BaseStoreState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";
 
@@ -221,6 +223,11 @@ export const createNodeBusinessSlice = (
       type: "directory",
       label: "Downloads",
       parentId: state.rootId,
+      image: FOLDER_MAC,
+      alternativeImage: FOLDER_WINDOWS,
+      componentKey: "finder",
+      macExtension: null,
+      windowsExtension: null,
     };
 
     const created = state.createOneNode(downloadsFolder);
@@ -285,6 +292,11 @@ export const createNodeBusinessSlice = (
         type: "directory",
         label: "Downloads",
         parentId: state.rootId,
+        image: FOLDER_MAC,
+        alternativeImage: FOLDER_WINDOWS,
+        componentKey: "finder",
+        macExtension: null,
+        windowsExtension: null,
       };
 
       const created = state.createOneNode(downloadsFolder);
@@ -325,6 +337,8 @@ export const createNodeBusinessSlice = (
       currentImageIndex: 0,
       isBroken: false,
       parentId: downloadsId,
+      macExtension: ".egg",
+      windowsExtension: ".egg",
     };
 
     const created = state.createOneNode(newEgg);

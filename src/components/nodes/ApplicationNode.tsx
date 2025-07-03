@@ -23,22 +23,42 @@ export const ApplicationNode = ({ application }: Props) => {
   const openWindowWithComponentKey = useNewStore(
     (s) => s.openWindowWithComponentKey
   );
-  const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
+  const getWindowByApplicationId = useNewStore(
+    (s) => s.getWindowByApplicationId
+  );
   const focusWindow = useNewStore((s) => s.focusWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    const windowAlreadyOpen = getWindowByNodeId(id);
+    console.log(
+      "APP_NODE_03: handleActivate called for",
+      application.id,
+      "applicationId:",
+      application.applicationId
+    );
+
+    // Use applicationId for focus logic to handle dock/desktop instances
+    const windowAlreadyOpen = getWindowByApplicationId(
+      application.applicationId
+    );
+    console.log("APP_NODE_02: windowAlreadyOpen", windowAlreadyOpen);
+    console.log("APP_NODE_02: windowAlreadyOpen", application);
 
     if (windowAlreadyOpen) {
+      console.log(
+        "APP_NODE_04: focusing existing window",
+        windowAlreadyOpen.windowId
+      );
       focusWindow(windowAlreadyOpen.windowId);
       return;
     }
+
+    console.log("APP_NODE_05: opening new window for", application.id);
     openWindowWithComponentKey(application, id, componentKey);
   }, [
     id,
     application,
-    getWindowByNodeId,
+    getWindowByApplicationId,
     openWindowWithComponentKey,
     focusWindow,
     componentKey,

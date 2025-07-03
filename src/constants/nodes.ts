@@ -31,7 +31,7 @@ import {
   CALCULATOR,
   MAIL,
 } from "./images";
-import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
+// import { WINDOW_COMPONENT_REGISTRY } from "../components/window/WindowComponentRegistry";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
 
@@ -46,30 +46,6 @@ const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
 
 // TODO: add one more type, something that consults function registry. this can be used for easter eggs but also for the 'send me email' thing
 
-type NodeType =
-  | "easter-egg"
-  | "application"
-  | "directory"
-  | "link"
-  | "function";
-
-export interface BaseNodeObject {
-  id: string;
-  type: NodeType;
-  label: string;
-  image: string;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
-}
-
-export interface BaseNodeEntry {
-  id: string;
-  parentId: string | null;
-  type: NodeType;
-  label: string;
-  image: string;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
-}
-
 // HUMAN-READABLE DATA DEFINITION - UNIFIED ROOT STRUCTURE
 export const rootNodes: DirectoryObject = {
   id: "system-root",
@@ -78,6 +54,8 @@ export const rootNodes: DirectoryObject = {
   alternativeImage: null,
   componentKey: "finder",
   label: "System",
+  macExtension: null,
+  windowsExtension: null,
   children: [
     {
       id: "desktop-root",
@@ -86,6 +64,8 @@ export const rootNodes: DirectoryObject = {
       alternativeImage: null,
       componentKey: "finder",
       label: "Desktop",
+      macExtension: null,
+      windowsExtension: null,
       children: [
         {
           id: "depth1",
@@ -94,6 +74,8 @@ export const rootNodes: DirectoryObject = {
           alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
           label: "Depth 1",
+          macExtension: null,
+          windowsExtension: null,
           children: [
             {
               id: "depth2",
@@ -102,6 +84,8 @@ export const rootNodes: DirectoryObject = {
               alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
               label: "Depth 2",
+              macExtension: null,
+              windowsExtension: null,
               children: [
                 {
                   id: "depth3",
@@ -110,6 +94,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: FOLDER_WINDOWS,
                   componentKey: "finder",
                   label: "Depth 3",
+                  macExtension: null,
+                  windowsExtension: null,
                   children: [
                     {
                       id: "depth4",
@@ -118,6 +104,8 @@ export const rootNodes: DirectoryObject = {
                       alternativeImage: FOLDER_WINDOWS,
                       componentKey: "finder",
                       label: "Depth 4",
+                      macExtension: null,
+                      windowsExtension: null,
                       children: [],
                     },
                     {
@@ -127,6 +115,8 @@ export const rootNodes: DirectoryObject = {
                       alternativeImage: FOLDER_WINDOWS,
                       componentKey: "finder",
                       label: "Depth 4",
+                      macExtension: null,
+                      windowsExtension: null,
                       children: [],
                     },
                   ],
@@ -136,12 +126,15 @@ export const rootNodes: DirectoryObject = {
           ],
         },
         {
-          id: "browser",
+          id: "browser-desktop",
           label: "Internet",
           type: "application",
           image: SAFARI,
           alternativeImage: EDGE,
           componentKey: "browser",
+          applicationId: "browser",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "terminal",
@@ -150,6 +143,9 @@ export const rootNodes: DirectoryObject = {
           image: TERMINAL,
           alternativeImage: null,
           componentKey: "terminal",
+          applicationId: "terminal",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "trash",
@@ -158,6 +154,8 @@ export const rootNodes: DirectoryObject = {
           image: BIN_EMPTY,
           alternativeImage: BIN_FULL,
           componentKey: "finder",
+          macExtension: null,
+          windowsExtension: null,
           children: [
             {
               id: "egg",
@@ -166,6 +164,8 @@ export const rootNodes: DirectoryObject = {
               type: "easter-egg",
               currentImageIndex: 0,
               isBroken: false,
+              macExtension: ".egg",
+              windowsExtension: ".egg",
             },
           ],
         },
@@ -176,6 +176,8 @@ export const rootNodes: DirectoryObject = {
           image: FOLDER_MAC,
           alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
+          macExtension: null,
+          windowsExtension: null,
           children: [
             {
               id: "laoutaris",
@@ -184,6 +186,8 @@ export const rootNodes: DirectoryObject = {
               image: FOLDER_MAC,
               alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
+              macExtension: null,
+              windowsExtension: null,
               children: [
                 {
                   id: "laoutaris_code",
@@ -192,6 +196,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/laoutaris-nextjs",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
                 {
                   id: "laoutaris_website",
@@ -200,6 +206,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://laoutaris-nextjs.vercel.app/",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
               ],
             },
@@ -210,6 +218,8 @@ export const rootNodes: DirectoryObject = {
               image: FOLDER_MAC,
               alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
+              macExtension: null,
+              windowsExtension: null,
               children: [
                 {
                   id: "roboCrop_code",
@@ -218,6 +228,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/RoboCrop",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
                 {
                   id: "roboCrop_download",
@@ -226,6 +238,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
               ],
             },
@@ -236,6 +250,8 @@ export const rootNodes: DirectoryObject = {
               image: FOLDER_MAC,
               alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
+              macExtension: null,
+              windowsExtension: null,
               children: [
                 {
                   id: "SkyNot_code",
@@ -244,6 +260,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/SkyNot",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
                 {
                   id: "SkyNot_download",
@@ -252,6 +270,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
               ],
             },
@@ -262,6 +282,8 @@ export const rootNodes: DirectoryObject = {
               image: FOLDER_MAC,
               alternativeImage: FOLDER_WINDOWS,
               componentKey: "finder",
+              macExtension: null,
+              windowsExtension: null,
               children: [
                 {
                   id: "Dashboard_code",
@@ -270,6 +292,8 @@ export const rootNodes: DirectoryObject = {
                   alternativeImage: null,
                   type: "link",
                   url: "https://github.com/Skycat1983/Dashboard",
+                  macExtension: ".webloc",
+                  windowsExtension: ".url",
                 },
               ],
             },
@@ -283,6 +307,8 @@ export const rootNodes: DirectoryObject = {
           image: FOLDER_MAC,
           alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
+          macExtension: null,
+          windowsExtension: null,
           children: [
             {
               id: "resume",
@@ -291,6 +317,8 @@ export const rootNodes: DirectoryObject = {
               alternativeImage: null,
               type: "link",
               url: RESUME,
+              macExtension: ".pdf",
+              windowsExtension: ".pdf",
             },
             {
               id: "recommendation",
@@ -299,6 +327,8 @@ export const rootNodes: DirectoryObject = {
               alternativeImage: null,
               type: "link",
               url: RECOMMENDATIONS,
+              macExtension: ".pdf",
+              windowsExtension: ".pdf",
             },
             {
               id: "review",
@@ -307,6 +337,8 @@ export const rootNodes: DirectoryObject = {
               alternativeImage: null,
               type: "link",
               url: REVIEW,
+              macExtension: ".png",
+              windowsExtension: ".png",
             },
           ],
         },
@@ -317,6 +349,8 @@ export const rootNodes: DirectoryObject = {
           image: FOLDER_MAC,
           alternativeImage: FOLDER_WINDOWS,
           componentKey: "finder",
+          macExtension: null,
+          windowsExtension: null,
           children: [
             {
               id: "gtaiv",
@@ -325,6 +359,9 @@ export const rootNodes: DirectoryObject = {
               image: GTA6_LOGO,
               alternativeImage: null,
               componentKey: "gtaVi",
+              applicationId: "gtaVi",
+              macExtension: ".app",
+              windowsExtension: ".exe",
             },
             {
               id: "geo",
@@ -333,6 +370,9 @@ export const rootNodes: DirectoryObject = {
               image: PLANET,
               alternativeImage: null,
               componentKey: "geoGame",
+              applicationId: "geoGame",
+              macExtension: ".app",
+              windowsExtension: ".exe",
             },
           ],
         },
@@ -343,6 +383,9 @@ export const rootNodes: DirectoryObject = {
           image: TROPHY1,
           alternativeImage: null,
           componentKey: "achievements",
+          applicationId: "achievements",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "pages",
@@ -351,6 +394,9 @@ export const rootNodes: DirectoryObject = {
           image: PAGES,
           alternativeImage: WORD,
           componentKey: "documentEditor",
+          applicationId: "documentEditor",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         // {
         //   id: "whatsapp",
@@ -369,6 +415,8 @@ export const rootNodes: DirectoryObject = {
       image: FOLDER_MAC,
       alternativeImage: FOLDER_WINDOWS,
       componentKey: "dock",
+      macExtension: null,
+      windowsExtension: null,
       children: [
         {
           id: "finder",
@@ -377,6 +425,8 @@ export const rootNodes: DirectoryObject = {
           image: FINDER,
           alternativeImage: null,
           componentKey: "finder",
+          macExtension: null,
+          windowsExtension: null,
           children: [],
         },
         {
@@ -386,6 +436,8 @@ export const rootNodes: DirectoryObject = {
           image: MAIL,
           alternativeImage: null,
           functionKey: "emailMe",
+          macExtension: ".txt",
+          windowsExtension: ".txt",
         },
         {
           id: "maps",
@@ -394,6 +446,9 @@ export const rootNodes: DirectoryObject = {
           image: MAPS,
           alternativeImage: null,
           componentKey: "maps",
+          applicationId: "maps",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "calculator",
@@ -402,6 +457,9 @@ export const rootNodes: DirectoryObject = {
           image: CALCULATOR,
           alternativeImage: null,
           componentKey: "calculator",
+          applicationId: "calculator",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "pages-dock",
@@ -410,6 +468,9 @@ export const rootNodes: DirectoryObject = {
           image: PAGES,
           alternativeImage: WORD,
           componentKey: "documentEditor",
+          applicationId: "documentEditor",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "github-dock",
@@ -418,6 +479,8 @@ export const rootNodes: DirectoryObject = {
           image: GITHUB,
           alternativeImage: null,
           url: "https://github.com/Skycat1983",
+          macExtension: ".webloc",
+          windowsExtension: ".url",
         },
         {
           id: "linkedin-dock",
@@ -426,6 +489,8 @@ export const rootNodes: DirectoryObject = {
           image: LINKEDIN,
           alternativeImage: null,
           url: "https://www.linkedin.com/in/skycat1983/",
+          macExtension: ".webloc",
+          windowsExtension: ".url",
         },
         {
           id: "whatsapp-dock",
@@ -434,6 +499,9 @@ export const rootNodes: DirectoryObject = {
           image: WHATSAPP,
           alternativeImage: null,
           componentKey: "whatsApp",
+          applicationId: "whatsApp",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "achievements-dock",
@@ -442,6 +510,9 @@ export const rootNodes: DirectoryObject = {
           image: TROPHY1,
           alternativeImage: null,
           componentKey: "achievements",
+          applicationId: "achievements",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "terminal-dock",
@@ -450,6 +521,9 @@ export const rootNodes: DirectoryObject = {
           image: TERMINAL,
           alternativeImage: null,
           componentKey: "terminal",
+          applicationId: "terminal",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
         {
           id: "browser-dock",
@@ -458,6 +532,9 @@ export const rootNodes: DirectoryObject = {
           image: SAFARI,
           alternativeImage: null,
           componentKey: "browser",
+          applicationId: "browser",
+          macExtension: ".app",
+          windowsExtension: ".exe",
         },
       ],
     },
@@ -552,3 +629,26 @@ export const dockRootId = "dock-root";
 //     },
 //   ],
 // },
+// type NodeType =
+//   | "easter-egg"
+//   | "application"
+//   | "directory"
+//   | "link"
+//   | "function";
+
+// export interface BaseNodeObject {
+//   id: string;
+//   type: NodeType;
+//   label: string;
+//   image: string;
+//   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+// }
+
+// export interface BaseNodeEntry {
+//   id: string;
+//   parentId: string | null;
+//   type: NodeType;
+//   label: string;
+//   image: string;
+//   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+// }

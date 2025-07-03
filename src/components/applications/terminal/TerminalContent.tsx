@@ -5,8 +5,9 @@ import { useTerminalHistory } from "./hooks/useTerminalHistory";
 import { useTerminalKeyboard } from "./hooks/useTerminalKeyboard";
 import { terminalStyles, getLineColor } from "./Terminal.styles";
 import { createTerminalCommands } from "./terminalCommands";
+import type { WindowContentProps } from "@/types/storeTypes";
 
-export const TerminalContent = () => {
+export const TerminalContent = ({ windowId }: WindowContentProps) => {
   const {
     lines,
     currentInput,
@@ -16,7 +17,8 @@ export const TerminalContent = () => {
     addOutputLine,
   } = useTerminalState();
 
-  const { addCommand, navigateHistory } = useTerminalHistory();
+  const { addCommand, navigateHistory, clearHistory } =
+    useTerminalHistory(windowId);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
@@ -53,6 +55,7 @@ export const TerminalContent = () => {
     terminalPwd,
     terminalCat,
     clearLines,
+    clearHistory,
   });
 
   const executeCommand = (input: string) => {

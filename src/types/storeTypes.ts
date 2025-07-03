@@ -23,6 +23,7 @@ export interface WindowType {
   windowId: ApplicationEntry["id"];
   title: string;
   nodeId: NodeEntry["id"];
+  applicationId?: string; // Application identity for focus/duplicate logic (optional for non-application windows)
   nodeType: string;
   width: number;
   height: number;

@@ -19,7 +19,7 @@ export const BrowserContent = () => {
   >({});
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const window = useNewStore((s) => s.getWindowByNodeId("browser"));
+  const window = useNewStore((s) => s.getWindowByApplicationId("browser"));
   const screenDimensions = useNewStore((s) => s.screenDimensions);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 

@@ -29,6 +29,8 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           componentKey: nodeObj.componentKey,
+          macExtension: nodeObj.macExtension,
+          windowsExtension: nodeObj.windowsExtension,
           children: [], // Will be populated below
         } as DirectoryEntry;
 
@@ -48,6 +50,9 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           componentKey: nodeObj.componentKey,
+          applicationId: nodeObj.applicationId,
+          macExtension: nodeObj.macExtension,
+          windowsExtension: nodeObj.windowsExtension,
         } as ApplicationEntry;
         break;
 
@@ -60,6 +65,8 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           url: nodeObj.url,
+          macExtension: nodeObj.macExtension,
+          windowsExtension: nodeObj.windowsExtension,
           // functionKey: nodeObj.functionKey,
         } as LinkEntry;
         break;
@@ -73,6 +80,8 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           currentImageIndex: nodeObj.currentImageIndex,
           isBroken: nodeObj.isBroken,
+          macExtension: nodeObj.macExtension,
+          windowsExtension: nodeObj.windowsExtension,
         } as EasterEggEntry;
         break;
 
@@ -85,6 +94,8 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           functionKey: nodeObj.functionKey,
+          macExtension: nodeObj.macExtension,
+          windowsExtension: nodeObj.windowsExtension,
         } as FunctionEntry;
         break;
 

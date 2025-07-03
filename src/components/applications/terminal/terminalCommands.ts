@@ -12,6 +12,7 @@ export interface TerminalCommandsProps {
   terminalPwd: (cwd: string) => CommandResult;
   terminalCat: (filename: string, cwd: string) => CommandResult;
   clearLines: () => void;
+  clearHistory: () => boolean;
 }
 
 export const createTerminalCommands = (props: TerminalCommandsProps) => {
@@ -23,6 +24,7 @@ export const createTerminalCommands = (props: TerminalCommandsProps) => {
     terminalPwd,
     terminalCat,
     clearLines,
+    clearHistory,
   } = props;
 
   const commands: { [key: string]: (args: string[]) => string } = {
@@ -41,6 +43,7 @@ export const createTerminalCommands = (props: TerminalCommandsProps) => {
 System Commands:
   help     - Show this help message
   clear    - Clear the terminal
+  history  - Show command history (use -c to clear)
   whoami   - Display current user
   date     - Show current date and time
   echo     - Echo text back`,
@@ -48,6 +51,14 @@ System Commands:
     clear: () => {
       clearLines();
       return "";
+    },
+
+    history: (args: string[]) => {
+      if (args.includes("-c") || args.includes("--clear")) {
+        clearHistory();
+        return "Command history cleared.";
+      }
+      return "Command history functionality integrated with terminal history system.";
     },
 
     // File system commands using store

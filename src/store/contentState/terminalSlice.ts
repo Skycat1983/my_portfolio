@@ -1,19 +1,12 @@
-import type {
-  BaseStoreState,
-  SetState,
-  GetState,
-} from "@/types/storeTypes";
+import type { BaseStoreState, SetState, GetState } from "@/types/storeTypes";
 import type { NodeEntry, DirectoryEntry } from "@/types/nodeTypes";
 
 interface TerminalState {
   currentWorkingDirectory: string;
-  terminalHistory: string[];
 }
 
 interface TerminalActions {
   setCurrentWorkingDirectory: (directory: string) => void;
-  addTerminalCommand: (command: string) => void;
-  clearTerminalHistory: () => void;
   // Terminal filesystem commands
   resolvePath: (path: string, currentDir: string) => string | null;
   terminalLs: (
@@ -38,7 +31,6 @@ export const createTerminalSlice = (
   get: GetState<BaseStoreState>
 ): TerminalSlice => ({
   currentWorkingDirectory: "", // Will be set to root directory on init
-  terminalHistory: [],
 
   setCurrentWorkingDirectory: (directory: string) => {
     console.log(
@@ -48,25 +40,6 @@ export const createTerminalSlice = (
     set((state) => ({
       ...state,
       currentWorkingDirectory: directory,
-    }));
-  },
-
-  addTerminalCommand: (command: string) => {
-    console.log("addTerminalCommand in terminalSlice: adding command", command);
-    set((state) => {
-      const terminalState = state as BaseStoreState & TerminalState;
-      return {
-        ...state,
-        terminalHistory: [...terminalState.terminalHistory, command],
-      };
-    });
-  },
-
-  clearTerminalHistory: () => {
-    console.log("clearTerminalHistory in terminalSlice: clearing history");
-    set((state) => ({
-      ...state,
-      terminalHistory: [],
     }));
   },
 

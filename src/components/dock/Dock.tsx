@@ -21,6 +21,9 @@ const Dock: React.FC = () => {
   const openWindow = useNewStore((state) => state.openWindow);
   const getNodeByID = useNewStore((state) => state.getNodeByID);
   const getWindowByNodeId = useNewStore((state) => state.getWindowByNodeId);
+  const getWindowByApplicationId = useNewStore(
+    (state) => state.getWindowByApplicationId
+  );
   const focusWindow = useNewStore((state) => state.focusWindow);
   const operatingSystem = useNewStore((state) => state.operatingSystem);
 
@@ -90,7 +93,16 @@ const Dock: React.FC = () => {
       }
 
       // Check if window already exists for this node
-      const existingWindow = getWindowByNodeId(item.nodeId);
+      // For application nodes, use applicationId for focus logic
+      let existingWindow;
+      if (node.type === "application") {
+        existingWindow = getWindowByApplicationId(
+          (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
+        );
+      } else {
+        existingWindow = getWindowByNodeId(item.nodeId);
+      }
+
       if (existingWindow) {
         focusWindow(existingWindow.windowId);
         return;
