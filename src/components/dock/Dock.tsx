@@ -49,6 +49,8 @@ const Dock: React.FC = () => {
 
   const dockNodes = getChildrenByParentID(dockRootId);
 
+  console.log("dockNodes", dockNodes);
+
   // const mobileDockItems: DockItemData[] = [
   //   {
   //     id: "phone",

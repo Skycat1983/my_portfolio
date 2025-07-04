@@ -1,44 +1,5 @@
 import { create } from "zustand";
 import {
-  createEasterEggSlice,
-  type EasterEggSlice,
-} from "../store/contentState/easterEggSlice";
-// import { createWindowSlice, type WindowSlice } from "../store/windowSlice";
-import {
-  createSelectionSlice,
-  type SelectionSlice,
-} from "../store/nodeState/nodeSelectionSlice";
-import {
-  createTerminalSlice,
-  type TerminalSlice,
-} from "../store/contentState/terminalSlice";
-import {
-  createGameSlice,
-  type GameSlice,
-} from "../store/contentState/gameSlice";
-import {
-  createDocumentRegistrySlice,
-  type DocumentRegistrySlice,
-} from "../store/contentState/documentRegistrySlice";
-import {
-  createHistorySlice,
-  type HistorySlice,
-} from "../store/contentState/historySlice";
-
-import {
-  createSystemSlice,
-  type SystemSlice,
-} from "../store/systemState/systemSlice";
-
-import {
-  createWeatherSlice,
-  type WeatherSlice,
-} from "../store/systemState/weatherSlice";
-import {
-  createAchievementSlice,
-  type AchievementSlice,
-} from "../store/systemState/achievementsSlice";
-import {
   createNodeCrudSlice,
   type NodeCrudSlice,
 } from "../store/nodeState/nodeCrudSlice";
@@ -51,56 +12,81 @@ import {
   type NodeBusinessSlice,
 } from "../store/nodeState/nodeBusinessSlice";
 import {
+  createSelectionSlice,
+  type SelectionSlice,
+} from "../store/nodeState/nodeSelectionSlice";
+import {
   createWindowCrudSlice,
   type WindowCrudSlice,
 } from "../store/windowState/windowCrudSlice";
 import {
   createWindowOperationsSlice,
-  type WindowOperationsActions,
+  type WindowOperationsSlice,
 } from "../store/windowState/windowOperationsSlice";
+import {
+  createSystemSlice,
+  type SystemSlice,
+} from "../store/systemState/systemSlice";
+import {
+  createAchievementSlice,
+  type AchievementSlice,
+} from "../store/systemState/achievementsSlice";
+import {
+  createWeatherSlice,
+  type WeatherSlice,
+} from "../store/systemState/weatherSlice";
+import {
+  createHistorySlice,
+  type HistorySlice,
+} from "../store/contentState/historySlice";
+import {
+  createTerminalSlice,
+  type TerminalSlice,
+} from "../store/contentState/terminalSlice";
+import {
+  createGameSlice,
+  type GameSlice,
+} from "../store/contentState/gameSlice";
+import {
+  createDocumentRegistrySlice,
+  type DocumentRegistrySlice,
+} from "../store/contentState/documentRegistrySlice";
 
-// Combined store interface - now composed of slices
-export interface NewDesktopStore
-  extends NodeCrudSlice,
-    NodeOperationsSlice,
-    NodeBusinessSlice,
-    AchievementSlice,
-    SelectionSlice,
-    EasterEggSlice,
-    WindowCrudSlice,
-    WindowOperationsActions,
-    TerminalSlice,
-    GameSlice,
-    SystemSlice,
-    WeatherSlice,
-    DocumentRegistrySlice,
-    HistorySlice {}
+// Combine all slice types into one store type
+export type NewDesktopStore = NodeCrudSlice &
+  NodeOperationsSlice &
+  NodeBusinessSlice &
+  SelectionSlice &
+  WindowCrudSlice &
+  WindowOperationsSlice &
+  SystemSlice &
+  AchievementSlice &
+  WeatherSlice &
+  HistorySlice &
+  TerminalSlice &
+  GameSlice &
+  DocumentRegistrySlice;
 
+// Create the store with all slices
 export const useNewStore = create<NewDesktopStore>((set, get) => ({
-  // {operating system}
-  ...createSystemSlice(set),
-  // {node base crud}
+  // Node state management
   ...createNodeCrudSlice(set, get),
-  // {node operations (derived from base crud)}
   ...createNodeOperationsSlice(set, get),
-  // {node business (derived from operations)}
   ...createNodeBusinessSlice(set, get),
-
   ...createSelectionSlice(set, get),
-  // {window base crud}
+
+  // Window state management
   ...createWindowCrudSlice(set, get),
-  // {window operations (derived from window crud)}
   ...createWindowOperationsSlice(set, get),
-  // {achievements}
+
+  // System state management
+  ...createSystemSlice(set),
   ...createAchievementSlice(set),
-  // ...createNodeSlice(set, get),
-  ...createEasterEggSlice(set, get),
-  // ...createWindowSlice(set, get), // Temporarily disabled to avoid conflicts
+  ...createWeatherSlice(set),
+
+  // Content state management
+  ...createHistorySlice(set, get),
   ...createTerminalSlice(set, get),
   ...createGameSlice(set, get),
-  ...createWeatherSlice(set),
-  // {document registry}
   ...createDocumentRegistrySlice(set, get),
-  // {generic history management}
-  ...createHistorySlice(set, get),
 }));

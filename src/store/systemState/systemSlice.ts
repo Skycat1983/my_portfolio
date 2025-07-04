@@ -1,6 +1,7 @@
 import type { BaseStoreState, SetState } from "@/types/storeTypes";
 
 export type OperatingSystem = "mac" | "windows";
+export type TimeFormat = "12h" | "24h";
 
 export type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -18,6 +19,10 @@ export interface SystemState {
   operatingSystem: OperatingSystem;
   wifiEnabled: boolean;
   screenDimensions: ScreenDimensions;
+  timeFormat: TimeFormat;
+  timezone: string;
+  selectedCity: string;
+  customWallpaper: string | null;
 }
 
 interface SystemActions {
@@ -25,6 +30,10 @@ interface SystemActions {
   toggleOS: () => void;
   toggleWifi: () => void;
   setScreenDimensions: (width: number, height: number) => void;
+  setTimeFormat: (format: TimeFormat) => void;
+  setTimezone: (timezone: string) => void;
+  setSelectedCity: (city: string) => void;
+  setCustomWallpaper: (wallpaper: string | null) => void;
 }
 
 export type SystemSlice = SystemState & SystemActions;
@@ -57,6 +66,10 @@ export const createSystemSlice = (
   theme: "dark",
   operatingSystem: "mac",
   wifiEnabled: true,
+  timeFormat: "24h",
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  selectedCity: "Berlin",
+  customWallpaper: null,
   screenDimensions: {
     width: typeof window !== "undefined" ? window.innerWidth : 1024,
     height: typeof window !== "undefined" ? window.innerHeight : 768,
@@ -94,4 +107,9 @@ export const createSystemSlice = (
       },
     });
   },
+  setTimeFormat: (format: TimeFormat) => set({ timeFormat: format }),
+  setTimezone: (timezone: string) => set({ timezone }),
+  setSelectedCity: (city: string) => set({ selectedCity: city }),
+  setCustomWallpaper: (wallpaper: string | null) =>
+    set({ customWallpaper: wallpaper }),
 });

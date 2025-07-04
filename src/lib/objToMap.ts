@@ -84,7 +84,7 @@ export const convertObjectsToMap = (
           type: "easter-egg",
           label: nodeObj.label,
           image: nodeObj.image,
-          currentImageIndex: nodeObj.currentImageIndex,
+          alternativeImage: nodeObj.alternativeImage ?? null,
           isBroken: nodeObj.isBroken,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,

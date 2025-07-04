@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 
 export const StartPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
+  // const [downloadCount, setDownloadCount] = useState(0);
   const downloadEgg = useNewStore((s) => s.downloadEgg);
   const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
   // const focusWindow = useNewStore((s) => s.focusWindow);
-  const openWindow = useNewStore((s) => s.openWindow);
+  const openWindowWithComponentKey = useNewStore(
+    (s) => s.openWindowWithComponentKey
+  );
   const incrementEggsDownloadedAchievement = useNewStore(
     (s) => s.incrementEggsDownloadedAchievement
   );
@@ -16,15 +19,24 @@ export const StartPage = () => {
 
   useEffect(() => {
     if (isDownloading) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         downloadEgg();
         incrementEggsDownloadedAchievement();
+        // setDownloadCount((prev) => prev + 1);
         setIsDownloading(false);
       }, 1000);
+
+      return () => clearTimeout(timer);
     }
   }, [isDownloading, downloadEgg, incrementEggsDownloadedAchievement]);
 
-  const buttonLabel = isDownloading ? "Downloading..." : "Download Egg";
+  const handleDownload = () => {
+    if (!isDownloading) {
+      setIsDownloading(true);
+    }
+  };
+
+  const buttonLabel = isDownloading ? "Downloading..." : `Download Egg`;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -62,7 +74,7 @@ export const StartPage = () => {
         <div
           onClick={() => {
             const downloadsFolder = ensureDownloadsFolder();
-            openWindow(downloadsFolder, downloadsFolder.id);
+            openWindowWithComponentKey(downloadsFolder, "finder");
           }}
           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
         >
@@ -139,8 +151,13 @@ export const StartPage = () => {
                 <span>Easter Eggs</span>
               </div>
               <button
-                onClick={() => setIsDownloading(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded transition-colors"
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className={`${
+                  isDownloading
+                    ? "bg-blue-400"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white text-xs px-3 py-1 rounded transition-colors`}
               >
                 {buttonLabel}
               </button>

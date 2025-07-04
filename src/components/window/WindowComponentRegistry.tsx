@@ -10,6 +10,7 @@ import GTAVI from "../applications/GTAVI/GTAVI";
 import { AchievementContent } from "../applications/achievements/AchievementContent";
 import { Map } from "../applications/map/Map";
 import Calculator from "../applications/calculator/Calculator";
+import { Settings } from "../applications/settings/Settings";
 
 // Component registry mapping component keys to React components
 // Note: Components can define their own prop interfaces
@@ -28,6 +29,7 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   achievements: AchievementContent,
   maps: Map,
   calculator: Calculator,
+  settings: Settings,
 };
 
 export const NODE_FUNCTION_REGISTRY = {

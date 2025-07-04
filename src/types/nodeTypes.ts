@@ -109,31 +109,22 @@ export interface ApplicationEntry extends BaseNodeEntry {
   windowsExtension: WindowsApplicationExtensions;
 }
 
-export interface EasterEggObject {
-  id: string;
+export interface EasterEggObject extends BaseNodeObject {
   type: "easter-egg";
-  label: string;
-  image: string[]; // Array for easter eggs
-  currentImageIndex: number;
+  image: string;
+  alternativeImage: string | null;
   isBroken: boolean;
   macExtension: MacEasterEggExtensions;
   windowsExtension: WindowsEasterEggExtensions;
-  dateModified: string;
-  size: number;
 }
 
-export interface EasterEggEntry {
-  id: string;
-  parentId: string | null;
+export interface EasterEggEntry extends BaseNodeEntry {
   type: "easter-egg";
-  label: string;
-  image: string[];
-  currentImageIndex: number;
+  image: string;
+  alternativeImage: string | null;
   isBroken: boolean;
   macExtension: MacEasterEggExtensions;
   windowsExtension: WindowsEasterEggExtensions;
-  dateModified: string;
-  size: number;
 }
 
 export interface LinkObject extends BaseNodeObject {

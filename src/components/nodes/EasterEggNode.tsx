@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
-
+import { EGG_BROKEN } from "@/constants/nodes";
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { EasterEggEntry } from "@/types/nodeTypes";
 import {
@@ -16,32 +16,45 @@ type Props = { egg: EasterEggEntry; view: "icons" | "list" | "columns" };
 
 export const EasterEggNode = ({ egg, view }: Props) => {
   // ─────────── node-specific store actions ───────────
-  const cycleEgg = useNewStore((s) => s.cycleEasterEgg);
-  const breakEgg = useNewStore((s) => s.breakEasterEgg);
-  const currentImg = useNewStore((s) => s.getEasterEggCurrentImage(egg.id));
+  const updateNodeByID = useNewStore((s) => s.updateNodeByID);
   const selectOneNode = useNewStore((s) => s.selectOneNode);
 
   // ─────────── node-specific activation ───────────
-  const handleActivate = useCallback(() => {
-    breakEgg(egg.id);
-  }, [egg.id, breakEgg]);
+  const handleBreakEgg = useCallback(() => {
+    const newDateModified = new Date().toISOString();
+    updateNodeByID(egg.id, {
+      isBroken: true,
+      image: EGG_BROKEN,
+      alternativeImage: EGG_BROKEN,
+      dateModified: newDateModified,
+    });
+  }, [egg.id, updateNodeByID]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
     id: egg.id,
     nodeType: "easter-egg",
     enableLogging: true,
-    onActivate: handleActivate,
+    onActivate: handleBreakEgg,
   });
 
-  // ─────────── special click behavior (cycle + select) ───────────
+  // ─────────── special click behavior (swap images) ───────────
   const handleSpecialClick = useCallback(() => {
+    const newDateModified = new Date().toISOString();
     nodeBehavior.log("special-click");
     // First select the node (shared behavior)
     selectOneNode(egg.id);
-    // Then cycle the egg (special behavior)
-    cycleEgg(egg.id);
-  }, [egg.id, cycleEgg, nodeBehavior, selectOneNode]);
+
+    // Don't swap if broken
+    if (egg.isBroken) return;
+
+    // Then swap the images (special behavior)
+    updateNodeByID(egg.id, {
+      image: egg.alternativeImage || egg.image,
+      alternativeImage: egg.image,
+      dateModified: newDateModified,
+    });
+  }, [egg, updateNodeByID, nodeBehavior, selectOneNode]);
 
   // ─────────── render ───────────
   return (
@@ -64,7 +77,7 @@ export const EasterEggNode = ({ egg, view }: Props) => {
           view,
         })}`}
       >
-        <img src={currentImg} alt={egg.label} className={getImageSize(view)} />
+        <img src={egg.image} alt={egg.label} className={getImageSize(view)} />
       </div>
 
       <h2

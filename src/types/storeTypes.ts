@@ -7,6 +7,7 @@ import type {
 import type {
   OperatingSystem,
   ScreenDimensions,
+  TimeFormat,
 } from "../store/systemState/systemSlice";
 import type { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
 
@@ -183,6 +184,10 @@ export interface BaseStoreState {
   operatingSystem: OperatingSystem;
   wifiEnabled: boolean;
   screenDimensions: ScreenDimensions;
+  timeFormat: TimeFormat;
+  timezone: string;
+  selectedCity: string;
+  customWallpaper: string | null;
 }
 
 export type SetState<T> = (

@@ -33,6 +33,7 @@ import CALCULATOR from "../assets/icons_m/calculator.png";
 import FOLDER_MAC from "../assets/icons_m/folder_os.png";
 import FOLDER_WINDOWS from "../assets/icons_m/folder_ms.png";
 import FINDER from "../assets/icons_m/finder_large.png";
+import SETTINGS from "../assets/icons_m/settings.png";
 import MAPS from "../assets/icons_m/maps.png";
 export {
   BIN_EMPTY,
@@ -41,6 +42,7 @@ export {
   FOLDER_MAC,
   FOLDER_WINDOWS,
   FINDER,
+  SETTINGS,
   MAPS,
 };
 

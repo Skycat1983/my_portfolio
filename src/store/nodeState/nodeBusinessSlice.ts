@@ -1,7 +1,6 @@
 import {
   EASTER_EGG1,
   EASTER_EGG2,
-  EASTER_EGG3,
   FOLDER_MAC,
   FOLDER_WINDOWS,
 } from "@/constants/images";
@@ -13,8 +12,9 @@ import type {
 import type { SetState, GetState, BaseStoreState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";
+import { desktopRootId } from "@/constants/nodes";
 
-export interface NodeBusinessSlice {
+interface NodeBusinessActions {
   // Complex node operations
   moveNodeByID: (
     nodeId: NodeEntry["id"],
@@ -41,12 +41,19 @@ export interface NodeBusinessSlice {
     parentId: DirectoryEntry["id"],
     childId: NodeEntry["id"]
   ) => boolean;
+
+  // New functions
+  generateUniqueNodeId: (baseId: string) => string;
+  createEgg: (parentId: string) => EasterEggEntry | null;
 }
+
+export type NodeBusinessSlice = NodeBusinessActions;
 
 export interface StoreWithOperations
   extends BaseStoreState,
     NodeCrudSlice,
-    NodeOperationsSlice {}
+    NodeOperationsSlice,
+    NodeBusinessSlice {}
 
 // Business logic slice - builds complex workflows from operations
 export const createNodeBusinessSlice = (
@@ -204,7 +211,7 @@ export const createNodeBusinessSlice = (
     // Check if downloads folder already exists
     const existingDownloads = state.findOneNode(
       (node: NodeEntry) =>
-        node.label === "Downloads" && node.parentId === state.rootId
+        node.label === "Downloads" && node.parentId === desktopRootId
     );
 
     if (existingDownloads) {
@@ -222,21 +229,23 @@ export const createNodeBusinessSlice = (
       children: [],
       type: "directory",
       label: "Downloads",
-      parentId: state.rootId,
+      parentId: desktopRootId,
       image: FOLDER_MAC,
       alternativeImage: FOLDER_WINDOWS,
       componentKey: "finder",
       macExtension: null,
       windowsExtension: null,
+      dateModified: new Date().toISOString(),
+      size: 0,
     };
 
     const created = state.createOneNode(downloadsFolder);
     if (created) {
       // Add to root's children - get root and update it directly
-      const root = state.getDirectoryByID(state.rootId);
+      const root = state.getDirectoryByID(desktopRootId);
       if (root) {
         const newRootChildren = [...root.children, downloadsId];
-        const rootUpdated = state.updateDirectoryByID(state.rootId, {
+        const rootUpdated = state.updateDirectoryByID(desktopRootId, {
           children: newRootChildren,
         });
         if (rootUpdated) {
@@ -267,104 +276,89 @@ export const createNodeBusinessSlice = (
   },
 
   /**
-   * Download a new easter egg (business logic)
+   * Generate a unique node ID based on a base ID
    */
-  downloadEgg: (): void => {
-    console.log("downloadEgg: downloading a new egg");
-
+  generateUniqueNodeId: (baseId: string): string => {
+    console.log("generateUniqueNodeId: generating ID from base", baseId);
     const state = get();
+    let counter = 1;
+    let newId = baseId;
 
-    // Ensure downloads folder exists - inline the logic to avoid circular reference
-    let downloadsId: string;
-    const existingDownloads = state.findOneNode(
-      (node: NodeEntry) =>
-        node.label === "Downloads" && node.parentId === state.rootId
-    );
-
-    if (existingDownloads) {
-      downloadsId = existingDownloads.id;
-    } else {
-      // Create downloads folder
-      downloadsId = "downloads";
-      const downloadsFolder: DirectoryEntry = {
-        id: downloadsId,
-        children: [],
-        type: "directory",
-        label: "Downloads",
-        parentId: state.rootId,
-        image: FOLDER_MAC,
-        alternativeImage: FOLDER_WINDOWS,
-        componentKey: "finder",
-        macExtension: null,
-        windowsExtension: null,
-      };
-
-      const created = state.createOneNode(downloadsFolder);
-      if (!created) {
-        console.error("downloadEgg: failed to create downloads folder");
-        return;
-      }
-
-      // Add to root's children
-      const root = state.getDirectoryByID(state.rootId);
-      if (root) {
-        const newRootChildren = [...root.children, downloadsId];
-        const rootUpdated = state.updateDirectoryByID(state.rootId, {
-          children: newRootChildren,
-        });
-        if (!rootUpdated) {
-          state.deleteNodeByID(downloadsId);
-          console.error("downloadEgg: failed to add downloads folder to root");
-          return;
-        }
-      } else {
-        state.deleteNodeByID(downloadsId);
-        console.error("downloadEgg: root directory not found");
-        return;
-      }
+    while (state.nodeExists((node) => node.id === newId)) {
+      newId = `${baseId}_${counter}`;
+      counter++;
     }
 
-    // Generate unique ID for the new egg
-    const timestamp = Date.now();
-    const eggId = `downloaded-egg-${timestamp}`;
+    console.log("generateUniqueNodeId: generated unique ID", newId);
+    return newId;
+  },
 
-    // Create new egg
+  /**
+   * Create a new easter egg node
+   */
+  createEgg: (parentId: string): EasterEggEntry | null => {
+    console.log("createEgg: creating new egg in parent", parentId);
+    const state = get();
+    const newId = state.generateUniqueNodeId("egg");
+
     const newEgg: EasterEggEntry = {
-      id: eggId,
+      id: newId,
+      parentId,
       type: "easter-egg",
-      label: "Egg",
-      image: [EASTER_EGG1, EASTER_EGG2, EASTER_EGG3],
-      currentImageIndex: 0,
+      label: "EE",
+      image: EASTER_EGG1,
+      alternativeImage: EASTER_EGG2,
       isBroken: false,
-      parentId: downloadsId,
       macExtension: ".egg",
       windowsExtension: ".egg",
+      dateModified: new Date().toISOString(),
+      size: 42000,
     };
 
     const created = state.createOneNode(newEgg);
-    if (created) {
-      // Add to downloads folder - inline the logic
-      const downloadsDir = state.getDirectoryByID(downloadsId);
-      if (downloadsDir) {
-        const newChildren = [...downloadsDir.children, eggId];
-        const added = state.updateDirectoryByID(downloadsId, {
-          children: newChildren,
-        });
-        if (added) {
-          console.log("downloadEgg: created egg with ID", eggId);
-        } else {
-          // Rollback creation
-          state.deleteNodeByID(eggId);
-          console.error("downloadEgg: failed to add egg to downloads folder");
-        }
-      } else {
-        // Rollback creation
-        state.deleteNodeByID(eggId);
-        console.error("downloadEgg: downloads folder not found");
-      }
-    } else {
-      console.error("downloadEgg: failed to create egg");
+    if (!created) {
+      console.error("createEgg: failed to create egg");
+      return null;
     }
+
+    console.log("createEgg: created egg with ID", newId);
+    return newEgg;
+  },
+
+  /**
+   * Download an egg to the downloads folder
+   */
+  downloadEgg: (): void => {
+    console.log("downloadEgg: starting egg download process");
+    const state = get();
+
+    // Ensure downloads folder exists
+    const downloadsFolder = state.ensureDownloadsFolder();
+    if (!downloadsFolder) {
+      console.error("downloadEgg: failed to ensure downloads folder");
+      return;
+    }
+
+    // Create new egg
+    const newEgg = state.createEgg(downloadsFolder.id);
+    if (!newEgg) {
+      console.error("downloadEgg: failed to create egg");
+      return;
+    }
+
+    // Update downloads folder children
+    const updated = state.updateDirectoryByID(downloadsFolder.id, {
+      children: [...downloadsFolder.children, newEgg.id],
+    });
+
+    if (!updated) {
+      console.error("downloadEgg: failed to update downloads folder");
+      // Rollback egg creation
+      state.deleteNodeByID(newEgg.id);
+      return;
+    }
+
+    console.log("downloadEgg: successfully downloaded egg", newEgg.id);
   },
 
   /**

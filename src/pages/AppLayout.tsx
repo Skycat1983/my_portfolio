@@ -19,6 +19,7 @@ export const AppLayout = () => {
     (s) => s.unlockClickOnSomethingAchievement
   );
   const operatingSystem = useNewStore((s) => s.operatingSystem);
+  const customWallpaper = useNewStore((s) => s.customWallpaper);
   const openWindows = useNewStore((s) => s.openWindows);
 
   // Monitor screen dimensions and update store
@@ -26,11 +27,13 @@ export const AppLayout = () => {
 
   const { isMobile } = screenInfo;
 
-  const background = isMobile
-    ? BACKGROUND_IPHONE
-    : operatingSystem === "mac"
-    ? BACKGROUND_MAC
-    : BACKGROUND_WIN;
+  const background =
+    customWallpaper ||
+    (isMobile
+      ? BACKGROUND_IPHONE
+      : operatingSystem === "mac"
+      ? BACKGROUND_MAC
+      : BACKGROUND_WIN);
 
   const padding = operatingSystem === "mac" ? "md:pt-10" : "md:pb-10";
 
