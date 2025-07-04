@@ -33,6 +33,8 @@ export const convertObjectsToMap = (
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
           children: [], // Will be populated below
+          dateModified: nodeObj.dateModified,
+          size: null, // Always null for directories
         } as DirectoryEntry;
 
         // Process children for directories
@@ -54,6 +56,8 @@ export const convertObjectsToMap = (
           applicationId: nodeObj.applicationId,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
+          dateModified: nodeObj.dateModified,
+          size: nodeObj.size,
         } as ApplicationEntry;
         break;
 
@@ -68,7 +72,8 @@ export const convertObjectsToMap = (
           url: nodeObj.url,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
-          // functionKey: nodeObj.functionKey,
+          dateModified: nodeObj.dateModified,
+          size: nodeObj.size,
         } as LinkEntry;
         break;
 
@@ -83,6 +88,8 @@ export const convertObjectsToMap = (
           isBroken: nodeObj.isBroken,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
+          dateModified: nodeObj.dateModified,
+          size: nodeObj.size,
         } as EasterEggEntry;
         break;
 
@@ -97,6 +104,8 @@ export const convertObjectsToMap = (
           functionKey: nodeObj.functionKey,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
+          dateModified: nodeObj.dateModified,
+          size: nodeObj.size,
         } as FunctionEntry;
         break;
 
@@ -112,6 +121,8 @@ export const convertObjectsToMap = (
           documentConfigId: nodeObj.documentConfigId,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
+          dateModified: nodeObj.dateModified,
+          size: nodeObj.size,
         } as DocumentEntry;
         break;
 

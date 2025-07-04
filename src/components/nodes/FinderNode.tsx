@@ -115,7 +115,7 @@ export const FinderNode = ({
       {...nodeBehavior.dragSourceHandlers}
       // Drop target (directories accept drops)
       {...nodeBehavior.dropTargetHandlers}
-      className={getTitleFrame(view, nodeBehavior.isSelected, isInPath)}
+      className={getTitleFrame(view, nodeBehavior.isSelected, isInPath, true)}
     >
       <div
         className={`${getTileWrapper(view)} ${getContainerClasses({

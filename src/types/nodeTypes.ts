@@ -20,6 +20,8 @@ export interface BaseNodeObject {
   label: string;
   image: string;
   alternativeImage: string | null; // For state-dependent icon switching (null = no alternative)
+  dateModified: string; // ISO date string
+  size: number | null; // File size in bytes, null for directories
 }
 
 export type MacDirectoryExtensions = null;
@@ -74,6 +76,7 @@ export interface DirectoryObject extends BaseNodeObject {
   macExtension: MacDirectoryExtensions;
   windowsExtension: WindowsDirectoryExtensions;
   children: NodeObject[];
+  size: null; // Override size to always be null for directories
 }
 // ENTRY TYPES (Flat map structure with parentId)
 export interface DirectoryEntry extends BaseNodeEntry {
@@ -115,6 +118,8 @@ export interface EasterEggObject {
   isBroken: boolean;
   macExtension: MacEasterEggExtensions;
   windowsExtension: WindowsEasterEggExtensions;
+  dateModified: string;
+  size: number;
 }
 
 export interface EasterEggEntry {
@@ -127,6 +132,8 @@ export interface EasterEggEntry {
   isBroken: boolean;
   macExtension: MacEasterEggExtensions;
   windowsExtension: WindowsEasterEggExtensions;
+  dateModified: string;
+  size: number;
 }
 
 export interface LinkObject extends BaseNodeObject {

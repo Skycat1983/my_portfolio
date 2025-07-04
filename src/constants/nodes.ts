@@ -56,6 +56,8 @@ export const rootNodes: DirectoryObject = {
   label: "System",
   macExtension: null,
   windowsExtension: null,
+  dateModified: "2024-03-20T10:00:00Z",
+  size: null,
   children: [
     {
       id: "desktop-root",
@@ -66,6 +68,8 @@ export const rootNodes: DirectoryObject = {
       label: "Desktop",
       macExtension: null,
       windowsExtension: null,
+      dateModified: "2024-03-20T10:00:00Z",
+      size: null,
       children: [
         {
           id: "depth1",
@@ -76,6 +80,8 @@ export const rootNodes: DirectoryObject = {
           label: "Depth 1",
           macExtension: null,
           windowsExtension: null,
+          dateModified: "2024-03-20T10:00:00Z",
+          size: null,
           children: [
             {
               id: "depth2",
@@ -86,6 +92,8 @@ export const rootNodes: DirectoryObject = {
               label: "Depth 2",
               macExtension: null,
               windowsExtension: null,
+              dateModified: "2024-03-20T10:00:00Z",
+              size: null,
               children: [
                 {
                   id: "depth3",
@@ -96,6 +104,8 @@ export const rootNodes: DirectoryObject = {
                   label: "Depth 3",
                   macExtension: null,
                   windowsExtension: null,
+                  dateModified: "2024-03-20T10:00:00Z",
+                  size: null,
                   children: [
                     {
                       id: "depth4",
@@ -106,6 +116,8 @@ export const rootNodes: DirectoryObject = {
                       label: "Depth 4",
                       macExtension: null,
                       windowsExtension: null,
+                      dateModified: "2024-03-20T10:00:00Z",
+                      size: null,
                       children: [],
                     },
                     {
@@ -117,6 +129,8 @@ export const rootNodes: DirectoryObject = {
                       label: "Depth 4",
                       macExtension: null,
                       windowsExtension: null,
+                      dateModified: "2024-03-20T10:00:00Z",
+                      size: null,
                       children: [],
                     },
                   ],
@@ -135,6 +149,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "browser",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-19T15:30:00Z",
+          size: 245000000, // 245MB for browser
         },
         {
           id: "terminal",
@@ -146,6 +162,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "terminal",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-18T14:20:00Z",
+          size: 85000000, // 85MB for terminal
         },
         {
           id: "trash",
@@ -156,6 +174,8 @@ export const rootNodes: DirectoryObject = {
           componentKey: "finder",
           macExtension: null,
           windowsExtension: null,
+          dateModified: "2024-03-20T09:15:00Z",
+          size: null,
           children: [
             {
               id: "egg",
@@ -166,6 +186,8 @@ export const rootNodes: DirectoryObject = {
               isBroken: false,
               macExtension: ".egg",
               windowsExtension: ".egg",
+              dateModified: "2024-03-15T08:00:00Z",
+              size: 42000, // 42KB for easter egg
             },
           ],
         },
@@ -178,6 +200,8 @@ export const rootNodes: DirectoryObject = {
           componentKey: "finder",
           macExtension: null,
           windowsExtension: null,
+          dateModified: "2024-03-20T11:30:00Z",
+          size: null,
           children: [
             {
               id: "laoutaris",
@@ -188,6 +212,8 @@ export const rootNodes: DirectoryObject = {
               componentKey: "finder",
               macExtension: null,
               windowsExtension: null,
+              dateModified: "2024-03-20T11:30:00Z",
+              size: null,
               children: [
                 {
                   id: "laoutaris_code",
@@ -198,6 +224,8 @@ export const rootNodes: DirectoryObject = {
                   url: "https://github.com/Skycat1983/laoutaris-nextjs",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-17T16:45:00Z",
+                  size: 1024, // 1KB for link file
                 },
                 {
                   id: "laoutaris_website",
@@ -208,11 +236,13 @@ export const rootNodes: DirectoryObject = {
                   url: "https://laoutaris-nextjs.vercel.app/",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-16T15:30:00Z",
+                  size: 1024, // 1KB for link file
                 },
               ],
             },
             {
-              id: "robocrop", // TODO: change to robo-crop
+              id: "robocrop",
               label: "RoboCrop",
               type: "directory",
               image: FOLDER_MAC,
@@ -220,6 +250,8 @@ export const rootNodes: DirectoryObject = {
               componentKey: "finder",
               macExtension: null,
               windowsExtension: null,
+              dateModified: "2024-03-20T11:30:00Z",
+              size: null,
               children: [
                 {
                   id: "roboCrop_code",
@@ -230,6 +262,8 @@ export const rootNodes: DirectoryObject = {
                   url: "https://github.com/Skycat1983/RoboCrop",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-15T11:20:00Z",
+                  size: 1024, // 1KB for link file
                 },
                 {
                   id: "roboCrop_download",
@@ -240,6 +274,8 @@ export const rootNodes: DirectoryObject = {
                   url: "https://addons.mozilla.org/en-GB/firefox/addon/robocrop/",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-14T09:45:00Z",
+                  size: 1024, // 1KB for link file
                 },
               ],
             },
@@ -252,6 +288,8 @@ export const rootNodes: DirectoryObject = {
               componentKey: "finder",
               macExtension: null,
               windowsExtension: null,
+              dateModified: "2024-03-20T11:30:00Z",
+              size: null,
               children: [
                 {
                   id: "SkyNot_code",
@@ -262,6 +300,8 @@ export const rootNodes: DirectoryObject = {
                   url: "https://github.com/Skycat1983/SkyNot",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-13T14:15:00Z",
+                  size: 1024, // 1KB for link file
                 },
                 {
                   id: "SkyNot_download",
@@ -272,6 +312,8 @@ export const rootNodes: DirectoryObject = {
                   url: "https://addons.mozilla.org/en-GB/firefox/addon/skynot/",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-12T16:30:00Z",
+                  size: 1024, // 1KB for link file
                 },
               ],
             },
@@ -284,6 +326,8 @@ export const rootNodes: DirectoryObject = {
               componentKey: "finder",
               macExtension: null,
               windowsExtension: null,
+              dateModified: "2024-03-20T11:30:00Z",
+              size: null,
               children: [
                 {
                   id: "Dashboard_code",
@@ -294,6 +338,8 @@ export const rootNodes: DirectoryObject = {
                   url: "https://github.com/Skycat1983/Dashboard",
                   macExtension: ".webloc",
                   windowsExtension: ".url",
+                  dateModified: "2024-03-11T10:45:00Z",
+                  size: 1024, // 1KB for link file
                 },
               ],
             },
@@ -309,6 +355,8 @@ export const rootNodes: DirectoryObject = {
           componentKey: "finder",
           macExtension: null,
           windowsExtension: null,
+          dateModified: "2024-03-20T12:00:00Z",
+          size: null,
           children: [
             {
               id: "resume",
@@ -319,6 +367,8 @@ export const rootNodes: DirectoryObject = {
               url: RESUME,
               macExtension: ".pdf",
               windowsExtension: ".pdf",
+              dateModified: "2024-03-19T09:30:00Z",
+              size: 2500000, // 2.5MB for PDF
             },
             {
               id: "recommendation",
@@ -329,6 +379,8 @@ export const rootNodes: DirectoryObject = {
               url: RECOMMENDATIONS,
               macExtension: ".pdf",
               windowsExtension: ".pdf",
+              dateModified: "2024-03-18T10:45:00Z",
+              size: 1800000, // 1.8MB for PDF
             },
             {
               id: "review",
@@ -339,6 +391,8 @@ export const rootNodes: DirectoryObject = {
               url: REVIEW,
               macExtension: ".png",
               windowsExtension: ".png",
+              dateModified: "2024-03-10T15:20:00Z",
+              size: 3500000, // 3.5MB for PNG image
             },
           ],
         },
@@ -351,6 +405,8 @@ export const rootNodes: DirectoryObject = {
           componentKey: "finder",
           macExtension: null,
           windowsExtension: null,
+          dateModified: "2024-03-20T13:15:00Z",
+          size: null,
           children: [
             {
               id: "gtaiv",
@@ -362,6 +418,8 @@ export const rootNodes: DirectoryObject = {
               applicationId: "gtaVi",
               macExtension: ".app",
               windowsExtension: ".exe",
+              dateModified: "2024-03-15T11:20:00Z",
+              size: 185000000, // 185MB for game
             },
             {
               id: "geo",
@@ -373,6 +431,8 @@ export const rootNodes: DirectoryObject = {
               applicationId: "geoGame",
               macExtension: ".app",
               windowsExtension: ".exe",
+              dateModified: "2024-03-14T14:30:00Z",
+              size: 125000000, // 125MB for game
             },
           ],
         },
@@ -386,6 +446,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "achievements",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-12T10:30:00Z",
+          size: 95000000, // 95MB for achievements app
         },
         {
           id: "sample-document",
@@ -397,6 +459,8 @@ export const rootNodes: DirectoryObject = {
           documentConfigId: "sample_document_config",
           macExtension: ".txt",
           windowsExtension: ".txt",
+          dateModified: "2024-03-20T09:00:00Z",
+          size: 25000, // 25KB for text document
         },
       ],
     },
@@ -409,6 +473,8 @@ export const rootNodes: DirectoryObject = {
       componentKey: "dock",
       macExtension: null,
       windowsExtension: null,
+      dateModified: "2024-03-20T10:00:00Z",
+      size: null,
       children: [
         {
           id: "finder",
@@ -419,6 +485,8 @@ export const rootNodes: DirectoryObject = {
           componentKey: "finder",
           macExtension: null,
           windowsExtension: null,
+          dateModified: "2024-03-20T10:00:00Z",
+          size: null,
           children: [],
         },
         {
@@ -430,6 +498,8 @@ export const rootNodes: DirectoryObject = {
           functionKey: "emailMe",
           macExtension: ".txt",
           windowsExtension: ".txt",
+          dateModified: "2024-03-19T16:30:00Z",
+          size: 512, // 512 bytes for function
         },
         {
           id: "maps",
@@ -441,9 +511,11 @@ export const rootNodes: DirectoryObject = {
           applicationId: "maps",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-18T13:45:00Z",
+          size: 155000000, // 155MB for maps
         },
         {
-          id: "calculator",
+          id: "calculator-dock",
           label: "Calculator",
           type: "application",
           image: CALCULATOR,
@@ -452,6 +524,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "calculator",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-17T08:45:00Z",
+          size: 65000000, // 65MB for calculator
         },
         {
           id: "pages-dock",
@@ -463,6 +537,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "documentEditor",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-16T11:20:00Z",
+          size: 175000000, // 175MB for document editor
         },
         {
           id: "github-dock",
@@ -473,6 +549,8 @@ export const rootNodes: DirectoryObject = {
           url: "https://github.com/Skycat1983",
           macExtension: ".webloc",
           windowsExtension: ".url",
+          dateModified: "2024-03-15T14:30:00Z",
+          size: 1024, // 1KB for link file
         },
         {
           id: "linkedin-dock",
@@ -483,6 +561,8 @@ export const rootNodes: DirectoryObject = {
           url: "https://www.linkedin.com/in/skycat1983/",
           macExtension: ".webloc",
           windowsExtension: ".url",
+          dateModified: "2024-03-14T09:15:00Z",
+          size: 1024, // 1KB for link file
         },
         {
           id: "whatsapp-dock",
@@ -494,6 +574,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "whatsApp",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-13T15:45:00Z",
+          size: 145000000, // 145MB for WhatsApp
         },
         {
           id: "achievements-dock",
@@ -505,6 +587,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "achievements",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-12T10:30:00Z",
+          size: 95000000, // 95MB for achievements app
         },
         {
           id: "terminal-dock",
@@ -516,6 +600,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "terminal",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-18T14:20:00Z",
+          size: 85000000, // 85MB for terminal
         },
         {
           id: "browser-dock",
@@ -527,6 +613,8 @@ export const rootNodes: DirectoryObject = {
           applicationId: "browser",
           macExtension: ".app",
           windowsExtension: ".exe",
+          dateModified: "2024-03-19T15:30:00Z",
+          size: 245000000, // 245MB for browser
         },
       ],
     },
@@ -538,7 +626,162 @@ export const defaultNodes: DirectoryObject = rootNodes
   .children[0] as DirectoryObject;
 
 // this is the only way i could think to do this
-export const dockNodes = [rootNodes.children[1]];
+export const dockNodes = [
+  {
+    id: "dock-root",
+    label: "Dock",
+    type: "directory",
+    image: FOLDER_MAC,
+    alternativeImage: FOLDER_WINDOWS,
+    componentKey: "dock",
+    macExtension: null,
+    windowsExtension: null,
+    dateModified: "2024-03-20T10:00:00Z",
+    size: null,
+    children: [
+      {
+        id: "finder",
+        label: "Finder",
+        type: "directory",
+        image: FINDER,
+        alternativeImage: null,
+        componentKey: "finder",
+        macExtension: null,
+        windowsExtension: null,
+        dateModified: "2024-03-20T10:00:00Z",
+        size: null,
+        children: [],
+      },
+      {
+        id: "mail",
+        label: "Mail",
+        type: "function",
+        image: MAIL,
+        alternativeImage: null,
+        functionKey: "emailMe",
+        macExtension: ".txt",
+        windowsExtension: ".txt",
+        dateModified: "2024-03-19T16:30:00Z",
+        size: 512, // 512 bytes for function
+      },
+      {
+        id: "maps",
+        label: "Maps",
+        type: "application",
+        image: MAPS,
+        alternativeImage: null,
+        componentKey: "maps",
+        applicationId: "maps",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-18T13:45:00Z",
+        size: 155000000, // 155MB for maps
+      },
+      {
+        id: "calculator-dock",
+        label: "Calculator",
+        type: "application",
+        image: CALCULATOR,
+        alternativeImage: null,
+        componentKey: "calculator",
+        applicationId: "calculator",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-17T08:45:00Z",
+        size: 65000000, // 65MB for calculator
+      },
+      {
+        id: "pages-dock",
+        label: "Pages",
+        type: "application",
+        image: PAGES,
+        alternativeImage: WORD,
+        componentKey: "documentEditor",
+        applicationId: "documentEditor",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-16T11:20:00Z",
+        size: 175000000, // 175MB for document editor
+      },
+      {
+        id: "github-dock",
+        label: "GitHub",
+        type: "link",
+        image: GITHUB,
+        alternativeImage: null,
+        url: "https://github.com/Skycat1983",
+        macExtension: ".webloc",
+        windowsExtension: ".url",
+        dateModified: "2024-03-15T14:30:00Z",
+        size: 1024, // 1KB for link file
+      },
+      {
+        id: "linkedin-dock",
+        label: "LinkedIn",
+        type: "link",
+        image: LINKEDIN,
+        alternativeImage: null,
+        url: "https://www.linkedin.com/in/skycat1983/",
+        macExtension: ".webloc",
+        windowsExtension: ".url",
+        dateModified: "2024-03-14T09:15:00Z",
+        size: 1024, // 1KB for link file
+      },
+      {
+        id: "whatsapp-dock",
+        label: "WhatsApp",
+        type: "application",
+        image: WHATSAPP,
+        alternativeImage: null,
+        componentKey: "whatsApp",
+        applicationId: "whatsApp",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-13T15:45:00Z",
+        size: 145000000, // 145MB for WhatsApp
+      },
+      {
+        id: "achievements-dock",
+        label: "Achievements",
+        type: "application",
+        image: TROPHY1,
+        alternativeImage: null,
+        componentKey: "achievements",
+        applicationId: "achievements",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-12T10:30:00Z",
+        size: 95000000, // 95MB for achievements app
+      },
+      {
+        id: "terminal-dock",
+        label: "Terminal",
+        type: "application",
+        image: TERMINAL,
+        alternativeImage: null,
+        componentKey: "terminal",
+        applicationId: "terminal",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-18T14:20:00Z",
+        size: 85000000, // 85MB for terminal
+      },
+      {
+        id: "browser-dock",
+        label: "Internet",
+        type: "application",
+        image: SAFARI,
+        alternativeImage: null,
+        componentKey: "browser",
+        applicationId: "browser",
+        macExtension: ".app",
+        windowsExtension: ".exe",
+        dateModified: "2024-03-19T15:30:00Z",
+        size: 245000000, // 245MB for browser
+      },
+    ],
+  },
+];
 
 // Export the broken egg image for use in other components
 export { EGG_BROKEN };
