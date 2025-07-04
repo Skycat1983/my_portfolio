@@ -34,6 +34,7 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
         view={view}
         onChangeView={onChangeView}
         zIndex={zIndex}
+        windowId={windowId}
       />
     </div>
   );

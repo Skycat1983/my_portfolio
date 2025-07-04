@@ -17,10 +17,14 @@ interface UseFinderHistoryReturn {
   // History state
   historyItems: string[];
   currentIndex: number;
+
+  // Column-specific methods
+  handleColumnClick: (depth: number, nodeId: string) => void;
+  getColumnPath: () => string[];
 }
 
 /**
- * Custom hook for managing finder navigation history
+ * Custom hook for managing finder navigation history and column view
  * Coordinates between the generic history slice and window state
  */
 export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
@@ -290,6 +294,38 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
     ]
   );
 
+  /**
+   * Handle click on a column item
+   * If clicking at current depth, just navigate
+   * If clicking at previous depth, truncate and navigate
+   */
+  const handleColumnClick = useCallback(
+    (depth: number, nodeId: string) => {
+      console.log(
+        "useFinderHistory: handleColumnClick at depth",
+        depth,
+        "nodeId:",
+        nodeId
+      );
+
+      // If clicking at a previous depth, truncate history
+      if (depth <= currentIndex) {
+        goToIndex(depth);
+      }
+
+      // Navigate to the clicked node
+      navigateToNode(nodeId);
+    },
+    [currentIndex, goToIndex, navigateToNode]
+  );
+
+  /**
+   * Get the current column path (all items up to current index)
+   */
+  const getColumnPath = useCallback(() => {
+    return historyItems.slice(0, currentIndex + 1);
+  }, [historyItems, currentIndex]);
+
   return {
     // Navigation methods
     navigateToNode,
@@ -306,5 +342,9 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
     // History state
     historyItems,
     currentIndex,
+
+    // Column-specific methods
+    handleColumnClick,
+    getColumnPath,
   };
 };

@@ -5,6 +5,7 @@ type ContainerOpts = {
   selected: boolean;
   drop: boolean;
   view: "icons" | "list" | "columns";
+  isInPath?: boolean;
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -13,7 +14,8 @@ type ContainerOpts = {
 
 export const getTitleFrame = (
   view: "icons" | "list" | "columns" | undefined,
-  selected?: boolean
+  selected?: boolean,
+  isInPath?: boolean
 ): string => {
   if (view === "icons") {
     return "flex flex-col items-center justify-center text-center w-full relative";
@@ -24,7 +26,8 @@ export const getTitleFrame = (
   if (view === "columns") {
     return clsx(
       "flex flex-row items-center justify-center w-full relative after:content-['›'] after:text-gray-400 after:text-lg after:ml-auto after:mr-2",
-      selected && "bg-blue-500 rounded-md"
+      selected && "bg-blue-500 rounded-md",
+      isInPath && !selected && "bg-blue-500/30 rounded-md"
     );
   }
 
@@ -61,6 +64,7 @@ export const getContainerClasses = ({
   selected,
   drop,
   view,
+  isInPath,
 }: ContainerOpts): string => {
   if (view === "icons") {
     return clsx("rounded-md cursor-pointer p-2", {
@@ -81,7 +85,8 @@ export const getContainerClasses = ({
     return clsx("rounded-md cursor-pointer p-1", {
       "border-2 border-gray-500 bg-transparent": selected,
       "border-2 border-blue-400 bg-blue-500/20": drop,
-      "hover:bg-gray-800/30": !selected && !drop,
+      "hover:bg-gray-800/30": !selected && !drop && !isInPath,
+      "bg-blue-500/30": isInPath && !selected && !drop,
     });
   }
 
@@ -122,7 +127,8 @@ export const getTitleBase = (view: "icons" | "list" | "columns"): string => {
 
 export const getLabelClasses = (
   view: "icons" | "list" | "columns",
-  selected: boolean
+  selected: boolean,
+  isInPath?: boolean
 ): string => {
   if (view === "icons") {
     return clsx(
@@ -136,7 +142,8 @@ export const getLabelClasses = (
   if (view === "columns") {
     return clsx(
       "text-sm font-medium text-white ml-2 flex-1 truncate cursor-pointer",
-      selected && "bg-blue-500 px-1 rounded-md"
+      selected && "bg-blue-500 px-1 rounded-md",
+      isInPath && !selected && "bg-blue-500/30 px-1 rounded-md"
     );
   }
 

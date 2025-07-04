@@ -19,18 +19,12 @@ export const Finder = ({
 
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const children = getChildrenByParentID(nodeId);
-  // // const defaultLocation = desktopRootId;
-  // const findMany = useNewStore((s) => s.findManyNodes);
-  // // const desktopNodes = findMany((n) => n.parentId === defaultLocation);
-  // const allNodes = Object.values(nodeMap);
-
-  // const nodesToFiler = input.length > 0 ? allNodes : desktopNodes;
 
   const filteredNodes = children.filter((node) =>
     node.label.toLowerCase().includes(input.toLowerCase())
   );
 
-  console.log("FINDER_01: filteredNodes", filteredNodes);
+  console.log("FINDER_VIEW_CONTROL: window", window);
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -46,7 +40,7 @@ export const Finder = ({
         <FinderBody
           nodes={filteredNodes}
           view={view}
-          rootId={nodeId}
+          nodeId={nodeId}
           windowId={windowId}
         />
       </NodeDropZoneWrapper>

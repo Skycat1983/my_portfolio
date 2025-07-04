@@ -45,6 +45,7 @@ export const FinderNode = ({
 
   // Always call the hook (React rules), but only use when in window context
   const finderHistory = useFinderHistory(windowId || "dummy");
+  const isInPath = finderHistory.getColumnPath().includes(nodeEntry.id);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
@@ -58,11 +59,7 @@ export const FinderNode = ({
     // Context-aware navigation logic
     if (layout === "desktop" || !windowId) {
       // Desktop context: open new window
-      openWindowWithComponentKey(
-        nodeEntry,
-        // nodeEntry.id,
-        nodeEntry.componentKey
-      );
+      openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey);
     } else {
       // Window context: use finder history for navigation
       const success = finderHistory.navigateToNode(nodeEntry.id);
@@ -81,7 +78,6 @@ export const FinderNode = ({
   ]);
 
   // ─────────── shared node behavior ───────────
-
   const nodeBehavior = useNodeEvents({
     id: nodeEntry.id,
     nodeType: "directory",
@@ -90,8 +86,6 @@ export const FinderNode = ({
   });
 
   // ─────────── image resolution logic ───────────
-  console.log("directory", nodeEntry);
-
   let folderImage =
     operatingSystem === "mac"
       ? nodeEntry.image
@@ -121,13 +115,14 @@ export const FinderNode = ({
       {...nodeBehavior.dragSourceHandlers}
       // Drop target (directories accept drops)
       {...nodeBehavior.dropTargetHandlers}
-      className={getTitleFrame(view, nodeBehavior.isSelected)}
+      className={getTitleFrame(view, nodeBehavior.isSelected, isInPath)}
     >
       <div
         className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
           view,
+          isInPath,
         })}`}
       >
         <img
@@ -140,7 +135,8 @@ export const FinderNode = ({
         <h2
           className={`${getTitleBase(view)} ${getLabelClasses(
             view,
-            nodeBehavior.isSelected
+            nodeBehavior.isSelected,
+            isInPath
           )}`}
         >
           {nodeEntry.label}

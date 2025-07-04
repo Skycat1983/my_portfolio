@@ -42,8 +42,7 @@ export interface WindowOperationsActions {
   //   ! WINDOW VISIBILITY OPERATIONS
   openWindowWithComponentKey: (
     node: WindowedNode,
-    // historyItem: string,
-    componentKey: string
+    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY
   ) => void;
   // NEW: Open window with document configuration (only for document nodes)
   openWindowWithDocumentConfig: (

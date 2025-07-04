@@ -54,7 +54,7 @@ export const useBrowserHistory = (
   useEffect(() => {
     if (!historyExists(historyId) && window) {
       // Initialize with current window URL or empty string for start page
-      const initialUrl = window.url || "";
+      const initialUrl = "";
       console.log(
         "useBrowserHistory: initializing history for",
         historyId,
@@ -63,7 +63,7 @@ export const useBrowserHistory = (
       );
       createHistory(historyId, initialUrl);
     }
-  }, [historyId, window?.url, historyExists, createHistory, window]);
+  }, [historyId, historyExists, createHistory, window]);
 
   // Get current history state
   const currentUrl = getCurrentItem(historyId) as string | undefined;
@@ -106,7 +106,7 @@ export const useBrowserHistory = (
 
       // Update window URL and title atomically
       const windowSuccess = updateWindowById(windowId, {
-        url,
+        // url,
         title: url ? `Internet - ${url}` : "Internet",
       });
 
@@ -145,7 +145,7 @@ export const useBrowserHistory = (
 
     // Update window to reflect new current location
     const windowSuccess = updateWindowById(windowId, {
-      url: newUrl,
+      // url: newUrl,
       title: newUrl ? `Internet - ${newUrl}` : "Internet",
     });
 
@@ -191,7 +191,7 @@ export const useBrowserHistory = (
 
     // Update window to reflect new current location
     const windowSuccess = updateWindowById(windowId, {
-      url: newUrl,
+      // url: newUrl,
       title: newUrl ? `Internet - ${newUrl}` : "Internet",
     });
 
@@ -238,7 +238,7 @@ export const useBrowserHistory = (
 
       // Update window to reflect new current location
       const windowSuccess = updateWindowById(windowId, {
-        url: newUrl,
+        // url: newUrl,
         title: newUrl ? `Internet - ${newUrl}` : "Internet",
       });
 

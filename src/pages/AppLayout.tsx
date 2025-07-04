@@ -14,7 +14,7 @@ import { desktopRootId } from "../constants/nodes";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
-  console.log("DocumentEditor: nodeMap", nodeMap);
+  console.log("DO NOT DELETE THIS LOG: nodeMap", nodeMap);
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
