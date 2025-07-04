@@ -4,17 +4,17 @@ import { useNewStore } from "@/hooks/useStore";
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { EasterEggEntry } from "@/types/nodeTypes";
 import {
-  containerClasses,
-  labelClasses,
-  tileWrapper,
-  tileFrame,
-  imageSize,
-  titleBase,
+  getTitleFrame,
+  getImageSize,
+  getTileWrapper,
+  getContainerClasses,
+  getLabelClasses,
+  getTitleBase,
 } from "./node.styles";
 
-type Props = { egg: EasterEggEntry };
+type Props = { egg: EasterEggEntry; view: "icons" | "list" | "columns" };
 
-export const EasterEggNode = ({ egg }: Props) => {
+export const EasterEggNode = ({ egg, view }: Props) => {
   // ─────────── node-specific store actions ───────────
   const cycleEgg = useNewStore((s) => s.cycleEasterEgg);
   const breakEgg = useNewStore((s) => s.breakEasterEgg);
@@ -45,7 +45,7 @@ export const EasterEggNode = ({ egg }: Props) => {
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
+    <div className={getTitleFrame(view)}>
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers - using special click for single-click
@@ -56,15 +56,21 @@ export const EasterEggNode = ({ egg }: Props) => {
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (empty for non-directories)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper} ${containerClasses({
+        className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
+          view,
         })}`}
       >
-        <img src={currentImg} alt={egg.label} className={imageSize} />
+        <img src={currentImg} alt={egg.label} className={getImageSize(view)} />
       </div>
 
-      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
+      <h2
+        className={`${getTitleBase(view)} ${getLabelClasses(
+          view,
+          nodeBehavior.isSelected
+        )}`}
+      >
         {egg.label}
       </h2>
     </div>

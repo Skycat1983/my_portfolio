@@ -7,8 +7,8 @@ import {
   getImageSize,
   getLabelClasses,
   getTileWrapper,
+  getTitleBase,
 } from "./node.styles";
-import { titleBase } from "./node.styles";
 import type { ApplicationEntry } from "@/types/nodeTypes";
 import { getTitleFrame } from "./node.styles";
 
@@ -83,7 +83,10 @@ export const ApplicationNode = ({ node, view }: Props) => {
 
   // ─────────── render ───────────
   return (
-    <div onClick={nodeBehavior.handleClick} className={getTitleFrame(view)}>
+    <div
+      onClick={nodeBehavior.handleClick}
+      className={getTitleFrame(view, nodeBehavior.isSelected)}
+    >
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers
@@ -105,7 +108,7 @@ export const ApplicationNode = ({ node, view }: Props) => {
 
       {showLabel && (
         <h2
-          className={`${titleBase} ${getLabelClasses(
+          className={`${getTitleBase(view)} ${getLabelClasses(
             view,
             nodeBehavior.isSelected
           )}`}

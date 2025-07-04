@@ -2,16 +2,16 @@ import { useCallback } from "react";
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { LinkEntry } from "@/types/nodeTypes";
 import {
-  containerClasses,
-  imageSize,
-  labelClasses,
-  tileFrame,
-  tileWrapper,
-  titleBase,
+  getContainerClasses,
+  getImageSize,
+  getLabelClasses,
+  getTileWrapper,
+  getTitleFrame,
+  getTitleBase,
 } from "./node.styles";
 import { useNewStore } from "@/hooks/useStore";
 
-type Props = { link: LinkEntry; view?: "icons" | "list" | "columns" };
+type Props = { link: LinkEntry; view: "icons" | "list" | "columns" };
 
 export const LinkNode = ({ link, view }: Props) => {
   const confirmCVCheckedOut = useNewStore((s) => s.confirmCVCheckedOut);
@@ -53,7 +53,7 @@ export const LinkNode = ({ link, view }: Props) => {
   // ─────────── render ───────────
   return (
     <>
-      <div className={tileFrame}>
+      <div className={getTitleFrame(view)}>
         <div
           {...nodeBehavior.accessibilityProps}
           // Click handlers
@@ -64,16 +64,24 @@ export const LinkNode = ({ link, view }: Props) => {
           {...nodeBehavior.dragSourceHandlers}
           // Drop target (empty for non-directories)
           {...nodeBehavior.dropTargetHandlers}
-          className={`${tileWrapper()} ${containerClasses({
+          className={`${getTileWrapper(view)} ${getContainerClasses({
             selected: nodeBehavior.isSelected,
             drop: nodeBehavior.isDropTarget,
+            view,
           })}`}
         >
-          <img src={link.image} alt={link.label} className={imageSize} />
+          <img
+            src={link.image}
+            alt={link.label}
+            className={getImageSize(view)}
+          />
         </div>
         {showLabel && (
           <h2
-            className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}
+            className={`${getTitleBase(view)} ${getLabelClasses(
+              view,
+              nodeBehavior.isSelected
+            )}`}
           >
             {link.label}
           </h2>

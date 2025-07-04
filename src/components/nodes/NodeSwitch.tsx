@@ -31,7 +31,9 @@ export const NodeSwitch = ({
 }: NodeSwitchProps) => {
   switch (node.type) {
     case "easter-egg":
-      return <EasterEggNode key={node.id} egg={node as EasterEggEntry} />;
+      return (
+        <EasterEggNode key={node.id} egg={node as EasterEggEntry} view={view} />
+      );
 
     case "directory":
       return (

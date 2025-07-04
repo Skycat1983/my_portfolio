@@ -8,8 +8,8 @@ import {
   getLabelClasses,
   getTileWrapper,
   getTitleFrame,
+  getTitleBase,
 } from "./node.styles";
-import { titleBase } from "./node.styles";
 import type { FunctionEntry } from "@/types/nodeTypes";
 import { getNodeFunction } from "@/components/window/WindowComponentRegistry";
 
@@ -77,7 +77,7 @@ export const FunctionNode = ({ node, view }: Props) => {
 
       {showLabel && (
         <h2
-          className={`${titleBase} ${getLabelClasses(
+          className={`${getTitleBase(view)} ${getLabelClasses(
             view,
             nodeBehavior.isSelected
           )}`}

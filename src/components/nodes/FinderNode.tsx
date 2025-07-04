@@ -4,12 +4,12 @@ import { useNodeEvents } from "./hooks/useNodeEvents";
 import { useFinderHistory } from "@/components/finder/hooks/useFinderHistory";
 import type { DirectoryEntry } from "@/types/nodeTypes";
 import {
-  titleBase,
   getTileWrapper,
   getContainerClasses,
   getTitleFrame,
   getImageSize,
   getLabelClasses,
+  getTitleBase,
 } from "./node.styles";
 import { BIN_EMPTY, BIN_FULL, FINDER } from "@/constants/images";
 
@@ -111,7 +111,7 @@ export const FinderNode = ({
 
   // ─────────── render ───────────
   return (
-    <div className={getTitleFrame(view)}>
+    <div className={getTitleFrame(view, nodeBehavior.isSelected)}>
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers
@@ -136,7 +136,7 @@ export const FinderNode = ({
       </div>
       {showLabel && (
         <h2
-          className={`${titleBase} ${getLabelClasses(
+          className={`${getTitleBase(view)} ${getLabelClasses(
             view,
             nodeBehavior.isSelected
           )}`}

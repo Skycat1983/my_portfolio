@@ -18,7 +18,7 @@ export const DirectoryLayout = ({ nodes, windowId }: DirectoryLayoutProps) => {
       <div className="w-full h-full flex justify-start items-start gap-6 flex-wrap">
         {nodes.map((node) => (
           <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} windowId={windowId} />
+            <NodeSwitch node={node} windowId={windowId} view="icons" />
           </div>
         ))}
       </div>
@@ -33,7 +33,7 @@ export const DirectoryLayout = ({ nodes, windowId }: DirectoryLayoutProps) => {
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
           {nodes.map((node) => (
             <div key={node.id} className="w-20 md:w-24">
-              <NodeSwitch node={node} windowId={windowId} />
+              <NodeSwitch node={node} windowId={windowId} view="icons" />
             </div>
           ))}
         </div>
@@ -41,13 +41,13 @@ export const DirectoryLayout = ({ nodes, windowId }: DirectoryLayoutProps) => {
 
       {/* Desktop: Use the working logic from commented code */}
       <div
-        className={`hidden lg:flex flex-col w-full gap-10 h-full content-start ${
+        className={`hidden lg:flex flex-col w-full gap-10 space-y-10 h-full content-start ${
           operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse"
         }`}
       >
         {nodes.map((node) => (
           <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} windowId={windowId} />
+            <NodeSwitch node={node} windowId={windowId} view="icons" />
           </div>
         ))}
       </div>

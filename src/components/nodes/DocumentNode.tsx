@@ -7,8 +7,8 @@ import {
   getImageSize,
   getLabelClasses,
   getTileWrapper,
+  getTitleBase,
   getTitleFrame,
-  titleBase,
 } from "./node.styles";
 
 type Props = { node: DocumentEntry; view: "icons" | "list" | "columns" };
@@ -138,7 +138,7 @@ export const DocumentNode = ({ node, view }: Props) => {
 
       {showLabel && (
         <h2
-          className={`${titleBase} ${getLabelClasses(
+          className={`${getTitleBase(view)} ${getLabelClasses(
             view,
             nodeBehavior.isSelected
           )}`}
