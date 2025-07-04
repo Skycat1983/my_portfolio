@@ -84,19 +84,18 @@ export const ApplicationNode = ({ node, view }: Props) => {
   // ─────────── render ───────────
   return (
     <div
+      // Click handlers
       onClick={nodeBehavior.handleClick}
+      {...nodeBehavior.accessibilityProps}
+      onDoubleClick={nodeBehavior.handleDoubleClick}
+      onKeyDown={nodeBehavior.handleKeyDown}
+      // Drag source
+      {...nodeBehavior.dragSourceHandlers}
+      // Drop target (empty for non-directories)
+      {...nodeBehavior.dropTargetHandlers}
       className={getTitleFrame(view, nodeBehavior.isSelected)}
     >
       <div
-        {...nodeBehavior.accessibilityProps}
-        // Click handlers
-        // onClick={nodeBehavior.handleClick}
-        onDoubleClick={nodeBehavior.handleDoubleClick}
-        onKeyDown={nodeBehavior.handleKeyDown}
-        // Drag source
-        {...nodeBehavior.dragSourceHandlers}
-        // Drop target (empty for non-directories)
-        {...nodeBehavior.dropTargetHandlers}
         className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
