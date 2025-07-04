@@ -47,7 +47,7 @@ export const mockChats: Chat[] = [
   },
   {
     id: "8",
-    name: "Bill Gates",
+    name: "Bill",
     // phoneNumber: "+1 (408) 996-1010",
     avatar: "👨‍💼",
     systemInstruction:
@@ -56,17 +56,6 @@ export const mockChats: Chat[] = [
       "We can beat any compensation you’ve been offered. When would you be free to chat?",
     lastMessageTime: "8:10 AM",
     unreadCount: 1,
-  },
-  {
-    id: "9",
-    name: "Old Friend",
-    avatar: "👤",
-    systemInstruction:
-      "You are an old friend from school who reconnected recently. You're nostalgic and friendly.",
-    lastMessage: "Remember when we used to play that game?",
-    lastMessageTime: "Last week",
-    unreadCount: 0,
-    isArchived: true,
   },
   {
     id: "10",
@@ -79,17 +68,6 @@ export const mockChats: Chat[] = [
     unreadCount: 0,
     isArchived: true,
   },
-  // {
-  //   id: "10",
-  //   name: "Work Group",
-  //   avatar: "👥",
-  //   systemInstruction:
-  //     "You are a work colleague in a group chat setting. Professional but casual.",
-  //   lastMessage: "Meeting at 3 PM tomorrow",
-  //   lastMessageTime: "2 days ago",
-  //   unreadCount: 0,
-  //   isArchived: true,
-  // },
 ];
 
 export const mockMessages: Record<string, Message[]> = {
@@ -213,110 +191,5 @@ export const mockMessages: Record<string, Message[]> = {
       sender: "contact",
       timestamp: "2 days ago",
     },
-    // {
-    //   id: "m55",
-    //   content: "Meeting at 3 PM tomorrow",
-    //   sender: "contact",
-    //   timestamp: "2 days ago",
-    // },
   ],
 };
-
-// export const mockChats: Chat[] = [
-//   {
-//     id: "1",
-//     name: "Dr. Elena Rodriguez",
-//     avatar: "👩‍⚕️",
-//     systemInstruction:
-//       "You are Dr. Elena Rodriguez, a compassionate and knowledgeable medical doctor with 15 years of experience. You are warm, professional, and always ready to help with health-related questions. You speak with authority but remain approachable and caring. You often share medical insights and health tips.",
-//     lastMessage: "Remember to stay hydrated and get enough sleep!",
-//     lastMessageTime: "2:30 PM",
-//     unreadCount: 2,
-//   },
-//   {
-//     id: "2",
-//     name: "Marcus Thompson",
-//     avatar: "🎮",
-//     systemInstruction:
-//       "You are Marcus Thompson, a 25-year-old passionate gamer and tech enthusiast. You are energetic, friendly, and always excited about the latest games, technology trends, and gadgets. You speak casually with gaming slang and are always up for discussing strategies, reviews, or tech news.",
-//     lastMessage: "Dude, have you seen the new game trailer? 🔥",
-//     lastMessageTime: "1:45 PM",
-//     unreadCount: 0,
-//   },
-//   {
-//     id: "3",
-//     name: "Chef Isabella Chen",
-//     avatar: "👩‍🍳",
-//     systemInstruction:
-//       "You are Chef Isabella Chen, a renowned chef specializing in fusion cuisine. You are creative, passionate about food, and love sharing cooking tips and recipes. You speak with enthusiasm about ingredients, techniques, and food culture. You often suggest recipes and cooking methods.",
-//     lastMessage: "Try adding a pinch of cardamom to your coffee!",
-//     lastMessageTime: "Yesterday",
-//     unreadCount: 1,
-//   },
-// ];
-
-// export const mockMessages: Record<string, Message[]> = {
-//   "1": [
-//     {
-//       id: "m1",
-//       content: "Hello Dr. Rodriguez! How are you today?",
-//       sender: "user",
-//       timestamp: "2:20 PM",
-//     },
-//     {
-//       id: "m2",
-//       content:
-//         "Hello! I'm doing well, thank you for asking. How can I help you today? Are you feeling alright?",
-//       sender: "contact",
-//       timestamp: "2:25 PM",
-//     },
-//     {
-//       id: "m3",
-//       content: "Remember to stay hydrated and get enough sleep!",
-//       sender: "contact",
-//       timestamp: "2:30 PM",
-//     },
-//   ],
-//   "2": [
-//     {
-//       id: "m4",
-//       content: "Hey Marcus! What games are you playing lately?",
-//       sender: "user",
-//       timestamp: "1:30 PM",
-//     },
-//     {
-//       id: "m5",
-//       content:
-//         "Yo! I've been grinding the new RPG that just dropped. The graphics are absolutely insane! 🎮",
-//       sender: "contact",
-//       timestamp: "1:40 PM",
-//     },
-//     {
-//       id: "m6",
-//       content: "Dude, have you seen the new game trailer? 🔥",
-//       sender: "contact",
-//       timestamp: "1:45 PM",
-//     },
-//   ],
-//   "3": [
-//     {
-//       id: "m7",
-//       content: "Chef Isabella, I need help with dinner ideas!",
-//       sender: "user",
-//       timestamp: "Yesterday",
-//     },
-//     {
-//       id: "m8",
-//       content:
-//         "Wonderful! What ingredients do you have available? I'd love to help you create something delicious! 🍳",
-//       sender: "contact",
-//       timestamp: "Yesterday",
-//     },
-//     {
-//       id: "m9",
-//       content: "Try adding a pinch of cardamom to your coffee!",
-//       sender: "contact",
-//       timestamp: "Yesterday",
-//     },
-//   ],
-// };

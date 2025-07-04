@@ -12,6 +12,10 @@ interface GeminiInput {
 
 export async function whatsApp(input: GeminiInput): Promise<string> {
   try {
+    // Log the enhanced system instruction for debugging
+    console.log("Enhanced system instruction:", input.systemInstruction);
+    console.log("Contents:", input.contents);
+
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: input.contents,

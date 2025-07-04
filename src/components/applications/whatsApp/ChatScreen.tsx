@@ -5,6 +5,9 @@ import { whatsApp } from "./whatsApp";
 import { MessageComponent } from "./MessageComponent";
 import { TypingIndicator } from "./TypingIndicator";
 import { ChatOptionsMenu } from "./ChatOptionsMenu";
+import { buildSystemInstruction } from "./utils";
+import { useNewStore } from "@/hooks/useStore";
+import theme from "@/styles/theme";
 
 interface ChatScreenProps {
   chat: Chat;
@@ -19,6 +22,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   onArchive,
   onUnarchive,
 }) => {
+  const currentTheme = useNewStore((s) => s.theme);
+  const bgColor = theme.colors[currentTheme].background.primary;
+  const borderColor = theme.colors[currentTheme].border.primary;
+  // const textColor = theme.colors[currentTheme].text.primary;
+
   const [messages, setMessages] = useState<Message[]>(
     mockMessages[chat.id] || []
   );
@@ -52,9 +60,15 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     setIsTyping(true);
 
     try {
+      // Build system instruction with conversation history
+      const enhancedInstruction = buildSystemInstruction(
+        chat.systemInstruction,
+        messages
+      );
+
       const response = await whatsApp({
         contents: inputText,
-        systemInstruction: chat.systemInstruction,
+        systemInstruction: enhancedInstruction,
       });
 
       setIsTyping(false);
@@ -98,9 +112,15 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-100">
+    <div
+      className="h-full flex flex-col"
+      style={{
+        backgroundColor: bgColor,
+        borderColor: borderColor,
+      }}
+    >
       {/* Header */}
-      <div className="bg-green-600 text-white py-2 flex items-center">
+      <div className="bg-green-800 text-white py-2 flex items-center">
         <button
           onClick={onBack}
           className="mr-3 hover:text-gray-200"
@@ -152,39 +172,19 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       {/* Input Area */}
       <div className="p-4 bg-white border-t border-gray-200">
         <div className="flex items-end space-x-2">
-          <button className="text-gray-500 hover:text-gray-700 mb-2">
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zM14 9a1 1 0 11-2 0 1 1 0 012 0zm-7 3a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-
           <div className="flex-1 flex items-end space-x-2">
             <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyPress}
               placeholder="Type a message..."
-              className="flex-1 max-h-32 p-3 border border-gray-300 rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="flex-1 max-h-32 p-3 pl-10 border border-gray-300 text-black rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               rows={1}
               style={{
                 minHeight: "48px",
                 height: "auto",
               }}
             />
-
-            <button className="text-gray-500 hover:text-gray-700 mb-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
           </div>
 
           <button
@@ -192,12 +192,12 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
             disabled={!inputText.trim()}
             className={`p-3 rounded-full ${
               inputText.trim()
-                ? "bg-green-500 hover:bg-green-600 text-white"
+                ? "bg-green-500 hover:bg-green-800 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
             aria-label="Send message"
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
             </svg>
           </button>
