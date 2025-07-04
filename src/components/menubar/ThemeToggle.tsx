@@ -5,9 +5,9 @@ import { useEffect } from "react";
 
 const getIcon = (theme: "light" | "dark") => {
   if (theme === "light") {
-    return <Sun />;
+    return <Sun className="text-black" />;
   }
-  return <Moon />;
+  return <Moon className="text-white" />;
 };
 
 const ThemeToggle = () => {

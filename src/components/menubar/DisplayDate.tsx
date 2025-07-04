@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNewStore } from "@/hooks/useStore";
+import { theme } from "@/styles/theme";
 
 export const DisplayDate = () => {
+  const currentTheme = useNewStore((s) => s.theme);
   const [date, setDate] = useState(new Date());
   const timeFormat = useNewStore((s) => s.timeFormat);
   const timezone = useNewStore((s) => s.timezone);
@@ -28,9 +30,16 @@ export const DisplayDate = () => {
     timeZone: timezone || "UTC",
   });
 
+  const textColor = theme.colors[currentTheme].text.primary;
+
   return (
     <div>
-      <p className="text-white font-mono tabular-nums">
+      <p
+        className="text-white font-mono tabular-nums"
+        style={{
+          color: textColor,
+        }}
+      >
         {formattedDate} {formattedTime}
       </p>
     </div>

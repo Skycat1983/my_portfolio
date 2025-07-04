@@ -4,6 +4,7 @@ import { WindowHeader } from "./WindowHeader";
 import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
 import { getWindowComponent } from "./WindowComponentRegistry";
+import theme from "@/styles/theme";
 
 interface ResizableWindowProps {
   window: WindowType;
@@ -29,6 +30,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   } = window;
   const { onResizeStart } = useWindowResize(window.windowId);
   const focusWindow = useNewStore((s) => s.focusWindow);
+  const currentTheme = useNewStore((s) => s.theme);
 
   if (isMinimized || !componentKey) {
     return null;
@@ -52,15 +54,24 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
         zIndex,
       };
 
+  // Get theme-specific colors
+  const bgColor = theme.colors[currentTheme].background.primary;
+  const borderColor = theme.colors[currentTheme].border.primary;
+  const contentBgColor = theme.colors[currentTheme].background.secondary;
+
   // Conditional classes for different window states
   const windowClasses = isMaximized
-    ? "fixed inset-0 bg-black shadow-none rounded-none border-none"
-    : "absolute border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden";
+    ? "fixed inset-0 shadow-none rounded-none border-none"
+    : "absolute border shadow-lg rounded-lg overflow-hidden";
 
   return (
     <div
       className={windowClasses}
-      style={windowStyle}
+      style={{
+        ...windowStyle,
+        backgroundColor: bgColor,
+        borderColor: borderColor,
+      }}
       onClick={() => {
         focusWindow(windowId);
       }}
@@ -69,7 +80,10 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
       <WindowHeader windowId={windowId} title={title} />
 
       {/* Window Content */}
-      <div className="pt-9 h-full overflow-auto bg-neutral-600">
+      <div
+        className="pt-9 h-full overflow-auto"
+        style={{ backgroundColor: contentBgColor }}
+      >
         {RegistryComponent ? (
           <RegistryComponent
             windowId={windowId}

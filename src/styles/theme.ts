@@ -1,44 +1,213 @@
 // Central theme configuration for consistent styling across the app
-export const theme = {
+
+// Theme type definitions
+type ColorValue = string;
+
+interface ColorSet {
+  primary: ColorValue;
+  secondary: ColorValue;
+  tertiary: ColorValue;
+  accent: ColorValue;
+}
+
+interface ThemeColors {
+  background: ColorSet;
+  text: ColorSet;
+  border: ColorSet;
+  surface: ColorSet;
+}
+
+interface StatusColors {
+  error: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  success: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  warning: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  info: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+}
+
+interface ThemeConfig {
   colors: {
-    // Base colors
-    white: "#ffffff",
-    black: "#000000",
+    light: ThemeColors;
+    dark: ThemeColors;
+    status: StatusColors;
+  };
+  button: {
+    base: {
+      transition: string;
+      cursor: string;
+      outline: string;
+      border: string;
+    };
 
-    // Gray scale
-    gray: {
-      50: "#f9fafb",
-      100: "#f3f4f6",
-      200: "#e5e7eb",
-      300: "#d1d5db",
-      400: "#9ca3af",
-      500: "#6b7280",
-      600: "#4b5563",
-      700: "#374151",
-      800: "#1f2937",
-      900: "#111827",
+    // Window control buttons
+    windowControl: {
+      mobile: {
+        width: string;
+        height: string;
+        borderRadius: string;
+        backgroundColor: string;
+        border: string;
+        color: string;
+        fontSize: string;
+        display: string;
+        alignItems: string;
+        justifyContent: string;
+        boxShadow: string;
+      };
+
+      navigation: {
+        backgroundColor: string;
+        border: string;
+        color: string;
+        padding: string;
+        borderRadius: string;
+      };
+
+      navigationDisabled: {
+        backgroundColor: string;
+        border: string;
+        color: string;
+      };
+    };
+
+    // Browser toolbar buttons
+    browserToolbar: {
+      base: {
+        padding: string;
+        backgroundColor: string;
+        border: string;
+        color: string;
+        borderRadius: string;
+        fontSize: string;
+        display: string;
+        alignItems: string;
+        justifyContent: string;
+      };
+
+      hover: {
+        backgroundColor: string;
+      };
+    };
+
+    // Hover states
+    hover: {
+      close: {
+        backgroundColor: string;
+        borderColor: string;
+        color: string;
+      };
+
+      navigation: {
+        backgroundColor: string;
+      };
+    };
+  };
+  input: {
+    base: {
+      outline: string;
+      borderRadius: string;
+    };
+  };
+  icon: {
+    base: {
+      color: string;
+    };
+  };
+}
+
+export const theme: ThemeConfig = {
+  colors: {
+    // Semantic color tokens
+    light: {
+      // Background colors
+      background: {
+        primary: "#ffffff",
+        secondary: "#f3f4f6",
+        tertiary: "#e5e7eb",
+        accent: "#f0f9ff",
+      },
+      // Text colors
+      text: {
+        primary: "#111827",
+        secondary: "#374151",
+        tertiary: "#6b7280",
+        accent: "#2563eb",
+      },
+      // Border colors
+      border: {
+        primary: "#e5e7eb",
+        secondary: "#d1d5db",
+        tertiary: "#9ca3af",
+        accent: "#93c5fd",
+      },
+      // Surface/Card colors
+      surface: {
+        primary: "#ffffff",
+        secondary: "#f9fafb",
+        tertiary: "#f3f4f6",
+        accent: "#f0f9ff",
+      },
+    },
+    dark: {
+      // Background colors
+      background: {
+        primary: "#111827",
+        secondary: "#1f2937",
+        tertiary: "#374151",
+        accent: "#1e3a8a",
+      },
+      // Text colors
+      text: {
+        primary: "#f9fafb",
+        secondary: "#e5e7eb",
+        tertiary: "#9ca3af",
+        accent: "#60a5fa",
+      },
+      // Border colors
+      border: {
+        primary: "#374151",
+        secondary: "#4b5563",
+        tertiary: "#6b7280",
+        accent: "#2563eb",
+      },
+      // Surface/Card colors
+      surface: {
+        primary: "#1f2937",
+        secondary: "#374151",
+        tertiary: "#4b5563",
+        accent: "#1e3a8a",
+      },
     },
 
-    // Status colors
-    red: {
-      400: "#f87171",
-      500: "#ef4444",
-      600: "#dc2626",
-    },
-
-    green: {
-      400: "#4ade80",
-      500: "#10b981",
-      600: "#059669",
-    },
-
-    blue: {
-      500: "#3b82f6",
-      600: "#2563eb",
-    },
-
-    yellow: {
-      500: "#eab308",
+    // Status colors (theme independent)
+    status: {
+      error: {
+        light: "#ef4444",
+        dark: "#dc2626",
+      },
+      success: {
+        light: "#10b981",
+        dark: "#059669",
+      },
+      warning: {
+        light: "#f59e0b",
+        dark: "#d97706",
+      },
+      info: {
+        light: "#3b82f6",
+        dark: "#2563eb",
+      },
     },
   },
 
@@ -118,11 +287,8 @@ export const theme = {
   // Input styles
   input: {
     base: {
-      backgroundColor: "#ffffff",
-      border: "1px solid #d1d5db",
-      color: "#374151",
-      borderRadius: "4px",
       outline: "none",
+      borderRadius: "4px",
     },
   },
 
@@ -133,6 +299,20 @@ export const theme = {
     },
   },
 } as const;
+
+// Type helpers for theme
+export type ThemeMode = "light" | "dark";
+export type ThemeCategory = keyof ThemeColors;
+export type ThemeSubCategory = keyof ColorSet;
+
+// Helper function to get theme-aware color
+export const getThemeColor = (
+  mode: ThemeMode,
+  category: ThemeCategory,
+  subcategory: ThemeSubCategory
+): ColorValue => {
+  return theme.colors[mode][category][subcategory];
+};
 
 // CSS-in-JS helper function
 export const createButtonStyle = (

@@ -3,6 +3,7 @@ import { useNewStore } from "@/hooks/useStore";
 
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
+import theme from "@/styles/theme";
 
 interface WindowHeaderProps {
   windowId: string;
@@ -24,6 +25,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
   const screenDimensions = useNewStore((state) => state.screenDimensions);
   const window = useNewStore((s) => s.getWindowById(windowId));
   const focusWindow = useNewStore((s) => s.focusWindow);
+  const currentTheme = useNewStore((s) => s.theme);
   const { onDragStart } = useWindowDrag(windowId);
 
   if (!window) {
@@ -55,9 +57,18 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
     ? "text-sm font-medium" // Reduced from text-base
     : "text-sm font-medium";
 
+  // Get theme-specific colors
+  const bgColor = theme.colors[currentTheme].background.secondary;
+  const borderColor = theme.colors[currentTheme].border.primary;
+  const textColor = theme.colors[currentTheme].text.primary;
+
   return (
     <div
-      className={`absolute w-full bg-gray-100 border-b border-gray-300 ${mobileHeaderClasses} flex ${flexDirection} justify-between items-center cursor-move select-none touch-manipulation ${className}`}
+      className={`absolute w-full border-b flex justify-between items-center cursor-move select-none touch-manipulation ${mobileHeaderClasses} ${flexDirection} ${className}`}
+      style={{
+        backgroundColor: bgColor,
+        borderColor: borderColor,
+      }}
       onClick={handleHeaderClick}
       onPointerDown={handleDragStart}
     >
@@ -68,7 +79,10 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
 
       {/* Title and custom content */}
       <div className="flex items-center min-w-0 mx-4">
-        <span className={`text-gray-700 truncate ${mobileTitleClasses}`}>
+        <span
+          className={`truncate ${mobileTitleClasses}`}
+          style={{ color: textColor }}
+        >
           {displayTitle}
         </span>
       </div>
