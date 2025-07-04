@@ -32,7 +32,7 @@ const getIcon = (view: "icons" | "list" | "columns") => {
   }
 };
 
-export const FinderView: React.FC<FinderViewProps> = ({
+export const FinderViewControls: React.FC<FinderViewProps> = ({
   view,
   onChangeView,
   zIndex = 0,

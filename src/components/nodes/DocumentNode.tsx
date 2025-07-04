@@ -3,25 +3,25 @@ import { useNewStore } from "@/hooks/useStore";
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { DocumentEntry } from "@/types/nodeTypes";
 import {
-  containerClasses,
-  imageSize,
-  labelClasses,
-  tileFrame,
-  tileWrapper,
+  getContainerClasses,
+  getImageSize,
+  getLabelClasses,
+  getTileWrapper,
+  getTitleFrame,
   titleBase,
 } from "./node.styles";
 
-type Props = { document: DocumentEntry };
+type Props = { node: DocumentEntry; view: "icons" | "list" | "columns" };
 
-export const DocumentNode = ({ document }: Props) => {
-  const { id, applicationId, documentConfigId } = document;
+export const DocumentNode = ({ node, view }: Props) => {
+  const { id, applicationId, documentConfigId } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   console.log(
     "DOC_NODE_01: document",
     id,
     applicationId,
     documentConfigId,
-    document
+    node
   );
 
   // ─────────── node-specific store actions ───────────
@@ -82,7 +82,7 @@ export const DocumentNode = ({ document }: Props) => {
 
     console.log("DOC_NODE_06: opening new window for document", id);
     openWindowWithDocumentConfig(
-      document,
+      node,
       applicationNode as import("@/types/nodeTypes").ApplicationEntry,
       documentConfig
     );
@@ -94,50 +94,56 @@ export const DocumentNode = ({ document }: Props) => {
     getWindowByApplicationId,
     openWindowWithDocumentConfig,
     focusWindow,
-    document,
+    node,
   ]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
-    id: document.id,
-    nodeType: document.label,
+    id: node.id,
+    nodeType: node.label,
     enableLogging: true,
     onActivate: handleActivate,
-    parentId: document.parentId,
+    parentId: node.parentId,
   });
 
-  const showLabel = document.parentId !== "dock-root";
+  const showLabel = node.parentId !== "dock-root";
   const image =
     operatingSystem === "mac"
-      ? document.image
-      : document.alternativeImage
-      ? document.alternativeImage
-      : document.image;
+      ? node.image
+      : node.alternativeImage
+      ? node.alternativeImage
+      : node.image;
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
+    <div onClick={nodeBehavior.handleClick} className={getTitleFrame(view)}>
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={nodeBehavior.handleClick}
+        // onClick={nodeBehavior.handleClick}
         onDoubleClick={nodeBehavior.handleDoubleClick}
         onKeyDown={nodeBehavior.handleKeyDown}
         // Drag source
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (empty for non-directories)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper()} ${containerClasses({
+        className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
+          view,
         })}`}
       >
-        <img src={image} alt={document.label} className={imageSize} />
+        <img src={image} alt={node.label} className={getImageSize(view)} />
       </div>
 
       {showLabel && (
-        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-          {document.label}
+        <h2
+          className={`${titleBase} ${getLabelClasses(
+            view,
+            nodeBehavior.isSelected
+          )}`}
+        >
+          {node.label}
         </h2>
       )}
     </div>

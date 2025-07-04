@@ -158,7 +158,12 @@ const Dock: React.FC = () => {
               key={item.id}
               className={`w-${nodeDiameter} h-${nodeDiameter}`}
             >
-              <NodeSwitch node={item} layout="dock" windowId={dockRootId} />
+              <NodeSwitch
+                node={item}
+                layout="dock"
+                windowId={dockRootId}
+                view="icons"
+              />
               {/* <DockItem key={item.id} item={item} onItemClick={handleItemClick} /> */}
             </div>
           ))}

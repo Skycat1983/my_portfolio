@@ -1,7 +1,7 @@
 import React from "react";
 import { FinderNavigation } from "./FinderNavigation";
 import { Input } from "../ui/input";
-import { FinderView } from "./FinderView";
+import { FinderViewControls } from "./FinderViewControls";
 
 type FinderHeaderProps = {
   zIndex: number;
@@ -30,7 +30,11 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
         onChange={(e) => setInput(e.target.value)}
       />
 
-      <FinderView view={view} onChangeView={onChangeView} zIndex={zIndex} />
+      <FinderViewControls
+        view={view}
+        onChangeView={onChangeView}
+        zIndex={zIndex}
+      />
     </div>
   );
 };

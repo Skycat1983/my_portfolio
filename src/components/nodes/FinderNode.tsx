@@ -4,12 +4,12 @@ import { useNodeEvents } from "./hooks/useNodeEvents";
 import { useFinderHistory } from "@/components/finder/hooks/useFinderHistory";
 import type { DirectoryEntry } from "@/types/nodeTypes";
 import {
-  containerClasses,
-  imageSize,
-  labelClasses,
-  tileWrapper,
   titleBase,
-  tileFrame,
+  getTileWrapper,
+  getContainerClasses,
+  getTitleFrame,
+  getImageSize,
+  getLabelClasses,
 } from "./node.styles";
 import { BIN_EMPTY, BIN_FULL, FINDER } from "@/constants/images";
 
@@ -19,12 +19,14 @@ type Props = {
   nodeEntry: DirectoryEntry;
   layout?: LayoutType;
   windowId: string;
+  view: "icons" | "list" | "columns";
 };
 
 export const FinderNode = ({
   nodeEntry,
   layout = "window",
   windowId,
+  view,
 }: Props) => {
   console.log("DIR_NODE_01: DirectoryNode rendering", {
     nodeId: nodeEntry.id,
@@ -105,10 +107,11 @@ export const FinderNode = ({
   if (nodeEntry.id === "finder") {
     folderImage = FINDER;
   }
+  const showLabel = nodeEntry.parentId !== "dock-root";
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
+    <div className={getTitleFrame(view)}>
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers
@@ -119,16 +122,28 @@ export const FinderNode = ({
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (directories accept drops)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper()} ${containerClasses({
+        className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
+          view,
         })}`}
       >
-        <img src={folderImage} alt={nodeEntry.label} className={imageSize} />
+        <img
+          src={folderImage}
+          alt={nodeEntry.label}
+          className={getImageSize(view)}
+        />
       </div>
-      <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-        {nodeEntry.label}
-      </h2>
+      {showLabel && (
+        <h2
+          className={`${titleBase} ${getLabelClasses(
+            view,
+            nodeBehavior.isSelected
+          )}`}
+        >
+          {nodeEntry.label}
+        </h2>
+      )}
     </div>
   );
 };

@@ -3,19 +3,19 @@ import { useNewStore } from "@/hooks/useStore";
 
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import {
-  containerClasses,
-  imageSize,
-  labelClasses,
-  tileFrame,
-  tileWrapper,
+  getContainerClasses,
+  getImageSize,
+  getLabelClasses,
+  getTileWrapper,
+  getTitleFrame,
 } from "./node.styles";
 import { titleBase } from "./node.styles";
 import type { FunctionEntry } from "@/types/nodeTypes";
 import { getNodeFunction } from "@/components/window/WindowComponentRegistry";
 
-type Props = { node: FunctionEntry };
+type Props = { node: FunctionEntry; view: "icons" | "list" | "columns" };
 
-export const FunctionNode = ({ node }: Props) => {
+export const FunctionNode = ({ node, view }: Props) => {
   const { id, functionKey } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   // ─────────── node-specific store actions ───────────
@@ -55,7 +55,7 @@ export const FunctionNode = ({ node }: Props) => {
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
+    <div className={getTitleFrame(view)}>
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers
@@ -66,16 +66,22 @@ export const FunctionNode = ({ node }: Props) => {
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (empty for non-directories)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper()} ${containerClasses({
+        className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
+          view,
         })}`}
       >
-        <img src={image} alt={node.label} className={imageSize} />
+        <img src={image} alt={node.label} className={getImageSize(view)} />
       </div>
 
       {showLabel && (
-        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
+        <h2
+          className={`${titleBase} ${getLabelClasses(
+            view,
+            nodeBehavior.isSelected
+          )}`}
+        >
           {node.label}
         </h2>
       )}

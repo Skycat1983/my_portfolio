@@ -18,14 +18,16 @@ type LayoutType = "desktop" | "window" | "dock";
 
 type NodeSwitchProps = {
   node: NodeEntry;
-  layout?: LayoutType;
   windowId: string;
+  layout?: LayoutType;
+  view: "icons" | "list" | "columns";
 };
 
 export const NodeSwitch = ({
   node,
   layout = "window",
   windowId,
+  view,
 }: NodeSwitchProps) => {
   switch (node.type) {
     case "easter-egg":
@@ -38,22 +40,31 @@ export const NodeSwitch = ({
           nodeEntry={node as DirectoryEntry}
           layout={layout}
           windowId={windowId}
+          view={view}
         />
       );
 
     case "link":
-      return <LinkNode key={node.id} link={node as LinkEntry} />;
+      return <LinkNode key={node.id} link={node as LinkEntry} view={view} />;
 
     case "application":
       return (
-        <ApplicationNode key={node.id} application={node as ApplicationEntry} />
+        <ApplicationNode
+          key={node.id}
+          node={node as ApplicationEntry}
+          view={view}
+        />
       );
 
     case "function":
-      return <FunctionNode key={node.id} node={node as FunctionEntry} />;
+      return (
+        <FunctionNode key={node.id} node={node as FunctionEntry} view={view} />
+      );
 
     case "document":
-      return <DocumentNode key={node.id} document={node as DocumentEntry} />;
+      return (
+        <DocumentNode key={node.id} node={node as DocumentEntry} view={view} />
+      );
 
     default:
       console.warn("Unknown node type:", node);

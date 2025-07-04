@@ -11,9 +11,9 @@ import {
 } from "./node.styles";
 import { useNewStore } from "@/hooks/useStore";
 
-type Props = { link: LinkEntry };
+type Props = { link: LinkEntry; view?: "icons" | "list" | "columns" };
 
-export const LinkNode = ({ link }: Props) => {
+export const LinkNode = ({ link, view }: Props) => {
   const confirmCVCheckedOut = useNewStore((s) => s.confirmCVCheckedOut);
   const confirmRecommendationCheckedOut = useNewStore(
     (s) => s.confirmRecommendationCheckedOut
@@ -48,6 +48,8 @@ export const LinkNode = ({ link }: Props) => {
     onActivate: handleActivate,
   });
 
+  const showLabel = link.parentId !== "dock-root";
+
   // ─────────── render ───────────
   return (
     <>
@@ -69,9 +71,13 @@ export const LinkNode = ({ link }: Props) => {
         >
           <img src={link.image} alt={link.label} className={imageSize} />
         </div>
-        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-          {link.label}
-        </h2>
+        {showLabel && (
+          <h2
+            className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}
+          >
+            {link.label}
+          </h2>
+        )}
       </div>
     </>
   );

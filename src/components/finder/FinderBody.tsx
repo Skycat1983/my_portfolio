@@ -12,6 +12,7 @@ interface FinderBodyProps {
 
 export const FinderBody = ({ nodes, view, windowId }: FinderBodyProps) => {
   if (view === "list") return <ListView nodes={nodes} />;
-  if (view === "columns") return <ColumnsView windowId={windowId!} />;
-  return <IconsView nodes={nodes} windowId={windowId} />;
+  if (view === "columns")
+    return <ColumnsView windowId={windowId!} nodes={nodes} view={view} />;
+  return <IconsView nodes={nodes} windowId={windowId} view={view} />;
 };

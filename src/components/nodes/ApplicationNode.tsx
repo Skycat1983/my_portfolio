@@ -3,21 +3,24 @@ import { useNewStore } from "@/hooks/useStore";
 
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import {
-  containerClasses,
-  imageSize,
-  labelClasses,
-  tileFrame,
-  tileWrapper,
+  getContainerClasses,
+  getImageSize,
+  getLabelClasses,
+  getTileWrapper,
 } from "./node.styles";
 import { titleBase } from "./node.styles";
 import type { ApplicationEntry } from "@/types/nodeTypes";
+import { getTitleFrame } from "./node.styles";
 
-type Props = { application: ApplicationEntry };
+type Props = {
+  node: ApplicationEntry;
+  view: "icons" | "list" | "columns";
+};
 
-export const ApplicationNode = ({ application }: Props) => {
-  const { id, componentKey } = application;
+export const ApplicationNode = ({ node, view }: Props) => {
+  const { id, componentKey } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  console.log("APP_NODE_01: app", id, componentKey, application);
+  console.log("APP_NODE_01: app", id, componentKey, node);
   // ─────────── node-specific store actions ───────────
   // const openTerminal = useNewStore((s) => s.openTerminal);
   const openWindowWithComponentKey = useNewStore(
@@ -32,17 +35,15 @@ export const ApplicationNode = ({ application }: Props) => {
   const handleActivate = useCallback(() => {
     console.log(
       "APP_NODE_03: handleActivate called for",
-      application.id,
+      node.id,
       "applicationId:",
-      application.applicationId
+      node.applicationId
     );
 
     // Use applicationId for focus logic to handle dock/desktop instances
-    const windowAlreadyOpen = getWindowByApplicationId(
-      application.applicationId
-    );
+    const windowAlreadyOpen = getWindowByApplicationId(node.applicationId);
     console.log("APP_NODE_02: windowAlreadyOpen", windowAlreadyOpen);
-    console.log("APP_NODE_02: windowAlreadyOpen", application);
+    console.log("APP_NODE_02: windowAlreadyOpen", node);
 
     if (windowAlreadyOpen) {
       console.log(
@@ -53,11 +54,10 @@ export const ApplicationNode = ({ application }: Props) => {
       return;
     }
 
-    console.log("APP_NODE_05: opening new window for", application.id);
-    openWindowWithComponentKey(application, id, componentKey);
+    console.log("APP_NODE_05: opening new window for", node.id);
+    openWindowWithComponentKey(node, componentKey);
   }, [
-    id,
-    application,
+    node,
     getWindowByApplicationId,
     openWindowWithComponentKey,
     focusWindow,
@@ -66,45 +66,51 @@ export const ApplicationNode = ({ application }: Props) => {
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
-    id: application.id,
-    nodeType: application.label,
+    id: node.id,
+    nodeType: node.label,
     enableLogging: true,
     onActivate: handleActivate,
-    parentId: application.parentId,
+    parentId: node.parentId,
   });
 
-  const showLabel = application.parentId !== "dock-root";
+  const showLabel = node.parentId !== "dock-root";
   const image =
     operatingSystem === "mac"
-      ? application.image
-      : application.alternativeImage
-      ? application.alternativeImage
-      : application.image;
+      ? node.image
+      : node.alternativeImage
+      ? node.alternativeImage
+      : node.image;
 
   // ─────────── render ───────────
   return (
-    <div className={tileFrame}>
+    <div onClick={nodeBehavior.handleClick} className={getTitleFrame(view)}>
       <div
         {...nodeBehavior.accessibilityProps}
         // Click handlers
-        onClick={nodeBehavior.handleClick}
+        // onClick={nodeBehavior.handleClick}
         onDoubleClick={nodeBehavior.handleDoubleClick}
         onKeyDown={nodeBehavior.handleKeyDown}
         // Drag source
         {...nodeBehavior.dragSourceHandlers}
         // Drop target (empty for non-directories)
         {...nodeBehavior.dropTargetHandlers}
-        className={`${tileWrapper()} ${containerClasses({
+        className={`${getTileWrapper(view)} ${getContainerClasses({
           selected: nodeBehavior.isSelected,
           drop: nodeBehavior.isDropTarget,
+          view,
         })}`}
       >
-        <img src={image} alt={application.label} className={imageSize} />
+        <img src={image} alt={node.label} className={getImageSize(view)} />
       </div>
 
       {showLabel && (
-        <h2 className={`${titleBase} ${labelClasses(nodeBehavior.isSelected)}`}>
-          {application.label}
+        <h2
+          className={`${titleBase} ${getLabelClasses(
+            view,
+            nodeBehavior.isSelected
+          )}`}
+        >
+          {node.label}
         </h2>
       )}
     </div>

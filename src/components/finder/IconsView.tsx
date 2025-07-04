@@ -5,9 +5,10 @@ import { useNewStore } from "@/hooks/useStore";
 interface IconsViewProps {
   nodes: NodeEntry[];
   windowId: string;
+  view: "icons" | "list" | "columns";
 }
 
-export const IconsView = ({ nodes, windowId }: IconsViewProps) => {
+export const IconsView = ({ nodes, windowId, view }: IconsViewProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
 
   return (
@@ -17,7 +18,12 @@ export const IconsView = ({ nodes, windowId }: IconsViewProps) => {
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
           {nodes.map((node) => (
             <div key={node.id} className="w-20 md:w-24">
-              <NodeSwitch node={node} layout="window" windowId={windowId} />
+              <NodeSwitch
+                node={node}
+                layout="window"
+                windowId={windowId}
+                view={view}
+              />
             </div>
           ))}
         </div>
@@ -31,7 +37,12 @@ export const IconsView = ({ nodes, windowId }: IconsViewProps) => {
       >
         {nodes.map((node) => (
           <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} layout="window" windowId={windowId} />
+            <NodeSwitch
+              node={node}
+              layout="window"
+              windowId={windowId}
+              view={view}
+            />
           </div>
         ))}
       </div>
