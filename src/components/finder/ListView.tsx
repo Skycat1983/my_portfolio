@@ -233,13 +233,28 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
                 view="list"
               />
             </div>
-            <div className={clsx(textColor, "text-left truncate text-sm")}>
+            <div
+              className={clsx(
+                textColor,
+                "text-left truncate text-sm flex items-center"
+              )}
+            >
               {formatDate(node.dateModified)}
             </div>
-            <div className={clsx(textColor, "text-right truncate text-sm")}>
+            <div
+              className={clsx(
+                textColor,
+                "text-right truncate text-sm flex items-center"
+              )}
+            >
               {formatSize(node.size)}
             </div>
-            <div className={clsx(textColor, "text-left truncate text-sm")}>
+            <div
+              className={clsx(
+                textColor,
+                "text-left truncate text-sm flex items-center"
+              )}
+            >
               {getKindDisplay(node)}
             </div>
           </div>
