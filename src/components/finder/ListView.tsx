@@ -10,11 +10,15 @@ import type {
 import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import clsx from "clsx";
+import { Separator } from "../ui/separator";
 
 interface ListViewProps {
   nodes: NodeEntry[];
   windowId: string;
 }
+
+const ROW_HEIGHT = 35; // px
+const ROW_PADDING = 4; // px
 
 export const ListView = ({ nodes, windowId }: ListViewProps) => {
   const [sortBy, setSortBy] = React.useState<
@@ -24,6 +28,8 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
     "asc"
   );
   const selectedNodeId = useNewStore((state) => state.selectedNodeId);
+  const selectOneNode = useNewStore((state) => state.selectOneNode);
+  const theme = useNewStore((state) => state.theme);
 
   const handleSort = (column: "name" | "type" | "size" | "modified") => {
     if (sortBy === column) {
@@ -153,61 +159,95 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
   }, [nodes, sortBy, sortDirection]);
 
   const textColor = "text-white";
-  const getLineColor = (index: number) => {
-    if (index % 2 === 0) return "bg-gray-800";
-    return "bg-gray-900";
+
+  const getBackgroundColor = (index: number) => {
+    if (theme === "light") {
+      return index % 2 === 0 ? "bg-gray-50" : "bg-white";
+    }
+    return index % 2 === 0 ? "bg-gray-800/50" : "bg-gray-900/50";
   };
 
   return (
     <div className="w-full h-full flex flex-col">
       {/* Table Header */}
-      <div className="bg-gray-100 border-b border-gray-200 px-4 py-2">
-        <div className="grid grid-cols-[2fr_1.5fr_80px_1fr] gap-4 text-sm font-medium text-gray-600">
+      <div
+        className={clsx(
+          "px-4 border-b sticky top-0 z-10",
+          theme === "light"
+            ? "bg-gray-100 border-gray-200"
+            : "bg-gray-800 border-gray-700"
+        )}
+      >
+        <div className="flex items-center h-9">
           <button
             onClick={() => handleSort("name")}
             className={clsx(
-              "text-left hover:text-gray-900 transition-colors flex items-center",
+              "text-left hover:text-gray-900 transition-colors flex items-center whitespace-nowrap overflow-hidden flex-[2.5]",
               sortBy === "name" && "font-bold"
             )}
           >
-            Name
-            <span className="ml-1 text-xs">
+            <span className="truncate">Name</span>
+            <span className="ml-1 flex-shrink-0">
               {sortBy === "name" && (sortDirection === "asc" ? "▲" : "▼")}
             </span>
           </button>
+
+          <div className="flex items-center h-full px-2">
+            <Separator
+              orientation="vertical"
+              className="h-[10px] bg-gray-200/10"
+            />
+          </div>
+
           <button
             onClick={() => handleSort("modified")}
             className={clsx(
-              "text-left hover:text-gray-900 transition-colors flex items-center",
+              "text-left hover:text-gray-900 transition-colors flex items-center whitespace-nowrap overflow-hidden flex-[2]",
               sortBy === "modified" && "font-bold"
             )}
           >
-            Date Modified
-            <span className="ml-1 text-xs">
+            <span className="truncate">Date Modified</span>
+            <span className="ml-1 flex-shrink-0">
               {sortBy === "modified" && (sortDirection === "asc" ? "▲" : "▼")}
             </span>
           </button>
+
+          <div className="flex items-center h-full px-2">
+            <Separator
+              orientation="vertical"
+              className="h-[10px] bg-gray-200/10"
+            />
+          </div>
+
           <button
             onClick={() => handleSort("size")}
             className={clsx(
-              "text-right hover:text-gray-900 transition-colors flex items-center justify-end",
+              "text-right hover:text-gray-900 transition-colors flex items-center justify-end whitespace-nowrap overflow-hidden w-[100px]",
               sortBy === "size" && "font-bold"
             )}
           >
-            Size
-            <span className="ml-1 text-xs">
+            <span className="truncate">Size</span>
+            <span className="ml-1 flex-shrink-0">
               {sortBy === "size" && (sortDirection === "asc" ? "▲" : "▼")}
             </span>
           </button>
+
+          <div className="flex items-center h-full px-2">
+            <Separator
+              orientation="vertical"
+              className="h-[10px] bg-gray-200/10"
+            />
+          </div>
+
           <button
             onClick={() => handleSort("type")}
             className={clsx(
-              "text-left hover:text-gray-900 transition-colors flex items-center",
+              "text-left hover:text-gray-900 transition-colors flex items-center whitespace-nowrap overflow-hidden w-[120px]",
               sortBy === "type" && "font-bold"
             )}
           >
-            Kind
-            <span className="ml-1 text-xs">
+            <span className="truncate">Kind</span>
+            <span className="ml-1 flex-shrink-0">
               {sortBy === "type" && (sortDirection === "asc" ? "▲" : "▼")}
             </span>
           </button>
@@ -215,17 +255,24 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
       </div>
 
       {/* Table Body */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto relative">
         {sortedNodes.map((node, index) => (
           <div
             key={node.id}
+            onClick={() => selectOneNode(node.id)}
+            style={{
+              height: `${ROW_HEIGHT}px`,
+              padding: `${ROW_PADDING}px 1rem`,
+            }}
             className={clsx(
-              "grid grid-cols-[2fr_1.5fr_80px_1fr] gap-4 px-4 py-1 text-s cursor-pointer",
-              getLineColor(index),
-              selectedNodeId === node.id && "bg-blue-500/30"
+              "grid grid-cols-[2.5fr_2fr_100px_120px] gap-4 cursor-pointer relative",
+              "items-center justify-center",
+              getBackgroundColor(index),
+              selectedNodeId === node.id && "!bg-blue-500/30",
+              "hover:bg-blue-500/10"
             )}
           >
-            <div className="flex items-center">
+            <div className="flex items-center min-w-0">
               <NodeSwitch
                 key={node.id}
                 node={node}
@@ -236,7 +283,7 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
             <div
               className={clsx(
                 textColor,
-                "text-left truncate text-sm flex items-center"
+                "text-left truncate flex items-center min-w-0 text-sm"
               )}
             >
               {formatDate(node.dateModified)}
@@ -244,7 +291,7 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
             <div
               className={clsx(
                 textColor,
-                "text-right truncate text-sm flex items-center"
+                "text-right truncate flex items-center justify-end min-w-0 text-sm"
               )}
             >
               {formatSize(node.size)}
@@ -252,7 +299,7 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
             <div
               className={clsx(
                 textColor,
-                "text-left truncate text-sm flex items-center"
+                "text-left truncate flex items-center min-w-0 text-sm"
               )}
             >
               {getKindDisplay(node)}
