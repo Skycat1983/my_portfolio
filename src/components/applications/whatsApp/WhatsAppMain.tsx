@@ -1,75 +1,124 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useWhatsAppHistory } from "./hooks/useWhatsAppHistory";
 import { ChatListScreen } from "./ChatListScreen";
 import { ChatScreen } from "./ChatScreen";
 import { ArchiveScreen } from "./ArchiveScreen";
-import type { Chat } from "./types";
-import { mockChats } from "./data";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useNewStore } from "@/hooks/useStore";
 
-export const WhatsAppMain: React.FC = () => {
-  const [currentView, setCurrentView] = useState<
-    "chatList" | "chat" | "archive"
-  >("chatList");
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [chats, setChats] = useState<Chat[]>(mockChats);
+interface WhatsAppMainProps {
+  windowId: string;
+}
 
-  const handleChatSelect = (chat: Chat) => {
-    setSelectedChat(chat);
-    setCurrentView("chat");
-  };
+export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
+  const {
+    currentView,
+    navigateToView,
+    goBack,
+    goForward,
+    canGoBack,
+    canGoForward,
+    cleanup,
+  } = useWhatsAppHistory(windowId);
+  console.log("WhatsApp: WhatsAppMain currentView", currentView);
 
-  const handleBackToList = () => {
-    setCurrentView("chatList");
-    setSelectedChat(null);
-  };
+  const archiveContact = useNewStore((state) => state.archiveContact);
+  const unarchiveContact = useNewStore((state) => state.unarchiveContact);
 
-  const handleArchiveView = () => {
-    setCurrentView("archive");
-  };
+  // Handle cleanup when window closes
+  useEffect(() => {
+    return () => {
+      console.log("WhatsAppMain: cleaning up");
+      cleanup();
+    };
+  }, [cleanup]);
 
-  const handleBackToListFromArchive = () => {
-    setCurrentView("chatList");
-  };
+  const handleConversationClick = React.useCallback(
+    (conversationId: string) => {
+      navigateToView("chat", { conversationId });
+    },
+    [navigateToView]
+  );
 
-  const handleArchiveChat = (chatId: string) => {
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === chatId ? { ...chat, isArchived: true } : chat
-      )
-    );
-  };
+  const handleArchiveClick = React.useCallback(() => {
+    navigateToView("archive");
+  }, [navigateToView]);
 
-  const handleUnarchiveChat = (chatId: string) => {
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === chatId ? { ...chat, isArchived: false } : chat
-      )
-    );
-  };
+  const handleBackToList = React.useCallback(() => {
+    navigateToView("chatList");
+  }, [navigateToView]);
+
+  const handleArchiveContact = React.useCallback(
+    (contactId: string) => {
+      archiveContact(contactId);
+      navigateToView("chatList");
+    },
+    [archiveContact, navigateToView]
+  );
+
+  const handleUnarchiveContact = React.useCallback(
+    (contactId: string) => {
+      unarchiveContact(contactId);
+      navigateToView("chatList");
+    },
+    [unarchiveContact, navigateToView]
+  );
 
   return (
-    <div className="h-full w-full bg-gray-100 flex flex-col pt-5">
-      {currentView === "chatList" ? (
-        <ChatListScreen
-          chats={chats}
-          onChatSelect={handleChatSelect}
-          onArchiveView={handleArchiveView}
-        />
-      ) : currentView === "archive" ? (
-        <ArchiveScreen
-          chats={chats}
-          onBack={handleBackToListFromArchive}
-          onChatSelect={handleChatSelect}
-        />
-      ) : (
-        selectedChat && (
-          <ChatScreen
-            chat={selectedChat}
-            onBack={handleBackToList}
-            onArchive={handleArchiveChat}
-            onUnarchive={handleUnarchiveChat}
+    <div className="h-full w-full bg-gray-800">
+      <div className="flex items-center justify-between p-4 border-b border-gray-700">
+        <h1 className="text-xl font-semibold text-white">WhatsApp</h1>
+        <div className="flex gap-2">
+          <button
+            onClick={goBack}
+            disabled={!canGoBack}
+            className={`p-2 rounded-full transition-colors ${
+              canGoBack
+                ? "text-white hover:bg-gray-700"
+                : "text-gray-500 cursor-not-allowed"
+            }`}
+            aria-label="Go back"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <button
+            onClick={goForward}
+            disabled={!canGoForward}
+            className={`p-2 rounded-full transition-colors ${
+              canGoForward
+                ? "text-white hover:bg-gray-700"
+                : "text-gray-500 cursor-not-allowed"
+            }`}
+            aria-label="Go forward"
+          >
+            <ArrowRight size={20} />
+          </button>
+        </div>
+      </div>
+
+      <div className="h-[calc(100%-4rem)]">
+        {currentView?.view === "chatList" && (
+          <ChatListScreen
+            onSelectConversation={handleConversationClick}
+            onViewArchived={handleArchiveClick}
           />
-        )
-      )}
+        )}
+        {currentView?.view === "chat" && currentView.params?.conversationId && (
+          <ChatScreen
+            conversationId={currentView.params.conversationId}
+            onBack={handleBackToList}
+            onArchive={handleArchiveContact}
+            onUnarchive={handleUnarchiveContact}
+          />
+        )}
+        {currentView?.view === "archive" && (
+          <ArchiveScreen
+            onBack={handleBackToList}
+            onSelectContact={handleConversationClick}
+            onUnarchive={handleUnarchiveContact}
+          />
+        )}
+      </div>
     </div>
   );
 };
