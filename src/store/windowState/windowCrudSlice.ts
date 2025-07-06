@@ -1,7 +1,11 @@
 import { defaultNodeMap } from "@/constants/nodes";
 import type { NodeMap } from "@/types/nodeTypes";
-import type { WindowType } from "@/types/storeTypes";
-import type { SetState, GetState } from "@/types/storeTypes";
+import type {
+  WindowType,
+  ApplicationState,
+  SetState,
+  GetState,
+} from "@/types/storeTypes";
 
 interface WindowState {
   nodeMap: NodeMap;
@@ -42,8 +46,8 @@ interface WindowActions {
 export type WindowCrudSlice = WindowState & WindowActions;
 
 export const createWindowCrudSlice = (
-  set: SetState<WindowCrudSlice>,
-  get: GetState<WindowCrudSlice>
+  set: SetState<ApplicationState>,
+  get: GetState<ApplicationState>
 ): WindowCrudSlice => ({
   // Core window data
   openWindows: [],

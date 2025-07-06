@@ -10,6 +10,9 @@ import type {
   TimeFormat,
 } from "../store/systemState/systemSlice";
 import type { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
+import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
+import type { HistoryInstance } from "@/store/contentState/historySlice";
+import type { WeatherSlice } from "@/store/systemState/weatherSlice";
 
 // Interface for props that window content components receive
 // Note: This is now flexible - components can define their own prop interfaces
@@ -94,9 +97,6 @@ export type BrowserWindow = Required<
     | "x"
     | "y"
     | "zIndex"
-    // | "currentItem"
-    // | "canGoBack"
-    // | "canGoForward"
   >
 > & {
   nodeType: "browser";
@@ -114,9 +114,6 @@ export type TerminalWindow = Required<
     | "x"
     | "y"
     | "zIndex"
-    // | "currentItem"
-    // | "canGoBack"
-    // | "canGoForward"
   >
 > & {
   nodeType: "terminal";
@@ -168,19 +165,11 @@ export interface DocumentConfig {
   };
 }
 
-export interface DocumentRegistryState {
-  configs: Map<string, DocumentConfig>;
-}
+// === STATE TYPES ===
 
-// Base store state interface that slices can reference
-export interface BaseStoreState {
+// Core system state
+interface SystemState {
   theme: "light" | "dark";
-  nodeMap: NodeMap;
-  rootId: string;
-  selectedNodeId: string | null;
-  selectedNodeIds: string[];
-  openWindows: WindowType[];
-  nextZIndex: number;
   operatingSystem: OperatingSystem;
   wifiEnabled: boolean;
   screenDimensions: ScreenDimensions;
@@ -188,9 +177,45 @@ export interface BaseStoreState {
   timezone: string;
   selectedCity: string;
   customWallpaper: string | null;
+  weather: WeatherSlice;
 }
 
+// Node management state
+interface NodeState {
+  nodeMap: NodeMap;
+  rootId: string;
+  selectedNodeId: string | null;
+  selectedNodeIds: string[];
+}
+
+// Window management state
+interface WindowState {
+  openWindows: WindowType[];
+  nextZIndex: number;
+}
+
+// Collection-based states
+interface CollectionState {
+  histories: Record<string, HistoryInstance>;
+  documents: Map<string, DocumentConfig>;
+}
+
+// Feature-based states
+interface FeatureState {
+  whatsApp: WhatsAppState;
+}
+
+// Combined application state
+export interface ApplicationState
+  extends SystemState,
+    NodeState,
+    WindowState,
+    CollectionState,
+    FeatureState {}
+
+// Type for state setters
 export type SetState<T> = (
   partial: Partial<T> | ((state: T) => Partial<T>)
 ) => void;
+
 export type GetState<T> = () => T;

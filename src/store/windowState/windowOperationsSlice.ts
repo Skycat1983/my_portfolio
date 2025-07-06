@@ -274,6 +274,15 @@ export const createWindowOperationsSlice = (
       state.deleteHistory(terminalHistoryId);
     }
 
+    const whatsAppHistoryId = `whatsapp-${windowId}`;
+    if (state.historyExists(whatsAppHistoryId)) {
+      console.log(
+        "closeWindow: cleaning up whatsapp history",
+        whatsAppHistoryId
+      );
+      state.deleteHistory(whatsAppHistoryId);
+    }
+
     // Finally, delete the window itself
     state.deleteOneWindow((window: WindowType) => window.windowId === windowId);
   },
