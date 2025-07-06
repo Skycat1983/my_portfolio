@@ -4,7 +4,7 @@ import type {
   Message,
   DeliveryStatus,
   WhatsAppView,
-} from "./types";
+} from "../components/applications/whatsApp/types";
 import {
   BILLGATES,
   ELONMUSK,
@@ -223,14 +223,14 @@ const whatsAppConversations = {
         content:
           "Hey Heron, it was great to have you working here during those 18 months. Keep in touch! Let us know if you need anything like references etc",
         sender: "ai" as const,
-        timestamp: timeAgo(172800000), // 2 days ago
+        timestamp: timeAgo(31449600000), // 2 days ago
         deliveryStatus: "delivered" as const,
       },
       {
         content:
           "Hey, yea i'm sorry to be leaving! Had such a great time working with you all, and will definitely stop by for the after work drinks sometime soon. Thanks for everything!",
         sender: "user" as const,
-        timestamp: timeAgo(172500000), // 2 days ago (5 mins later)
+        timestamp: timeAgo(31446600000), // 2 days ago (5 mins later)
         deliveryStatus: "read" as const,
       },
     ],
@@ -242,7 +242,7 @@ const whatsAppConversations = {
         content:
           "Dear sir/madame, are you interested in earning $400 per hour? Answer YES to this message, and i will share with you the trick that made me $96,000 last month!",
         sender: "ai" as const,
-        timestamp: timeAgo(3600000), // 1 hour ago
+        timestamp: timeAgo(31449600000),
         deliveryStatus: "delivered" as const,
       },
     ],
@@ -260,28 +260,21 @@ const whatsAppConversations = {
 
       {
         content:
-          "Hey Mum, I'm doing well. Been working on a new portfolio hub. I think it's a bit different to how most people approach these things",
+          "Hey Mum, I'm doing well. Been working on a new portfolio hub.",
         sender: "user" as const,
         timestamp: timeAgo(7000000), // 1 hour ago
         deliveryStatus: "read" as const,
       },
       {
         content:
-          "I think if it gets seen by someone with a coding background, they will hopefully be able to see the effort that has been put in",
-        sender: "user" as const,
-        timestamp: timeAgo(6700000), // 1 hour ago
-        deliveryStatus: "read" as const,
-      },
-      {
-        content:
-          "Even if nobody gets it, it's been so fun to make. I will let you know when it's online and you can see it for yourself",
+          "it's been so fun to make. I will let you know when it's online and you can see it for yourself",
         sender: "user" as const,
         timestamp: timeAgo(6400000), // 1 hour ago
         deliveryStatus: "read" as const,
       },
       {
         content:
-          "I've been thinking about you a lot lately, and I'm really proud of you for all your hard work. I know it's a difficult time to be looking for a job in your field, but you just have to keep faith that you will find something soon!",
+          "I'm sure it's great. I know it's a difficult time to be looking for a job in your field, but you just have to keep faith that eventually all your hard work will pay off!",
         sender: "ai" as const,
         timestamp: timeAgo(6100000), // 1 hour ago
         deliveryStatus: "delivered" as const,

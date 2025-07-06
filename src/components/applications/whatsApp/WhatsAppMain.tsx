@@ -5,9 +5,10 @@ import { ChatScreen } from "./ChatScreen";
 import { ArchiveScreen } from "./ArchiveScreen";
 import { ArrowLeft, ArrowRight, Settings } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
+import type { WindowType } from "@/types/storeTypes";
 
 interface WhatsAppMainProps {
-  windowId: string;
+  windowId: WindowType["windowId"];
 }
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
@@ -112,6 +113,7 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
         {whatsAppView?.view === "chat" &&
           whatsAppView.params?.conversationId && (
             <ChatScreen
+              windowId={windowId}
               conversationId={whatsAppView.params.conversationId}
               onBack={handleBackToList}
               onArchive={handleArchiveContact}

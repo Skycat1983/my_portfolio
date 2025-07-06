@@ -10,17 +10,21 @@ interface GeminiInput {
   systemInstruction: string;
 }
 
+const WORD_LIMIT = 50;
+
 export async function whatsApp(input: GeminiInput): Promise<string> {
   try {
     // Log the enhanced system instruction for debugging
     console.log("Enhanced system instruction:", input.systemInstruction);
-    console.log("Contents:", input.contents);
+    console.log("Contents:", input);
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: input.contents,
       config: {
-        systemInstruction: input.systemInstruction,
+        systemInstruction:
+          input.systemInstruction +
+          `\n\nThe response should be no more than ${WORD_LIMIT} words.`,
       },
     });
     console.log("AI response in whatsApp function:", response.text);

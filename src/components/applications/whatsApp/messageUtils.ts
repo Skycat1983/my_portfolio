@@ -16,18 +16,15 @@ export const generateMessageId = (): string =>
 
 export const createMessage = (
   content: string,
-  sender: "user" | "contact",
-  receiver: "user" | "contact",
+  sender: string,
+  receiver: string,
   status: "pending" | "sent" | "delivered" | "read" | "failed" = "pending"
 ): WhatsAppMessage => ({
   id: generateMessageId(),
   content,
   sender,
   receiver,
-  timestamp: new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  }),
+  timestamp: new Date().toISOString(),
   deliveryStatus: status,
   failedAttempts: 0,
   lastAttempt: Date.now(),

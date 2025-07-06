@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import type { WhatsAppView } from "../types";
 
-interface ViewState {
+export interface ViewState {
   view: WhatsAppView;
   params?: {
     conversationId?: string;

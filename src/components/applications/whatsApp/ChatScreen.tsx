@@ -13,12 +13,15 @@ import {
 import { createMessage, processAIResponse } from "./messageUtils";
 import { Send } from "lucide-react";
 import { ConversationHeader } from "./ConversationHeader";
+import type { ViewState } from "./hooks/useWhatsAppHistory";
+import type { WindowType } from "@/types/storeTypes";
 
 interface ChatScreenProps {
   conversationId: ContactId;
   onBack: () => void;
   onArchive: (contactId: ContactId) => void;
   onUnarchive: (contactId: ContactId) => void;
+  windowId: WindowType["windowId"];
 }
 
 export const ChatScreen: React.FC<ChatScreenProps> = ({
@@ -26,10 +29,28 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   onBack,
   onArchive,
   onUnarchive,
+  windowId,
 }) => {
   console.log("WhatsApp: ChatScreen conversationId", conversationId);
   const whatsApp = useNewStore((state) => state.whatsApp);
-  // const wifiEnabled = useNewStore((state) => state.wifiEnabled);
+  const historyId = `whatsapp-${windowId}`;
+  const whatsAppHistory = useNewStore((state) => state.getHistory(historyId));
+  // console.log("WhatsApp: useWhatsAppHistory getHistory", whatsAppHistory);
+  const index = whatsAppHistory?.currentIndex;
+  const whatsAppView = whatsAppHistory?.items[index ?? 0] as
+    | ViewState
+    | undefined;
+
+  const isOnChatView = whatsAppView?.view === "chat";
+  const isViewingThisConversation =
+    whatsAppView?.params?.conversationId === conversationId;
+  const isActiveConversation = isOnChatView && isViewingThisConversation;
+
+  // console.log("WhatsApp: ChatScreen whatsAppView", whatsAppView);
+  // console.log(
+  //   "WhatsApp: ChatScreen isActiveConversation",
+  //   isActiveConversation
+  // );
 
   // ! in use - Get conversation data using new selectors
   const messages = selectConversationMessages(whatsApp, conversationId);
@@ -62,7 +83,12 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     )
       return;
 
-    const userMessage = createMessage(inputText, "user", "contact", "pending");
+    const userMessage = createMessage(
+      inputText,
+      "user_self",
+      conversationId,
+      "pending"
+    );
     addMessage(conversationId, userMessage);
     setInputText("");
     setTyping(conversationId, true);
@@ -78,11 +104,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         enhancedInstruction,
         (response) => {
           setTyping(conversationId, false);
+          // Use isActiveConversation to determine if message should be marked as read
+          const messageStatus = isActiveConversation ? "read" : "delivered";
           const botMessage = createMessage(
             response,
-            "contact",
-            "user",
-            "delivered"
+            conversationId,
+            "user_self",
+            messageStatus
           );
           addMessage(conversationId, botMessage);
         },
@@ -90,8 +118,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
           setTyping(conversationId, false);
           const errorMessage = createMessage(
             "Sorry, I had trouble responding. Please try again.",
-            "contact",
-            "user",
+            conversationId,
+            "user_self",
             "failed"
           );
           addMessage(conversationId, errorMessage);

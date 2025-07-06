@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import type { WindowContentProps } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
-import { createInitialState } from "./data";
+import { createInitialState } from "../../../constants/whatsAppData";
 import { WhatsAppMain } from "./WhatsAppMain";
 
 export const WhatsAppWrapper: React.FC<WindowContentProps> = ({ windowId }) => {
