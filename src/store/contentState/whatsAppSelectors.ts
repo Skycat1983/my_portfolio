@@ -151,6 +151,7 @@ export const selectConversationPreview = (
 
   return {
     id: conversationId,
+    aiContactId: aiContactId,
     name: aiContact.name,
     avatar: aiContact.avatar,
     systemInstruction: aiContact.systemInstruction,
@@ -216,7 +217,17 @@ export const selectActiveConversationPreviews = (state: WhatsAppState) => {
     .map((convId) => selectConversationPreview(state, convId))
     .filter(
       (preview): preview is NonNullable<typeof preview> => preview !== null
-    );
+    )
+    .sort((a, b) => {
+      // Sort by most recent message timestamp (newest first)
+      if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+      if (!a.lastMessageTime) return 1;
+      if (!b.lastMessageTime) return -1;
+      return (
+        new Date(b.lastMessageTime).getTime() -
+        new Date(a.lastMessageTime).getTime()
+      );
+    });
 };
 
 export const selectArchivedConversationPreviews = (state: WhatsAppState) => {
@@ -225,7 +236,17 @@ export const selectArchivedConversationPreviews = (state: WhatsAppState) => {
     .map((convId) => selectConversationPreview(state, convId))
     .filter(
       (preview): preview is NonNullable<typeof preview> => preview !== null
-    );
+    )
+    .sort((a, b) => {
+      // Sort by most recent message timestamp (newest first)
+      if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+      if (!a.lastMessageTime) return 1;
+      if (!b.lastMessageTime) return -1;
+      return (
+        new Date(b.lastMessageTime).getTime() -
+        new Date(a.lastMessageTime).getTime()
+      );
+    });
 };
 
 // === NEW SELECTORS FOR CHATSCREEN COMPONENTS ===

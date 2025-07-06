@@ -1,4 +1,4 @@
-import type { SetState, ApplicationState, GetState } from "@/types/storeTypes";
+import type { SetState, ApplicationState } from "@/types/storeTypes";
 import type {
   Contact,
   Message,
@@ -63,10 +63,11 @@ export interface WhatsAppActions {
     updates: Partial<Conversation>
   ) => void;
   markLastSeen: (conversationId: ConversationId, messageId: MessageId) => void;
+  markConversationAsRead: (conversationId: ConversationId) => void;
 
   // UI actions
   setCurrentConversation: (conversationId: ConversationId | null) => void;
-  setView: (view: WhatsAppView) => void;
+  // setView: (view: WhatsAppView) => void;
   setTyping: (conversationId: ConversationId, isTyping: boolean) => void;
 
   // Network actions
@@ -374,6 +375,34 @@ export const createWhatsAppSlice = (
         };
       }),
 
+    markConversationAsRead: (conversationId: ConversationId) =>
+      set((state: ApplicationState) => {
+        const messageIds =
+          state.whatsApp.messages.byConversation[conversationId] || [];
+        const lastMessageId = messageIds[messageIds.length - 1];
+
+        if (!lastMessageId) return {};
+
+        const conversation = state.whatsApp.conversations.byId[conversationId];
+        if (!conversation) return {};
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            conversations: {
+              ...state.whatsApp.conversations,
+              byId: {
+                ...state.whatsApp.conversations.byId,
+                [conversationId]: {
+                  ...conversation,
+                  lastSeenMessageId: lastMessageId,
+                },
+              },
+            },
+          },
+        };
+      }),
+
     // UI actions
     setCurrentConversation: (conversationId: ConversationId | null) =>
       set((state: ApplicationState) => ({
@@ -386,16 +415,16 @@ export const createWhatsAppSlice = (
         },
       })),
 
-    setView: (view: WhatsAppView) =>
-      set((state: ApplicationState) => ({
-        whatsApp: {
-          ...state.whatsApp,
-          ui: {
-            ...state.whatsApp.ui,
-            view,
-          },
-        },
-      })),
+    // setView: (view: WhatsAppView) =>
+    //   set((state: ApplicationState) => ({
+    //     whatsApp: {
+    //       ...state.whatsApp,
+    //       ui: {
+    //         ...state.whatsApp.ui,
+    //         view,
+    //       },
+    //     },
+    //   })),
 
     setTyping: (conversationId: ConversationId, isTyping: boolean) =>
       set((state: ApplicationState) => ({

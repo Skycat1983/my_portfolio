@@ -24,6 +24,9 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
 
   const archiveContact = useNewStore((state) => state.archiveContact);
   const unarchiveContact = useNewStore((state) => state.unarchiveContact);
+  const markConversationAsRead = useNewStore(
+    (state) => state.markConversationAsRead
+  );
 
   // Handle cleanup when window closes
   useEffect(() => {
@@ -35,9 +38,10 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
 
   const handleConversationClick = React.useCallback(
     (conversationId: string) => {
+      markConversationAsRead(conversationId);
       navigateToView("chat", { conversationId });
     },
-    [navigateToView]
+    [markConversationAsRead, navigateToView]
   );
 
   const handleArchiveClick = React.useCallback(() => {
@@ -59,9 +63,8 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   const handleUnarchiveContact = React.useCallback(
     (contactId: string) => {
       unarchiveContact(contactId);
-      navigateToView("chatList");
     },
-    [unarchiveContact, navigateToView]
+    [unarchiveContact]
   );
 
   return (
