@@ -21,6 +21,7 @@ interface ChatScreenProps {
   onBack: () => void;
   onArchive: (contactId: ContactId) => void;
   onUnarchive: (contactId: ContactId) => void;
+  onViewProfile?: (contactId: ContactId) => void;
   windowId: WindowType["windowId"];
 }
 
@@ -29,6 +30,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   onBack,
   onArchive,
   onUnarchive,
+  onViewProfile,
   windowId,
 }) => {
   console.log("WhatsApp: ChatScreen conversationId", conversationId);
@@ -56,6 +58,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const messages = selectConversationMessages(whatsApp, conversationId);
   console.log("WhatsApp: ChatScreen messages", messages);
   const contact = selectConversationParticipant(whatsApp, conversationId);
+  const contactId = contact?.id;
+  console.log("WhatsApp: ChatScreen contact", contact);
   const isTyping = selectIsTyping(whatsApp, conversationId);
   const canSendMessage = selectCanSendMessage(whatsApp, conversationId);
 
@@ -148,6 +152,9 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         onBack={onBack}
         onArchive={onArchive}
         onUnarchive={onUnarchive}
+        onViewProfile={
+          onViewProfile ? () => onViewProfile(contactId ?? "") : undefined
+        }
       />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2 text-white">

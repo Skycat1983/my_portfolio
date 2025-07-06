@@ -10,6 +10,7 @@ interface ConversationHeaderProps {
   onBack?: () => void;
   onArchive?: (contactId: ContactId) => void;
   onUnarchive?: (contactId: ContactId) => void;
+  onViewProfile?: (contactId: ContactId) => void;
 }
 
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
@@ -17,12 +18,21 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onBack,
   onArchive,
   onUnarchive,
+  onViewProfile,
 }) => {
   // ! in use
   const whatsApp = useNewStore((state) => state.whatsApp);
   const headerData = selectConversationHeader(whatsApp, conversationId);
+  console.log("WhatsApp: ConversationHeader headerData", headerData);
+  console.log("WhatsApp: ConversationHeader conversationId", conversationId);
 
   if (!headerData) return null;
+
+  const handleContactClick = () => {
+    if (onViewProfile) {
+      onViewProfile(conversationId);
+    }
+  };
 
   return (
     <div className="bg-gray-800 text-white py-3 px-4 flex items-center border-b border-gray-700">
@@ -36,19 +46,28 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         </button>
       )}
 
-      <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3">
-        <img
-          src={headerData.avatar}
-          alt={headerData.name}
-          className="w-full h-full object-cover rounded-full"
-        />
-      </div>
+      <div
+        className={`flex items-center flex-1 ${
+          onViewProfile
+            ? "cursor-pointer hover:bg-gray-700 rounded-lg p-2 -m-2 transition-colors"
+            : ""
+        }`}
+        onClick={handleContactClick}
+      >
+        <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3">
+          <img
+            src={headerData.avatar}
+            alt={headerData.name}
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
 
-      <div className="flex-1">
-        <h2 className="font-semibold">{headerData.name}</h2>
-        <p className="text-xs text-gray-400">
-          {headerData.isOnline ? "online" : "offline"}
-        </p>
+        <div className="flex-1">
+          <h2 className="font-semibold">{headerData.name}</h2>
+          <p className="text-xs text-gray-400">
+            {headerData.isOnline ? "online" : "offline"}
+          </p>
+        </div>
       </div>
 
       <div className="flex gap-2">

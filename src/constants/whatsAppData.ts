@@ -23,7 +23,7 @@ const USER_CONTACT = {
   type: "user" as const,
   name: "Me",
   avatar: ME,
-  phoneNumber: "+1 (555) 0125",
+  phoneNumber: "+49 (0)157704564698",
 } as const;
 
 const AI_CONTACTS = [
