@@ -29,9 +29,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 }) => {
   console.log("WhatsApp: ChatScreen conversationId", conversationId);
   const whatsApp = useNewStore((state) => state.whatsApp);
+  // const wifiEnabled = useNewStore((state) => state.wifiEnabled);
 
   // ! in use - Get conversation data using new selectors
   const messages = selectConversationMessages(whatsApp, conversationId);
+  console.log("WhatsApp: ChatScreen messages", messages);
   const contact = selectConversationParticipant(whatsApp, conversationId);
   const isTyping = selectIsTyping(whatsApp, conversationId);
   const canSendMessage = selectCanSendMessage(whatsApp, conversationId);

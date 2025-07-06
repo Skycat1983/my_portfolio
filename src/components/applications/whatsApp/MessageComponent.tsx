@@ -1,18 +1,22 @@
 import React from "react";
 import type { Message } from "./types";
 import { MessageStatus } from "./MessageStatus";
-import { useNewStore } from "@/hooks/useStore";
-import { selectMessageStatus } from "@/store/contentState/whatsAppSelectors";
 
 interface MessageComponentProps {
   message: Message;
 }
 
+const formatTimestamp = (timestamp: string) => {
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};
+
 export const MessageComponent: React.FC<MessageComponentProps> = ({
   message,
 }) => {
-  const deliveryStatus = useNewStore((s) => selectMessageStatus(s, message.id));
-  const isUser = message.sender === "user";
+  const deliveryStatus = message.deliveryStatus;
+  console.log("WhatsApp: MessageComponent deliveryStatus", deliveryStatus);
+  const isUser = message.sender === "user_self";
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-2`}>
@@ -31,7 +35,7 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
             isUser ? "text-green-100" : "text-gray-500"
           }`}
         >
-          <span>{message.timestamp}</span>
+          <span>{formatTimestamp(message.timestamp)}</span>
           <MessageStatus status={deliveryStatus} isUser={isUser} />
         </div>
       </div>
