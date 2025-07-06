@@ -1,9 +1,10 @@
 import React from "react";
-import { Check, CheckCheck } from "lucide-react";
-import type { MessageStatus as MessageStatusType } from "./types";
+import { Check, CheckCheck, Clock, XCircle } from "lucide-react";
+
+type DeliveryStatus = "pending" | "sent" | "delivered" | "read" | "failed";
 
 interface MessageStatusProps {
-  status?: MessageStatusType;
+  status: DeliveryStatus;
   isUser: boolean;
 }
 
@@ -11,26 +12,30 @@ export const MessageStatus: React.FC<MessageStatusProps> = ({
   status,
   isUser,
 }) => {
-  // Only show status for user messages (outgoing)
   if (!isUser) return null;
 
-  // Default to delivered if no status specified
-  const messageStatus = status || "delivered";
-
-  const getStatusIcon = () => {
-    switch (messageStatus) {
-      case "undelivered":
-        return <Check className="w-4 h-4 text-gray-400" />;
-      case "delivered":
-        return <CheckCheck className="w-4 h-4 text-gray-400" />;
-      case "read":
-        return <CheckCheck className="w-4 h-4 text-blue-500" />;
-      default:
-        return <CheckCheck className="w-4 h-4 text-gray-400" />;
-    }
-  };
-
-  return (
-    <span className="inline-flex items-center ml-1">{getStatusIcon()}</span>
-  );
+  switch (status) {
+    case "read":
+      return (
+        <CheckCheck
+          className="w-4 h-4 text-blue-400"
+          aria-label="Message read"
+        />
+      );
+    case "delivered":
+      return <CheckCheck className="w-4 h-4" aria-label="Message delivered" />;
+    case "sent":
+      return <Check className="w-4 h-4" aria-label="Message sent" />;
+    case "pending":
+      return <Clock className="w-4 h-4" aria-label="Message pending" />;
+    case "failed":
+      return (
+        <XCircle
+          className="w-4 h-4 text-red-500"
+          aria-label="Message failed to send"
+        />
+      );
+    default:
+      return null;
+  }
 };

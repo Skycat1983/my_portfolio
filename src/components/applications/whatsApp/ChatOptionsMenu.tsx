@@ -1,79 +1,53 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Archive, ArchiveRestore, MoreVertical } from "lucide-react";
-import type { Chat } from "./types";
+import React from "react";
+import type { ContactId } from "./types";
+import { useNewStore } from "@/hooks/useStore";
+import { selectContact } from "@/store/contentState/whatsAppSelectors";
+import { isAIContact } from "./types";
 
 interface ChatOptionsMenuProps {
-  chat: Chat;
-  onArchive: (chatId: string) => void;
-  onUnarchive: (chatId: string) => void;
+  contactId: ContactId;
+  onArchive: (contactId: ContactId) => void;
+  onUnarchive: (contactId: ContactId) => void;
 }
 
 export const ChatOptionsMenu: React.FC<ChatOptionsMenuProps> = ({
-  chat,
+  contactId,
   onArchive,
   onUnarchive,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const contact = useNewStore((state) => selectContact(state, contactId));
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
-  const handleArchiveAction = () => {
-    if (chat.isArchived) {
-      onUnarchive(chat.id);
-    } else {
-      onArchive(chat.id);
-    }
-    setIsOpen(false);
-  };
+  if (!contact || !isAIContact(contact)) return null;
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative">
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        className="text-white hover:text-gray-200 p-1"
+        className="text-white hover:text-gray-200"
         aria-label="Chat options"
       >
-        <MoreVertical className="w-6 h-6" />
+        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+        </svg>
       </button>
 
-      {isOpen && (
-        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+        <div className="py-1">
           <button
-            onClick={handleArchiveAction}
-            className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center space-x-3 text-gray-700"
+            onClick={() =>
+              (contact.archived ? onUnarchive : onArchive)(contactId)
+            }
+            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
-            {chat.isArchived ? (
-              <>
-                <ArchiveRestore className="w-4 h-4" />
-                <span>Unarchive chat</span>
-              </>
-            ) : (
-              <>
-                <Archive className="w-4 h-4" />
-                <span>Archive chat</span>
-              </>
-            )}
+            {contact.archived ? "Unarchive chat" : "Archive chat"}
+          </button>
+          <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            Clear chat
+          </button>
+          <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+            Delete chat
           </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };

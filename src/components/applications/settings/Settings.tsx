@@ -61,7 +61,7 @@ export const Settings = ({ windowId }: SettingsProps) => {
   const setSelectedCity = useNewStore((state) => state.setSelectedCity);
   const setTimezone = useNewStore((state) => state.setTimezone);
   const setCustomWallpaper = useNewStore((state) => state.setCustomWallpaper);
-  const fetchWeather = useNewStore((state) => state.fetchWeather);
+  const fetchWeather = useNewStore((state) => state.weather.fetchWeather);
   const window = useNewStore((state) => state.getWindowById(windowId));
   const zIndex = window?.zIndex ?? 0;
 

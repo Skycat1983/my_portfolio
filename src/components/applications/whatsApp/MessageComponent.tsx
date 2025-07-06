@@ -2,7 +2,7 @@ import React from "react";
 import type { Message } from "./types";
 import { MessageStatus } from "./MessageStatus";
 import { useNewStore } from "@/hooks/useStore";
-import theme from "@/styles/theme";
+import { selectMessageStatus } from "@/store/contentState/whatsAppSelectors";
 
 interface MessageComponentProps {
   message: Message;
@@ -11,9 +11,7 @@ interface MessageComponentProps {
 export const MessageComponent: React.FC<MessageComponentProps> = ({
   message,
 }) => {
-  // const currentTheme = useNewStore((s) => s.theme);
-  // const textColor = theme.colors[currentTheme].text.primary;
-  // const bgColor = theme.colors[currentTheme].background.primary;
+  const deliveryStatus = useNewStore((s) => selectMessageStatus(s, message.id));
   const isUser = message.sender === "user";
 
   return (
@@ -22,11 +20,8 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
           isUser
             ? "bg-green-700 text-white rounded-br-none"
-            : `bg-white text-gray-800 rounded-bl-none shadow-sm `
+            : `bg-white text-gray-800 rounded-bl-none shadow-sm`
         }`}
-        // style={{
-        //   color: textColor,
-        // }}
       >
         <p className="text-sm whitespace-pre-wrap break-words">
           {message.content}
@@ -37,7 +32,7 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
           }`}
         >
           <span>{message.timestamp}</span>
-          <MessageStatus status={message.status} isUser={isUser} />
+          <MessageStatus status={deliveryStatus} isUser={isUser} />
         </div>
       </div>
     </div>
