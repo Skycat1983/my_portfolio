@@ -109,8 +109,8 @@ const initialState: WhatsAppState = {
 };
 
 export const createWhatsAppSlice = (
-  set: SetState<ApplicationState>,
-  get: GetState<ApplicationState>
+  set: SetState<ApplicationState>
+  // get: GetState<ApplicationState>
 ): WhatsAppSlice => {
   const slice = {
     ...initialState,

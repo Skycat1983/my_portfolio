@@ -102,24 +102,36 @@ const messages = [
   },
 ] as const;
 
-// Initial conversations data
-const conversations = [
+// Initial conversations data - using deterministic IDs
+const conversationParticipants = [
   {
-    id: "conv_emily",
     participants: ["user_self", "ai_emily"] as const,
     lastSeenMessageId: "msg_2",
   },
   {
-    id: "conv_tim",
     participants: ["user_self", "ai_tim"] as const,
     lastSeenMessageId: null,
   },
   {
-    id: "conv_elon",
     participants: ["user_self", "ai_elon"] as const,
     lastSeenMessageId: "msg_5",
   },
 ] as const;
+
+// Utility function to generate deterministic conversation IDs
+const createConversationId = (participantIds: readonly string[]): string => {
+  // Always put user_self first, then sort others
+  const userSelf = "user_self";
+  const others = participantIds.filter((id) => id !== userSelf).sort();
+  return [userSelf, ...others].join("_");
+};
+
+// Generate conversations with deterministic IDs
+const conversations = conversationParticipants.map((conv) => ({
+  id: createConversationId(conv.participants),
+  participants: conv.participants,
+  lastSeenMessageId: conv.lastSeenMessageId,
+}));
 
 // Helper function to normalize an array of items by ID
 /*
@@ -159,10 +171,7 @@ const groupMessagesByConversation = (messages: readonly Message[]) => {
 
   messages.forEach((message) => {
     // pick the ID of whoever isn’t you
-    const otherId =
-      message.sender === "user_self" ? message.receiver : message.sender;
-
-    const convId = `conv_${otherId.split("_")[1]}`;
+    const convId = createConversationId([message.sender, message.receiver]);
 
     if (!byConversation[convId]) {
       byConversation[convId] = [];

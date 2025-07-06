@@ -227,3 +227,77 @@ export const selectArchivedConversationPreviews = (state: WhatsAppState) => {
       (preview): preview is NonNullable<typeof preview> => preview !== null
     );
 };
+
+// === NEW SELECTORS FOR CHATSCREEN COMPONENTS ===
+
+// Get the non-user participant in a conversation
+export const selectConversationParticipant = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): Contact | undefined => {
+  const conversation = state.conversations.byId[conversationId];
+  if (!conversation) return undefined;
+
+  // Find the participant who is not the user
+  const otherParticipantId = conversation.participants.find(
+    (id: ContactId) => id !== "user_self"
+  );
+
+  return otherParticipantId
+    ? state.contacts.byId[otherParticipantId]
+    : undefined;
+};
+
+// Get all data needed for conversation header
+export const selectConversationHeader = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+) => {
+  const participant = selectConversationParticipant(state, conversationId);
+  const isOnline = selectIsOnline(state);
+
+  if (!participant) return null;
+
+  return {
+    id: conversationId,
+    name: participant.name,
+    avatar: participant.avatar,
+    phoneNumber: participant.phoneNumber,
+    isOnline,
+    lastSeen: "online", // TODO: Add lastSeen logic when needed
+  };
+};
+
+// Get message status information for a conversation
+export const selectConversationMessageStatus = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+) => {
+  const allMessageIds = state.messages.byConversation[conversationId] || [];
+  const pendingIds = allMessageIds.filter((id) =>
+    state.messages.pending.includes(id)
+  );
+  const failedIds = allMessageIds.filter((id) =>
+    state.messages.failed.includes(id)
+  );
+
+  return {
+    totalMessages: allMessageIds.length,
+    pendingCount: pendingIds.length,
+    failedCount: failedIds.length,
+    hasPending: pendingIds.length > 0,
+    hasFailed: failedIds.length > 0,
+  };
+};
+
+// Check if user can send a message in this conversation
+export const selectCanSendMessage = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): boolean => {
+  const isOnline = selectIsOnline(state);
+  const participant = selectConversationParticipant(state, conversationId);
+
+  // Can send if online and participant exists and is AI type
+  return isOnline && !!participant && participant.type === "ai";
+};
