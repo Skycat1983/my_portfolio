@@ -1,4 +1,4 @@
-import type { SetState, GetState } from "@/types/storeTypes";
+import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 // Generic history instance that can store any type of items
 export interface HistoryInstance<T = unknown> {
@@ -7,11 +7,12 @@ export interface HistoryInstance<T = unknown> {
   currentIndex: number; // Current position (-1 = no items, 0 = first item)
 }
 
-interface HistoryState {
+// The state shape for a single history collection
+export interface HistoryCollection {
   histories: Record<string, HistoryInstance>; // Map of ID -> history instance
 }
 
-interface HistoryActions {
+export interface HistoryActions {
   // === LIFECYCLE OPERATIONS ===
   createHistory: (id: string, initialItem?: unknown) => boolean;
   deleteHistory: (id: string) => boolean;
@@ -34,11 +35,11 @@ interface HistoryActions {
   getHistoryLength: (id: string) => number;
 }
 
-export type HistorySlice = HistoryState & HistoryActions;
+export type HistorySlice = HistoryCollection & HistoryActions;
 
 export const createHistorySlice = (
-  set: SetState<HistorySlice>,
-  get: GetState<HistorySlice>
+  set: SetState<ApplicationState>,
+  get: GetState<ApplicationState>
 ): HistorySlice => ({
   // Initial state
   histories: {},

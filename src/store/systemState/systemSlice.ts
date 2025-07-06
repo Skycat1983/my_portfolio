@@ -1,4 +1,4 @@
-import type { BaseStoreState, SetState } from "@/types/storeTypes";
+import type { ApplicationState, SetState } from "@/types/storeTypes";
 
 export type OperatingSystem = "mac" | "windows";
 export type TimeFormat = "12h" | "24h";
@@ -61,7 +61,7 @@ const getDeviceTypes = (_width: number, breakpoint: Breakpoint) => ({
 });
 
 export const createSystemSlice = (
-  set: SetState<BaseStoreState>
+  set: SetState<ApplicationState>
 ): SystemSlice => ({
   theme: "dark",
   operatingSystem: "mac",

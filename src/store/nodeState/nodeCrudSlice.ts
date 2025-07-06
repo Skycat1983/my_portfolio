@@ -1,10 +1,6 @@
 import { defaultNodeMap, defaultRootId } from "@/constants/nodes";
 import type { NodeEntry, NodeMap } from "@/types/nodeTypes";
-import type {
-  BaseStoreState,
-  SetState,
-  GetState,
-} from "@/types/storeTypes";
+import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 interface NodeState {
   nodeMap: NodeMap;
@@ -44,8 +40,8 @@ interface NodeActions {
 export type NodeCrudSlice = NodeState & NodeActions;
 
 export const createNodeCrudSlice = (
-  set: SetState<BaseStoreState>,
-  get: GetState<BaseStoreState>
+  set: SetState<ApplicationState>,
+  get: GetState<ApplicationState>
 ): NodeCrudSlice => ({
   // Core node data
   nodeMap: defaultNodeMap,

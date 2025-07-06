@@ -1,7 +1,6 @@
 // interface AchievementsState {}
 
 import type { SetState } from "@/types/storeTypes";
-import type { NewDesktopStore } from "@/hooks/useStore";
 
 interface AchievementState {
   // 1. Click on something
@@ -71,7 +70,7 @@ interface AchievementAction {
 export type AchievementSlice = AchievementState & AchievementAction;
 
 export const createAchievementSlice = (
-  set: SetState<NewDesktopStore>
+  set: SetState<AchievementSlice>
 ): AchievementSlice => ({
   // 1. Click on something
   clickOnSomethingAchieved: false,

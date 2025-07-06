@@ -9,7 +9,7 @@ import type {
   DirectoryEntry,
   EasterEggEntry,
 } from "@/types/nodeTypes";
-import type { SetState, GetState, BaseStoreState } from "@/types/storeTypes";
+import type { SetState, GetState, ApplicationState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";
 import { desktopRootId } from "@/constants/nodes";
@@ -50,7 +50,7 @@ interface NodeBusinessActions {
 export type NodeBusinessSlice = NodeBusinessActions;
 
 export interface StoreWithOperations
-  extends BaseStoreState,
+  extends ApplicationState,
     NodeCrudSlice,
     NodeOperationsSlice,
     NodeBusinessSlice {}

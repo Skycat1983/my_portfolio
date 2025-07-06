@@ -1,4 +1,4 @@
-import type { BaseStoreState, SetState } from "@/types/storeTypes";
+import type { ApplicationState, SetState } from "@/types/storeTypes";
 
 interface SelectionState {
   selectedNodeId: string | null;
@@ -30,8 +30,8 @@ interface SelectionActions {
 export type SelectionSlice = SelectionState & SelectionActions;
 
 export const createSelectionSlice = (
-  set: SetState<BaseStoreState>,
-  get: () => BaseStoreState
+  set: SetState<ApplicationState>,
+  get: () => ApplicationState
 ): SelectionSlice => ({
   // Selection state
   selectedNodeId: null,

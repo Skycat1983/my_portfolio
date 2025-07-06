@@ -1,5 +1,4 @@
-import type { SetState } from "@/types/storeTypes";
-import type { NewDesktopStore } from "@/hooks/useStore";
+import type { ApplicationState, SetState } from "@/types/storeTypes";
 
 const apiKey = import.meta.env.VITE_APIKEY;
 
@@ -58,25 +57,30 @@ interface WeatherResponse {
   current: CurrentWeather;
 }
 
-export interface WeatherSlice {
-  weather: WeatherResponse | null;
-  weatherLoading: boolean;
-  weatherError: string | null;
-  fetchWeather: (location?: string) => Promise<void>;
+export interface WeatherState {
+  data: WeatherResponse | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface WeatherActions {
+  fetchWeather: (location: string) => Promise<void>;
   clearWeatherError: () => void;
 }
+
+export type WeatherSlice = WeatherState & WeatherActions;
 
 // TODO: get last 7 days of weather data for a location
 // TODO: change weather location
 
 export const createWeatherSlice = (
-  set: SetState<NewDesktopStore>
+  set: SetState<ApplicationState>
 ): WeatherSlice => ({
-  weather: null,
-  weatherLoading: false,
-  weatherError: null,
+  data: null,
+  loading: false,
+  error: null,
 
-  fetchWeather: async (location = "Berlin") => {
+  fetchWeather: async (location: string) => {
     console.log("fetchWeather in weatherSlice: fetching weather for", location);
     console.log(
       "fetchWeather in weatherSlice: API key is",
@@ -88,43 +92,27 @@ export const createWeatherSlice = (
       console.log(
         "fetchWeather in weatherSlice: API key not found or undefined"
       );
-      set({
-        weatherError: "Weather API key not configured",
-        weatherLoading: false,
-      });
+      set((state) => ({
+        ...state,
+        weather: {
+          ...state.weather,
+          data: null,
+          error: "Weather API key not configured",
+          loading: false,
+        },
+      }));
       return;
     }
 
     try {
-      set({ weatherLoading: true, weatherError: null });
-
-      // ! get last 7 days of weather data for a location
-      // compute ISO dates in YYYY-MM-DD
-      // const today = new Date();
-      // const endDate = today.toISOString().split("T")[0]; // e.g. "2025-06-28"
-      // const startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
-      //   .toISOString()
-      //   .split("T")[0];
-
-      // const historyRes = await fetch(
-      //   `https://api.weatherapi.com/v1/history.json` +
-      //     `?key=${apiKey}` +
-      //     `&q=${location}` +
-      //     `&dt=${startDate}` +
-      //     `&end_dt=${endDate}`
-      // );
-      // const historyData = await historyRes.json();
-      // console.log("fetchWeather in weatherSlice: history data", historyData);
-
-      // ! get forecast for next 3 days for a location
-      // const forecastRes = await fetch(
-      //   `https://api.weatherapi.com/v1/forecast.json` +
-      //     `?key=${apiKey}` +
-      //     `&q=${location}` +
-      //     `&days=3`
-      // );
-      // const forecastData = await forecastRes.json();
-      // console.log("fetchWeather in weatherSlice: forecast data", forecastData);
+      set((state) => ({
+        ...state,
+        weather: {
+          ...state.weather,
+          loading: true,
+          error: null,
+        },
+      }));
 
       const response = await fetch(
         `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`
@@ -138,21 +126,68 @@ export const createWeatherSlice = (
       const data: WeatherResponse = await response.json();
       console.log("fetchWeather in weatherSlice: weather data fetched", data);
 
-      set({ weather: data, weatherLoading: false });
+      set((state) => ({
+        ...state,
+        weather: {
+          ...state.weather,
+          data,
+          loading: false,
+          error: null,
+        },
+      }));
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to fetch weather data";
       console.log("fetchWeather in weatherSlice: error", errorMessage);
 
-      set({
-        weatherError: errorMessage,
-        weatherLoading: false,
-      });
+      set((state) => ({
+        ...state,
+        weather: {
+          ...state.weather,
+          data: null,
+          error: errorMessage,
+          loading: false,
+        },
+      }));
     }
   },
 
   clearWeatherError: () => {
     console.log("clearWeatherError in weatherSlice: clearing error");
-    set({ weatherError: null });
+    set((state) => ({
+      ...state,
+      weather: {
+        ...state.weather,
+        error: null,
+      },
+    }));
   },
 });
+
+// ! get last 7 days of weather data for a location
+// compute ISO dates in YYYY-MM-DD
+// const today = new Date();
+// const endDate = today.toISOString().split("T")[0]; // e.g. "2025-06-28"
+// const startDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
+//   .toISOString()
+//   .split("T")[0];
+
+// const historyRes = await fetch(
+//   `https://api.weatherapi.com/v1/history.json` +
+//     `?key=${apiKey}` +
+//     `&q=${location}` +
+//     `&dt=${startDate}` +
+//     `&end_dt=${endDate}`
+// );
+// const historyData = await historyRes.json();
+// console.log("fetchWeather in weatherSlice: history data", historyData);
+
+// ! get forecast for next 3 days for a location
+// const forecastRes = await fetch(
+//   `https://api.weatherapi.com/v1/forecast.json` +
+//     `?key=${apiKey}` +
+//     `&q=${location}` +
+//     `&days=3`
+// );
+// const forecastData = await forecastRes.json();
+// console.log("fetchWeather in weatherSlice: forecast data", forecastData);
