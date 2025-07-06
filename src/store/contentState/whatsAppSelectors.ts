@@ -52,6 +52,25 @@ export const selectConversationMessages = (
     .filter((message: Message | undefined): message is Message => !!message);
 };
 
+export const selectConversationAvatars = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): ContactId[] => {
+  const conversation = state.conversations.byId[conversationId];
+  return conversation?.participants || [];
+};
+
+export const selectConversationDetails = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+) => {
+  const messages = selectConversationMessages(state, conversationId);
+  // const participants = messages
+  console.log("WhatsApp: getConversation messages", messages);
+  return messages;
+  // return state.conversations.byId[conversationId];
+};
+
 export const selectLastMessage = (
   state: WhatsAppState,
   conversationId: ConversationId
@@ -163,6 +182,7 @@ export const selectSyncStatus = (state: WhatsAppState) => ({
 });
 
 // Get non-archived conversations
+// ! in use
 export const selectActiveConversations = (
   state: WhatsAppState
 ): ConversationId[] => {
@@ -178,6 +198,7 @@ export const selectActiveConversations = (
   });
 };
 
+// ! in use
 export const selectArchivedConversations = (state: WhatsAppState) => {
   return state.conversations.allIds.filter((convId) => {
     const conversation = state.conversations.byId[convId];

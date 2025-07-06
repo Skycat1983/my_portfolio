@@ -20,7 +20,7 @@ interface UseWhatsAppHistoryReturn {
   // Query methods
   canGoBack: boolean;
   canGoForward: boolean;
-  currentView: ViewState | undefined;
+  whatsAppView: ViewState | undefined;
   historyLength: number;
 
   // Cleanup method
@@ -37,6 +37,13 @@ export const useWhatsAppHistory = (
   const historyId = `whatsapp-${windowId}`;
 
   // History slice actions
+  const whatsAppHistory = useNewStore((state) => state.getHistory(historyId));
+  // console.log("WhatsApp: useWhatsAppHistory getHistory", whatsAppHistory);
+  const index = whatsAppHistory?.currentIndex;
+  const whatsAppView = whatsAppHistory?.items[index ?? 0] as
+    | ViewState
+    | undefined;
+  // console.log("WhatsApp: useWhatsAppHistory view", whatsAppView);
   const createHistory = useNewStore((state) => state.createHistory);
   const historyExists = useNewStore((state) => state.historyExists);
   const addToHistory = useNewStore((state) => state.addToHistory);
@@ -49,25 +56,40 @@ export const useWhatsAppHistory = (
   const deleteHistory = useNewStore((state) => state.deleteHistory);
 
   // WhatsApp actions
-  const setView = useNewStore((state) => state.setView);
+  // const setView = useNewStore((state) => state.setView);
   const setCurrentConversation = useNewStore(
     (state) => state.setCurrentConversation
   );
 
   // Initialize history instance when hook is first used
   useEffect(() => {
+    console.log(
+      "WhatsApp: useWhatsAppHistory useEffect, historyExists",
+      historyExists(historyId)
+    );
     if (!historyExists(historyId)) {
       console.log(
         "useWhatsAppHistory: initializing history for window",
         windowId
       );
       // Initialize with chatList view
-      createHistory(historyId, { view: "chatList" });
-    }
-  }, [historyId, historyExists, createHistory, windowId]);
+      const initialView = { view: "chatList" as const };
+      createHistory(historyId, initialView);
+      console.log(
+        "WhatsApp: useWhatsAppHistory useEffect, historyExists2",
+        historyExists(historyId)
+      );
 
-  // Get current history state
-  const currentView = getCurrentItem(historyId) as ViewState | undefined;
+      const currentViewItem = getCurrentItem(historyId) as
+        | ViewState
+        | undefined;
+      console.log(
+        "WhatsApp: useWhatsAppHistory useEffect, currentView",
+        currentViewItem
+      );
+    }
+  }, [historyId, historyExists, createHistory, windowId, getCurrentItem]);
+
   const historyLength = getHistoryLength(historyId);
   const canGoBack = canGoBackInHistory(historyId);
   const canGoForward = canGoForwardInHistory(historyId);
@@ -87,7 +109,7 @@ export const useWhatsAppHistory = (
       }
 
       // Update WhatsApp state
-      setView(view);
+      // setView(view);
       if (view === "chat" && params?.conversationId) {
         setCurrentConversation(params.conversationId);
       } else if (view !== "chat") {
@@ -97,7 +119,7 @@ export const useWhatsAppHistory = (
       console.log("useWhatsAppHistory: successfully navigated to", view);
       return true;
     },
-    [historyId, addToHistory, setView, setCurrentConversation]
+    [historyId, addToHistory, setCurrentConversation]
   );
 
   /**
@@ -126,7 +148,7 @@ export const useWhatsAppHistory = (
     }
 
     // Update WhatsApp state
-    setView(newView.view);
+    // setView(newView.view);
     if (newView.view === "chat" && newView.params?.conversationId) {
       setCurrentConversation(newView.params.conversationId);
     } else if (newView.view !== "chat") {
@@ -140,7 +162,7 @@ export const useWhatsAppHistory = (
     canGoBack,
     goBackInHistory,
     getCurrentItem,
-    setView,
+    // setView,
     setCurrentConversation,
   ]);
 
@@ -170,7 +192,7 @@ export const useWhatsAppHistory = (
     }
 
     // Update WhatsApp state
-    setView(newView.view);
+    // setView(newView.view);
     if (newView.view === "chat" && newView.params?.conversationId) {
       setCurrentConversation(newView.params.conversationId);
     } else if (newView.view !== "chat") {
@@ -187,7 +209,7 @@ export const useWhatsAppHistory = (
     canGoForward,
     goForwardInHistory,
     getCurrentItem,
-    setView,
+    // setView,
     setCurrentConversation,
   ]);
 
@@ -210,7 +232,7 @@ export const useWhatsAppHistory = (
     // Query methods
     canGoBack,
     canGoForward,
-    currentView,
+    whatsAppView,
     historyLength,
 
     // Cleanup method

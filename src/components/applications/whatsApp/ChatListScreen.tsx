@@ -12,12 +12,7 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
   onViewArchived,
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
-  console.log("WhatsApp: ChatListScreen", whatsApp);
   const conversationPreviews = selectActiveConversationPreviews(whatsApp);
-  console.log(
-    "WhatsApp: ChatListScreen conversationPreviews",
-    conversationPreviews
-  );
 
   return (
     <div className="h-full flex flex-col">

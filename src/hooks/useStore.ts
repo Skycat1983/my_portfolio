@@ -125,7 +125,7 @@ export const useNewStore = create<Store>((set, get) => ({
   ...createTerminalSlice(set, get),
   ...createGameSlice(set, get),
   ...createDocumentRegistrySlice(set, get),
-  ...createWhatsAppSlice(set),
+  ...createWhatsAppSlice(set, get),
 
   // Initialize collection state
   histories: {},

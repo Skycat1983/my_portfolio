@@ -12,7 +12,7 @@ interface WhatsAppMainProps {
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   const {
-    currentView,
+    whatsAppView,
     navigateToView,
     goBack,
     goForward,
@@ -20,7 +20,7 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
     canGoForward,
     cleanup,
   } = useWhatsAppHistory(windowId);
-  console.log("WhatsApp: WhatsAppMain currentView", currentView);
+  // console.log("WhatsApp: WhatsAppMain whatsAppView", whatsAppView);
 
   const archiveContact = useNewStore((state) => state.archiveContact);
   const unarchiveContact = useNewStore((state) => state.unarchiveContact);
@@ -67,7 +67,7 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   return (
     <div className="h-full w-full bg-gray-800">
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-        <h1 className="text-xl font-semibold text-white">WhatsApp</h1>
+        <h2 className="text-xl font-semibold text-white">Chats</h2>
         <div className="flex gap-2">
           <button
             onClick={goBack}
@@ -97,21 +97,22 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
       </div>
 
       <div className="h-[calc(100%-4rem)]">
-        {currentView?.view === "chatList" && (
+        {whatsAppView?.view === "chatList" && (
           <ChatListScreen
             onSelectConversation={handleConversationClick}
             onViewArchived={handleArchiveClick}
           />
         )}
-        {currentView?.view === "chat" && currentView.params?.conversationId && (
-          <ChatScreen
-            conversationId={currentView.params.conversationId}
-            onBack={handleBackToList}
-            onArchive={handleArchiveContact}
-            onUnarchive={handleUnarchiveContact}
-          />
-        )}
-        {currentView?.view === "archive" && (
+        {whatsAppView?.view === "chat" &&
+          whatsAppView.params?.conversationId && (
+            <ChatScreen
+              conversationId={whatsAppView.params.conversationId}
+              onBack={handleBackToList}
+              onArchive={handleArchiveContact}
+              onUnarchive={handleUnarchiveContact}
+            />
+          )}
+        {whatsAppView?.view === "archive" && (
           <ArchiveScreen
             onBack={handleBackToList}
             onSelectContact={handleConversationClick}

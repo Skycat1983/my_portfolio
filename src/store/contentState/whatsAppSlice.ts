@@ -1,4 +1,4 @@
-import type { SetState, ApplicationState } from "@/types/storeTypes";
+import type { SetState, ApplicationState, GetState } from "@/types/storeTypes";
 import type {
   Contact,
   Message,
@@ -28,7 +28,9 @@ export interface WhatsAppState {
   };
   conversations: NormalizedCollection<Conversation>;
   ui: {
+    // ! UNUSED
     currentConversation: ConversationId | null;
+    // ! UNUSED
     view: WhatsAppView;
     typing: Record<ConversationId, boolean>;
   };
@@ -107,8 +109,8 @@ const initialState: WhatsAppState = {
 };
 
 export const createWhatsAppSlice = (
-  set: SetState<ApplicationState>
-  // get: GetState<ApplicationState>
+  set: SetState<ApplicationState>,
+  get: GetState<ApplicationState>
 ): WhatsAppSlice => {
   const slice = {
     ...initialState,

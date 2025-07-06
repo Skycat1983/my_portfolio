@@ -11,9 +11,11 @@ import {
   selectContact,
   selectIsOnline,
   selectConversationPreview,
+  selectConversationDetails,
 } from "@/store/contentState/whatsAppSelectors";
 import { createMessage, processAIResponse } from "./messageUtils";
 import { ArrowLeft, Phone, Send } from "lucide-react";
+import { ConversationHeader } from "./ConversationHeader";
 
 interface ChatScreenProps {
   conversationId: ContactId;
@@ -30,17 +32,25 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 }) => {
   console.log("WhatsApp: ChatScreen conversationId", conversationId);
   const whatsApp = useNewStore((state) => state.whatsApp);
+  console.log("WhatsApp: ChatScreen whatsApp", whatsApp);
+
+  const conversationDetails = selectConversationDetails(
+    whatsApp,
+    conversationId
+  );
+  //
+  console.log("WhatsApp: ChatScreen conversationDetails", conversationDetails);
 
   // Get state and actions from store using selectors with whatsApp state
   const messages = selectConversationMessages(whatsApp, conversationId);
-  console.log("WhatsApp: ChatScreen messages", messages);
+  // console.log("WhatsApp: ChatScreen messages", messages);
   // const contactId = messages[0].senderId;
+
+  const contact = selectContact(whatsApp, conversationId);
+  // console.log("WhatsApp: ChatScreen contact", contact);
+
   const isTyping = selectIsTyping(whatsApp, conversationId);
   const isOnline = selectIsOnline(whatsApp);
-  const contact = selectContact(whatsApp, conversationId);
-  console.log("WhatsApp: ChatScreen contact", contact);
-  const preview = selectConversationPreview(whatsApp, conversationId);
-  console.log("WhatsApp: ChatScreen preview", preview);
 
   // Get actions from store
   const addMessage = useNewStore((state) => state.addMessage);
@@ -108,14 +118,14 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       handleSendMessage();
     }
   };
-  console.log("ChatScreen: contact", contact);
-  console.log("ChatScreen: preview", preview);
-  if (!contact || !preview) return null;
+  // console.log("ChatScreen: contact", contact);
+  // // console.log("ChatScreen: preview", preview);
+  // if (!contact) return null;
 
   return (
     <div className="h-full flex flex-col bg-gray-900">
-      {/* Header */}
-      <div className="bg-gray-800 text-white py-3 px-4 flex items-center border-b border-gray-700">
+      <ConversationHeader conversationId={conversationId} />
+      {/* <div className="bg-gray-800 text-white py-3 px-4 flex items-center border-b border-gray-700">
         <button
           onClick={onBack}
           className="mr-3 hover:text-gray-300 transition-colors"
@@ -150,7 +160,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         </div>
       </div>
 
-      {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-2 text-white">
         {messages.map((message) => (
           <MessageComponent key={message.id} message={message} />
@@ -161,7 +170,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
       <div className="p-4 bg-gray-800 border-t border-gray-700 text-white">
         <div className="flex items-end space-x-2">
           <div className="flex-1">
@@ -193,7 +201,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
             <Send size={20} />
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
