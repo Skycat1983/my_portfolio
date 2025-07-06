@@ -3,7 +3,7 @@ import { useWhatsAppHistory } from "./hooks/useWhatsAppHistory";
 import { ChatListScreen } from "./ChatListScreen";
 import { ChatScreen } from "./ChatScreen";
 import { ArchiveScreen } from "./ArchiveScreen";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Settings } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
 
 interface WhatsAppMainProps {
@@ -92,6 +92,9 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
             aria-label="Go forward"
           >
             <ArrowRight size={20} />
+          </button>
+          <button>
+            <Settings size={20} />
           </button>
         </div>
       </div>

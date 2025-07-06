@@ -46,6 +46,16 @@ export {
   MAPS,
 };
 
+// avatars
+import TIMCOOK from "../assets/avatars/timCook.png";
+import ELONMUSK from "../assets/avatars/elonMusk.png";
+import BILLGATES from "../assets/avatars/billGates.png";
+import ME from "../assets/avatars/me.png";
+import EMILY from "../assets/avatars/emily.png";
+import WORK from "../assets/avatars/work.png";
+import SCAM from "../assets/avatars/scam.png";
+export { TIMCOOK, ELONMUSK, BILLGATES, ME, EMILY, WORK, SCAM };
+
 // Profile icons
 import GITHUB from "../assets/icons_m/github_black.png";
 import LINKEDIN from "../assets/icons_m/linked_in2.png";

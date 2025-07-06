@@ -34,7 +34,11 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
             onClick={() => onSelectConversation(preview.id)}
           >
             <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3">
-              {preview.avatar}
+              <img
+                src={preview.avatar}
+                alt={preview.name}
+                className="w-full h-full object-cover rounded-full"
+              />
             </div>
 
             <div className="flex-1">

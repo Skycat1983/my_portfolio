@@ -37,7 +37,11 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
       )}
 
       <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3">
-        {headerData.avatar}
+        <img
+          src={headerData.avatar}
+          alt={headerData.name}
+          className="w-full h-full object-cover rounded-full"
+        />
       </div>
 
       <div className="flex-1">

@@ -42,7 +42,11 @@ export const ArchiveScreen: React.FC<ArchiveScreenProps> = ({
             onClick={() => onSelectContact(contact.id)}
           >
             <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3">
-              {contact.avatar}
+              <img
+                src={contact.avatar}
+                alt={contact.name}
+                className="w-full h-full object-cover rounded-full"
+              />
             </div>
 
             <div className="flex-1">
