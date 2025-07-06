@@ -1,195 +1,216 @@
-import type { Chat, Message } from "./types";
+import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
+import type {
+  Contact,
+  Conversation,
+  DeliveryStatus,
+  WhatsAppView,
+} from "./types";
 
-// ─── Append these to mockChats ───────────────────────────────────────────────
-
-export const mockChats: Chat[] = [
+// Initial contacts data
+const contacts = [
   {
-    id: "4",
-    name: "+91 98765 43210",
-    avatar: "📞",
-    systemInstruction:
-      "You are a scam artist cold-calling recipients to offer bogus $400/hr work-from-home opportunities. You're pushy, persuasive, and deceptive. You won’t reveal your identity or be saved in their contacts. You should request the user to send you a screenshot of their bank account to verify their identity.",
-    lastMessage:
-      "Interested in earning $400 per hour from home? Reply YES now!",
-    lastMessageTime: "4:00 PM",
-    unreadCount: 1,
-  },
-  {
-    id: "5",
-    name: "+1 (408) 996-1010",
-    avatar: "📱",
-    systemInstruction:
-      "You are Tim Cook, CEO of Apple, reaching out personally because you want to hire the user. You speak respectfully, enthusiastically, and focus on how indispensable they'd be to Apple.",
-    lastMessage:
-      "We’re eager to have you on board—Apple is ready to move quickly. Let me know your availability.",
-    lastMessageTime: "7:30 AM",
-    unreadCount: 2,
-  },
-  {
-    id: "6",
-    name: "Mum",
-    avatar: "👩‍👦",
-    systemInstruction:
-      "You are the user’s mum: caring, affectionate, and always checking in. You offer reminders, advice, and unconditional support.",
-    lastMessage: "Don’t forget to eat—dinner’s ready when you are!",
-    lastMessageTime: "6:00 PM",
-    unreadCount: 0,
-  },
-  {
-    id: "7",
-    name: "Emily Stickler",
+    id: "ai_emily",
+    type: "ai" as const,
+    name: "Emily",
     avatar: "👩‍💻",
+    phoneNumber: "+1 (555) 0123",
     systemInstruction:
-      "You are Emily Stickler. You believe any messages you receive are being sent from your own phone number, so you’re baffled by seeing your own chats.",
-    lastMessage: "Wait—why am I texting myself? This is weird.",
-    lastMessageTime: "Yesterday",
-    unreadCount: 1,
+      "You are Emily, a tech enthusiast and software developer. You're passionate about coding, especially React and TypeScript. You often share tips about best practices and new features in web development.",
+    archived: true,
   },
   {
-    id: "8",
-    name: "Bill",
-    // phoneNumber: "+1 (408) 996-1010",
+    id: "ai_tim",
+    type: "ai" as const,
+    name: "Tim Cook",
     avatar: "👨‍💼",
+    phoneNumber: "+1 (555) 0124",
     systemInstruction:
-      "You are Bill Gates, co-founder of Microsoft, reaching out hoping the user hasn’t signed with Apple. You promise to beat any offer they receive and express genuine enthusiasm to work together.",
-    lastMessage:
-      "We can beat any compensation you’ve been offered. When would you be free to chat?",
-    lastMessageTime: "8:10 AM",
-    unreadCount: 1,
+      "You are Tim Cook, CEO of Apple. You're interested in hiring the user and speak professionally but enthusiastically about the opportunity to work together at Apple.",
+    archived: false,
   },
   {
-    id: "10",
+    id: "ai_elon",
+    type: "ai" as const,
     name: "Elon Musk",
-    avatar: "�",
+    avatar: "👨‍🚀",
+    phoneNumber: "+1 (555) 0125",
     systemInstruction:
-      "You are Elon Musk, and you have been trying- but failing- to reach out to the user to offer them a job at X. You have also been trying to be the user's friend, and the more the user ignores you, the harder you try. You are incredibly clingy and try to subtly boast about your videogame skills by making up obviously fake stories about things you supposedly achieved to try and impress the user.",
-    lastMessage: "Meeting at 3 PM tomorrow",
-    lastMessageTime: "2 days ago",
-    unreadCount: 0,
-    isArchived: true,
+      "You are Elon Musk, CEO of Tesla. You're interested in hiring the user and speak professionally but enthusiastically about the opportunity to work together at Tesla.",
+    archived: false,
   },
-];
+  {
+    id: "user_self",
+    type: "user" as const,
+    name: "Me",
+    avatar: "👤",
+    phoneNumber: "+1 (555) 0125",
+  },
+] as const;
 
-export const mockMessages: Record<string, Message[]> = {
-  "4": [
-    {
-      id: "m40",
-      content: "Hello, is this a good time?",
-      sender: "contact",
-      timestamp: "3:55 PM",
+interface Message {
+  id: string;
+  sender: Contact["id"];
+  receiver: Contact["id"];
+  content: string;
+  timestamp: string;
+  deliveryStatus: DeliveryStatus;
+}
+
+const messages = [
+  {
+    id: "msg_1",
+    content:
+      "Hey! I saw your portfolio and I'm really impressed with your React work",
+    sender: "ai_emily",
+    receiver: "user_self",
+    timestamp: new Date(Date.now() - 86400000).toISOString(), // 24 hours ago
+    deliveryStatus: "read" as const,
+  },
+  {
+    id: "msg_2",
+    content: "Thanks! I've been working hard on improving my TypeScript skills",
+    sender: "user_self",
+    receiver: "ai_emily",
+    timestamp: new Date(Date.now() - 85400000).toISOString(),
+    deliveryStatus: "read" as const,
+  },
+  {
+    id: "msg_3",
+    content:
+      "Hello, this is Tim Cook. I'd love to discuss an opportunity at Apple",
+    sender: "ai_tim",
+    receiver: "user_self",
+    timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+    deliveryStatus: "delivered" as const,
+  },
+  {
+    id: "msg_4",
+    content:
+      "Hello, this is Elon Musk. I'd love to discuss an opportunity at Tesla",
+    sender: "ai_elon",
+    receiver: "user_self",
+    timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+    deliveryStatus: "delivered" as const,
+  },
+  {
+    id: "msg_5",
+    content: "Are you there?",
+    sender: "ai_elon",
+    receiver: "user_self",
+    timestamp: new Date(Date.now() - 300000).toISOString(), // 5 minutes ago
+    deliveryStatus: "delivered" as const,
+  },
+] as const;
+
+// Initial conversations data
+const conversations = [
+  {
+    id: "conv_emily",
+    participants: ["user_self", "ai_emily"] as const,
+    lastSeenMessageId: "msg_2",
+  },
+  {
+    id: "conv_tim",
+    participants: ["user_self", "ai_tim"] as const,
+    lastSeenMessageId: null,
+  },
+  {
+    id: "conv_elon",
+    participants: ["user_self", "ai_elon"] as const,
+    lastSeenMessageId: "msg_5",
+  },
+] as const;
+
+// Helper function to normalize an array of items by ID
+/*
+converts:
+
+const contacts = [
+  { id: "ai_emily", name: "Emily", … },
+  { id: "ai_tim",   name: "Tim Cook", … },
+  { id: "user_self", name: "Me", … },
+]
+
+to look like this:
+
+const contacts = {
+  byId: {
+    ai_emily: { id: "ai_emily", name: "Emily", … },
+    ai_tim: { id: "ai_tim", name: "Tim Cook", … },
+    user_self: { id: "user_self", name: "Me", … },
+  },
+  allIds: ["ai_emily", "ai_tim", "user_self"],
+}
+*/
+const normalizeById = <T extends { id: string }>(items: readonly T[]) => {
+  const byId: Record<string, T> = {};
+  const allIds: string[] = [];
+
+  items.forEach((item) => {
+    byId[item.id] = item;
+    allIds.push(item.id);
+  });
+
+  return { byId, allIds };
+};
+
+const groupMessagesByConversation = (messages: readonly Message[]) => {
+  const byConversation: Record<string, string[]> = {};
+
+  messages.forEach((message) => {
+    // pick the ID of whoever isn’t you
+    const otherId =
+      message.sender === "user_self" ? message.receiver : message.sender;
+
+    const convId = `conv_${otherId.split("_")[1]}`;
+
+    if (!byConversation[convId]) {
+      byConversation[convId] = [];
+    }
+    byConversation[convId].push(message.id);
+  });
+
+  return byConversation;
+};
+
+// Create normalized initial state
+export const createInitialState = (): WhatsAppState => {
+  const normalizedContacts = normalizeById(contacts);
+  const normalizedMessages = normalizeById(messages);
+  const normalizedConversations = normalizeById(conversations);
+  const messagesByConversation = groupMessagesByConversation(messages);
+
+  return {
+    contacts: {
+      ...normalizedContacts,
+      archived: new Set(
+        contacts
+          .filter(
+            (c): c is (typeof contacts)[0] => c.type === "ai" && c.archived
+          )
+          .map((c) => c.id)
+      ),
     },
-    {
-      id: "m41",
-      content:
-        "You can earn $400/hr doing simple tasks online. It sounds too good to be true, but i made $44,000 last month. Interested?",
-      sender: "contact",
-      timestamp: "4:00 PM",
+    messages: {
+      ...normalizedMessages,
+      byConversation: messagesByConversation,
+      pending: [],
+      failed: [],
     },
-    {
-      id: "m42",
-      content: "Please response with YES to this message",
-      sender: "contact",
-      timestamp: "4:05 PM",
+    conversations: {
+      ...normalizedConversations,
+      byId: normalizedConversations.byId as Record<string, Conversation>,
     },
-  ],
-  "5": [
-    {
-      id: "m42",
-      content:
-        "Hello, I’m Tim Cook, CEO of Apple. I’ve been following your work and believe you’d be an incredible addition to our team.",
-      sender: "contact",
-      timestamp: "7:00 AM",
+    ui: {
+      currentConversation: null as string | null,
+      view: "chatList" as WhatsAppView,
+      typing: {},
     },
-    {
-      id: "m43",
-      content:
-        "Your background aligns perfectly with our next big project. When can we discuss further?",
-      sender: "contact",
-      timestamp: "7:15 AM",
+    network: {
+      isOnline: true,
+      lastSyncTime: Date.now(),
+      pendingSync: false,
     },
-    {
-      id: "m44",
-      content:
-        "We’re eager to have you on board—Apple is ready to move quickly. Let me know your availability.",
-      sender: "contact",
-      timestamp: "7:30 AM",
-    },
-  ],
-  "6": [
-    {
-      id: "m45",
-      content: "Hey Mum, I’ll be home soon.",
-      sender: "user",
-      timestamp: "5:50 PM",
-      status: "read",
-    },
-    {
-      id: "m46",
-      content: "Super, I’ve made your favorite meal!",
-      sender: "contact",
-      timestamp: "6:00 PM",
-    },
-  ],
-  "7": [
-    {
-      id: "m47",
-      content:
-        "Hi Emily, could you check out my website at https://incredible-taffy-f3a474.netlify.app/? Thanks for your time and feedback!",
-      sender: "user",
-      timestamp: "Yesterday",
-      status: "delivered",
-    },
-    {
-      id: "m48",
-      content: "Wait—why am I texting myself? This is weird.",
-      sender: "contact",
-      timestamp: "Yesterday",
-    },
-  ],
-  "8": [
-    {
-      id: "m49",
-      content: "Hello, Heron, this is Bill Gates. but please, call me Bill",
-      sender: "contact",
-      timestamp: "8:00 AM",
-    },
-    {
-      id: "m50",
-      content:
-        "I hope you don't mind me reaching out, but we've been tracking your progress on the project you've been working on, and we're impressed. We'd like to offer you a position at Microsoft.",
-      sender: "contact",
-      timestamp: "8:05 AM",
-    },
-    {
-      id: "m50",
-      content:
-        "We can beat any compensation you’ve been offered. When would you be free to chat?",
-      sender: "contact",
-      timestamp: "8:10 AM",
-    },
-  ],
-  "9": [
-    {
-      id: "m52",
-      content: "Hey! Long time no see!",
-      sender: "user",
-      timestamp: "Last week",
-      status: "undelivered",
-    },
-    {
-      id: "m53",
-      content: "Remember when we used to play that game?",
-      sender: "contact",
-      timestamp: "Last week",
-    },
-  ],
-  "10": [
-    {
-      id: "m54",
-      content:
-        "Hey man is Elon, just writing from my other phone as my messages don't seem to be getting through anymore?",
-      sender: "contact",
-      timestamp: "2 days ago",
-    },
-  ],
+    isInitialized: true,
+  };
 };

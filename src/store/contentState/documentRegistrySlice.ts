@@ -1,6 +1,9 @@
-import type { DocumentConfig, DocumentRegistryState } from "@/types/storeTypes";
-import type { SetState, GetState } from "@/types/storeTypes";
+import type { DocumentConfig, SetState, GetState } from "@/types/storeTypes";
 import { SAMPLE_DOCUMENT_CONFIG } from "@/constants/documents";
+
+export interface DocumentRegistryState {
+  configs: Map<string, DocumentConfig>;
+}
 
 export interface DocumentRegistryActions {
   // Core registry operations
@@ -47,7 +50,7 @@ export const createDocumentRegistrySlice = (
      */
     setDocumentConfig: (id: string, config: DocumentConfig): void => {
       console.log("setDocumentConfig: storing config for ID", id, config);
-      set((state) => {
+      set((state: DocumentRegistrySlice) => {
         const newConfigs = new Map(state.configs);
         newConfigs.set(id, config);
         return { configs: newConfigs };
@@ -66,7 +69,7 @@ export const createDocumentRegistrySlice = (
         return false;
       }
 
-      set((state) => {
+      set((state: DocumentRegistrySlice) => {
         const newConfigs = new Map(state.configs);
         newConfigs.delete(id);
         return { configs: newConfigs };

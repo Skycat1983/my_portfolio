@@ -2,23 +2,29 @@ import { useEffect } from "react";
 import { useNewStore } from "@/hooks/useStore";
 
 export const Weather = () => {
-  const { weather, weatherLoading, weatherError, fetchWeather } = useNewStore();
+  // const { weather, loading, error, fetchWeather } = useNewStore();
+  const weather = useNewStore((state) => state.weather.data);
+  const loading = useNewStore((state) => state.weather.loading);
+  const error = useNewStore((state) => state.weather.error);
+  const fetchWeather = useNewStore((state) => state.weather.fetchWeather);
+  const location = useNewStore((state) => state.selectedCity);
 
   useEffect(() => {
     console.log("Weather useEffect: checking if weather data exists", {
       weather,
-      weatherLoading,
-      weatherError,
+      loading,
+      error,
+      fetchWeather: typeof fetchWeather,
     });
 
     // Only fetch if no weather data, not loading, and no error
-    if (!weather && !weatherLoading && !weatherError) {
+    if (!weather && !loading && !error && location) {
       console.log("Weather useEffect: fetching weather data");
-      fetchWeather();
+      fetchWeather(location);
     }
-  }, [weather, weatherLoading, weatherError, fetchWeather]);
+  }, [weather, loading, error, fetchWeather, location]);
 
-  if (weatherLoading) {
+  if (loading) {
     return (
       <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-4 md:p-6 text-white shadow-xl w-full h-full min-h-32 flex items-center justify-center">
         <div className="animate-pulse text-center">
@@ -29,15 +35,13 @@ export const Weather = () => {
     );
   }
 
-  if (weatherError) {
+  if (error) {
     return (
       <div className="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl p-4 md:p-6 text-white shadow-xl w-full h-full min-h-32 flex items-center justify-center">
         <div className="text-center">
           <div className="text-2xl md:text-3xl mb-2">⚠️</div>
           <p className="text-xs md:text-sm opacity-90">Weather unavailable</p>
-          <p className="text-xs opacity-70 mt-1 hidden md:block">
-            {weatherError}
-          </p>
+          <p className="text-xs opacity-70 mt-1 hidden md:block">{error}</p>
         </div>
       </div>
     );
@@ -53,7 +57,7 @@ export const Weather = () => {
     );
   }
 
-  const { current, location } = weather;
+  const { current } = weather;
 
   // Determine background gradient based on weather condition and time of day
   const getWeatherGradient = () => {
@@ -86,10 +90,10 @@ export const Weather = () => {
         <div className="flex items-center justify-between mb-3 md:mb-4">
           <div className="min-w-0 flex-1">
             <h2 className="text-base md:text-lg font-semibold truncate">
-              {location.name}
+              {location}
             </h2>
             <p className="text-xs md:text-sm opacity-80 truncate">
-              {location.country}
+              {weather.location.country}
             </p>
           </div>
           <div className="text-right flex-shrink-0 ml-2">

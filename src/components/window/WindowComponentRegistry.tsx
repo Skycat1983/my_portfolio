@@ -1,6 +1,5 @@
 import React from "react";
 import { DocumentEditor } from "../applications/document/DocumentEditor";
-import { WhatsAppMain } from "../applications/whatsApp/WhatsAppMain";
 import { Finder } from "../finder/Finder";
 import { TerminalContent } from "../applications/terminal/TerminalContent";
 import { BrowserContent } from "../applications/browser/BrowserContent";
@@ -11,6 +10,7 @@ import { AchievementContent } from "../applications/achievements/AchievementCont
 import { Map } from "../applications/map/Map";
 import Calculator from "../applications/calculator/Calculator";
 import { Settings } from "../applications/settings/Settings";
+import { WhatsAppWrapper } from "../applications/whatsApp/WhatsAppWrapper";
 
 // Component registry mapping component keys to React components
 // Note: Components can define their own prop interfaces
@@ -22,7 +22,7 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   finder: Finder,
   terminal: TerminalContent,
   browser: BrowserContent,
-  whatsApp: WhatsAppMain,
+  whatsApp: WhatsAppWrapper,
   directory: Finder,
   geoGame: GeoGame,
   gtaVi: GTAVI,

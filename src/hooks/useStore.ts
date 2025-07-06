@@ -31,10 +31,7 @@ import {
   createAchievementSlice,
   type AchievementSlice,
 } from "../store/systemState/achievementsSlice";
-import {
-  createWeatherSlice,
-  type WeatherSlice,
-} from "../store/systemState/weatherSlice";
+import { createWeatherSlice } from "../store/systemState/weatherSlice";
 import {
   createHistorySlice,
   type HistorySlice,
@@ -51,9 +48,45 @@ import {
   createDocumentRegistrySlice,
   type DocumentRegistrySlice,
 } from "../store/contentState/documentRegistrySlice";
+import {
+  createWhatsAppSlice,
+  type WhatsAppSlice,
+  type WhatsAppState,
+} from "@/store/contentState/whatsAppSlice";
+import type { ApplicationState } from "@/types/storeTypes";
 
-// Combine all slice types into one store type
-export type NewDesktopStore = NodeCrudSlice &
+const initialWhatsAppState: WhatsAppState = {
+  contacts: {
+    byId: {},
+    allIds: [],
+    archived: new Set(),
+  },
+  messages: {
+    byId: {},
+    allIds: [],
+    byConversation: {},
+    pending: [],
+    failed: [],
+  },
+  conversations: {
+    byId: {},
+    allIds: [],
+  },
+  ui: {
+    currentConversation: null,
+    view: "chatList",
+    typing: {},
+  },
+  network: {
+    isOnline: true,
+    lastSyncTime: Date.now(),
+    pendingSync: false,
+  },
+  isInitialized: false,
+};
+
+// Combined store type with all slices
+export type StoreSlice = NodeCrudSlice &
   NodeOperationsSlice &
   NodeBusinessSlice &
   SelectionSlice &
@@ -61,14 +94,17 @@ export type NewDesktopStore = NodeCrudSlice &
   WindowOperationsSlice &
   SystemSlice &
   AchievementSlice &
-  WeatherSlice &
   HistorySlice &
   TerminalSlice &
   GameSlice &
-  DocumentRegistrySlice;
+  DocumentRegistrySlice &
+  WhatsAppSlice;
+
+// Complete store type combining state and actions
+export type Store = ApplicationState & StoreSlice;
 
 // Create the store with all slices
-export const useNewStore = create<NewDesktopStore>((set, get) => ({
+export const useNewStore = create<Store>((set, get) => ({
   // Node state management
   ...createNodeCrudSlice(set, get),
   ...createNodeOperationsSlice(set, get),
@@ -89,4 +125,13 @@ export const useNewStore = create<NewDesktopStore>((set, get) => ({
   ...createTerminalSlice(set, get),
   ...createGameSlice(set, get),
   ...createDocumentRegistrySlice(set, get),
+  ...createWhatsAppSlice(set),
+
+  // Initialize collection state
+  histories: {},
+  documents: new Map(),
+
+  // Required state properties
+  weather: createWeatherSlice(set),
+  whatsApp: initialWhatsAppState,
 }));

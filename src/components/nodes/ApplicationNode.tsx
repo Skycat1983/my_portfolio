@@ -18,9 +18,9 @@ type Props = {
 };
 
 export const ApplicationNode = ({ node, view }: Props) => {
-  const { id, componentKey } = node;
+  const { componentKey } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  console.log("APP_NODE_01: app", id, componentKey, node);
+  // console.log("APP_NODE_01: app", id, componentKey, node);
   // ─────────── node-specific store actions ───────────
   // const openTerminal = useNewStore((s) => s.openTerminal);
   const openWindowWithComponentKey = useNewStore(
@@ -33,12 +33,12 @@ export const ApplicationNode = ({ node, view }: Props) => {
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    console.log(
-      "APP_NODE_03: handleActivate called for",
-      node.id,
-      "applicationId:",
-      node.applicationId
-    );
+    // console.log(
+    //   "APP_NODE_03: handleActivate called for",
+    //   node.id,
+    //   "applicationId:",
+    //   node.applicationId
+    // );
 
     // Use applicationId for focus logic to handle dock/desktop instances
     const windowAlreadyOpen = getWindowByApplicationId(node.applicationId);
