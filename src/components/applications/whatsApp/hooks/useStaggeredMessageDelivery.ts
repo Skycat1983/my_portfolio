@@ -39,8 +39,13 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
       processingRef.current = true;
 
       try {
-        console.log("Starting staggered delivery processing...");
-
+        console.log(
+          "WhatsApp: useStaggeredMessageDelivery Starting staggered delivery processing..."
+        );
+        console.log(
+          "WhatsApp: useStaggeredMessageDelivery wifiEnabled",
+          wifiEnabled
+        );
         // Step 1: Instantly deliver all user messages
         markUserMessagesAsDelivered();
 
@@ -48,7 +53,7 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
         const conversationsWithPendingAI =
           selectConversationsWithPendingAIMessages(whatsApp);
         console.log(
-          "Conversations with pending AI messages:",
+          "WhatsApp: useStaggeredMessageDelivery Conversations with pending AI messages:",
           conversationsWithPendingAI
         );
 
@@ -64,13 +69,15 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
         for (const conversationId of conversationsWithPendingAI) {
           const pendingMessages = pendingAIMessagesByConv[conversationId] || [];
           console.log(
-            `Processing ${pendingMessages.length} messages for conversation ${conversationId}`
+            `WhatsApp: useStaggeredMessageDelivery Processing ${pendingMessages.length} messages for conversation ${conversationId}`
           );
 
           for (const message of pendingMessages) {
             // Start typing indicator
             setTyping(conversationId, true);
-            console.log(`Set typing true for conversation ${conversationId}`);
+            console.log(
+              `whatsApp: useStaggeredMessageDelivery Set typing true for conversation ${conversationId}`
+            );
 
             // Wait 2-3 seconds to simulate AI thinking
             await new Promise((resolve) =>
@@ -80,7 +87,9 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
             // Deliver the message and stop typing
             markAIMessageAsDelivered(message.id);
             setTyping(conversationId, false);
-            console.log(`Delivered message ${message.id} and set typing false`);
+            console.log(
+              `whatsApp: useStaggeredMessageDelivery Delivered message ${message.id} and set typing false`
+            );
 
             // Brief pause between messages in same conversation
             await new Promise((resolve) => setTimeout(resolve, 500));

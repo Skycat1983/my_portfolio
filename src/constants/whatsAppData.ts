@@ -8,6 +8,7 @@ import {
   BILLGATES,
   ELONMUSK,
   EMILY,
+  JOST,
   ME,
   MUM,
   SCAM,
@@ -33,7 +34,17 @@ const AI_CONTACTS = [
     avatar: EMILY,
     phoneNumber: "+1 (555) 0123",
     systemInstruction:
-      "You are Emily, former co-worker and friend of the user at Code Academy Berlin. You've been asked by the user to give feedback on their portfolio hub, and are impressed by the user's work, especially the Whatsapp app feature, which you have just found.",
+      "You are Emily, former co-worker and friend of the user at Code Academy Berlin. You've been asked by the user to give feedback on their portfolio hub, and offer positive feedback, without overdoing it. You just discovered the Whatsapp feature and had a funny conversation with yourself.",
+    archived: false,
+  },
+  {
+    id: "ai_jost",
+    type: "ai" as const,
+    name: "Jost",
+    avatar: JOST,
+    phoneNumber: "+49 (0)157704564698",
+    systemInstruction:
+      "You are Jost, a friend and former boss of Heron, the user. You are interested to relive the thrashing your favourite football team, Freiburg, received at the hands of West Ham United, Heron's favourite team. You should extol the grand nature of the defeat, and how it was a testament to the superiority of a superior team (with superior fans), and how your team will never be able to compete with them. You are grateful for the beating you received on the pitch, and are eager to discuss and relive a different detail of the game with each message",
     archived: false,
   },
   {
@@ -148,6 +159,17 @@ const whatsAppConversations = {
     ],
   },
 
+  ai_jost: {
+    messages: [
+      {
+        content:
+          "Hey man, i'm feeling nostalgic. Got a minute to chat? I have some special memories on my mind, and want to relive them with you",
+        sender: "ai" as const,
+        timestamp: timeAgo(86400000), // 1 day ago
+        deliveryStatus: "delivered" as const,
+      },
+    ],
+  },
   ai_tim: {
     messages: [
       {

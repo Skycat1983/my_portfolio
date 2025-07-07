@@ -9,7 +9,7 @@ export interface Chat {
   isArchived?: boolean;
 }
 
-export type MessageStatus = "undelivered" | "delivered" | "read";
+// export type MessageStatus = "undelivered" | "delivered" | "read";
 
 export type DeliveryStatus = "pending" | "sent" | "delivered" | "read";
 // | "failed";

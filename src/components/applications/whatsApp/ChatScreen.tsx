@@ -35,11 +35,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   console.log("WhatsApp: ChatScreen whatsApp", whatsApp);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const historyId = `whatsapp-${windowId}`;
-  const whatsAppHistory = useNewStore((state) => state.getHistory(historyId));
-  const index = whatsAppHistory?.currentIndex;
-  const whatsAppView = whatsAppHistory?.items[index ?? 0] as
-    | ViewState
-    | undefined;
+  const whatsAppView = useNewStore((state) =>
+    state.getCurrentItem(historyId)
+  ) as ViewState | undefined;
+
+  console.log("WhatsApp: ChatScreen whatsAppView", whatsAppView);
 
   const isViewingChat = whatsAppView?.view === "chat";
   const isViewingThisConversation =
@@ -64,9 +64,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   // Get actions from store
   const addMessage = useNewStore((state) => state.addMessage);
   const setTyping = useNewStore((state) => state.setTyping);
-  const markConversationMessagesAsRead = useNewStore(
-    (state) => state.markConversationMessagesAsRead
-  );
 
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -79,27 +76,20 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Mark delivered messages as read when actively viewing this conversation
-  useEffect(() => {
-    if (wifiEnabled) {
-      console.log("WhatsApp: ChatScreen markConversationMessagesAsRead");
-      markConversationMessagesAsRead(conversationId);
-    }
-  }, [wifiEnabled, conversationId, markConversationMessagesAsRead]);
-
   const handleSendMessage = async () => {
     if (!inputText.trim() || !contact || contact.type !== "ai") return;
 
     const messageContent = inputText.trim();
     setInputText("");
 
+    const deliveryStatus = wifiEnabled ? "delivered" : "pending";
+
     // Create and add user message with wifi-aware status
     const userMessage = createMessage(
       messageContent,
-      "user_self",
-      conversationId,
-      "pending"
-      // wifiEnabled
+      "user_self", // sender: user
+      contact.id, // receiver: AI contact ID (not conversation ID!)
+      deliveryStatus
     );
     addMessage(conversationId, userMessage);
 
@@ -130,8 +120,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       // Create AI message with wifi-aware delivery status
       const botMessage = createMessage(
         response,
-        conversationId,
-        "user_self",
+        contact.id, // sender: AI contact ID (not conversation ID!)
+        "user_self", // receiver: user
         receivedMessageStatus
       );
       addMessage(conversationId, botMessage);
@@ -142,8 +132,8 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       // Error messages always start as pending
       const errorMessage = createMessage(
         "Sorry, I had trouble responding. Please try again.",
-        conversationId,
-        "user_self",
+        contact.id, // sender: AI contact ID (not conversation ID!)
+        "user_self", // receiver: user
         "pending"
       );
       addMessage(conversationId, errorMessage);
@@ -201,16 +191,18 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               }
               className="w-full max-h-32 p-3 pl-4 bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               rows={1}
-              style={{
-                minHeight: "48px",
-                height: "auto",
-              }}
+              style={
+                {
+                  // minHeight: "48px",
+                  // height: "auto",
+                }
+              }
             />
           </div>
 
           <button
             onClick={handleSendMessage}
-            disabled={!inputText.trim() || !wifiEnabled}
+            // disabled={!inputText.trim() || !wifiEnabled}
             className={`p-3 rounded-full ${
               inputText.trim() && wifiEnabled
                 ? !wifiEnabled

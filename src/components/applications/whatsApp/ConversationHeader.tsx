@@ -28,8 +28,8 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
     conversationId,
     wifiEnabled
   );
-  console.log("WhatsApp: ConversationHeader headerData", headerData);
-  console.log("WhatsApp: ConversationHeader conversationId", conversationId);
+  // console.log("WhatsApp: ConversationHeader headerData", headerData);
+  // console.log("WhatsApp: ConversationHeader conversationId", conversationId);
 
   if (!headerData) return null;
 

@@ -1,35 +1,13 @@
 import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
-import type { ConversationId, Message, MessageId } from "../types";
+import type {
+  ConversationId,
+  DeliveryStatus,
+  Message,
+  MessageId,
+} from "../types";
 
-// ? not in use?
-export const selectLastMessage = (
-  state: WhatsAppState,
-  conversationId: ConversationId
-): Message | undefined => {
-  const messageIds = state.messages.byConversation[conversationId] || [];
-  const lastMessageId = messageIds[messageIds.length - 1];
-  return lastMessageId ? state.messages.byId[lastMessageId] : undefined;
-};
-
-// Message Selectors
-export const selectConversationMessages = (
-  state: WhatsAppState,
-  conversationId: ConversationId
-): Message[] => {
-  const messageIds = state.messages.byConversation[conversationId] || [];
-  return messageIds
-    .map((id: MessageId) => state.messages.byId[id])
-    .filter((message: Message | undefined): message is Message => !!message);
-};
-
-// Get all pending message IDs (for bulk operations)
-export const selectPendingMessageIds = (state: WhatsAppState): MessageId[] => {
-  return state.messages.allIds.filter((id: MessageId) => {
-    const message = state.messages.byId[id];
-    return message && message.deliveryStatus === "pending";
-  });
-};
-
+// Get pending AI messages
+// ! in use by useStaggeredMessageDelivery.ts
 export const selectPendingAIMessages = (state: WhatsAppState): Message[] => {
   return state.messages.allIds
     .map((id: MessageId) => state.messages.byId[id])
@@ -40,6 +18,41 @@ export const selectPendingAIMessages = (state: WhatsAppState): Message[] => {
         message.sender !== "user_self"
     );
 };
+
+// Get pending messages by sender type
+export const selectPendingUserMessages = (state: WhatsAppState): Message[] => {
+  return state.messages.allIds
+    .map((id: MessageId) => state.messages.byId[id])
+    .filter(
+      (message: Message | undefined): message is Message =>
+        !!message &&
+        message.deliveryStatus === "pending" &&
+        message.sender === "user_self"
+    );
+};
+
+export const selectedConversationMessagesByStatus = (
+  state: WhatsAppState,
+  conversationId: ConversationId,
+  status: DeliveryStatus
+): Message[] => {
+  const messageIds = state.messages.byConversation[conversationId] || [];
+  return messageIds
+    .map((id: MessageId) => state.messages.byId[id])
+    .filter(
+      (message: Message | undefined): message is Message =>
+        !!message && message.deliveryStatus === status
+    );
+};
+
+// export const selectPendingConversationMessages = (state: WhatsAppState, conversationId: ConversationId): Message[] => {
+//   const messageIds = state.messages.byConversation[conversationId] || [];
+//   return messageIds
+//     .map((id: MessageId) => state.messages.byId[id])
+//     .filter((message: Message | undefined): message is Message => !!message && message.deliveryStatus === "pending");
+// };
+
+//   export const selectPendingContactMessages = (state: WhatsAppState, contactId: ContactId): Message[] => {}
 
 //! in use
 export const selectUnreadMessageCount = (
@@ -96,39 +109,6 @@ export const selectVisibleConversationMessages = (
     });
 };
 
-// Get pending messages by sender type
-export const selectPendingUserMessages = (state: WhatsAppState): Message[] => {
-  return state.messages.allIds
-    .map((id: MessageId) => state.messages.byId[id])
-    .filter(
-      (message: Message | undefined): message is Message =>
-        !!message &&
-        message.deliveryStatus === "pending" &&
-        message.sender === "user_self"
-    );
-};
-
-export const selectPendingMessages = (state: WhatsAppState): Message[] =>
-  state.messages.allIds
-    .map((id: MessageId) => state.messages.byId[id])
-    .filter(
-      (message: Message | undefined): message is Message =>
-        !!message && message.deliveryStatus === "pending"
-    );
-
-export const selectPendingMessagesInConversation = (
-  state: WhatsAppState,
-  conversationId: ConversationId
-): Message[] => {
-  const messageIds = state.messages.byConversation[conversationId] || [];
-  return messageIds
-    .map((id: MessageId) => state.messages.byId[id])
-    .filter(
-      (message: Message | undefined): message is Message =>
-        !!message && message.deliveryStatus === "pending"
-    );
-};
-
 // Message Status Selectors
 export const selectMessageStatus = (
   state: WhatsAppState,
@@ -161,10 +141,50 @@ export const selectConversationMessageStatus = (
   };
 };
 
-export const selectConversationsWithPendingMessages = (
-  state: WhatsAppState
-): ConversationId[] => {
-  return state.conversations.allIds.filter((convId) => {
-    return selectPendingMessagesInConversation(state, convId).length > 0;
-  });
-};
+// // Message Selectors
+// export const selectConversationMessages = (
+//   state: WhatsAppState,
+//   conversationId: ConversationId
+// ): Message[] => {
+//   const messageIds = state.messages.byConversation[conversationId] || [];
+//   return messageIds
+//     .map((id: MessageId) => state.messages.byId[id])
+//     .filter((message: Message | undefined): message is Message => !!message);
+// };
+
+// // ? not in use?
+// export const selectLastMessage = (
+//   state: WhatsAppState,
+//   conversationId: ConversationId
+// ): Message | undefined => {
+//   const messageIds = state.messages.byConversation[conversationId] || [];
+//   const lastMessageId = messageIds[messageIds.length - 1];
+//   return lastMessageId ? state.messages.byId[lastMessageId] : undefined;
+// };
+// Get all pending message IDs (for bulk operations)
+// export const selectPendingMessageIds = (state: WhatsAppState): MessageId[] => {
+//   return state.messages.allIds.filter((id: MessageId) => {
+//     const message = state.messages.byId[id];
+//     return message && message.deliveryStatus === "pending";
+//   });
+// };
+// export const selectPendingMessagesInConversation = (
+//   state: WhatsAppState,
+//   conversationId: ConversationId
+// ): Message[] => {
+//   const messageIds = state.messages.byConversation[conversationId] || [];
+//   return messageIds
+//     .map((id: MessageId) => state.messages.byId[id])
+//     .filter(
+//       (message: Message | undefined): message is Message =>
+//         !!message && message.deliveryStatus === "pending"
+//     );
+// };
+
+// export const selectConversationsWithPendingMessages = (
+//   state: WhatsAppState
+// ): ConversationId[] => {
+//   return state.conversations.allIds.filter((convId) => {
+//     return selectPendingMessagesInConversation(state, convId).length > 0;
+//   });
+// };

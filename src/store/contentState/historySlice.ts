@@ -14,25 +14,25 @@ export interface HistoryCollection {
 
 export interface HistoryActions {
   // === LIFECYCLE OPERATIONS ===
-  createHistory: (id: string, initialItem?: unknown) => boolean;
-  deleteHistory: (id: string) => boolean;
-  clearHistory: (id: string) => boolean;
-  historyExists: (id: string) => boolean;
+  createHistory: (id: HistoryInstance["id"], initialItem?: unknown) => boolean;
+  deleteHistory: (id: HistoryInstance["id"]) => boolean;
+  clearHistory: (id: HistoryInstance["id"]) => boolean;
+  historyExists: (id: HistoryInstance["id"]) => boolean;
 
   // === NAVIGATION OPERATIONS ===
   addToHistory: (id: string, item: unknown) => boolean;
-  goBack: (id: string) => boolean;
-  goForward: (id: string) => boolean;
-  goToIndex: (id: string, index: number) => boolean;
+  goBack: (id: HistoryInstance["id"]) => boolean;
+  goForward: (id: HistoryInstance["id"]) => boolean;
+  goToIndex: (id: HistoryInstance["id"], index: number) => boolean;
 
   // === QUERY OPERATIONS ===
-  canGoBack: (id: string) => boolean;
-  canGoForward: (id: string) => boolean;
-  getCurrentItem: (id: string) => unknown | undefined;
-  getCurrentIndex: (id: string) => number;
-  getHistory: (id: string) => HistoryInstance | undefined;
-  getHistoryItems: (id: string) => unknown[];
-  getHistoryLength: (id: string) => number;
+  canGoBack: (id: HistoryInstance["id"]) => boolean;
+  canGoForward: (id: HistoryInstance["id"]) => boolean;
+  getCurrentItem: (id: HistoryInstance["id"]) => unknown | undefined;
+  getCurrentIndex: (id: HistoryInstance["id"]) => number;
+  getHistory: (id: HistoryInstance["id"]) => HistoryInstance | undefined;
+  getHistoryItems: (id: HistoryInstance["id"]) => unknown[];
+  getHistoryLength: (id: HistoryInstance["id"]) => number;
 }
 
 export type HistorySlice = HistoryCollection & HistoryActions;

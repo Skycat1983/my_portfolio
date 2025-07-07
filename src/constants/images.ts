@@ -55,7 +55,8 @@ import EMILY from "../assets/avatars/emily.png";
 import WORK from "../assets/avatars/work.png";
 import SCAM from "../assets/avatars/scam.png";
 import MUM from "../assets/avatars/mum.png";
-export { TIMCOOK, ELONMUSK, BILLGATES, ME, EMILY, WORK, SCAM, MUM };
+import JOST from "../assets/avatars/jost.png";
+export { TIMCOOK, ELONMUSK, BILLGATES, ME, EMILY, WORK, SCAM, MUM, JOST };
 
 // Profile icons
 import GITHUB from "../assets/icons_m/github_black.png";

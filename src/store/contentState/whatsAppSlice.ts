@@ -45,7 +45,7 @@ export interface WhatsAppActions {
   addMessage: (conversationId: ConversationId, message: Message) => void;
   updateMessage: (messageId: MessageId, updates: Partial<Message>) => void;
   // removeMessage: (messageId: MessageId) => void;
-  markMessageStatus: (messageId: MessageId, status: DeliveryStatus) => void;
+  updateMessageStatus: (messageId: MessageId, status: DeliveryStatus) => void;
 
   // Bulk message status actions
   changeMessageStatusInConversation: (
@@ -280,7 +280,7 @@ export const createWhatsAppSlice = (
         };
       }),
 
-    markMessageStatus: (messageId: MessageId, status: DeliveryStatus) =>
+    updateMessageStatus: (messageId: MessageId, status: DeliveryStatus) =>
       set((state: ApplicationState) => {
         const message = state.whatsApp.messages.byId[messageId];
         if (!message) return {};
@@ -595,18 +595,33 @@ export const createWhatsAppSlice = (
       })),
 
     setTyping: (conversationId: ConversationId, isTyping: boolean) =>
-      set((state: ApplicationState) => ({
-        whatsApp: {
-          ...state.whatsApp,
-          ui: {
-            ...state.whatsApp.ui,
-            typing: {
-              ...state.whatsApp.ui.typing,
-              [conversationId]: isTyping,
+      set((state: ApplicationState) => {
+        console.log(
+          `WhatsApp: setTyping called for ${conversationId}:`,
+          isTyping
+        );
+        console.log(
+          "WhatsApp: setTyping current typing state:",
+          state.whatsApp.ui.typing
+        );
+
+        const newTypingState = {
+          ...state.whatsApp.ui.typing,
+          [conversationId]: isTyping,
+        };
+
+        console.log("WhatsApp: setTyping new typing state:", newTypingState);
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            ui: {
+              ...state.whatsApp.ui,
+              typing: newTypingState,
             },
           },
-        },
-      })),
+        };
+      }),
 
     // Network actions
     updateLastSeenTimestamp: () =>

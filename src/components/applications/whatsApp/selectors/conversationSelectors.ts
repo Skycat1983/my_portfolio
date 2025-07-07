@@ -8,7 +8,6 @@ import {
   type MessageId,
 } from "../types";
 import {
-  selectConversationMessages,
   selectPendingAIMessages,
   selectUnreadMessageCount,
   selectVisibleLastMessage,
@@ -35,17 +34,6 @@ export const sortConversationPreviewsByTime = <
   });
 };
 
-export const selectConversationDetails = (
-  state: WhatsAppState,
-  conversationId: ConversationId
-) => {
-  const messages = selectConversationMessages(state, conversationId);
-  // const participants = messages
-  console.log("WhatsApp: getConversation messages", messages);
-  return messages;
-  // return state.conversations.byId[conversationId];
-};
-
 // Computed Selectors
 export const selectConversationPreview = (
   state: WhatsAppState,
@@ -57,6 +45,12 @@ export const selectConversationPreview = (
   const lastMessage = selectVisibleLastMessage(state, conversationId);
   const unreadCount = selectUnreadMessageCount(state, conversationId);
   const isTyping = selectIsTyping(state, conversationId);
+
+  console.log(`WhatsApp: selectConversationPreview for ${conversationId}:`, {
+    isTyping,
+    typingState: state.ui.typing,
+    conversationTyping: state.ui.typing[conversationId],
+  });
 
   // Find the AI contact in the conversation
   const aiContactId = conversation.participants.find((id: ContactId) => {
@@ -145,3 +139,14 @@ export const selectDeliveredMessagesInConversation = (
       return message.deliveryStatus === "delivered";
     });
 };
+
+// export const selectConversationDetails = (
+//   state: WhatsAppState,
+//   conversationId: ConversationId
+// ) => {
+//   const messages = selectConversationMessages(state, conversationId);
+//   // const participants = messages
+//   console.log("WhatsApp: getConversation messages", messages);
+//   return messages;
+//   // return state.conversations.byId[conversationId];
+// };

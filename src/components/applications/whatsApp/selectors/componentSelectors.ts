@@ -6,6 +6,22 @@ import {
   sortConversationPreviewsByTime,
 } from "./conversationSelectors";
 
+export const selectChatListConversations = (
+  state: WhatsAppState,
+  type: "active" | "archived"
+): string[] =>
+  state.conversations.allIds.filter((id) => {
+    const conv = state.conversations.byId[id];
+    if (!conv) return false;
+
+    const hasArchived = conv.participants.some((pid) =>
+      state.contacts.archived.has(pid)
+    );
+
+    // keep it if it matches the requested type
+    return type === "active" ? !hasArchived : hasArchived;
+  });
+
 // Get all data needed for conversation header
 export const selectConversationHeader = (
   state: WhatsAppState,
@@ -74,7 +90,7 @@ export const selectArchivedConversations = (state: WhatsAppState) => {
 };
 
 export const selectArchivedConversationPreviews = (state: WhatsAppState) => {
-  const archivedConversations = selectArchivedConversations(state);
+  const archivedConversations = selectChatListConversations(state, "archived");
   const previews = archivedConversations
     .map((convId) => selectConversationPreview(state, convId))
     .filter(
