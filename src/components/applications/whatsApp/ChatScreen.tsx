@@ -4,17 +4,15 @@ import { MessageComponent } from "./MessageComponent";
 import { TypingIndicator } from "./TypingIndicator";
 import { buildSystemInstruction } from "./utils";
 import { useNewStore } from "@/hooks/useStore";
-import {
-  selectVisibleConversationMessages,
-  selectIsTyping,
-  selectConversationParticipant,
-  selectCanSendMessage,
-} from "@/store/contentState/whatsAppSelectors";
+
 import { createMessage, processAIResponse } from "./messageUtils";
-import { Send } from "lucide-react";
+import { Send, WifiOff } from "lucide-react";
 import { ConversationHeader } from "./ConversationHeader";
 import type { ViewState } from "./hooks/useWhatsAppHistory";
 import type { WindowType } from "@/types/storeTypes";
+import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
+import { selectConversationParticipant } from "./selectors/contactSelectors";
+import { selectIsTyping } from "./selectors/componentSelectors";
 
 interface ChatScreenProps {
   conversationId: ContactId;
@@ -38,7 +36,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const historyId = `whatsapp-${windowId}`;
   const whatsAppHistory = useNewStore((state) => state.getHistory(historyId));
-  console.log("WhatsApp: useWhatsAppHistory getHistory", whatsAppHistory);
   const index = whatsAppHistory?.currentIndex;
   const whatsAppView = whatsAppHistory?.items[index ?? 0] as
     | ViewState
@@ -63,7 +60,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const contact = selectConversationParticipant(whatsApp, conversationId);
   const contactId = contact?.id;
   const isTyping = selectIsTyping(whatsApp, conversationId);
-  const canSendMessage = selectCanSendMessage(whatsApp, conversationId);
 
   // Get actions from store
   const addMessage = useNewStore((state) => state.addMessage);
@@ -92,13 +88,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   }, [wifiEnabled, conversationId, markConversationMessagesAsRead]);
 
   const handleSendMessage = async () => {
-    if (
-      !inputText.trim() ||
-      !canSendMessage ||
-      !contact ||
-      contact.type !== "ai"
-    )
-      return;
+    if (!inputText.trim() || !contact || contact.type !== "ai") return;
 
     const messageContent = inputText.trim();
     setInputText("");
@@ -166,9 +156,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       handleSendMessage();
     }
   };
-  // console.log("ChatScreen: contact", contact);
-  // // console.log("ChatScreen: preview", preview);
-  // if (!contact) return null;
 
   return (
     <div className="h-full flex flex-col bg-gray-900">
@@ -195,8 +182,9 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       <div className="p-4 bg-gray-800 border-t border-gray-700 text-white">
         {/* Show offline indicator when wifi is disabled */}
         {!wifiEnabled && (
-          <div className="mb-2 px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg">
-            📡 Offline - Messages will be sent when online
+          <div className="mb-2 px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg flex items-center gap-2">
+            <WifiOff size={16} />
+            <span>Offline - Messages will be sent when online</span>
           </div>
         )}
 
@@ -207,13 +195,10 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder={
-                canSendMessage && wifiEnabled
+                wifiEnabled
                   ? "Type a message..."
-                  : !wifiEnabled
-                  ? "Type a message (will be sent when online)..."
-                  : "You are offline"
+                  : "Type a message (will be sent when online)..."
               }
-              disabled={!canSendMessage}
               className="w-full max-h-32 p-3 pl-4 bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               rows={1}
               style={{
@@ -225,9 +210,9 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
           <button
             onClick={handleSendMessage}
-            disabled={!inputText.trim() || !canSendMessage}
+            disabled={!inputText.trim() || !wifiEnabled}
             className={`p-3 rounded-full ${
-              inputText.trim() && canSendMessage
+              inputText.trim() && wifiEnabled
                 ? !wifiEnabled
                   ? "bg-yellow-500 hover:bg-yellow-600 text-white"
                   : "bg-green-500 hover:bg-green-600 text-white"

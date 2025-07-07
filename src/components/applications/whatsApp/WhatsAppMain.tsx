@@ -13,10 +13,8 @@ interface WhatsAppMainProps {
 }
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
-  console.log("WhatsApp: WhatsAppMain windowId");
   const { whatsAppView, navigateToView, goBack, cleanup } =
     useWhatsAppHistory(windowId);
-  // console.log("WhatsApp: WhatsAppMain whatsAppView", whatsAppView);
 
   const archiveContact = useNewStore((state) => state.archiveContact);
   const unarchiveContact = useNewStore((state) => state.unarchiveContact);
@@ -127,45 +125,7 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
             onViewProfile={handleViewProfile}
           />
         )}
-        <div className="text-white text-sm">
-          {wifiEnabled ? "Wifi enabled" : "Wifi disabled"}
-        </div>
       </div>
     </div>
   );
 };
-{
-  /* <button
-            onClick={handleSettingsClick}
-            className="rounded-full transition-colors bg-green-800 text-white hover:bg-gray-700"
-            aria-label="Settings"
-          >
-            <Plus size={20} />
-          </button> */
-}
-{
-  /* <button
-            onClick={goBack}
-            disabled={!canGoBack}
-            className={`p-2 rounded-full transition-colors ${
-              canGoBack
-                ? "text-white hover:bg-gray-700"
-                : "text-gray-500 cursor-not-allowed"
-            }`}
-            aria-label="Go back"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <button
-            onClick={goForward}
-            disabled={!canGoForward}
-            className={`p-2 rounded-full transition-colors ${
-              canGoForward
-                ? "text-white hover:bg-gray-700"
-                : "text-gray-500 cursor-not-allowed"
-            }`}
-            aria-label="Go forward"
-          >
-            <ArrowRight size={20} />
-          </button> */
-}

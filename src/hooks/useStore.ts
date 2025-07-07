@@ -65,8 +65,6 @@ const initialWhatsAppState: WhatsAppState = {
     byId: {},
     allIds: [],
     byConversation: {},
-    pending: [],
-    failed: [],
   },
   conversations: {
     byId: {},
@@ -78,9 +76,7 @@ const initialWhatsAppState: WhatsAppState = {
     typing: {},
   },
   network: {
-    isOnline: true,
-    lastSyncTime: Date.now(),
-    pendingSync: false,
+    lastSeenTimestamp: Date.now(),
   },
   isInitialized: false,
 };

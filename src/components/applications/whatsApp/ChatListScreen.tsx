@@ -1,7 +1,9 @@
 import React from "react";
 import { useNewStore } from "@/hooks/useStore";
-import { selectActiveConversationPreviews } from "@/store/contentState/whatsAppSelectors";
+import { selectArchivedConversations } from "./selectors/componentSelectors";
 import { Separator } from "@/components/ui/separator";
+import { Archive } from "lucide-react";
+import { selectActiveConversationPreviews } from "./selectors/conversationSelectors";
 
 interface ChatListScreenProps {
   onSelectConversation: (conversationId: string) => void;
@@ -14,6 +16,8 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
   console.log("WhatsApp: whatsAppState ChatListScreen", whatsApp);
+  const archivedConversations = selectArchivedConversations(whatsApp);
+  const archiveConversationCount = archivedConversations.length;
 
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   console.log("WhatsApp: wifiEnabled", wifiEnabled);
@@ -39,17 +43,21 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
     <div className="h-full flex flex-col">
       <button
         onClick={onViewArchived}
-        className="flex items-center p-3 hover:bg-gray-700 border-b border-gray-700"
+        className="flex items-center hover:bg-gray-700 border-b border-gray-700"
       >
-        <div className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3 flex-shrink-0">
-          📦
+        <div className=" w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3 flex-shrink-0">
+          <Archive size={20} />
         </div>
-        <span className="text-gray-300">Archived</span>
+        <span className="text-gray-300 mr-auto">Archived</span>
+        {archiveConversationCount > 0 && (
+          <span className="text-sm text-gray-400 pr-3">
+            {archiveConversationCount}
+          </span>
+        )}
       </button>
+      <Separator className=" bg-gray-700 shadow-lg" />
 
       <div className="flex-1 overflow-y-auto">
-        <Separator className="my-2 mx-4 bg-gray-700" />
-
         {conversationPreviews.map((preview, index) => (
           <>
             <div

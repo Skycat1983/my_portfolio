@@ -1,9 +1,9 @@
 import React from "react";
 import { useNewStore } from "@/hooks/useStore";
-import { selectConversationHeader } from "@/store/contentState/whatsAppSelectors";
 import { ArrowLeft, Phone } from "lucide-react";
 import { ChatOptionsMenu } from "./ChatOptionsMenu";
 import type { ContactId } from "./types";
+import { selectConversationHeader } from "./selectors/componentSelectors";
 
 interface ConversationHeaderProps {
   conversationId: string;
@@ -22,7 +22,12 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
 }) => {
   // ! in use
   const whatsApp = useNewStore((state) => state.whatsApp);
-  const headerData = selectConversationHeader(whatsApp, conversationId);
+  const wifiEnabled = useNewStore((state) => state.wifiEnabled);
+  const headerData = selectConversationHeader(
+    whatsApp,
+    conversationId,
+    wifiEnabled
+  );
   console.log("WhatsApp: ConversationHeader headerData", headerData);
   console.log("WhatsApp: ConversationHeader conversationId", conversationId);
 
@@ -64,9 +69,12 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
 
         <div className="flex-1">
           <h2 className="font-semibold">{headerData.name}</h2>
-          <p className="text-xs text-gray-400">
-            {headerData.isOnline ? "online" : "offline"}
-          </p>
+          <div className="flex items-center gap-1">
+            {headerData.isOnline && (
+              <div className="w-2 h-2 rounded-full bg-green-500" />
+            )}
+            <p className="text-xs text-gray-400">{headerData.lastSeen}</p>
+          </div>
         </div>
       </div>
 

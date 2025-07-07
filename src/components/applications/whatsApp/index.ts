@@ -8,7 +8,6 @@ export { MessageStatus } from "./MessageStatus";
 export { TypingIndicator } from "./TypingIndicator";
 export { ChatOptionsMenu } from "./ChatOptionsMenu";
 export { whatsApp } from "./whatsApp";
-export { mockChats, mockMessages } from "../../../constants/whatsAppData";
 export type {
   Chat,
   Message,

@@ -1,8 +1,8 @@
 import React from "react";
 import type { ContactId } from "./types";
 import { useNewStore } from "@/hooks/useStore";
-import { selectContact } from "@/store/contentState/whatsAppSelectors";
 import { isAIContact } from "./types";
+import { selectContact } from "./selectors/contactSelectors";
 
 interface ChatOptionsMenuProps {
   contactId: ContactId;
@@ -15,7 +15,8 @@ export const ChatOptionsMenu: React.FC<ChatOptionsMenuProps> = ({
   onArchive,
   onUnarchive,
 }) => {
-  const contact = useNewStore((state) => selectContact(state, contactId));
+  const whatsApp = useNewStore((state) => state.whatsApp);
+  const contact = selectContact(whatsApp, contactId);
 
   if (!contact || !isAIContact(contact)) return null;
 

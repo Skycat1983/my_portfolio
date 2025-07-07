@@ -3,7 +3,6 @@ import type {
   Conversation,
   Message,
   DeliveryStatus,
-  WhatsAppView,
 } from "../components/applications/whatsApp/types";
 import {
   BILLGATES,
@@ -379,22 +378,16 @@ export const createInitialState = (): WhatsAppState => {
     messages: {
       ...normalizedMessages,
       byConversation: messagesByConversation,
-      pending: [],
-      failed: [],
     },
     conversations: {
       ...normalizedConversations,
       byId: normalizedConversations.byId as Record<string, Conversation>,
     },
     ui: {
-      currentConversation: null,
-      view: "chatList" as WhatsAppView,
       typing: {},
     },
     network: {
-      isOnline: true,
-      lastSyncTime: Date.now(),
-      pendingSync: false,
+      lastSeenTimestamp: Date.now(),
     },
     isInitialized: true,
   };

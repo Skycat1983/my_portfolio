@@ -1,8 +1,8 @@
 import React from "react";
 import type { ContactId } from "./types";
 import { useNewStore } from "@/hooks/useStore";
-import { selectArchivedConversationPreviews } from "@/store/contentState/whatsAppSelectors";
 import { ArrowLeft } from "lucide-react";
+import { selectArchivedConversationPreviews } from "./selectors/componentSelectors";
 
 interface ArchiveScreenProps {
   onBack: () => void;

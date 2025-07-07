@@ -7,7 +7,6 @@ import type {
   ContactId,
   MessageId,
   ConversationId,
-  WhatsAppView,
   NormalizedCollection,
   AIContact,
   UserContact,
@@ -26,16 +25,10 @@ export interface WhatsAppState {
   };
   conversations: NormalizedCollection<Conversation>;
   ui: {
-    // ! UNUSED
-    currentConversation: ConversationId | null;
-    // ! UNUSED
-    view: WhatsAppView;
     typing: Record<ConversationId, boolean>;
   };
   network: {
-    isOnline: boolean;
-    lastSyncTime: number;
-    pendingSync: boolean;
+    lastSeenTimestamp: number; // Track when user was last seen online
   };
   isInitialized: boolean;
 }
@@ -86,8 +79,7 @@ export interface WhatsAppActions {
   setTyping: (conversationId: ConversationId, isTyping: boolean) => void;
 
   // Network actions
-  setNetworkStatus: (isOnline: boolean) => void;
-  setSyncStatus: (isPending: boolean) => void;
+  updateLastSeenTimestamp: () => void; // Update when user goes offline
 
   initializeWhatsApp: (initialState: WhatsAppState) => void;
 }
@@ -110,14 +102,12 @@ const initialState: WhatsAppState = {
     allIds: [],
   },
   ui: {
-    currentConversation: null,
-    view: "chatList",
+    // currentConversation: null,
+    // view: "chatList",
     typing: {},
   },
   network: {
-    isOnline: true,
-    lastSyncTime: Date.now(),
-    pendingSync: false,
+    lastSeenTimestamp: Date.now(),
   },
   isInitialized: false,
 };
@@ -619,27 +609,13 @@ export const createWhatsAppSlice = (
       })),
 
     // Network actions
-    setNetworkStatus: (isOnline: boolean) =>
+    updateLastSeenTimestamp: () =>
       set((state: ApplicationState) => ({
         whatsApp: {
           ...state.whatsApp,
           network: {
             ...state.whatsApp.network,
-            isOnline,
-          },
-        },
-      })),
-
-    setSyncStatus: (isPending: boolean) =>
-      set((state: ApplicationState) => ({
-        whatsApp: {
-          ...state.whatsApp,
-          network: {
-            ...state.whatsApp.network,
-            pendingSync: isPending,
-            lastSyncTime: isPending
-              ? state.whatsApp.network.lastSyncTime
-              : Date.now(),
+            lastSeenTimestamp: Date.now(),
           },
         },
       })),
