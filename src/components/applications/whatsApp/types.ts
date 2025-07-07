@@ -11,12 +11,8 @@ export interface Chat {
 
 export type MessageStatus = "undelivered" | "delivered" | "read";
 
-export type DeliveryStatus =
-  | "pending"
-  | "sent"
-  | "delivered"
-  | "read"
-  | "failed";
+export type DeliveryStatus = "pending" | "sent" | "delivered" | "read";
+// | "failed";
 
 export interface BaseContact {
   id: string;

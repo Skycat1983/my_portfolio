@@ -118,14 +118,28 @@ export const selectIsOnline = (state: WhatsAppState): boolean =>
   state.network.isOnline;
 
 export const selectPendingMessages = (state: WhatsAppState): Message[] =>
-  state.messages.pending
+  state.messages.allIds
     .map((id: MessageId) => state.messages.byId[id])
-    .filter((message: Message | undefined): message is Message => !!message);
+    .filter(
+      (message: Message | undefined): message is Message =>
+        !!message && message.deliveryStatus === "pending"
+    );
 
-export const selectFailedMessages = (state: WhatsAppState): Message[] =>
-  state.messages.failed
+// Note: Failed status has been phased out
+
+// Get pending messages for a specific conversation
+export const selectPendingMessagesInConversation = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): Message[] => {
+  const messageIds = state.messages.byConversation[conversationId] || [];
+  return messageIds
     .map((id: MessageId) => state.messages.byId[id])
-    .filter((message: Message | undefined): message is Message => !!message);
+    .filter(
+      (message: Message | undefined): message is Message =>
+        !!message && message.deliveryStatus === "pending"
+    );
+};
 
 // Computed Selectors
 export const selectConversationPreview = (
@@ -135,7 +149,7 @@ export const selectConversationPreview = (
   const conversation = state.conversations.byId[conversationId];
   if (!conversation) return null;
 
-  const lastMessage = selectLastMessage(state, conversationId);
+  const lastMessage = selectVisibleLastMessage(state, conversationId);
   const unreadCount = selectUnreadCount(state, conversationId);
   const isTyping = selectIsTyping(state, conversationId);
 
@@ -163,16 +177,34 @@ export const selectConversationPreview = (
   };
 };
 
+// Get all active conversation previews
+export const selectActiveConversationPreviews = (state: WhatsAppState) => {
+  const activeConversations = selectActiveConversations(state);
+  return activeConversations
+    .map((convId) => selectConversationPreview(state, convId))
+    .filter(
+      (preview): preview is NonNullable<typeof preview> => preview !== null
+    )
+    .sort((a, b) => {
+      // Sort by most recent message timestamp (newest first)
+      if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+      if (!a.lastMessageTime) return 1;
+      if (!b.lastMessageTime) return -1;
+      return (
+        new Date(b.lastMessageTime).getTime() -
+        new Date(a.lastMessageTime).getTime()
+      );
+    });
+};
+
 // Message Status Selectors
 export const selectMessageStatus = (
   state: WhatsAppState,
   messageId: MessageId
 ): Message["deliveryStatus"] => {
   const message = state.messages.byId[messageId];
-  if (!message) return "failed";
+  if (!message) return "pending";
 
-  if (state.messages.failed.includes(messageId)) return "failed";
-  if (state.messages.pending.includes(messageId)) return "pending";
   return message.deliveryStatus;
 };
 
@@ -208,26 +240,6 @@ export const selectArchivedConversations = (state: WhatsAppState) => {
       state.contacts.archived.has(participantId)
     );
   });
-};
-
-// Get all active conversation previews
-export const selectActiveConversationPreviews = (state: WhatsAppState) => {
-  const activeConversations = selectActiveConversations(state);
-  return activeConversations
-    .map((convId) => selectConversationPreview(state, convId))
-    .filter(
-      (preview): preview is NonNullable<typeof preview> => preview !== null
-    )
-    .sort((a, b) => {
-      // Sort by most recent message timestamp (newest first)
-      if (!a.lastMessageTime && !b.lastMessageTime) return 0;
-      if (!a.lastMessageTime) return 1;
-      if (!b.lastMessageTime) return -1;
-      return (
-        new Date(b.lastMessageTime).getTime() -
-        new Date(a.lastMessageTime).getTime()
-      );
-    });
 };
 
 export const selectArchivedConversationPreviews = (state: WhatsAppState) => {
@@ -295,19 +307,18 @@ export const selectConversationMessageStatus = (
   conversationId: ConversationId
 ) => {
   const allMessageIds = state.messages.byConversation[conversationId] || [];
-  const pendingIds = allMessageIds.filter((id) =>
-    state.messages.pending.includes(id)
-  );
-  const failedIds = allMessageIds.filter((id) =>
-    state.messages.failed.includes(id)
-  );
+  const messages = allMessageIds
+    .map((id) => state.messages.byId[id])
+    .filter(Boolean);
+
+  const pendingCount = messages.filter(
+    (msg) => msg.deliveryStatus === "pending"
+  ).length;
 
   return {
     totalMessages: allMessageIds.length,
-    pendingCount: pendingIds.length,
-    failedCount: failedIds.length,
-    hasPending: pendingIds.length > 0,
-    hasFailed: failedIds.length > 0,
+    pendingCount,
+    hasPending: pendingCount > 0,
   };
 };
 
@@ -321,4 +332,56 @@ export const selectCanSendMessage = (
 
   // Can send if online and participant exists and is AI type
   return isOnline && !!participant && participant.type === "ai";
+};
+
+// === WIFI-AWARE MESSAGE VISIBILITY SELECTORS ===
+
+// Get visible messages in a conversation (excludes pending non-user messages)
+export const selectVisibleConversationMessages = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): Message[] => {
+  const messageIds = state.messages.byConversation[conversationId] || [];
+  return messageIds
+    .map((id: MessageId) => state.messages.byId[id])
+    .filter((message: Message | undefined): message is Message => {
+      if (!message) return false;
+      // Show all user messages, but hide pending non-user messages
+      if (message.sender === "user_self") return true;
+      return message.deliveryStatus !== "pending";
+    });
+};
+
+// Get the last visible message for conversation previews
+export const selectVisibleLastMessage = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): Message | undefined => {
+  const visibleMessages = selectVisibleConversationMessages(
+    state,
+    conversationId
+  );
+  return visibleMessages[visibleMessages.length - 1];
+};
+
+// Get delivered messages in a conversation (eligible for read marking)
+export const selectDeliveredMessagesInConversation = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): Message[] => {
+  const messageIds = state.messages.byConversation[conversationId] || [];
+  return messageIds
+    .map((id: MessageId) => state.messages.byId[id])
+    .filter((message: Message | undefined): message is Message => {
+      if (!message) return false;
+      return message.deliveryStatus === "delivered";
+    });
+};
+
+// Get all pending message IDs (for bulk operations)
+export const selectPendingMessageIds = (state: WhatsAppState): MessageId[] => {
+  return state.messages.allIds.filter((id: MessageId) => {
+    const message = state.messages.byId[id];
+    return message && message.deliveryStatus === "pending";
+  });
 };

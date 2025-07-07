@@ -23,8 +23,6 @@ export interface WhatsAppState {
   };
   messages: NormalizedCollection<Message> & {
     byConversation: Record<ConversationId, MessageId[]>;
-    pending: MessageId[];
-    failed: MessageId[];
   };
   conversations: NormalizedCollection<Conversation>;
   ui: {
@@ -55,6 +53,15 @@ export interface WhatsAppActions {
   updateMessage: (messageId: MessageId, updates: Partial<Message>) => void;
   // removeMessage: (messageId: MessageId) => void;
   markMessageStatus: (messageId: MessageId, status: DeliveryStatus) => void;
+
+  // Bulk message status actions
+  changeMessageStatusInConversation: (
+    conversationId: ConversationId,
+    newStatus: DeliveryStatus,
+    oldStatus?: DeliveryStatus
+  ) => void;
+  markPendingMessagesAsDelivered: () => void;
+  markConversationMessagesAsRead: (conversationId: ConversationId) => void;
 
   // Conversation actions
   startConversation: (userId: ContactId, aiId: ContactId) => void;
@@ -89,8 +96,6 @@ const initialState: WhatsAppState = {
     byId: {},
     allIds: [],
     byConversation: {},
-    pending: [],
-    failed: [],
   },
   conversations: {
     byId: {},
@@ -291,18 +296,112 @@ export const createWhatsAppSlice = (
                 ...state.whatsApp.messages.byId,
                 [messageId]: { ...message, deliveryStatus: status },
               },
-              pending:
-                status === "pending"
-                  ? [...state.whatsApp.messages.pending, messageId]
-                  : state.whatsApp.messages.pending.filter(
-                      (id) => id !== messageId
-                    ),
-              failed:
-                status === "failed"
-                  ? [...state.whatsApp.messages.failed, messageId]
-                  : state.whatsApp.messages.failed.filter(
-                      (id) => id !== messageId
-                    ),
+            },
+          },
+        };
+      }),
+
+    // Bulk message status actions
+    changeMessageStatusInConversation: (
+      conversationId: ConversationId,
+      newStatus: DeliveryStatus,
+      oldStatus?: DeliveryStatus
+    ) =>
+      set((state: ApplicationState) => {
+        const messageIds =
+          state.whatsApp.messages.byConversation[conversationId] || [];
+        if (messageIds.length === 0) return {};
+
+        const updatedById = { ...state.whatsApp.messages.byId };
+        let hasChanges = false;
+
+        // Update messages in this conversation to the new status
+        messageIds.forEach((messageId: MessageId) => {
+          const message = updatedById[messageId];
+          if (
+            message &&
+            (oldStatus === undefined || message.deliveryStatus === oldStatus)
+          ) {
+            updatedById[messageId] = {
+              ...message,
+              deliveryStatus: newStatus,
+            };
+            hasChanges = true;
+          }
+        });
+
+        if (!hasChanges) return {};
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            messages: {
+              ...state.whatsApp.messages,
+              byId: updatedById,
+            },
+          },
+        };
+      }),
+
+    markPendingMessagesAsDelivered: () =>
+      set((state: ApplicationState) => {
+        const updatedById = { ...state.whatsApp.messages.byId };
+        let hasChanges = false;
+
+        // Update all pending messages to delivered status
+        Object.keys(updatedById).forEach((messageId: MessageId) => {
+          const message = updatedById[messageId];
+          if (message && message.deliveryStatus === "pending") {
+            updatedById[messageId] = {
+              ...message,
+              deliveryStatus: "delivered",
+            };
+            hasChanges = true;
+          }
+        });
+
+        if (!hasChanges) return {};
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            messages: {
+              ...state.whatsApp.messages,
+              byId: updatedById,
+            },
+          },
+        };
+      }),
+
+    markConversationMessagesAsRead: (conversationId: ConversationId) =>
+      set((state: ApplicationState) => {
+        const messageIds =
+          state.whatsApp.messages.byConversation[conversationId] || [];
+        if (messageIds.length === 0) return {};
+
+        const updatedById = { ...state.whatsApp.messages.byId };
+        let hasChanges = false;
+
+        // Update all delivered messages in this conversation to read status
+        messageIds.forEach((messageId) => {
+          const message = updatedById[messageId];
+          if (message && message.deliveryStatus === "delivered") {
+            updatedById[messageId] = {
+              ...message,
+              deliveryStatus: "read",
+            };
+            hasChanges = true;
+          }
+        });
+
+        if (!hasChanges) return {};
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            messages: {
+              ...state.whatsApp.messages,
+              byId: updatedById,
             },
           },
         };
@@ -414,17 +513,6 @@ export const createWhatsAppSlice = (
           },
         },
       })),
-
-    // setView: (view: WhatsAppView) =>
-    //   set((state: ApplicationState) => ({
-    //     whatsApp: {
-    //       ...state.whatsApp,
-    //       ui: {
-    //         ...state.whatsApp.ui,
-    //         view,
-    //       },
-    //     },
-    //   })),
 
     setTyping: (conversationId: ConversationId, isTyping: boolean) =>
       set((state: ApplicationState) => ({

@@ -13,6 +13,10 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
   onViewArchived,
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
+  console.log("WhatsApp: whatsAppState ChatListScreen", whatsApp);
+
+  const wifiEnabled = useNewStore((state) => state.wifiEnabled);
+  console.log("WhatsApp: wifiEnabled", wifiEnabled);
 
   const conversationPreviews = selectActiveConversationPreviews(whatsApp);
   console.log("WhatsApp conversationPreviews", conversationPreviews);
@@ -46,10 +50,10 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
       <div className="flex-1 overflow-y-auto">
         <Separator className="my-2 mx-4 bg-gray-700" />
 
-        {conversationPreviews.map((preview) => (
+        {conversationPreviews.map((preview, index) => (
           <>
             <div
-              key={preview.id}
+              key={index}
               className="flex items-center p-3 hover:bg-gray-700 cursor-pointer"
               onClick={() => onSelectConversation(preview.id)}
             >

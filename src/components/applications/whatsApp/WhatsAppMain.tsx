@@ -13,6 +13,7 @@ interface WhatsAppMainProps {
 }
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
+  console.log("WhatsApp: WhatsAppMain windowId");
   const { whatsAppView, navigateToView, goBack, cleanup } =
     useWhatsAppHistory(windowId);
   // console.log("WhatsApp: WhatsAppMain whatsAppView", whatsAppView);
@@ -22,6 +23,8 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   const markConversationAsRead = useNewStore(
     (state) => state.markConversationAsRead
   );
+  const wifiEnabled = useNewStore((state) => state.wifiEnabled);
+  console.log("whatsApp: wifiEnabled", wifiEnabled);
 
   // Handle cleanup when window closes
   useEffect(() => {
@@ -124,6 +127,9 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
             onViewProfile={handleViewProfile}
           />
         )}
+        <div className="text-white text-sm">
+          {wifiEnabled ? "Wifi enabled" : "Wifi disabled"}
+        </div>
       </div>
     </div>
   );

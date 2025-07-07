@@ -5,7 +5,7 @@ import { TypingIndicator } from "./TypingIndicator";
 import { buildSystemInstruction } from "./utils";
 import { useNewStore } from "@/hooks/useStore";
 import {
-  selectConversationMessages,
+  selectVisibleConversationMessages,
   selectIsTyping,
   selectConversationParticipant,
   selectCanSendMessage,
@@ -33,8 +33,9 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   onViewProfile,
   windowId,
 }) => {
-  console.log("WhatsApp: ChatScreen conversationId", conversationId);
   const whatsApp = useNewStore((state) => state.whatsApp);
+  console.log("WhatsApp: ChatScreen whatsApp", whatsApp);
+  const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const historyId = `whatsapp-${windowId}`;
   const whatsAppHistory = useNewStore((state) => state.getHistory(historyId));
   // console.log("WhatsApp: useWhatsAppHistory getHistory", whatsAppHistory);
@@ -48,24 +49,20 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     whatsAppView?.params?.conversationId === conversationId;
   const isActiveConversation = isOnChatView && isViewingThisConversation;
 
-  // console.log("WhatsApp: ChatScreen whatsAppView", whatsAppView);
-  // console.log(
-  //   "WhatsApp: ChatScreen isActiveConversation",
-  //   isActiveConversation
-  // );
-
-  // ! in use - Get conversation data using new selectors
-  const messages = selectConversationMessages(whatsApp, conversationId);
+  // ! in use - Get conversation data using new visible message selectors
+  const messages = selectVisibleConversationMessages(whatsApp, conversationId);
   console.log("WhatsApp: ChatScreen messages", messages);
   const contact = selectConversationParticipant(whatsApp, conversationId);
   const contactId = contact?.id;
-  console.log("WhatsApp: ChatScreen contact", contact);
   const isTyping = selectIsTyping(whatsApp, conversationId);
   const canSendMessage = selectCanSendMessage(whatsApp, conversationId);
 
   // Get actions from store
   const addMessage = useNewStore((state) => state.addMessage);
   const setTyping = useNewStore((state) => state.setTyping);
+  const markConversationMessagesAsRead = useNewStore(
+    (state) => state.markConversationMessagesAsRead
+  );
 
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -78,6 +75,24 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     scrollToBottom();
   }, [messages, isTyping]);
 
+  // Mark delivered messages as read when actively viewing this conversation
+  useEffect(() => {
+    console.log(
+      "WhatsApp: ChatScreen useEffect, isActiveConversation",
+      isActiveConversation
+    );
+    console.log("WhatsApp: ChatScreen useEffect, wifiEnabled", wifiEnabled);
+    if (isActiveConversation && wifiEnabled) {
+      console.log("WhatsApp: ChatScreen markConversationMessagesAsRead");
+      markConversationMessagesAsRead(conversationId);
+    }
+  }, [
+    isActiveConversation,
+    wifiEnabled,
+    conversationId,
+    markConversationMessagesAsRead,
+  ]);
+
   const handleSendMessage = async () => {
     if (
       !inputText.trim() ||
@@ -87,14 +102,29 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     )
       return;
 
+    const messageContent = inputText.trim();
+    setInputText("");
+
+    // Create and add user message with wifi-aware status
     const userMessage = createMessage(
-      inputText,
+      messageContent,
       "user_self",
       conversationId,
-      "pending"
+      "pending",
+      wifiEnabled
     );
     addMessage(conversationId, userMessage);
-    setInputText("");
+
+    // Only process AI response if wifi is enabled
+    if (wifiEnabled) {
+      handleAIResponse(messageContent);
+    }
+    // If offline, message remains pending until wifi comes back online
+  };
+
+  const handleAIResponse = async (userInput: string) => {
+    if (!contact || contact.type !== "ai") return;
+
     setTyping(conversationId, true);
 
     try {
@@ -104,33 +134,37 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       );
 
       await processAIResponse(
-        inputText,
+        userInput,
         enhancedInstruction,
         (response) => {
           setTyping(conversationId, false);
-          // Use isActiveConversation to determine if message should be marked as read
+          // Determine status based on whether user is actively viewing this conversation
           const messageStatus = isActiveConversation ? "read" : "delivered";
           const botMessage = createMessage(
             response,
             conversationId,
             "user_self",
-            messageStatus
+            messageStatus,
+            wifiEnabled
           );
           addMessage(conversationId, botMessage);
         },
-        () => {
+        (error) => {
           setTyping(conversationId, false);
+          console.error("AI response error:", error);
           const errorMessage = createMessage(
             "Sorry, I had trouble responding. Please try again.",
             conversationId,
             "user_self",
-            "failed"
+            "pending",
+            wifiEnabled
           );
           addMessage(conversationId, errorMessage);
-        }
+        },
+        wifiEnabled
       );
     } catch (error) {
-      console.error("Error in handleSendMessage:", error);
+      console.error("Error in handleAIResponse:", error);
       setTyping(conversationId, false);
     }
   };
@@ -168,6 +202,13 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       </div>
 
       <div className="p-4 bg-gray-800 border-t border-gray-700 text-white">
+        {/* Show offline indicator when wifi is disabled */}
+        {!wifiEnabled && (
+          <div className="mb-2 px-3 py-2 bg-yellow-600 text-white text-sm rounded-lg">
+            📡 Offline - Messages will be sent when online
+          </div>
+        )}
+
         <div className="flex items-center space-x-2">
           <div className="flex-1">
             <textarea
@@ -175,7 +216,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder={
-                canSendMessage ? "Type a message..." : "You are offline"
+                canSendMessage && wifiEnabled
+                  ? "Type a message..."
+                  : !wifiEnabled
+                  ? "Type a message (will be sent when online)..."
+                  : "You are offline"
               }
               disabled={!canSendMessage}
               className="w-full max-h-32 p-3 pl-4 bg-gray-700 text-white placeholder-gray-400 border border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -192,10 +237,12 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
             disabled={!inputText.trim() || !canSendMessage}
             className={`p-3 rounded-full ${
               inputText.trim() && canSendMessage
-                ? "bg-green-500 hover:bg-green-600 text-white"
+                ? !wifiEnabled
+                  ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                  : "bg-green-500 hover:bg-green-600 text-white"
                 : "bg-gray-600 text-gray-400 cursor-not-allowed"
             } transition-colors`}
-            aria-label="Send message"
+            aria-label={!wifiEnabled ? "Queue message" : "Send message"}
           >
             <Send size={20} />
           </button>
