@@ -63,6 +63,14 @@ export interface WhatsAppActions {
   markPendingMessagesAsDelivered: () => void;
   markConversationMessagesAsRead: (conversationId: ConversationId) => void;
 
+  // Individual message status actions for staggered delivery
+  updateSingleMessageStatus: (
+    messageId: MessageId,
+    newStatus: DeliveryStatus
+  ) => void;
+  markUserMessagesAsDelivered: () => void;
+  markAIMessageAsDelivered: (messageId: MessageId) => void;
+
   // Conversation actions
   startConversation: (userId: ContactId, aiId: ContactId) => void;
   updateConversation: (
@@ -402,6 +410,88 @@ export const createWhatsAppSlice = (
             messages: {
               ...state.whatsApp.messages,
               byId: updatedById,
+            },
+          },
+        };
+      }),
+
+    // Individual message status actions for staggered delivery
+    updateSingleMessageStatus: (
+      messageId: MessageId,
+      newStatus: DeliveryStatus
+    ) =>
+      set((state: ApplicationState) => {
+        const message = state.whatsApp.messages.byId[messageId];
+        if (!message) return {};
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            messages: {
+              ...state.whatsApp.messages,
+              byId: {
+                ...state.whatsApp.messages.byId,
+                [messageId]: { ...message, deliveryStatus: newStatus },
+              },
+            },
+          },
+        };
+      }),
+
+    markUserMessagesAsDelivered: () =>
+      set((state: ApplicationState) => {
+        const updatedById = { ...state.whatsApp.messages.byId };
+        let hasChanges = false;
+
+        // Update all pending user messages to delivered status
+        Object.keys(updatedById).forEach((messageId: MessageId) => {
+          const message = updatedById[messageId];
+          if (
+            message &&
+            message.deliveryStatus === "pending" &&
+            message.sender === "user_self"
+          ) {
+            updatedById[messageId] = {
+              ...message,
+              deliveryStatus: "delivered",
+            };
+            hasChanges = true;
+          }
+        });
+
+        if (!hasChanges) return {};
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            messages: {
+              ...state.whatsApp.messages,
+              byId: updatedById,
+            },
+          },
+        };
+      }),
+
+    markAIMessageAsDelivered: (messageId: MessageId) =>
+      set((state: ApplicationState) => {
+        const message = state.whatsApp.messages.byId[messageId];
+        if (
+          !message ||
+          message.sender === "user_self" ||
+          message.deliveryStatus !== "pending"
+        ) {
+          return {};
+        }
+
+        return {
+          whatsApp: {
+            ...state.whatsApp,
+            messages: {
+              ...state.whatsApp.messages,
+              byId: {
+                ...state.whatsApp.messages.byId,
+                [messageId]: { ...message, deliveryStatus: "delivered" },
+              },
             },
           },
         };

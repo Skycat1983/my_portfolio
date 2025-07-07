@@ -352,6 +352,14 @@ export const selectVisibleConversationMessages = (
     });
 };
 
+export const selectConversationsWithPendingMessages = (
+  state: WhatsAppState
+): ConversationId[] => {
+  return state.conversations.allIds.filter((convId) => {
+    return selectPendingMessagesInConversation(state, convId).length > 0;
+  });
+};
+
 // Get the last visible message for conversation previews
 export const selectVisibleLastMessage = (
   state: WhatsAppState,
@@ -384,4 +392,64 @@ export const selectPendingMessageIds = (state: WhatsAppState): MessageId[] => {
     const message = state.messages.byId[id];
     return message && message.deliveryStatus === "pending";
   });
+};
+
+// === MESSAGE TYPE FILTERING SELECTORS ===
+
+// Get pending messages by sender type
+export const selectPendingUserMessages = (state: WhatsAppState): Message[] => {
+  return state.messages.allIds
+    .map((id: MessageId) => state.messages.byId[id])
+    .filter(
+      (message: Message | undefined): message is Message =>
+        !!message &&
+        message.deliveryStatus === "pending" &&
+        message.sender === "user_self"
+    );
+};
+
+export const selectPendingAIMessages = (state: WhatsAppState): Message[] => {
+  return state.messages.allIds
+    .map((id: MessageId) => state.messages.byId[id])
+    .filter(
+      (message: Message | undefined): message is Message =>
+        !!message &&
+        message.deliveryStatus === "pending" &&
+        message.sender !== "user_self"
+    );
+};
+
+// Get pending AI messages grouped by conversation
+export const selectPendingAIMessagesByConversation = (
+  state: WhatsAppState
+): Record<ConversationId, Message[]> => {
+  const pendingAIMessages = selectPendingAIMessages(state);
+  const grouped: Record<ConversationId, Message[]> = {};
+
+  pendingAIMessages.forEach((message) => {
+    // For AI messages, the conversation ID is constructed from the AI sender and user receiver
+    const conversationId = `user_self_${message.sender}`;
+
+    if (!grouped[conversationId]) {
+      grouped[conversationId] = [];
+    }
+    grouped[conversationId].push(message);
+  });
+
+  // Sort messages within each conversation by timestamp
+  Object.keys(grouped).forEach((convId) => {
+    grouped[convId].sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+  });
+
+  return grouped;
+};
+
+// Get conversations that have pending AI messages
+export const selectConversationsWithPendingAIMessages = (
+  state: WhatsAppState
+): ConversationId[] => {
+  return Object.keys(selectPendingAIMessagesByConversation(state));
 };

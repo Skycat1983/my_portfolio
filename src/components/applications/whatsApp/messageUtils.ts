@@ -18,29 +18,15 @@ export const createMessage = (
   content: string,
   sender: string,
   receiver: string,
-  status: "pending" | "sent" | "delivered" | "read",
-  isWifiEnabled?: boolean
+  status: "pending" | "sent" | "delivered" | "read"
 ): WhatsAppMessage => {
-  // Determine appropriate status based on wifi and sender
-  let deliveryStatus = status;
-
-  if (isWifiEnabled !== undefined) {
-    if (isWifiEnabled) {
-      // Online: messages can be delivered
-      deliveryStatus = status === "pending" ? "delivered" : status;
-    } else {
-      // Offline: all new messages start as pending
-      deliveryStatus = "pending";
-    }
-  }
-
   return {
     id: generateMessageId(),
     content,
     sender,
     receiver,
     timestamp: new Date().toISOString(),
-    deliveryStatus,
+    deliveryStatus: status,
     failedAttempts: 0,
     lastAttempt: Date.now(),
   };
@@ -72,28 +58,18 @@ export const formatTimestamp = (timestamp: string | number): string => {
 
 export const processAIResponse = async (
   input: string,
-  systemInstruction: string,
-  onSuccess: (response: string) => void,
-  onError: (error: Error) => void,
-  isWifiEnabled: boolean = true
-): Promise<void> => {
+  systemInstruction: string
+): Promise<string> => {
   try {
-    if (!isWifiEnabled) {
-      // If offline, don't process AI response - let it remain pending
-      onError(new Error("Offline - AI response will be processed when online"));
-      return;
-    }
-
     const response = await whatsApp({
       contents: input,
       systemInstruction,
     });
 
-    // Success callback will handle message creation with appropriate status
-    onSuccess(response);
+    return response;
   } catch (error) {
     console.error("Error processing AI response:", error);
-    onError(error as Error);
+    throw error; // Let the caller handle the error
   }
 };
 

@@ -38,20 +38,28 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const historyId = `whatsapp-${windowId}`;
   const whatsAppHistory = useNewStore((state) => state.getHistory(historyId));
-  // console.log("WhatsApp: useWhatsAppHistory getHistory", whatsAppHistory);
+  console.log("WhatsApp: useWhatsAppHistory getHistory", whatsAppHistory);
   const index = whatsAppHistory?.currentIndex;
   const whatsAppView = whatsAppHistory?.items[index ?? 0] as
     | ViewState
     | undefined;
 
-  const isOnChatView = whatsAppView?.view === "chat";
+  const isViewingChat = whatsAppView?.view === "chat";
   const isViewingThisConversation =
     whatsAppView?.params?.conversationId === conversationId;
-  const isActiveConversation = isOnChatView && isViewingThisConversation;
+  const receivedMessageStatus =
+    isViewingChat && isViewingThisConversation && wifiEnabled
+      ? "read"
+      : wifiEnabled
+      ? "delivered"
+      : "pending";
 
   // ! in use - Get conversation data using new visible message selectors
   const messages = selectVisibleConversationMessages(whatsApp, conversationId);
-  console.log("WhatsApp: ChatScreen messages", messages);
+  console.log(
+    "WhatsApp: ChatScreen selectVisibleConversationMessages",
+    messages
+  );
   const contact = selectConversationParticipant(whatsApp, conversationId);
   const contactId = contact?.id;
   const isTyping = selectIsTyping(whatsApp, conversationId);
@@ -77,21 +85,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
   // Mark delivered messages as read when actively viewing this conversation
   useEffect(() => {
-    console.log(
-      "WhatsApp: ChatScreen useEffect, isActiveConversation",
-      isActiveConversation
-    );
-    console.log("WhatsApp: ChatScreen useEffect, wifiEnabled", wifiEnabled);
-    if (isActiveConversation && wifiEnabled) {
+    if (wifiEnabled) {
       console.log("WhatsApp: ChatScreen markConversationMessagesAsRead");
       markConversationMessagesAsRead(conversationId);
     }
-  }, [
-    isActiveConversation,
-    wifiEnabled,
-    conversationId,
-    markConversationMessagesAsRead,
-  ]);
+  }, [wifiEnabled, conversationId, markConversationMessagesAsRead]);
 
   const handleSendMessage = async () => {
     if (
@@ -110,22 +108,22 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       messageContent,
       "user_self",
       conversationId,
-      "pending",
-      wifiEnabled
+      "pending"
+      // wifiEnabled
     );
     addMessage(conversationId, userMessage);
 
     // Only process AI response if wifi is enabled
-    if (wifiEnabled) {
-      handleAIResponse(messageContent);
-    }
+    handleAIResponse(messageContent);
     // If offline, message remains pending until wifi comes back online
   };
 
   const handleAIResponse = async (userInput: string) => {
     if (!contact || contact.type !== "ai") return;
 
-    setTyping(conversationId, true);
+    if (wifiEnabled) {
+      setTyping(conversationId, true);
+    }
 
     try {
       const enhancedInstruction = buildSystemInstruction(
@@ -133,39 +131,32 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         messages
       );
 
-      await processAIResponse(
-        userInput,
-        enhancedInstruction,
-        (response) => {
-          setTyping(conversationId, false);
-          // Determine status based on whether user is actively viewing this conversation
-          const messageStatus = isActiveConversation ? "read" : "delivered";
-          const botMessage = createMessage(
-            response,
-            conversationId,
-            "user_self",
-            messageStatus,
-            wifiEnabled
-          );
-          addMessage(conversationId, botMessage);
-        },
-        (error) => {
-          setTyping(conversationId, false);
-          console.error("AI response error:", error);
-          const errorMessage = createMessage(
-            "Sorry, I had trouble responding. Please try again.",
-            conversationId,
-            "user_self",
-            "pending",
-            wifiEnabled
-          );
-          addMessage(conversationId, errorMessage);
-        },
-        wifiEnabled
-      );
-    } catch (error) {
-      console.error("Error in handleAIResponse:", error);
+      // Always call AI regardless of wifi status
+      const response = await processAIResponse(userInput, enhancedInstruction);
+
+      console.log("WhatsApp: ChatScreen handleAIResponse response", response);
       setTyping(conversationId, false);
+
+      // Create AI message with wifi-aware delivery status
+      const botMessage = createMessage(
+        response,
+        conversationId,
+        "user_self",
+        receivedMessageStatus
+      );
+      addMessage(conversationId, botMessage);
+    } catch (error) {
+      setTyping(conversationId, false);
+      console.error("AI response error:", error);
+
+      // Error messages always start as pending
+      const errorMessage = createMessage(
+        "Sorry, I had trouble responding. Please try again.",
+        conversationId,
+        "user_self",
+        "pending"
+      );
+      addMessage(conversationId, errorMessage);
     }
   };
 
