@@ -27,6 +27,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     zIndex,
     isMinimized,
     isMaximized,
+    fixed,
   } = window;
   const { onResizeStart } = useWindowResize(window.windowId);
   const focusWindow = useNewStore((s) => s.focusWindow);
@@ -96,7 +97,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
       </div>
 
       {/* Resize Handles - only show when not maximized */}
-      {!isMaximized && (
+      {!isMaximized && !fixed && (
         <>
           {/* North handle */}
           <div

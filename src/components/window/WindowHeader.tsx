@@ -4,9 +4,10 @@ import { useNewStore } from "@/hooks/useStore";
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
 import theme from "@/styles/theme";
+import type { WindowType } from "@/types/storeTypes";
 
 interface WindowHeaderProps {
-  windowId: string;
+  windowId: WindowType["windowId"];
   title?: string;
   nodeType?: string;
   className?: string;

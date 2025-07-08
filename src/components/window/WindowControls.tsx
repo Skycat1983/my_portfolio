@@ -3,8 +3,13 @@ import { useNewStore } from "@/hooks/useStore";
 import { MacWindowControls } from "../controls/MacWindowControls";
 import { WindowsWindowControls } from "../controls/WindowsWindowControls";
 import { MobileWindowControls } from "../controls/MobileWindowControls";
+import type { WindowType } from "@/types/storeTypes";
 
-export const WindowControls = ({ windowId }: { windowId: string }) => {
+export const WindowControls = ({
+  windowId,
+}: {
+  windowId: WindowType["windowId"];
+}) => {
   const operatingSystem = useNewStore((state) => state.operatingSystem);
   const screenDimensions = useNewStore((state) => state.screenDimensions);
   const closeWindow = useNewStore((state) => state.closeWindow);
@@ -33,6 +38,7 @@ export const WindowControls = ({ windowId }: { windowId: string }) => {
         onClose={() => closeWindow(windowId)}
         // onMinimize={() => minimizeWindow(windowId)}
         onMaximize={() => toggleMaximizeWindow()}
+        isFixed={window?.fixed}
       />
     );
   } else if (operatingSystem === "windows") {
@@ -42,6 +48,7 @@ export const WindowControls = ({ windowId }: { windowId: string }) => {
         onClose={() => closeWindow(windowId)}
         // onMinimize={() => minimizeWindow(windowId)}
         onMaximize={() => toggleMaximizeWindow()}
+        isFixed={window?.fixed}
       />
     );
   }

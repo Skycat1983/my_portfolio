@@ -6,6 +6,7 @@ interface MacWindowControlsProps {
   onMinimize?: () => void;
   onMaximize?: () => void;
   isMaximized?: boolean;
+  isFixed?: boolean;
 }
 
 export const MacWindowControls = ({
@@ -13,6 +14,7 @@ export const MacWindowControls = ({
   onMinimize,
   onMaximize,
   isMaximized,
+  isFixed,
 }: MacWindowControlsProps) => {
   const maximizeIcon = isMaximized ? DEMAXIMIZE_MAC : MAXIMIZE_MAC;
   const handleCloseClick = (e: React.MouseEvent) => {
@@ -63,43 +65,47 @@ export const MacWindowControls = ({
       </div>
 
       {/* Minimize button - Yellow */}
-      <div
-        style={{
-          ...buttonBaseStyle,
-          background: "#ffbd2e",
-          border: "1px solid #dea123",
-        }}
-        onClick={handleMinimizeClick}
-        aria-label="Minimize window"
-        className="group hover:bg-yellow-600 transition-colors cursor-not-allowed"
-      >
-        <Minus
-          size={8}
-          className="text-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity "
-        />
-      </div>
+      {!isFixed && (
+        <div
+          style={{
+            ...buttonBaseStyle,
+            background: "#ffbd2e",
+            border: "1px solid #dea123",
+          }}
+          onClick={handleMinimizeClick}
+          aria-label="Minimize window"
+          className="group hover:bg-yellow-600 transition-colors cursor-not-allowed"
+        >
+          <Minus
+            size={8}
+            className="text-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity "
+          />
+        </div>
+      )}
 
       {/* Maximize button - Green */}
-      <div
-        style={{
-          ...buttonBaseStyle,
-          background: "#28ca42",
-          border: "1px solid #1aab29",
-        }}
-        onClick={handleMaximizeClick}
-        aria-label="Maximize window"
-        className="group hover:bg-green-600 transition-colors cursor-pointer"
-      >
-        <img
-          src={maximizeIcon}
-          alt="Maximize"
-          className="w-3 h-3 object-contain"
-        />
-        {/* <Square
+      {!isFixed && (
+        <div
+          style={{
+            ...buttonBaseStyle,
+            background: "#28ca42",
+            border: "1px solid #1aab29",
+          }}
+          onClick={handleMaximizeClick}
+          aria-label="Maximize window"
+          className="group hover:bg-green-600 transition-colors cursor-pointer"
+        >
+          <img
+            src={maximizeIcon}
+            alt="Maximize"
+            className="w-3 h-3 object-contain"
+          />
+          {/* <Square
           size={6}
           className="text-green-900 opacity-0 group-hover:opacity-100 transition-opacity"
-        /> */}
-      </div>
+          /> */}
+        </div>
+      )}
     </div>
   );
 };

@@ -231,8 +231,7 @@ export const createWindowOperationsSlice = (
       nodeId,
       applicationId:
         applicationNode.type === "application"
-          ? (applicationNode as import("@/types/nodeTypes").ApplicationEntry)
-              .applicationId
+          ? (applicationNode as ApplicationEntry).applicationId
           : undefined, // Set applicationId for application nodes
       nodeType: documentNode.type,
       width,

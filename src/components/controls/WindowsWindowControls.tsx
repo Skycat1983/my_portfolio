@@ -1,3 +1,5 @@
+import { useNewStore } from "@/hooks/useStore";
+import { theme } from "@/styles/theme";
 import { X, Minus, Square } from "lucide-react";
 
 interface WindowsWindowControlsProps {
@@ -5,6 +7,7 @@ interface WindowsWindowControlsProps {
   onMinimize?: () => void;
   onMaximize?: () => void;
   isMaximized?: boolean;
+  isFixed?: boolean;
 }
 
 export const WindowsWindowControls = ({
@@ -12,7 +15,9 @@ export const WindowsWindowControls = ({
   onMinimize,
   onMaximize,
   isMaximized,
+  isFixed,
 }: WindowsWindowControlsProps) => {
+  const currentTheme = useNewStore((s) => s.theme);
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClose?.();
@@ -38,7 +43,7 @@ export const WindowsWindowControls = ({
     alignItems: "center",
     justifyContent: "center",
     background: "transparent",
-    color: "#000",
+    color: theme.colors[currentTheme].text.primary,
   };
 
   const maximiseIcon = !isMaximized ? (
@@ -53,24 +58,28 @@ export const WindowsWindowControls = ({
   return (
     <div className="flex items-center">
       {/* Minimize button */}
-      <div
-        style={buttonBaseStyle}
-        onClick={handleMinimizeClick}
-        aria-label="Minimize window"
-        className="hover:bg-gray-200 transition-colors cursor-not-allowed"
-      >
-        <Minus size={14} />
-      </div>
+      {!isFixed && (
+        <div
+          style={buttonBaseStyle}
+          onClick={handleMinimizeClick}
+          aria-label="Minimize window"
+          className="hover:bg-gray-200 transition-colors cursor-not-allowed"
+        >
+          <Minus size={14} />
+        </div>
+      )}
 
       {/* Maximize button */}
-      <div
-        style={buttonBaseStyle}
-        onClick={handleMaximizeClick}
-        aria-label="Maximize window"
-        className="hover:bg-gray-200 transition-colors cursor-pointer"
-      >
-        {maximiseIcon}
-      </div>
+      {!isFixed && (
+        <div
+          style={buttonBaseStyle}
+          onClick={handleMaximizeClick}
+          aria-label="Maximize window"
+          className="hover:bg-gray-200 transition-colors cursor-pointer"
+        >
+          {maximiseIcon}
+        </div>
+      )}
 
       {/* Close button */}
       <button
