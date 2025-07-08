@@ -1,7 +1,6 @@
 import React from "react";
-import { Check, CheckCheck, Clock, XCircle } from "lucide-react";
-
-type DeliveryStatus = "pending" | "sent" | "delivered" | "read" | "failed";
+import { Check, CheckCheck, Clock } from "lucide-react";
+import type { DeliveryStatus } from "./types";
 
 interface MessageStatusProps {
   status: DeliveryStatus;
@@ -28,13 +27,7 @@ export const MessageStatus: React.FC<MessageStatusProps> = ({
       return <Check className="w-4 h-4" aria-label="Message sent" />;
     case "pending":
       return <Clock className="w-4 h-4" aria-label="Message pending" />;
-    case "failed":
-      return (
-        <XCircle
-          className="w-4 h-4 text-red-500"
-          aria-label="Message failed to send"
-        />
-      );
+
     default:
       return null;
   }

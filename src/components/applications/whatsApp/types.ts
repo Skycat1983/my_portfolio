@@ -8,9 +8,12 @@ export interface Chat {
   unreadCount: number;
   isArchived?: boolean;
 }
-
-// export type MessageStatus = "undelivered" | "delivered" | "read";
-
+/*
+pending: Message is waiting to be sent
+sent: Message has been sent but not yet delivered
+delivered: Message has been delivered to the recipient but not yet read
+read: Message has been read by the recipient
+*/
 export type DeliveryStatus = "pending" | "sent" | "delivered" | "read";
 // | "failed";
 
