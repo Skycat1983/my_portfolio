@@ -8,8 +8,4 @@ export { MessageStatus } from "./MessageStatus";
 export { TypingIndicator } from "./TypingIndicator";
 export { ChatOptionsMenu } from "./ChatOptionsMenu";
 export { whatsApp } from "./whatsApp";
-export type {
-  Chat,
-  Message,
-  MessageStatus as MessageStatusType,
-} from "./types";
+export type { Chat, Message } from "./types";

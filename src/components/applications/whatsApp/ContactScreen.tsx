@@ -12,7 +12,6 @@ interface ContactScreenProps {
 export const ContactScreen: React.FC<ContactScreenProps> = ({
   contactId,
   onBack,
-  onViewProfile,
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
   const updateContact = useNewStore((state) => state.updateContact);

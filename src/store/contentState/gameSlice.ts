@@ -1,8 +1,5 @@
-import type {
-  BaseStoreState,
-  SetState,
-  GetState,
-} from "@/types/storeTypes";
+import type { Store } from "@/hooks/useStore";
+import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 // Country data structure from API
 interface Country {
@@ -112,8 +109,8 @@ const transformApiCountry = (apiCountry: {
 };
 
 export const createGameSlice = (
-  set: SetState<BaseStoreState>,
-  get: GetState<BaseStoreState>
+  set: SetState<ApplicationState>,
+  get: GetState<ApplicationState>
 ): GameSlice => ({
   // Initial state
   countries: [],
@@ -178,7 +175,7 @@ export const createGameSlice = (
 
   startGame: (questionType: "country" | "capital") => {
     console.log("startGame in gameSlice: starting game with", questionType);
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     set((state) => ({
       ...state,
@@ -192,16 +189,16 @@ export const createGameSlice = (
     }));
 
     // Generate first question
-    const gameSlice = get() as BaseStoreState & GameSlice;
+    const gameSlice = get() as Store;
     gameSlice.generateQuestion();
   },
 
   generateQuestion: () => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     // Check if enough countries remain
     if (currentState.remainingCountries.length < currentState.optionsCount) {
-      const gameSlice = get() as BaseStoreState & GameSlice;
+      const gameSlice = get() as Store;
       gameSlice.endGame();
       return;
     }
@@ -211,8 +208,8 @@ export const createGameSlice = (
       currentState.remainingCountries
     ).slice(0, currentState.optionsCount);
 
-    const correctCountry = selectedCountries[0];
-    const options = selectedCountries.map((country) =>
+    const correctCountry = selectedCountries[0] as Country;
+    const options = selectedCountries.map((country: Country) =>
       currentState.questionType === "country" ? country.name : country.capital
     );
 
@@ -229,8 +226,10 @@ export const createGameSlice = (
 
     // Remove used countries from pool
     const remainingAfterQuestion = currentState.remainingCountries.filter(
-      (country) =>
-        !selectedCountries.some((selected) => selected.id === country.id)
+      (country: Country) =>
+        !selectedCountries.some(
+          (selected: Country) => selected.id === country.id
+        )
     );
 
     set((state) => ({
@@ -242,12 +241,12 @@ export const createGameSlice = (
     }));
 
     // Start timer
-    const gameSlice = get() as BaseStoreState & GameSlice;
+    const gameSlice = get() as Store;
     gameSlice.startTimer();
   },
 
   submitAnswer: (selectedOption: string) => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     if (
       !currentState.currentQuestion ||
@@ -257,7 +256,7 @@ export const createGameSlice = (
     }
 
     // Stop timer immediately
-    const gameSlice = get() as BaseStoreState & GameSlice;
+    const gameSlice = get() as Store;
     gameSlice.stopTimer();
 
     const isCorrect =
@@ -272,7 +271,7 @@ export const createGameSlice = (
     };
 
     set((state) => {
-      const gameState = state as BaseStoreState & GameState;
+      const gameState = state as Store;
       return {
         ...state,
         currentQuestion: updatedQuestion,
@@ -292,12 +291,12 @@ export const createGameSlice = (
   },
 
   nextQuestion: () => {
-    const gameSlice = get() as BaseStoreState & GameSlice;
+    const gameSlice = get() as Store;
     gameSlice.generateQuestion();
   },
 
   startTimer: () => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     // Clear existing timer if any
     if (currentState.timerId) {
@@ -305,7 +304,7 @@ export const createGameSlice = (
     }
 
     const timerId = setInterval(() => {
-      const gameSlice = get() as BaseStoreState & GameSlice;
+      const gameSlice = get() as Store;
       gameSlice.decrementTimer();
     }, 1000);
 
@@ -316,7 +315,7 @@ export const createGameSlice = (
   },
 
   stopTimer: () => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     if (currentState.timerId) {
       clearInterval(currentState.timerId);
@@ -328,16 +327,16 @@ export const createGameSlice = (
   },
 
   decrementTimer: () => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     if (currentState.timeRemaining <= 1) {
       // Time's up - auto submit as incorrect
-      const gameSlice = get() as BaseStoreState & GameSlice;
+      const gameSlice = get() as Store;
       gameSlice.stopTimer();
       gameSlice.submitAnswer(""); // Empty string will never match correct answer
     } else {
       set((state) => {
-        const gameState = state as BaseStoreState & GameState;
+        const gameState = state as Store;
         return {
           ...state,
           timeRemaining: gameState.timeRemaining - 1,
@@ -347,10 +346,10 @@ export const createGameSlice = (
   },
 
   endGame: () => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     // Stop timer
-    const gameSlice = get() as BaseStoreState & GameSlice;
+    const gameSlice = get() as Store;
     gameSlice.stopTimer();
 
     // Update high scores
@@ -363,7 +362,7 @@ export const createGameSlice = (
   },
 
   returnToMenu: () => {
-    const gameSlice = get() as BaseStoreState & GameSlice;
+    const gameSlice = get() as Store;
     gameSlice.stopTimer();
     gameSlice.resetCurrentGame();
 
@@ -385,7 +384,7 @@ export const createGameSlice = (
   },
 
   updateHighScores: (newScore: number) => {
-    const currentState = get() as BaseStoreState & GameState;
+    const currentState = get() as Store;
 
     const updatedScores = [...currentState.highScores, newScore]
       .sort((a, b) => b - a) // Descending order

@@ -104,14 +104,3 @@ export const selectDeliveredMessagesInConversation = (
       return message.deliveryStatus === "delivered";
     });
 };
-
-// export const selectConversationDetails = (
-//   state: WhatsAppState,
-//   conversationId: ConversationId
-// ) => {
-//   const messages = selectConversationMessages(state, conversationId);
-//   // const participants = messages
-//   console.log("WhatsApp: getConversation messages", messages);
-//   return messages;
-//   // return state.conversations.byId[conversationId];
-// };

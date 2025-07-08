@@ -1,4 +1,4 @@
-import type { BaseStoreState, SetState, GetState } from "@/types/storeTypes";
+import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 import type { NodeEntry, DirectoryEntry } from "@/types/nodeTypes";
 
 interface TerminalState {
@@ -27,8 +27,8 @@ interface TerminalActions {
 export type TerminalSlice = TerminalState & TerminalActions;
 
 export const createTerminalSlice = (
-  set: SetState<BaseStoreState>,
-  get: GetState<BaseStoreState>
+  set: SetState<ApplicationState>,
+  get: GetState<ApplicationState>
 ): TerminalSlice => ({
   currentWorkingDirectory: "", // Will be set to root directory on init
 
@@ -37,7 +37,7 @@ export const createTerminalSlice = (
       "setCurrentWorkingDirectory in terminalSlice: setting to",
       directory
     );
-    set((state) => ({
+    set((state: ApplicationState) => ({
       ...state,
       currentWorkingDirectory: directory,
     }));

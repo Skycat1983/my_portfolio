@@ -71,8 +71,6 @@ const initialWhatsAppState: WhatsAppState = {
     allIds: [],
   },
   ui: {
-    currentConversation: null,
-    view: "chatList",
     typing: {},
   },
   network: {
