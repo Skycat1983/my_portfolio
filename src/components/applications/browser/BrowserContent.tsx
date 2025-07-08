@@ -73,9 +73,9 @@ export const BrowserContent = () => {
   // Theme-based styles for buttons
   const mobileToolbarButtonStyle = {
     padding: "8px",
-    backgroundColor: theme.colors.white,
+    // backgroundColor: theme.colors.white,
     border: `1px solid ${theme.colors.gray[300]}`,
-    color: theme.colors.gray[700],
+    // color: theme.colors.gray[700],
     borderRadius: "8px",
     transition: "all 0.2s ease",
     cursor: "pointer",
@@ -114,12 +114,14 @@ export const BrowserContent = () => {
             >
               <Bookmark
                 size={20}
-                style={{
-                  color: bookmarked
-                    ? theme.colors.blue[500]
-                    : theme.colors.gray[500],
-                  fill: bookmarked ? theme.colors.blue[500] : "none",
-                }}
+                style={
+                  {
+                    // color: bookmarked
+                    //   ? theme.colors.blue[500]
+                    //   : theme.colors.gray[500],
+                    // fill: bookmarked ? theme.colors.blue[500] : "none",
+                  }
+                }
               />
             </Button>
             <button

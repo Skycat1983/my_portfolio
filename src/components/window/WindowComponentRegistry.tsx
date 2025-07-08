@@ -32,6 +32,30 @@ export const WINDOW_COMPONENT_REGISTRY: Record<
   settings: Settings,
 };
 
+interface WindowDimensions {
+  width: number;
+  height: number;
+  fixed: boolean;
+}
+
+export const WINDOW_DIMENSIONS_REGISTRY: Record<
+  keyof typeof WINDOW_COMPONENT_REGISTRY,
+  WindowDimensions
+> = {
+  documentEditor: { width: 1000, height: 800, fixed: false },
+  finder: { width: 1000, height: 800, fixed: false },
+  terminal: { width: 1000, height: 800, fixed: false },
+  browser: { width: 1000, height: 800, fixed: false },
+  whatsApp: { width: 1000, height: 800, fixed: false },
+  directory: { width: 1000, height: 800, fixed: false },
+  geoGame: { width: 1000, height: 800, fixed: false },
+  gtaVi: { width: 1000, height: 800, fixed: false },
+  achievements: { width: 1000, height: 800, fixed: false },
+  maps: { width: 1000, height: 800, fixed: false },
+  calculator: { width: 1000, height: 800, fixed: true },
+  settings: { width: 1000, height: 800, fixed: false },
+};
+
 export const NODE_FUNCTION_REGISTRY = {
   test: () => {
     console.log("test");

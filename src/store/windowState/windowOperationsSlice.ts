@@ -232,7 +232,6 @@ export const createWindowOperationsSlice = (
       zIndex: state.nextZIndex,
       isMinimized: false,
       isMaximized: isMaximized,
-      isResizing: false,
       componentKey: "documentEditor",
       documentConfig: documentConfig, // Include document configuration
     };
@@ -492,7 +491,6 @@ export const createWindowOperationsSlice = (
       zIndex: state.nextZIndex,
       isMinimized: false,
       isMaximized: isMaximized,
-      isResizing: false,
       componentKey, // Custom component key for this window
     };
 

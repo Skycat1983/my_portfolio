@@ -38,6 +38,15 @@ interface StatusColors {
 
 interface ThemeConfig {
   colors: {
+    gray: {
+      50: ColorValue;
+      100: ColorValue;
+      200: ColorValue;
+      300: ColorValue;
+      400: ColorValue;
+      500: ColorValue;
+      600: ColorValue;
+    };
     light: ThemeColors;
     dark: ThemeColors;
     status: StatusColors;
@@ -128,6 +137,15 @@ interface ThemeConfig {
 
 export const theme: ThemeConfig = {
   colors: {
+    gray: {
+      50: "#f9fafb",
+      100: "#f3f4f6",
+      200: "#e5e7eb",
+      300: "#d1d5db",
+      400: "#9ca3af",
+      500: "#6b7280",
+      600: "#4b5563",
+    },
     // Semantic color tokens
     light: {
       // Background colors

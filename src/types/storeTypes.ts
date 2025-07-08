@@ -21,6 +21,34 @@ export interface WindowContentProps {
   nodeId: string;
   window?: WindowType; // Optional for backward compatibility
 }
+// TODO: Implement these types
+
+// interface WindowBase {
+//   windowId: ApplicationEntry["id"];
+//   title: string;
+//   nodeId: NodeEntry["id"];
+//   applicationId?: ApplicationEntry["applicationId"]; // Application identity for focus/duplicate logic (optional for non-application windows)
+//   nodeType: string;
+//   height: number;
+//   width: number;
+//   x: number;
+//   y: number;
+//   zIndex: number;
+//   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
+// }
+// interface WindowFixed extends WindowBase {
+//   fixed: true;
+// }
+
+// interface WindowAdjustable extends WindowBase {
+//   fixed: false;
+//   isMinimized?: boolean;
+//   isMaximized?: boolean;
+// }
+
+// interface WindowDocument extends WindowBase {
+//   documentConfig: DocumentConfig;
+// }
 
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
@@ -28,27 +56,17 @@ export interface WindowType {
   windowId: ApplicationEntry["id"];
   title: string;
   nodeId: NodeEntry["id"];
-  applicationId?: string; // Application identity for focus/duplicate logic (optional for non-application windows)
+  applicationId?: ApplicationEntry["applicationId"]; // Application identity for focus/duplicate logic (optional for non-application windows)
   nodeType: string;
   width: number;
   height: number;
   x: number; // Window position X coordinate
   y: number; // Window position Y coordinate
   zIndex: number;
-
-  //?: Window state flags (for future features)
+  fixed: boolean;
   isMinimized?: boolean;
   isMaximized?: boolean;
-  isResizing?: boolean;
-
-  // Generic history properties (new unified approach)
-
-  // Finder-specific preview state (for column navigation)
-
-  // Flexible component rendering (new approach)
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional component key for registry lookup
-
-  // Document-specific properties (for document persistence)
   documentConfig?: DocumentConfig; // Optional document configuration for saved documents
 }
 
@@ -83,7 +101,7 @@ export type DirectoryWindow = Required<
 > & {
   nodeType: "directory";
   nodeId: DirectoryEntry["id"];
-} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
+} & Pick<WindowType, "isMinimized" | "isMaximized">;
 
 export type BrowserWindow = Required<
   Pick<
@@ -100,7 +118,7 @@ export type BrowserWindow = Required<
   >
 > & {
   nodeType: "browser";
-} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
+} & Pick<WindowType, "isMinimized" | "isMaximized">;
 
 export type TerminalWindow = Required<
   Pick<
@@ -117,7 +135,7 @@ export type TerminalWindow = Required<
   >
 > & {
   nodeType: "terminal";
-} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
+} & Pick<WindowType, "isMinimized" | "isMaximized">;
 
 export type AchievementWindow = Required<
   Pick<
@@ -134,7 +152,7 @@ export type AchievementWindow = Required<
   >
 > & {
   nodeType: "achievements";
-} & Pick<WindowType, "isMinimized" | "isMaximized" | "isResizing">;
+} & Pick<WindowType, "isMinimized" | "isMaximized">;
 
 // Document Registry Types for persistent document storage
 export type TextAlignment = "left" | "center" | "right";

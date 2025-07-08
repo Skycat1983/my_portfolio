@@ -67,7 +67,8 @@ export const selectUnreadMessageCount = (
     return (
       message &&
       message.sender !== "user_self" &&
-      message.deliveryStatus === "delivered"
+      (message.deliveryStatus === "delivered" ||
+        message.deliveryStatus === "read")
     );
   });
 
