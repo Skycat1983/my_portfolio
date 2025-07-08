@@ -8,19 +8,13 @@ import type {
 } from "@/types/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
 import type { HistorySlice } from "../contentState/historySlice";
-import { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
+import {
+  WINDOW_COMPONENT_REGISTRY,
+  WINDOW_DIMENSIONS_REGISTRY,
+} from "@/components/window/WindowComponentRegistry";
 
 // Simplified windowed node type - only directories and applications can open windows
 export type WindowedNode = Exclude<NodeEntry, { type: "easter-egg" | "link" }>;
-
-// Window sizing configuration
-const DEFAULT_WINDOW_SIZES = {
-  directory: { width: 600, height: 400 },
-  browser: { width: 1000, height: 800 },
-  terminal: { width: 1000, height: 600 },
-  game: { width: 1000, height: 600 },
-  achievements: { width: 800, height: 600 },
-} as const;
 
 // Responsive sizing constraints
 const VIEWPORT_CONSTRAINTS = {
@@ -36,6 +30,13 @@ const VIEWPORT_CONSTRAINTS = {
     minWidth: 320, // Minimum window width
     minHeight: 240, // Minimum window height
   },
+} as const;
+
+// Default fallback dimensions for components not in registry
+const FALLBACK_DIMENSIONS = {
+  width: 800,
+  height: 600,
+  fixed: false,
 } as const;
 
 export interface WindowOperationsActions {
@@ -88,9 +89,12 @@ export interface WindowOperationsActions {
   getWindowByApplicationId: (applicationId: string) => WindowType | undefined;
 
   // Responsive sizing utilities
-  getResponsiveWindowSize: (nodeType: string) => {
+  getResponsiveWindowSize: (
+    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY
+  ) => {
     width: number;
     height: number;
+    fixed: boolean;
   };
 }
 
@@ -105,9 +109,11 @@ export const createWindowOperationsSlice = (
   get: GetState<WindowOperationsSlice>
 ): WindowOperationsActions => ({
   /**
-   * Calculate responsive window size based on screen dimensions and node type
+   * Calculate responsive window size based on screen dimensions and component key
    */
-  getResponsiveWindowSize: (nodeType: string) => {
+  getResponsiveWindowSize: (
+    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY
+  ) => {
     const state = get();
     const { screenDimensions } = state;
     const {
@@ -116,7 +122,11 @@ export const createWindowOperationsSlice = (
       isMobile,
     } = screenDimensions;
 
-    // For mobile, windows should be fullscreen
+    // Get dimensions from registry, fallback to default if not found
+    const registryDimensions =
+      WINDOW_DIMENSIONS_REGISTRY[componentKey] || FALLBACK_DIMENSIONS;
+
+    // For mobile, windows should be fullscreen regardless of registry
     if (isMobile) {
       const constraints = VIEWPORT_CONSTRAINTS.mobile;
       const fullscreenWidth = Math.floor(
@@ -127,43 +137,42 @@ export const createWindowOperationsSlice = (
       );
 
       console.log(
-        `getResponsiveWindowSize in windowOperationsSlice (MOBILE): ${nodeType} - Screen: ${screenWidth}x${screenHeight}, Fullscreen: ${fullscreenWidth}x${fullscreenHeight}`
+        `getResponsiveWindowSize in windowOperationsSlice (MOBILE): ${componentKey} - Screen: ${screenWidth}x${screenHeight}, Fullscreen: ${fullscreenWidth}x${fullscreenHeight}`
       );
 
       return {
         width: Math.max(constraints.minWidth, fullscreenWidth),
         height: Math.max(constraints.minHeight, fullscreenHeight),
+        fixed: registryDimensions.fixed, // Preserve fixed property from registry
       };
     }
 
-    // For desktop, use default sizes with constraints
+    // For desktop, use registry dimensions with viewport constraints
     const constraints = VIEWPORT_CONSTRAINTS.desktop;
-    const defaultSize =
-      DEFAULT_WINDOW_SIZES[nodeType as keyof typeof DEFAULT_WINDOW_SIZES] ||
-      DEFAULT_WINDOW_SIZES.directory;
 
     // Calculate maximum allowed dimensions
     const maxWidth = Math.floor(screenWidth * constraints.maxWidthRatio);
     const maxHeight = Math.floor(screenHeight * constraints.maxHeightRatio);
 
-    // Apply constraints
+    // Apply constraints to registry dimensions
     const constrainedWidth = Math.max(
       constraints.minWidth,
-      Math.min(defaultSize.width, maxWidth)
+      Math.min(registryDimensions.width, maxWidth)
     );
 
     const constrainedHeight = Math.max(
       constraints.minHeight,
-      Math.min(defaultSize.height, maxHeight)
+      Math.min(registryDimensions.height, maxHeight)
     );
 
     console.log(
-      `getResponsiveWindowSize in windowOperationsSlice (DESKTOP): ${nodeType} - Screen: ${screenWidth}x${screenHeight}, Default: ${defaultSize.width}x${defaultSize.height}, Constrained: ${constrainedWidth}x${constrainedHeight}`
+      `getResponsiveWindowSize in windowOperationsSlice (DESKTOP): ${componentKey} - Screen: ${screenWidth}x${screenHeight}, Registry: ${registryDimensions.width}x${registryDimensions.height}, Constrained: ${constrainedWidth}x${constrainedHeight}, Fixed: ${registryDimensions.fixed}`
     );
 
     return {
       width: constrainedWidth,
       height: constrainedHeight,
+      fixed: registryDimensions.fixed,
     };
   },
 
@@ -186,9 +195,11 @@ export const createWindowOperationsSlice = (
     }
 
     const nodeId = documentNode.id;
+    const componentKey = "documentEditor";
 
-    // Use responsive sizing first to determine if we need special positioning
-    const { width, height } = state.getResponsiveWindowSize(documentNode.type);
+    // Use responsive sizing with registry
+    const { width, height, fixed } =
+      state.getResponsiveWindowSize(componentKey);
     const { screenDimensions } = state;
     const { isMobile } = screenDimensions;
 
@@ -209,7 +220,6 @@ export const createWindowOperationsSlice = (
     let isMaximized = false;
 
     // Mobile windows should be maximized by default for fullscreen experience
-    // Game applications should also be maximized by default
     if (isMobile) {
       isMaximized = true;
     }
@@ -230,9 +240,10 @@ export const createWindowOperationsSlice = (
       x,
       y,
       zIndex: state.nextZIndex,
+      fixed,
       isMinimized: false,
       isMaximized: isMaximized,
-      componentKey: "documentEditor",
+      componentKey: componentKey,
       documentConfig: documentConfig, // Include document configuration
     };
 
@@ -447,8 +458,9 @@ export const createWindowOperationsSlice = (
 
     const nodeId = node.id;
 
-    // Use responsive sizing first to determine if we need special positioning
-    const { width, height } = state.getResponsiveWindowSize(node.type);
+    // Use responsive sizing with registry
+    const { width, height, fixed } =
+      state.getResponsiveWindowSize(componentKey);
     const { screenDimensions } = state;
     const { isMobile } = screenDimensions;
 
@@ -489,6 +501,7 @@ export const createWindowOperationsSlice = (
       x,
       y,
       zIndex: state.nextZIndex,
+      fixed,
       isMinimized: false,
       isMaximized: isMaximized,
       componentKey, // Custom component key for this window

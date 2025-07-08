@@ -4,20 +4,20 @@ export const calculatorStyles = {
 
   display: {
     container:
-      "bg-black dark:bg-gray-800 p-6 min-h-[100px] flex flex-col justify-end",
-    primary: "text-right text-4xl md:text-5xl font-light text-white truncate",
-    secondary: "text-right text-sm text-gray-400 mb-1 h-4",
+      "bg-black dark:bg-gray-800 p-4 h-[120px] flex flex-col justify-end",
+    primary: "text-right text-6xl font-light text-white truncate",
+    secondary: "text-right text-xs text-gray-400 mb-1 h-3",
   },
 
   keypad: {
-    container: "flex-1 grid grid-cols-4 gap-1 p-2 bg-gray-200 dark:bg-gray-800",
+    container: "flex-1 grid grid-cols-4 gap-1 p-1 bg-gray-200 dark:bg-gray-800",
   },
 
   button: {
     base:
-      "h-16 md:h-20 rounded-lg font-semibold text-lg md:text-xl " +
+      "h-full rounded-md font-semibold text-base " +
       "transition-all duration-150 active:scale-95 " +
-      "focus:outline-none focus:ring-2 focus:ring-offset-2 " +
+      "focus:outline-none focus:ring-2 focus:ring-offset-1 " +
       "disabled:opacity-50 disabled:cursor-not-allowed",
 
     number:

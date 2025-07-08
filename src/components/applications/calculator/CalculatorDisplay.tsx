@@ -1,37 +1,12 @@
 import type { CalculatorDisplayProps } from "./types";
 import { calculatorStyles } from "./calculator.styles";
+import { formatDisplayValue } from "./calculatorUtils";
 
 export const CalculatorDisplay = ({
   value,
   operation,
   previousValue,
 }: CalculatorDisplayProps) => {
-  // Format the display value to handle large numbers and decimals
-  const formatDisplayValue = (val: string): string => {
-    const num = parseFloat(val);
-
-    // Handle special cases
-    if (val === "" || val === "0") return "0";
-    if (isNaN(num)) return val;
-
-    // Format large numbers with exponential notation
-    if (Math.abs(num) >= 1e15) {
-      return num.toExponential(8);
-    }
-
-    // Format numbers with proper decimal places
-    if (val.includes(".")) {
-      return val;
-    }
-
-    // Add comma separators for large whole numbers
-    if (Math.abs(num) >= 1000) {
-      return num.toLocaleString();
-    }
-
-    return val;
-  };
-
   // Create secondary display showing previous value and operation
   const getSecondaryDisplay = (): string => {
     if (
@@ -40,7 +15,12 @@ export const CalculatorDisplay = ({
       operation &&
       operation !== "="
     ) {
-      return `${previousValue.toLocaleString()} ${operation}`;
+      // Format previous value for secondary display (shorter format)
+      const formattedPrev =
+        Math.abs(previousValue) >= 1e6
+          ? previousValue.toExponential(3)
+          : previousValue.toLocaleString();
+      return `${formattedPrev} ${operation}`;
     }
     return "";
   };

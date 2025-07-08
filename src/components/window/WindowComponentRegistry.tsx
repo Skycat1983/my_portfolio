@@ -43,17 +43,17 @@ export const WINDOW_DIMENSIONS_REGISTRY: Record<
   WindowDimensions
 > = {
   documentEditor: { width: 1000, height: 800, fixed: false },
-  finder: { width: 1000, height: 800, fixed: false },
-  terminal: { width: 1000, height: 800, fixed: false },
-  browser: { width: 1000, height: 800, fixed: false },
-  whatsApp: { width: 1000, height: 800, fixed: false },
-  directory: { width: 1000, height: 800, fixed: false },
-  geoGame: { width: 1000, height: 800, fixed: false },
-  gtaVi: { width: 1000, height: 800, fixed: false },
-  achievements: { width: 1000, height: 800, fixed: false },
-  maps: { width: 1000, height: 800, fixed: false },
-  calculator: { width: 1000, height: 800, fixed: true },
-  settings: { width: 1000, height: 800, fixed: false },
+  finder: { width: 800, height: 600, fixed: false },
+  terminal: { width: 1000, height: 600, fixed: false },
+  browser: { width: 1200, height: 800, fixed: false },
+  whatsApp: { width: 900, height: 700, fixed: false },
+  directory: { width: 800, height: 600, fixed: false },
+  geoGame: { width: 1000, height: 700, fixed: false },
+  gtaVi: { width: 1200, height: 800, fixed: false },
+  achievements: { width: 800, height: 600, fixed: false },
+  maps: { width: 1000, height: 700, fixed: false },
+  calculator: { width: 400, height: 500, fixed: true },
+  settings: { width: 700, height: 600, fixed: false },
 };
 
 export const NODE_FUNCTION_REGISTRY = {
