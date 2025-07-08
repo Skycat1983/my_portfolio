@@ -49,7 +49,10 @@ export const createHistorySlice = (
   /**
    * Create a new history instance with optional initial item
    */
-  createHistory: (id: string, initialItem?: unknown): boolean => {
+  createHistory: (
+    id: HistoryInstance["id"],
+    initialItem?: unknown
+  ): boolean => {
     console.log(
       "createHistory in historySlice: creating history",
       id,

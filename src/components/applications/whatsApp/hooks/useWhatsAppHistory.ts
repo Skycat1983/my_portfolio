@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import type { WhatsAppView } from "../types";
+import type { WindowType } from "@/types/storeTypes";
 
 export interface ViewState {
   view: WhatsAppView;
@@ -32,7 +33,7 @@ interface UseWhatsAppHistoryReturn {
  * Coordinates between the generic history slice and WhatsApp state
  */
 export const useWhatsAppHistory = (
-  windowId: string
+  windowId: WindowType["windowId"]
 ): UseWhatsAppHistoryReturn => {
   const historyId = `whatsapp-${windowId}`;
 
