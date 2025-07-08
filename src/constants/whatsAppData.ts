@@ -176,14 +176,14 @@ const whatsAppConversations = {
         content: "Hello Heron, this is Tim Cook from Apple",
         sender: "ai" as const,
         timestamp: timeAgo(7200000), // 2 hours ago
-        deliveryStatus: "delivered" as const,
+        deliveryStatus: "read" as const,
       },
       {
         content:
           "Oh hey Tim, thanks for reaching out! How did you get my number?",
         sender: "user" as const,
         timestamp: timeAgo(6900000), // 1h 55m ago
-        deliveryStatus: "delivered" as const,
+        deliveryStatus: "read" as const,
       },
       {
         content:
@@ -245,7 +245,7 @@ const whatsAppConversations = {
           "Hey Heron, it was great to have you working here during those 18 months. Keep in touch! Let us know if you need anything like references etc",
         sender: "ai" as const,
         timestamp: timeAgo(31449600000), // 2 days ago
-        deliveryStatus: "delivered" as const,
+        deliveryStatus: "read" as const,
       },
       {
         content:
@@ -357,8 +357,6 @@ export const createInitialState = (): WhatsAppState => {
     const conversationData = whatsAppConversations[aiContact.id];
     const conversationId = createConversationId(USER_CONTACT.id, aiContact.id);
 
-    let lastSeenMessageId: string | null = null;
-
     // Convert conversation messages to full Message objects
     conversationData.messages.forEach((msg) => {
       const messageId = createMessageId();
@@ -374,16 +372,16 @@ export const createInitialState = (): WhatsAppState => {
       messages.push(fullMessage);
 
       // Track last seen message (last message with status "read")
-      if (msg.deliveryStatus === "read") {
-        lastSeenMessageId = messageId;
-      }
+      // if (msg.deliveryStatus === "read") {
+      //   lastSeenMessageId = messageId;
+      // }
     });
 
     // Create conversation
     conversations.push({
       id: conversationId,
       participants: [USER_CONTACT.id, aiContact.id],
-      lastSeenMessageId,
+      // lastSeenMessageId,
     });
   });
 

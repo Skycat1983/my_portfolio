@@ -55,7 +55,7 @@ export interface Message {
 export interface Conversation {
   id: string;
   participants: [Contact["id"], Contact["id"]]; // [userId, aiId]
-  lastSeenMessageId: Message["id"] | null;
+  // lastSeenMessageId: Message["id"] | null;
 }
 
 // Type helpers for ID lookups

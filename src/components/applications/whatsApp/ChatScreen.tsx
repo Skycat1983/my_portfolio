@@ -49,7 +49,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       ? "read"
       : wifiEnabled
       ? "delivered"
-      : "pending";
+      : "sent";
 
   // ! in use - Get conversation data using new visible message selectors
   const messages = selectVisibleConversationMessages(whatsApp, conversationId);

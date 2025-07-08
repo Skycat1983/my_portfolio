@@ -6,21 +6,21 @@ import type {
   MessageId,
 } from "../types";
 
-// Get pending AI messages
+// Get sent AI messages (replaces selectPendingAIMessages)
 // ! in use by useStaggeredMessageDelivery.ts
-export const selectPendingAIMessages = (state: WhatsAppState): Message[] => {
+export const selectSentMessages = (state: WhatsAppState): Message[] => {
   return state.messages.allIds
     .map((id: MessageId) => state.messages.byId[id])
     .filter(
       (message: Message | undefined): message is Message =>
         !!message &&
-        message.deliveryStatus === "pending" &&
+        message.deliveryStatus === "sent" &&
         message.sender !== "user_self"
     );
 };
 
-// Get pending messages by sender type
-export const selectPendingUserMessages = (state: WhatsAppState): Message[] => {
+// Get pending user messages (renamed from selectPendingUserMessages for clarity)
+export const selectPendingMessages = (state: WhatsAppState): Message[] => {
   return state.messages.allIds
     .map((id: MessageId) => state.messages.byId[id])
     .filter(
@@ -29,6 +29,41 @@ export const selectPendingUserMessages = (state: WhatsAppState): Message[] => {
         message.deliveryStatus === "pending" &&
         message.sender === "user_self"
     );
+};
+
+// Get sent AI messages grouped by conversation (replaces selectPendingAIMessagesByConversation)
+export const selectSentAIMessagesByConversation = (
+  state: WhatsAppState
+): Record<ConversationId, Message[]> => {
+  const sentAIMessages = selectSentMessages(state);
+  const grouped: Record<ConversationId, Message[]> = {};
+
+  sentAIMessages.forEach((message) => {
+    // For AI messages, the conversation ID is constructed from the AI sender and user receiver
+    const conversationId = `user_self_${message.sender}`;
+
+    if (!grouped[conversationId]) {
+      grouped[conversationId] = [];
+    }
+    grouped[conversationId].push(message);
+  });
+
+  // Sort messages within each conversation by timestamp
+  Object.keys(grouped).forEach((convId) => {
+    grouped[convId].sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+  });
+
+  return grouped;
+};
+
+// Get conversations that have sent AI messages
+export const selectConversationsWithSentAIMessages = (
+  state: WhatsAppState
+): ConversationId[] => {
+  return Object.keys(selectSentAIMessagesByConversation(state));
 };
 
 export const selectedConversationMessagesByStatus = (
@@ -61,14 +96,13 @@ export const selectUnreadMessageCount = (
 ): number => {
   const messageIds = state.messages.byConversation[conversationId] || [];
 
-  // Only count AI messages (not from user) that are delivered (visible to user)
+  // Only count AI messages (not from user) that are delivered but not yet read
   const unreadAIMessages = messageIds.filter((id: MessageId) => {
     const message = state.messages.byId[id];
     return (
       message &&
       message.sender !== "user_self" &&
-      (message.deliveryStatus === "delivered" ||
-        message.deliveryStatus === "read")
+      message.deliveryStatus === "delivered"
     );
   });
 
@@ -93,8 +127,8 @@ export const selectVisibleLastMessage = (
   return visibleMessages[visibleMessages.length - 1];
 };
 
-// Get visible messages in a conversation (excludes pending non-user messages)
-// ! this is used to get messages which are not pending and not from the user
+// Get visible messages in a conversation (excludes sent non-user messages)
+// ! this is used to get messages which are not sent and not from the user
 export const selectVisibleConversationMessages = (
   state: WhatsAppState,
   conversationId: ConversationId
@@ -104,9 +138,9 @@ export const selectVisibleConversationMessages = (
     .map((id: MessageId) => state.messages.byId[id])
     .filter((message: Message | undefined): message is Message => {
       if (!message) return false;
-      // Show all user messages, but hide pending non-user messages
+      // Show all user messages, but hide sent non-user messages
       if (message.sender === "user_self") return true;
-      return message.deliveryStatus !== "pending";
+      return message.deliveryStatus !== "sent";
     });
 };
 
@@ -141,51 +175,3 @@ export const selectConversationMessageStatus = (
     hasPending: pendingCount > 0,
   };
 };
-
-// // Message Selectors
-// export const selectConversationMessages = (
-//   state: WhatsAppState,
-//   conversationId: ConversationId
-// ): Message[] => {
-//   const messageIds = state.messages.byConversation[conversationId] || [];
-//   return messageIds
-//     .map((id: MessageId) => state.messages.byId[id])
-//     .filter((message: Message | undefined): message is Message => !!message);
-// };
-
-// // ? not in use?
-// export const selectLastMessage = (
-//   state: WhatsAppState,
-//   conversationId: ConversationId
-// ): Message | undefined => {
-//   const messageIds = state.messages.byConversation[conversationId] || [];
-//   const lastMessageId = messageIds[messageIds.length - 1];
-//   return lastMessageId ? state.messages.byId[lastMessageId] : undefined;
-// };
-// Get all pending message IDs (for bulk operations)
-// export const selectPendingMessageIds = (state: WhatsAppState): MessageId[] => {
-//   return state.messages.allIds.filter((id: MessageId) => {
-//     const message = state.messages.byId[id];
-//     return message && message.deliveryStatus === "pending";
-//   });
-// };
-// export const selectPendingMessagesInConversation = (
-//   state: WhatsAppState,
-//   conversationId: ConversationId
-// ): Message[] => {
-//   const messageIds = state.messages.byConversation[conversationId] || [];
-//   return messageIds
-//     .map((id: MessageId) => state.messages.byId[id])
-//     .filter(
-//       (message: Message | undefined): message is Message =>
-//         !!message && message.deliveryStatus === "pending"
-//     );
-// };
-
-// export const selectConversationsWithPendingMessages = (
-//   state: WhatsAppState
-// ): ConversationId[] => {
-//   return state.conversations.allIds.filter((convId) => {
-//     return selectPendingMessagesInConversation(state, convId).length > 0;
-//   });
-// };

@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import {
-  selectConversationsWithPendingAIMessages,
-  selectPendingAIMessagesByConversation,
-} from "../selectors/conversationSelectors";
+  selectConversationsWithSentAIMessages,
+  selectSentAIMessagesByConversation,
+} from "../selectors/messageSelectors";
 
 /**
  * Custom hook to handle staggered message delivery when WiFi comes back online.
- * Automatically processes pending messages with realistic timing and typing indicators.
+ * Automatically processes pending and sent messages with realistic timing and typing indicators.
  * Also tracks lastSeen timestamp when going offline.
  *
  * @param wifiEnabled - Current WiFi enabled state
@@ -46,33 +46,34 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
           "WhatsApp: useStaggeredMessageDelivery wifiEnabled",
           wifiEnabled
         );
-        // Step 1: Instantly deliver all user messages
+
+        // Step 1: Instantly deliver all pending user messages
         markUserMessagesAsDelivered();
 
-        // Step 2: Get current state of conversations with pending AI messages
-        const conversationsWithPendingAI =
-          selectConversationsWithPendingAIMessages(whatsApp);
+        // Step 2: Get current state of conversations with sent AI messages
+        const conversationsWithSentAI =
+          selectConversationsWithSentAIMessages(whatsApp);
         console.log(
-          "WhatsApp: useStaggeredMessageDelivery Conversations with pending AI messages:",
-          conversationsWithPendingAI
+          "WhatsApp: useStaggeredMessageDelivery Conversations with sent AI messages:",
+          conversationsWithSentAI
         );
 
-        if (conversationsWithPendingAI.length === 0) {
-          console.log("No pending AI messages to process");
+        if (conversationsWithSentAI.length === 0) {
+          console.log("No sent AI messages to process");
           return;
         }
 
         // Step 3: Process each conversation with staggered timing
-        const pendingAIMessagesByConv =
-          selectPendingAIMessagesByConversation(whatsApp);
+        const sentAIMessagesByConv =
+          selectSentAIMessagesByConversation(whatsApp);
 
-        for (const conversationId of conversationsWithPendingAI) {
-          const pendingMessages = pendingAIMessagesByConv[conversationId] || [];
+        for (const conversationId of conversationsWithSentAI) {
+          const sentMessages = sentAIMessagesByConv[conversationId] || [];
           console.log(
-            `WhatsApp: useStaggeredMessageDelivery Processing ${pendingMessages.length} messages for conversation ${conversationId}`
+            `WhatsApp: useStaggeredMessageDelivery Processing ${sentMessages.length} sent messages for conversation ${conversationId}`
           );
 
-          for (const message of pendingMessages) {
+          for (const message of sentMessages) {
             // Start typing indicator
             setTyping(conversationId, true);
             console.log(

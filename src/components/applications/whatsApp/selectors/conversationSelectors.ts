@@ -8,7 +8,6 @@ import {
   type MessageId,
 } from "../types";
 import {
-  selectPendingAIMessages,
   selectUnreadMessageCount,
   selectVisibleLastMessage,
 } from "./messageSelectors";
@@ -44,6 +43,7 @@ export const selectConversationPreview = (
 
   const lastMessage = selectVisibleLastMessage(state, conversationId);
   const unreadCount = selectUnreadMessageCount(state, conversationId);
+  console.log("WhatsApp: selectConversationPreview unreadCount", unreadCount);
   const isTyping = selectIsTyping(state, conversationId);
 
   console.log(`WhatsApp: selectConversationPreview for ${conversationId}:`, {
@@ -89,41 +89,6 @@ export const selectActiveConversationPreviews = (state: WhatsAppState) => {
     );
 
   return sortConversationPreviewsByTime(previews);
-};
-
-// Get pending AI messages grouped by conversation
-export const selectPendingAIMessagesByConversation = (
-  state: WhatsAppState
-): Record<ConversationId, Message[]> => {
-  const pendingAIMessages = selectPendingAIMessages(state);
-  const grouped: Record<ConversationId, Message[]> = {};
-
-  pendingAIMessages.forEach((message) => {
-    // For AI messages, the conversation ID is constructed from the AI sender and user receiver
-    const conversationId = `user_self_${message.sender}`;
-
-    if (!grouped[conversationId]) {
-      grouped[conversationId] = [];
-    }
-    grouped[conversationId].push(message);
-  });
-
-  // Sort messages within each conversation by timestamp
-  Object.keys(grouped).forEach((convId) => {
-    grouped[convId].sort(
-      (a, b) =>
-        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    );
-  });
-
-  return grouped;
-};
-
-// Get conversations that have pending AI messages
-export const selectConversationsWithPendingAIMessages = (
-  state: WhatsAppState
-): ConversationId[] => {
-  return Object.keys(selectPendingAIMessagesByConversation(state));
 };
 
 // Get delivered messages in a conversation (eligible for read marking)

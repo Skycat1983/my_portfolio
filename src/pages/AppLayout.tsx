@@ -12,7 +12,6 @@ import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryContent } from "../components/applications/directory/DirectoryContent";
 import { desktopRootId } from "../constants/nodes";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
-import { useMessageStatus } from "@/components/applications/whatsApp/hooks/useMessageStatus";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -29,7 +28,6 @@ export const AppLayout = () => {
 
   // Handle staggered message delivery when wifi comes back online
   useStaggeredMessageDelivery(wifiEnabled);
-  useMessageStatus();
 
   // Monitor screen dimensions and update store
   const screenInfo = useScreenMonitor();

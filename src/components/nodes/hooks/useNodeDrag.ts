@@ -20,11 +20,11 @@ export const useNodeDrag = (): DragHandlers => {
   );
 
   // Subscribe to nodeMap to ensure our callbacks update when data changes
-  const nodeMap = useNewStore((s) => s.nodeMap);
+  // const nodeMap = useNewStore((s) => s.nodeMap);
   const moveNodeByID = useNewStore((s) => s.moveNodeByID);
   const validateMoveByID = useNewStore((s) => s.validateMoveByID);
 
-  console.log("NODE_DRAG_HOOK: nodeMap", nodeMap);
+  console.log("NODE_DRAG_HOOK: nodeMap");
 
   // Throttle validation to prevent excessive console logging
   const lastValidationTime = useRef<number>(0);

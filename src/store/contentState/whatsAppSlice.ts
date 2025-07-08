@@ -54,7 +54,7 @@ export interface WhatsAppActions {
     oldStatus?: DeliveryStatus
   ) => void;
   markPendingMessagesAsDelivered: () => void;
-  markConversationMessagesAsRead: (conversationId: ConversationId) => void;
+  markConversationMessagesAsRead: (conversationId: Conversation["id"]) => void;
 
   // Individual message status actions for staggered delivery
   updateSingleMessageStatus: (
@@ -377,13 +377,27 @@ export const createWhatsAppSlice = (
           state.whatsApp.messages.byConversation[conversationId] || [];
         if (messageIds.length === 0) return {};
 
+        console.log(
+          "WhatsApp: markConversationMessagesAsRead",
+          conversationId,
+          messageIds
+        );
+
         const updatedById = { ...state.whatsApp.messages.byId };
         let hasChanges = false;
 
         // Update all delivered messages in this conversation to read status
         messageIds.forEach((messageId) => {
           const message = updatedById[messageId];
+          console.log(
+            "WhatsApp: markConversationMessagesAsRead message",
+            message
+          );
           if (message && message.deliveryStatus === "delivered") {
+            console.log(
+              "WhatsApp: markConversationMessagesAsRead message is delivered",
+              message
+            );
             updatedById[messageId] = {
               ...message,
               deliveryStatus: "read",
@@ -468,7 +482,7 @@ export const createWhatsAppSlice = (
         if (
           !message ||
           message.sender === "user_self" ||
-          message.deliveryStatus !== "pending"
+          message.deliveryStatus !== "sent"
         ) {
           return {};
         }

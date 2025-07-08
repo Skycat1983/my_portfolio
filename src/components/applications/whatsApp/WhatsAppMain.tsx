@@ -7,6 +7,7 @@ import { ContactScreen } from "./ContactScreen";
 import { CircleUserRound } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
 import type { WindowType } from "@/types/storeTypes";
+import type { Conversation } from "./types";
 
 interface WhatsAppMainProps {
   windowId: WindowType["windowId"];
@@ -18,8 +19,8 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
 
   const archiveContact = useNewStore((state) => state.archiveContact);
   const unarchiveContact = useNewStore((state) => state.unarchiveContact);
-  const markConversationAsRead = useNewStore(
-    (state) => state.markConversationAsRead
+  const markConversationMessagesAsRead = useNewStore(
+    (state) => state.markConversationMessagesAsRead
   );
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   console.log("whatsApp: wifiEnabled", wifiEnabled);
@@ -33,11 +34,11 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   }, [cleanup]);
 
   const handleConversationClick = React.useCallback(
-    (conversationId: string) => {
-      markConversationAsRead(conversationId);
+    (conversationId: Conversation["id"]) => {
+      markConversationMessagesAsRead(conversationId);
       navigateToView("chat", { conversationId });
     },
-    [markConversationAsRead, navigateToView]
+    [markConversationMessagesAsRead, navigateToView]
   );
 
   const handleArchiveClick = React.useCallback(() => {
