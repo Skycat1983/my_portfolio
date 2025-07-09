@@ -4,25 +4,25 @@ import { browserButtonStyles, urlInputStyle } from "./BrowserFrame.styles";
 import { useBrowserHistory } from "./hooks/useBrowserHistory";
 import { useNewStore } from "@/hooks/useStore";
 import { PREDEFINED_ADDRESS } from "@/constants/urls";
+import type { WindowType } from "@/types/storeTypes";
 
 interface BrowserNavigationProps {
-  windowId: string;
+  windowId: WindowType["windowId"];
+  addressBarUrl: string;
+  setAddressBarUrl: (url: string) => void;
 }
 
-export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
+export const BrowserNavigation = ({
+  windowId,
+  addressBarUrl,
+  setAddressBarUrl,
+}: BrowserNavigationProps) => {
   const predefinedAddress = PREDEFINED_ADDRESS;
 
-  // Use new browser history system
-  const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
   const screenDimensions = useNewStore((s) => s.screenDimensions);
-  const updateWindowById = useNewStore((s) => s.updateWindowById);
+  const browserHistory = useBrowserHistory(windowId, addressBarUrl);
 
-  // Get URL from store instead of local state
-  const url = browserWindow.url || "";
-  const addressPosition = url?.length ?? 0;
-
-  // Use new browser history hook
-  const browserHistory = useBrowserHistory(windowId);
+  console.log("BrowserNavigation: browserHistory", browserHistory);
 
   const handleBack = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -48,18 +48,19 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
     // Update URL based on typed character count
     if (typedCharCount <= predefinedAddress.length) {
       const newUrl = predefinedAddress.substring(0, typedCharCount);
-      updateWindowById(windowId, { url: newUrl });
+      setAddressBarUrl(newUrl);
+      // updateWindowById(windowId, { url: newUrl });
     }
   };
 
   const handleNavigateToUrl = () => {
     // If URL is empty, don't add to history
-    if (addressPosition === 0 || url === "") {
+    if (browserHistory.currentIndex === 0 || addressBarUrl === "") {
       return;
     }
 
     // Add current URL to history using new browser history
-    browserHistory.navigateToUrl(url);
+    browserHistory.navigateToUrl(addressBarUrl);
   };
 
   const handleUrlKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -70,7 +71,10 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
     }
 
     // Prevent typing beyond predefined address length
-    if (e.key.length === 1 && addressPosition >= predefinedAddress.length) {
+    if (
+      e.key.length === 1 &&
+      browserHistory.currentIndex >= predefinedAddress.length
+    ) {
       e.preventDefault();
     }
   };
@@ -153,7 +157,7 @@ export const BrowserNavigation = ({ windowId }: BrowserNavigationProps) => {
         />
         <input
           type="text"
-          value={url}
+          value={addressBarUrl}
           onChange={handleUrlChange}
           onKeyDown={handleUrlKeyDown}
           onClick={handleUrlClick}

@@ -1,200 +1,117 @@
-import { useState, useEffect, useRef } from "react";
-import { Bookmark, Settings } from "lucide-react";
-import { useNewStore } from "@/hooks/useStore";
+import { useEffect, useRef, useState } from "react";
+
 import { StartPage } from "./fake_pages/StartPage";
 import { IncompletePage } from "./fake_pages/IncompletePage";
 import { QueuePage } from "./fake_pages/QueuePage";
-import { BrowserNavigation } from "./BrowserNavigation";
-import { OfflinePage } from "./fake_pages/OfflinePage";
-import { theme } from "@/styles/theme";
-import { Button } from "@/components/ui/button";
-import { useBrowserHistory } from "./hooks/useBrowserHistory";
+import type { WindowType } from "@/types/storeTypes";
+import { useNewStore } from "@/hooks/useStore";
+import { WindowHistoryNavigation } from "@/components/window/windowNavigation/WindowHistoryNavigation";
+import { BrowserAddressBar } from "./BrowserAddressBar";
+import { BrowserBookmarks } from "./BrowserBookmarks";
+import { BrowserDownload } from "./BrowserDownload";
+import { PREDEFINED_ADDRESS } from "@/constants/urls";
 
 // TODO: when we click on 'search' we should focus on the search bar
 
-export const BrowserContent = () => {
-  const [bookmarked, setBookmarked] = useState(false);
-  const [scrollPositions, setScrollPositions] = useState<
-    Record<string, number>
-  >({});
+const WEB_PAGE_REGISTRY: Record<string, React.ComponentType> = {
+  "www.how-is-he-still-unemployed.com": QueuePage,
+};
+
+const renderContent = (addressBarUrl: string) => {
+  console.log("BROWSER_DEBUG renderContent", addressBarUrl);
+  if (addressBarUrl === "" || addressBarUrl === undefined) {
+    return <StartPage />;
+  }
+
+  const page = WEB_PAGE_REGISTRY[addressBarUrl];
+  if (page) {
+    const PageComponent = page;
+    return <PageComponent />;
+  }
+
+  return <IncompletePage url={addressBarUrl} />;
+};
+
+interface BrowserContentProps {
+  windowId: WindowType["windowId"];
+}
+
+export const BrowserContent = ({ windowId }: BrowserContentProps) => {
+  const predefinedAddress = PREDEFINED_ADDRESS;
+  const initialUrl = "";
+  const [addressBarUrl, setAddressBarUrl] = useState(initialUrl);
+  const [addressViewed, setAddressViewed] = useState(initialUrl);
+  const precicate = (window: WindowType) => window.windowId === windowId;
+  const window = useNewStore((state) => state.findOneWindow(precicate))!;
+  console.log("BROWSER_DEBUG window", window);
+  const addToHistory = useNewStore((state) => state.addToHistory);
+
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const window = useNewStore((s) => s.getWindowByApplicationId("browser"));
-  const screenDimensions = useNewStore((s) => s.screenDimensions);
-  const wifiEnabled = useNewStore((s) => s.wifiEnabled);
-
-  // Use browser history to get current page URL
-  const browserHistory = useBrowserHistory(window?.windowId || "");
-  const currentPage = browserHistory.currentUrl || "";
-
-  // Restore scroll position when page changes
+  // Simple scroll to top when page changes
   useEffect(() => {
-    if (contentRef.current && currentPage) {
-      const savedScrollPosition = scrollPositions[currentPage] || 0;
-      contentRef.current.scrollTop = savedScrollPosition;
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
     }
-  }, [currentPage, scrollPositions]);
-
-  if (!window) {
-    return null;
-  }
-  const { windowId } = window;
-
-  const handleBookmarkToggle = () => {
-    setBookmarked(!bookmarked);
-  };
-
-  // Track scroll position for current page
-  const handleScroll = () => {
-    if (contentRef.current && currentPage) {
-      const scrollTop = contentRef.current.scrollTop;
-      setScrollPositions((prev) => ({
-        ...prev,
-        [currentPage]: scrollTop,
-      }));
-    }
-  };
-
-  // Render different pages based on currentPage state
-  const renderPageContent = () => {
-    if (!wifiEnabled) {
-      return <OfflinePage />;
-    }
-    switch (currentPage) {
-      case "":
-        return <StartPage />;
-      case "www.how-is-he-still-unemployed.com":
-        return <QueuePage />;
-      default:
-        return <IncompletePage windowId={windowId} />;
-    }
-  };
-
-  // Theme-based styles for buttons
-  const mobileToolbarButtonStyle = {
-    padding: "8px",
-    // backgroundColor: theme.colors.white,
-    border: `1px solid ${theme.colors.gray[300]}`,
-    // color: theme.colors.gray[700],
-    borderRadius: "8px",
-    transition: "all 0.2s ease",
-    cursor: "pointer",
-  };
+  }, [addressViewed]);
 
   // Mobile: Navigation at bottom, Desktop: Navigation at top
-  if (screenDimensions.isMobile) {
-    return (
-      <div className="h-full flex flex-col bg-white pt-10">
-        {/* Page content area - takes full height minus navigation */}
-        <div
-          ref={contentRef}
-          className="flex-1 overflow-auto p-4"
-          onScroll={handleScroll}
-        >
-          {renderPageContent()}
-        </div>
 
-        {/* Mobile Navigation at Bottom */}
-        <BrowserNavigation windowId={windowId} />
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const typedCharCount = inputValue.length;
 
-        {/* Mobile bottom toolbar - simplified */}
-        <div
-          className="h-12 border-t flex items-center justify-center px-4"
-          style={{
-            backgroundColor: theme.colors.gray[50],
-            borderTopColor: theme.colors.gray[200],
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={handleBookmarkToggle}
-              style={mobileToolbarButtonStyle}
-              className="touch-manipulation hover:bg-gray-100"
-              aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
-            >
-              <Bookmark
-                size={20}
-                style={
-                  {
-                    // color: bookmarked
-                    //   ? theme.colors.blue[500]
-                    //   : theme.colors.gray[500],
-                    // fill: bookmarked ? theme.colors.blue[500] : "none",
-                  }
-                }
-              />
-            </Button>
-            <button
-              style={mobileToolbarButtonStyle}
-              className="touch-manipulation hover:bg-gray-100"
-              aria-label="Settings"
-            >
-              <Settings size={20} style={{ color: theme.colors.gray[500] }} />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    // Update URL based on typed character count
+    if (typedCharCount <= predefinedAddress.length) {
+      const newUrl = predefinedAddress.substring(0, typedCharCount);
+      setAddressBarUrl(newUrl);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      console.log("BROWSER_DEBUG handleKeyDown", e.currentTarget.value);
+      setAddressViewed(e.currentTarget.value);
+      addToHistory(windowId, e.currentTarget.value);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    console.log("BROWSER_DEBUG handleClick", e.currentTarget.value);
+  };
+
+  const handleHistoryChange = (currentItem: unknown, currentIndex: number) => {
+    console.log("BROWSER_DEBUG handleHistoryChange", currentItem, currentIndex);
+    if (typeof currentItem === "string") {
+      setAddressViewed(currentItem);
+      setAddressBarUrl(currentItem);
+    }
+  };
 
   // Desktop: Navigation at top (original layout)
   return (
-    <div className="h-full flex flex-col bg-white">
-      {/* Browser Navigation/Address Bar */}
-      <BrowserNavigation windowId={windowId} />
-
-      {/* Page content area */}
-      <div
-        ref={contentRef}
-        className="flex-1 overflow-auto p-6"
-        onScroll={handleScroll}
-      >
-        {renderPageContent()}
+    <div className="h-full flex flex-col">
+      <div className="flex-none sticky top-0 bg-neutral-300 z-10 flex items-center gap-4 p-4">
+        {/* <h1 className="text-2xl font-bold text-black">TEMP</h1> */}
+        <WindowHistoryNavigation
+          windowId={windowId}
+          firstHistoryItem={initialUrl}
+          showForwardButton={true}
+          showBackButton={true}
+          onHistoryChange={handleHistoryChange}
+        />
+        <BrowserAddressBar
+          value={addressBarUrl}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onClick={handleClick}
+        />
+        <BrowserBookmarks />
+        <BrowserDownload />
       </div>
 
-      {/* Bottom toolbar */}
-      <div className="h-10 bg-gray-100 border-t border-gray-200 flex items-center justify-between px-4">
-        <div className="flex items-center gap-2 text-xs text-gray-600">
-          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-          <span>
-            {currentPage === "start" && "Ready to browse"}
-            {currentPage === "incomplete" && "URL incomplete"}
-            {currentPage === "complete" && "Queue processing"}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleBookmarkToggle}
-            className="p-1 hover:bg-gray-200 rounded transition-colors"
-            aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleBookmarkToggle();
-              }
-            }}
-          >
-            <Bookmark
-              size={14}
-              className={
-                bookmarked ? "text-yellow-500 fill-current" : "text-gray-500"
-              }
-            />
-          </button>
-          <button
-            className="p-1 hover:bg-gray-200 rounded transition-colors"
-            aria-label="Settings"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                console.log("Settings clicked");
-              }
-            }}
-          >
-            <Settings size={14} className="text-gray-500" />
-          </button>
-        </div>
+      <div ref={contentRef} className="flex-1 overflow-auto">
+        {renderContent(addressViewed)}
       </div>
     </div>
   );

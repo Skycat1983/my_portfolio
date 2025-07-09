@@ -11,7 +11,7 @@ interface UseBrowserHistoryReturn {
   // Query methods
   canGoBack: boolean;
   canGoForward: boolean;
-  currentUrl: string | undefined;
+  currentAddressItem: string | undefined;
   historyLength: number;
 
   // History state
@@ -24,7 +24,8 @@ interface UseBrowserHistoryReturn {
  * Coordinates between the generic history slice and window state
  */
 export const useBrowserHistory = (
-  windowId: string
+  windowId: string,
+  url: string
 ): UseBrowserHistoryReturn => {
   const historyId = `browser-${windowId}`;
 
@@ -32,6 +33,9 @@ export const useBrowserHistory = (
   const window = useNewStore((state) => state.getWindowById(windowId));
 
   // History slice actions
+  // User on render
+  const histories = useNewStore((state) => state.histories);
+  console.log("BROWSER_DEBUG histories", histories);
   const createHistory = useNewStore((state) => state.createHistory);
   const historyExists = useNewStore((state) => state.historyExists);
   const addToHistory = useNewStore((state) => state.addToHistory);
@@ -54,31 +58,30 @@ export const useBrowserHistory = (
   useEffect(() => {
     if (!historyExists(historyId) && window) {
       // Initialize with current window URL or empty string for start page
-      const initialUrl = "";
       console.log(
         "useBrowserHistory: initializing history for",
         historyId,
         "with url:",
-        initialUrl
+        url
       );
-      createHistory(historyId, initialUrl);
+      createHistory(historyId, "start");
     }
-  }, [historyId, historyExists, createHistory, window]);
+  }, [historyId, historyExists, createHistory, window, url]);
 
   // Get current history state
-  const currentUrl = getCurrentItem(historyId) as string | undefined;
+  const currentAddressItem = getCurrentItem(historyId) as string | undefined;
   const currentIndex = getCurrentIndex(historyId);
   const historyItems = getHistoryItems(historyId) as string[];
   const historyLength = getHistoryLength(historyId);
   const canGoBack = canGoBackInHistory(historyId);
   const canGoForward = canGoForwardInHistory(historyId);
 
-  console.log("useBrowserHistory: canGoBack", canGoBack);
-  console.log("useBrowserHistory: canGoForward", canGoForward);
-  console.log("useBrowserHistory: currentUrl", currentUrl);
-  console.log("useBrowserHistory: historyLength", historyLength);
-  console.log("useBrowserHistory: historyItems", historyItems);
-  console.log("useBrowserHistory: currentIndex", currentIndex);
+  // console.log("useBrowserHistory: canGoBack", canGoBack);
+  // console.log("useBrowserHistory: canGoForward", canGoForward);
+  // console.log("useBrowserHistory: currentUrl", currentUrl);
+  // console.log("useBrowserHistory: historyLength", historyLength);
+  // console.log("useBrowserHistory: historyItems", historyItems);
+  // console.log("useBrowserHistory: currentIndex", currentIndex);
 
   /**
    * Navigate to a specific URL and update both history and window
@@ -277,7 +280,7 @@ export const useBrowserHistory = (
     // Query methods
     canGoBack,
     canGoForward,
-    currentUrl,
+    currentAddressItem,
     historyLength,
 
     // History state
