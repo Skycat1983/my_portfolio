@@ -1,8 +1,13 @@
-import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
+import type {
+  ApplicationState,
+  SetState,
+  GetState,
+  WindowType,
+} from "@/types/storeTypes";
 
 // Generic history instance that can store any type of items
 export interface HistoryInstance<T = unknown> {
-  id: string; // Unique identifier for this history
+  id: WindowType["windowId"]; // Unique identifier for this history
   items: T[]; // Generic array of history items
   currentIndex: number; // Current position (-1 = no items, 0 = first item)
 }
@@ -14,13 +19,18 @@ export interface HistoryCollection {
 
 export interface HistoryActions {
   // === LIFECYCLE OPERATIONS ===
+  initializeHistory: (
+    id: HistoryInstance["id"],
+    initialItem: unknown
+  ) => boolean;
+
   createHistory: (id: HistoryInstance["id"], initialItem?: unknown) => boolean;
   deleteHistory: (id: HistoryInstance["id"]) => boolean;
   clearHistory: (id: HistoryInstance["id"]) => boolean;
   historyExists: (id: HistoryInstance["id"]) => boolean;
 
   // === NAVIGATION OPERATIONS ===
-  addToHistory: (id: string, item: unknown) => boolean;
+  addToHistory: (id: HistoryInstance["id"], item: unknown) => boolean;
   goBack: (id: HistoryInstance["id"]) => boolean;
   goForward: (id: HistoryInstance["id"]) => boolean;
   goToIndex: (id: HistoryInstance["id"], index: number) => boolean;
@@ -46,17 +56,54 @@ export const createHistorySlice = (
 
   // === LIFECYCLE OPERATIONS ===
 
+  initializeHistory: (
+    id: HistoryInstance["id"],
+    initialItem: unknown
+  ): boolean => {
+    console.log(
+      "BROWSER_DEBUG initializeHistory in historySlice:",
+      id,
+      initialItem
+    );
+
+    const state = get();
+
+    // If history already exists, don't reinitialize
+    if (state.histories[id]) {
+      console.log("initializeHistory: history already exists", id);
+      return false;
+    }
+
+    // Create new history instance
+    const newHistory: HistoryInstance = {
+      id,
+      items: [initialItem],
+      currentIndex: 0,
+    };
+
+    set((state) => ({
+      histories: {
+        ...state.histories,
+        [id]: newHistory,
+      },
+    }));
+
+    return true;
+  },
+
   /**
    * Create a new history instance with optional initial item
    */
-  createHistory: (
-    id: HistoryInstance["id"],
-    initialItem?: unknown
-  ): boolean => {
+  createHistory: (id: HistoryInstance["id"], initialItem: unknown): boolean => {
+    // console.log(
+    //   "createHistory in historySlice: creating history",
+    //   id,
+    //   "with initialItem:",
+    //   initialItem
+    // );
     console.log(
-      "createHistory in historySlice: creating history",
+      "BROWSER_DEBUG createHistory in historySlice:",
       id,
-      "with initialItem:",
       initialItem
     );
 
@@ -69,8 +116,8 @@ export const createHistorySlice = (
 
     const newHistory: HistoryInstance = {
       id,
-      items: initialItem !== undefined ? [initialItem] : [],
-      currentIndex: initialItem !== undefined ? 0 : -1,
+      items: [initialItem],
+      currentIndex: 0,
     };
 
     set((state) => ({
@@ -86,7 +133,7 @@ export const createHistorySlice = (
   /**
    * Delete a history instance
    */
-  deleteHistory: (id: string): boolean => {
+  deleteHistory: (id: HistoryInstance["id"]): boolean => {
     console.log("deleteHistory in historySlice: deleting history", id);
 
     const state = get();
@@ -110,7 +157,7 @@ export const createHistorySlice = (
   /**
    * Clear all items from a history instance but keep the instance
    */
-  clearHistory: (id: string): boolean => {
+  clearHistory: (id: HistoryInstance["id"]): boolean => {
     console.log("clearHistory in historySlice: clearing history", id);
 
     const state = get();
@@ -137,7 +184,7 @@ export const createHistorySlice = (
   /**
    * Check if a history instance exists
    */
-  historyExists: (id: string): boolean => {
+  historyExists: (id: HistoryInstance["id"]): boolean => {
     return !!get().histories[id];
   },
 
@@ -147,7 +194,7 @@ export const createHistorySlice = (
    * Add item to history and navigate to it
    * Removes any forward history if adding from middle
    */
-  addToHistory: (id: string, item: unknown): boolean => {
+  addToHistory: (id: HistoryInstance["id"], item: unknown): boolean => {
     console.log(
       "addToHistory in historySlice: adding to history",
       id,
@@ -187,7 +234,7 @@ export const createHistorySlice = (
   /**
    * Navigate back in history
    */
-  goBack: (id: string): boolean => {
+  goBack: (id: HistoryInstance["id"]): boolean => {
     console.log("goBack in historySlice: going back in history", id);
 
     const state = get();
@@ -221,7 +268,7 @@ export const createHistorySlice = (
   /**
    * Navigate forward in history
    */
-  goForward: (id: string): boolean => {
+  goForward: (id: HistoryInstance["id"]): boolean => {
     console.log("goForward in historySlice: going forward in history", id);
 
     const state = get();
@@ -255,7 +302,7 @@ export const createHistorySlice = (
   /**
    * Navigate to specific index in history
    */
-  goToIndex: (id: string, index: number): boolean => {
+  goToIndex: (id: HistoryInstance["id"], index: number): boolean => {
     console.log(
       "goToIndex in historySlice: going to index",
       index,
@@ -294,7 +341,7 @@ export const createHistorySlice = (
   /**
    * Check if can navigate back in history
    */
-  canGoBack: (id: string): boolean => {
+  canGoBack: (id: HistoryInstance["id"]): boolean => {
     const history = get().histories[id];
     return history ? history.currentIndex > 0 : false;
   },
@@ -302,7 +349,7 @@ export const createHistorySlice = (
   /**
    * Check if can navigate forward in history
    */
-  canGoForward: (id: string): boolean => {
+  canGoForward: (id: HistoryInstance["id"]): boolean => {
     const history = get().histories[id];
     return history ? history.currentIndex < history.items.length - 1 : false;
   },
@@ -310,7 +357,7 @@ export const createHistorySlice = (
   /**
    * Get current item in history
    */
-  getCurrentItem: (id: string): unknown | undefined => {
+  getCurrentItem: (id: HistoryInstance["id"]): unknown | undefined => {
     const history = get().histories[id];
     if (
       !history ||
@@ -325,7 +372,7 @@ export const createHistorySlice = (
   /**
    * Get current index in history
    */
-  getCurrentIndex: (id: string): number => {
+  getCurrentIndex: (id: HistoryInstance["id"]): number => {
     const history = get().histories[id];
     return history ? history.currentIndex : -1;
   },

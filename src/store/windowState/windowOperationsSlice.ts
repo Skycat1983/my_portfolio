@@ -43,7 +43,8 @@ export interface WindowOperationsActions {
   //   ! WINDOW VISIBILITY OPERATIONS
   openWindowWithComponentKey: (
     node: WindowedNode,
-    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY
+    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY,
+    applicationId: ApplicationEntry["applicationId"]
   ) => void;
   // NEW: Open window with document configuration (only for document nodes)
   openWindowWithDocumentConfig: (
@@ -229,10 +230,7 @@ export const createWindowOperationsSlice = (
       windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
       title: documentNode.label,
       nodeId,
-      applicationId:
-        applicationNode.type === "application"
-          ? (applicationNode as ApplicationEntry).applicationId
-          : undefined, // Set applicationId for application nodes
+      applicationId: applicationNode.applicationId,
       nodeType: documentNode.type,
       width,
       height,
@@ -447,7 +445,8 @@ export const createWindowOperationsSlice = (
   // NEW: Open window with custom component key
   openWindowWithComponentKey: (
     node: WindowedNode,
-    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY
+    componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY,
+    applicationId: ApplicationEntry["applicationId"]
   ) => {
     const state = get();
 
@@ -487,13 +486,10 @@ export const createWindowOperationsSlice = (
 
     // Create new window with responsive dimensions and custom component key
     const baseWindow: WindowType = {
-      windowId: `window-${nodeId}-${Date.now()}`, // Unique window ID
+      windowId: `${applicationId}-${Date.now()}`, // Unique window ID
       title: node.label,
       nodeId,
-      applicationId:
-        node.type === "application"
-          ? (node as import("@/types/nodeTypes").ApplicationEntry).applicationId
-          : undefined, // Set applicationId for application nodes
+      applicationId: applicationId,
       nodeType: node.type,
       width,
       height,

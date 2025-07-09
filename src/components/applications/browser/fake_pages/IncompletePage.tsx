@@ -1,13 +1,11 @@
 import { AlertCircle } from "lucide-react";
-import { useNewStore } from "@/hooks/useStore";
 
 interface IncompletePageProps {
-  windowId: string;
+  url: string;
 }
 
-export const IncompletePage = ({ windowId }: IncompletePageProps) => {
-  const browserWindow = useNewStore((s) => s.getWindowById(windowId))!;
-  const lastUrl = browserWindow.url || "";
+export const IncompletePage = ({ url }: IncompletePageProps) => {
+  const lastUrl = url || "";
 
   // Get the current URL from this window's URL property
 
