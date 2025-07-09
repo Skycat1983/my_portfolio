@@ -17,7 +17,7 @@ import type { WeatherSlice } from "@/store/systemState/weatherSlice";
 // Interface for props that window content components receive
 // Note: This is now flexible - components can define their own prop interfaces
 export interface WindowContentProps {
-  windowId: string;
+  windowId: WindowType["windowId"];
   nodeId: string;
   window?: WindowType; // Optional for backward compatibility
 }
@@ -56,7 +56,7 @@ export interface WindowType {
   windowId: ApplicationEntry["id"];
   title: string;
   nodeId: NodeEntry["id"];
-  applicationId?: ApplicationEntry["applicationId"]; // Application identity for focus/duplicate logic (optional for non-application windows)
+  applicationId: ApplicationEntry["applicationId"]; // Application identity for focus/duplicate logic (optional for non-application windows)
   nodeType: string;
   width: number;
   height: number;

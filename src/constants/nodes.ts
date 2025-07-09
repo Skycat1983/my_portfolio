@@ -405,6 +405,19 @@ export const rootNodes: DirectoryObject = {
           dateModified: "2024-03-20T09:00:00Z",
           size: 25000, // 25KB for text document
         },
+        // {
+        //   id: "downloads",
+        //   label: "Downloads",
+        //   type: "directory",
+        //   image: FOLDER_MAC,
+        //   alternativeImage: FOLDER_WINDOWS,
+        //   componentKey: "finder",
+        //   macExtension: null,
+        //   windowsExtension: null,
+        //   dateModified: "2024-03-20T10:00:00Z",
+        //   size: null,
+        //   children: [],
+        // },
       ],
     },
     {

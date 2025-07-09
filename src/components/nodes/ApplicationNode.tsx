@@ -55,7 +55,7 @@ export const ApplicationNode = ({ node, view }: Props) => {
     }
 
     console.log("APP_NODE_05: opening new window for", node.id);
-    openWindowWithComponentKey(node, componentKey);
+    openWindowWithComponentKey(node, componentKey, node.applicationId);
   }, [
     node,
     getWindowByApplicationId,

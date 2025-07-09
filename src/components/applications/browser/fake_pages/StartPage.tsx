@@ -74,7 +74,7 @@ export const StartPage = () => {
         <div
           onClick={() => {
             const downloadsFolder = ensureDownloadsFolder();
-            openWindowWithComponentKey(downloadsFolder, "finder");
+            openWindowWithComponentKey(downloadsFolder, "finder", "downloads");
           }}
           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
         >
