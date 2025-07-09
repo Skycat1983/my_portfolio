@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Columns3, Grid2x2, List } from "lucide-react";
 
 // List of major cities with their timezones
 const CITIES = [
@@ -64,6 +65,10 @@ export const Settings = ({ windowId }: SettingsProps) => {
   const fetchWeather = useNewStore((state) => state.weather.fetchWeather);
   const window = useNewStore((state) => state.getWindowById(windowId));
   const zIndex = window?.zIndex ?? 0;
+  const defaultFinderView = useNewStore((state) => state.defaultFinderView);
+  const setDefaultFinderView = useNewStore(
+    (state) => state.setDefaultFinderView
+  );
 
   // Memoize handlers
   const handleCityChange = useCallback(
@@ -103,7 +108,7 @@ export const Settings = ({ windowId }: SettingsProps) => {
   const borderColor = isDark ? "border-neutral-700" : "border-neutral-200";
 
   return (
-    <div className={`h-full w-full ${bgColor} ${textColor}`}>
+    <div className={`h-auto w-full ${bgColor} ${textColor}`}>
       <div className="p-8 space-y-6 max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">System Settings</h1>
 
@@ -166,6 +171,77 @@ export const Settings = ({ windowId }: SettingsProps) => {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Finder Settings Section */}
+        <div
+          className={`p-6 rounded-lg ${sectionBgColor} ${borderColor} border space-y-4`}
+        >
+          <h2 className="text-2xl font-semibold mb-4">Finder Settings</h2>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Default Finder View</Label>
+              <div className="flex gap-3">
+                <Button
+                  variant={
+                    defaultFinderView === "icons" ? "default" : "outline"
+                  }
+                  size="lg"
+                  className={`flex flex-col items-center justify-center h-20 w-20 ${
+                    defaultFinderView === "icons"
+                      ? isDark
+                        ? "bg-blue-600 hover:bg-blue-700"
+                        : "bg-blue-600 hover:bg-blue-700"
+                      : isDark
+                      ? "bg-neutral-700 hover:bg-neutral-600 border-neutral-600"
+                      : "bg-white hover:bg-neutral-50 border-neutral-300"
+                  }`}
+                  onClick={() => setDefaultFinderView("icons")}
+                >
+                  <Grid2x2 className="size-5 mb-1" />
+                  <span className="text-xs">Icons</span>
+                </Button>
+
+                <Button
+                  variant={defaultFinderView === "list" ? "default" : "outline"}
+                  size="lg"
+                  className={`flex flex-col items-center justify-center h-20 w-20 ${
+                    defaultFinderView === "list"
+                      ? isDark
+                        ? "bg-blue-600 hover:bg-blue-700"
+                        : "bg-blue-600 hover:bg-blue-700"
+                      : isDark
+                      ? "bg-neutral-700 hover:bg-neutral-600 border-neutral-600"
+                      : "bg-white hover:bg-neutral-50 border-neutral-300"
+                  }`}
+                  onClick={() => setDefaultFinderView("list")}
+                >
+                  <List className="size-5 mb-1" />
+                  <span className="text-xs">List</span>
+                </Button>
+
+                <Button
+                  variant={
+                    defaultFinderView === "columns" ? "default" : "outline"
+                  }
+                  size="lg"
+                  className={`flex flex-col items-center justify-center h-20 w-20 ${
+                    defaultFinderView === "columns"
+                      ? isDark
+                        ? "bg-blue-600 hover:bg-blue-700"
+                        : "bg-blue-600 hover:bg-blue-700"
+                      : isDark
+                      ? "bg-neutral-700 hover:bg-neutral-600 border-neutral-600"
+                      : "bg-white hover:bg-neutral-50 border-neutral-300"
+                  }`}
+                  onClick={() => setDefaultFinderView("columns")}
+                >
+                  <Columns3 className="size-5 mb-1" />
+                  <span className="text-xs">Columns</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>

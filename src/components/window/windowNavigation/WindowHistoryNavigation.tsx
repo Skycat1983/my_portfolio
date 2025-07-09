@@ -32,7 +32,7 @@ export const WindowHistoryNavigation = ({
       firstHistoryItem,
       onHistoryChange,
     });
-  console.log("BROWSER_DEBUG WindowHistoryNavigation history", history);
+  console.log("HISTORY_DEBUG WindowHistoryNavigation history", history);
 
   // Mobile-friendly button styles
   const mobileButtonStyles = screenDimensions.isMobile

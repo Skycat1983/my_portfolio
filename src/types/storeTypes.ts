@@ -196,6 +196,7 @@ interface SystemState {
   selectedCity: string;
   customWallpaper: string | null;
   weather: WeatherSlice;
+  defaultFinderView: "icons" | "list" | "columns";
 }
 
 // Node management state

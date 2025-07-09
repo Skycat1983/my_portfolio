@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { FinderViewControls } from "./FinderViewControls";
 import { useNewStore } from "@/hooks/useStore";
 import theme from "@/styles/theme";
+import { WindowHistoryNavigation } from "../window/windowNavigation/WindowHistoryNavigation";
 
 type FinderHeaderProps = {
   zIndex: number;
@@ -12,6 +13,7 @@ type FinderHeaderProps = {
   input: string;
   setInput: (v: string) => void;
   windowId: string;
+  nodeId: string;
 };
 
 export const FinderHeader: React.FC<FinderHeaderProps> = ({
@@ -21,10 +23,12 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
   input,
   setInput,
   windowId,
+  nodeId,
 }) => {
   const currentTheme = useNewStore((s) => s.theme);
   const bgColor = theme.colors[currentTheme].background.primary;
   const borderColor = theme.colors[currentTheme].border.primary;
+  console.log("HISTORY_DEBUG nodeId", nodeId);
   // const textColor = theme.colors[currentTheme].text.primary;
 
   return (
@@ -36,6 +40,13 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
       }}
     >
       <FinderNavigation windowId={windowId} />
+      {/* <WindowHistoryNavigation
+        windowId={windowId}
+        firstHistoryItem={nodeId}
+        showForwardButton={true}
+        showBackButton={true}
+        onHistoryChange={handleHistoryChange}
+      /> */}
 
       <Input
         placeholder="Search"

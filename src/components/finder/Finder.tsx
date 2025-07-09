@@ -7,16 +7,19 @@ import { theme } from "@/styles/theme";
 
 export const Finder = ({
   windowId,
-  nodeId,
+  nodeId = "desktop-root",
 }: {
   windowId: string;
   nodeId: string;
 }) => {
   // const nodeMap = useNewStore((s) => s.nodeMap);
+  const defaultFinderView = useNewStore((s) => s.defaultFinderView);
   const currentTheme = useNewStore((s) => s.theme);
   const window = useNewStore((s) => s.getWindowById(windowId));
   const [input, setInput] = React.useState("");
-  const [view, setView] = React.useState<"icons" | "list" | "columns">("icons");
+  const [view, setView] = React.useState<"icons" | "list" | "columns">(
+    defaultFinderView
+  );
   const zIndex = window?.zIndex ?? 0;
 
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
@@ -26,7 +29,7 @@ export const Finder = ({
     node.label.toLowerCase().includes(input.toLowerCase())
   );
 
-  console.log("FINDER_VIEW_CONTROL: window", window);
+  console.log("HISTORY_DEBUG window", window);
 
   const bgColor = theme.colors[currentTheme].background.primary;
   const borderColor = theme.colors[currentTheme].border.primary;
@@ -47,6 +50,7 @@ export const Finder = ({
         input={input}
         setInput={setInput}
         windowId={windowId}
+        nodeId={nodeId}
       />
       <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
         <FinderBody

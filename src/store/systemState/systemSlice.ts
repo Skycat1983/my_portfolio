@@ -23,6 +23,7 @@ export interface SystemState {
   timezone: string;
   selectedCity: string;
   customWallpaper: string | null;
+  defaultFinderView: "icons" | "list" | "columns";
 }
 
 interface SystemActions {
@@ -34,6 +35,7 @@ interface SystemActions {
   setTimezone: (timezone: string) => void;
   setSelectedCity: (city: string) => void;
   setCustomWallpaper: (wallpaper: string | null) => void;
+  setDefaultFinderView: (view: "icons" | "list" | "columns") => void;
 }
 
 export type SystemSlice = SystemState & SystemActions;
@@ -82,6 +84,7 @@ export const createSystemSlice = (
         : false,
     isDesktop: typeof window !== "undefined" ? window.innerWidth >= 1024 : true,
   },
+  defaultFinderView: "icons",
   toggleTheme: () =>
     set((state) => ({
       theme: state.theme === "light" ? "dark" : "light",
@@ -112,4 +115,6 @@ export const createSystemSlice = (
   setSelectedCity: (city: string) => set({ selectedCity: city }),
   setCustomWallpaper: (wallpaper: string | null) =>
     set({ customWallpaper: wallpaper }),
+  setDefaultFinderView: (view: "icons" | "list" | "columns") =>
+    set({ defaultFinderView: view }),
 });

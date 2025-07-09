@@ -59,12 +59,12 @@ export const FinderNode = ({
     // Context-aware navigation logic
     if (layout === "desktop" || !windowId) {
       // Desktop context: open new window
-      openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey);
+      openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey, "finder");
     } else {
       // Window context: use finder history for navigation
       const success = finderHistory.navigateToNode(nodeEntry.id);
       if (!success) {
-        openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey);
+        openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey, "finder");
       }
     }
   }, [

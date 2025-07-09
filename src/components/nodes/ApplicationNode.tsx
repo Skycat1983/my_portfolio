@@ -33,13 +33,6 @@ export const ApplicationNode = ({ node, view }: Props) => {
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    // console.log(
-    //   "APP_NODE_03: handleActivate called for",
-    //   node.id,
-    //   "applicationId:",
-    //   node.applicationId
-    // );
-
     // Use applicationId for focus logic to handle dock/desktop instances
     const windowAlreadyOpen = getWindowByApplicationId(node.applicationId);
     console.log("APP_NODE_02: windowAlreadyOpen", windowAlreadyOpen);
