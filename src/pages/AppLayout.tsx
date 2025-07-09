@@ -12,6 +12,7 @@ import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryContent } from "../components/applications/directory/DirectoryContent";
 import { desktopRootId } from "../constants/nodes";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
+import { Captcha } from "@/components/captcha/Captcha";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -55,6 +56,7 @@ export const AppLayout = () => {
       }}
     >
       <MenubarLayout />
+      <Captcha />
 
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
       <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
