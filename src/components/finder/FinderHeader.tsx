@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 import { FinderViewControls } from "./FinderViewControls";
 import { useNewStore } from "@/hooks/useStore";
 import theme from "@/styles/theme";
-import { WindowHistoryNavigation } from "../window/windowNavigation/WindowHistoryNavigation";
+// import { WindowHistoryNavigation } from "../window/windowNavigation/WindowHistoryNavigation";
 
 type FinderHeaderProps = {
   zIndex: number;
