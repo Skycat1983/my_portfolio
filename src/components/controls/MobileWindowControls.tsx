@@ -1,5 +1,7 @@
 import { X } from "lucide-react";
-import { createButtonStyle } from "@/styles/theme";
+import theme from "@/styles/theme";
+import { Button } from "../ui/button";
+import { useNewStore } from "@/hooks/useStore";
 
 interface MobileWindowControlsProps {
   onClose?: () => void;
@@ -8,6 +10,7 @@ interface MobileWindowControlsProps {
 export const MobileWindowControls = ({
   onClose,
 }: MobileWindowControlsProps) => {
+  const themeMode = useNewStore((state) => state.theme);
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClose?.();
@@ -15,10 +18,13 @@ export const MobileWindowControls = ({
 
   return (
     <div className="flex items-center">
-      <button
+      <Button
         onClick={handleCloseClick}
         aria-label="Close window"
-        style={createButtonStyle("mobile")}
+        style={{
+          backgroundColor: theme.colors[themeMode].background.primary,
+          color: theme.colors[themeMode].text.primary,
+        }}
         className="
           touch-manipulation
           active:scale-95
@@ -27,8 +33,8 @@ export const MobileWindowControls = ({
           transition-all duration-200
         "
       >
-        <X size={18} className="stroke-2" />
-      </button>
+        <X size={18} className="text-white" />
+      </Button>
     </div>
   );
 };

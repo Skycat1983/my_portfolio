@@ -42,7 +42,7 @@ export const GridTricks = ({
         if (arraysMatch(selected, arr1)) {
           // On hover, make first column roughly 40% width, others share remaining 60%
           onGridClassChange(
-            "grid grid-cols-[40%_30%_30%] grid-rows-4 w-full h-full"
+            "grid grid-cols-[40%_27%_33%] grid-rows-4 w-full h-full"
           );
         }
         const arr2 = [2, 5];
@@ -111,8 +111,8 @@ export const GridTricks = ({
   console.log("divsCount", divsCount);
   console.log("selected", selected);
   console.log("trickeryPhase", trickeryPhase);
-  const image =
-    trickeryPhase === 1 && selected.includes(2) ? ME_BG_REMOVED : undefined;
+  // const image =
+  //   trickeryPhase === 1 && selected.includes(2) ? ME_BG_REMOVED : undefined;
   return (
     <>
       <div
@@ -127,7 +127,11 @@ export const GridTricks = ({
               id={idx}
               selected={selected.includes(idx)}
               onToggle={onToggleSquare}
-              image={image}
+              image={
+                trickeryPhase === 1 && selected.includes(2) && idx === 2
+                  ? ME_BG_REMOVED
+                  : undefined
+              }
             />
             // </div>
           ))}

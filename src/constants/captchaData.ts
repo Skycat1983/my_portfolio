@@ -22,14 +22,13 @@ export const CAPTCHA_DATA = [
     text: "highly employable web developers",
     correctAnswers: [0, 1], // placeholder array
   },
-
-  {
-    title: "all_squares",
-    src: ME,
-    task: "select all squares",
-    text: null,
-    correctAnswers: [0, 2, 5, 3], // placeholder array
-  },
+  // {
+  //   title: "all_squares",
+  //   src: ME,
+  //   task: "select all squares",
+  //   text: null,
+  //   correctAnswers: [0, 2, 5, 3], // placeholder array
+  // },
   {
     title: "grapes",
     src: GRAPES,

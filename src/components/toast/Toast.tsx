@@ -4,11 +4,7 @@ import { useNewStore } from "@/hooks/useStore";
 import { Toaster } from "../ui/sonner";
 import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
 import { WHATSAPP } from "@/constants/images";
-import {
-  DEFAULT_MESSAGE_COUNT,
-  NON_USER_MESSAGE_COUNT,
-} from "@/constants/whatsAppData";
-import { selectVisibleConversationMessages } from "../applications/whatsApp/selectors/messageSelectors";
+import { NON_USER_MESSAGE_COUNT } from "@/constants/whatsAppData";
 
 // Create trophy icon component
 const TrophyIcon = () => (
