@@ -1,9 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-// The client gets the API key from the environment variable `VITE_GEMINI_API_KEY`.
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-});
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 interface GeminiInput {
   contents: string;
@@ -17,6 +14,21 @@ export async function whatsApp(input: GeminiInput): Promise<string> {
     // Log the enhanced system instruction for debugging
     console.log("Enhanced system instruction:", input.systemInstruction);
     console.log("Contents:", input);
+    console.log(
+      "whatsApp function: API key is",
+      apiKey ? "defined" : "undefined"
+    );
+
+    // Check if API key exists
+    if (!apiKey || apiKey === "undefined") {
+      console.log("whatsApp function: API key not found or undefined");
+      throw new Error("Gemini API key not configured");
+    }
+
+    // Initialize the client only when needed and after key validation
+    const ai = new GoogleGenAI({
+      apiKey: apiKey,
+    });
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
