@@ -5,6 +5,7 @@ import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
 import { getWindowComponent } from "./WindowComponentRegistry";
 import theme from "@/styles/theme";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface ResizableWindowProps {
   window: WindowType;
@@ -66,89 +67,101 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     : "absolute border shadow-lg rounded-lg overflow-hidden";
 
   return (
-    <div
-      className={windowClasses}
-      style={{
-        ...windowStyle,
-        backgroundColor: bgColor,
-        borderColor: borderColor,
-      }}
-      onClick={() => {
-        focusWindow(windowId);
-      }}
-    >
-      {/* Window Header with drag functionality */}
-      <WindowHeader windowId={windowId} title={title} />
+    <>
+      <AnimatePresence initial={true}>
+        <motion.div
+          v-if="isVisible"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          // style={box}
+          key="box"
+          // class="box"
+          // key="box"
+          className={windowClasses}
+          style={{
+            ...windowStyle,
+            backgroundColor: bgColor,
+            borderColor: borderColor,
+          }}
+          onClick={() => {
+            focusWindow(windowId);
+          }}
+        >
+          {/* Window Header with drag functionality */}
+          <WindowHeader windowId={windowId} title={title} />
 
-      {/* Window Content */}
-      <div
-        className="pt-9 h-full overflow-auto"
-        style={{ backgroundColor: contentBgColor }}
-      >
-        {RegistryComponent ? (
-          <RegistryComponent
-            windowId={windowId}
-            nodeId={nodeId}
-            window={window}
-          />
-        ) : (
-          <div>No component found</div>
-        )}
-      </div>
-
-      {/* Resize Handles - only show when not maximized */}
-      {!isMaximized && !fixed && (
-        <>
-          {/* North handle */}
+          {/* Window Content */}
           <div
-            className="absolute top-0 left-2 right-2 h-2 cursor-n-resize"
-            onPointerDown={onResizeStart("n")}
-          />
+            className="pt-9 h-full overflow-auto"
+            style={{ backgroundColor: contentBgColor }}
+          >
+            {RegistryComponent ? (
+              <RegistryComponent
+                windowId={windowId}
+                nodeId={nodeId}
+                window={window}
+              />
+            ) : (
+              <div>No component found</div>
+            )}
+          </div>
 
-          {/* South handle */}
-          <div
-            className="absolute bottom-0 left-2 right-2 h-2 cursor-s-resize"
-            onPointerDown={onResizeStart("s")}
-          />
+          {/* Resize Handles - only show when not maximized */}
+          {!isMaximized && !fixed && (
+            <>
+              {/* North handle */}
+              <div
+                className="absolute top-0 left-2 right-2 h-2 cursor-n-resize"
+                onPointerDown={onResizeStart("n")}
+              />
 
-          {/* East handle */}
-          <div
-            className="absolute top-2 bottom-2 right-0 w-2 cursor-e-resize"
-            onPointerDown={onResizeStart("e")}
-          />
+              {/* South handle */}
+              <div
+                className="absolute bottom-0 left-2 right-2 h-2 cursor-s-resize"
+                onPointerDown={onResizeStart("s")}
+              />
 
-          {/* West handle */}
-          <div
-            className="absolute top-2 bottom-2 left-0 w-2 cursor-w-resize"
-            onPointerDown={onResizeStart("w")}
-          />
+              {/* East handle */}
+              <div
+                className="absolute top-2 bottom-2 right-0 w-2 cursor-e-resize"
+                onPointerDown={onResizeStart("e")}
+              />
 
-          {/* Corner handles */}
-          {/* Northwest */}
-          <div
-            className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize"
-            onPointerDown={onResizeStart("nw")}
-          />
+              {/* West handle */}
+              <div
+                className="absolute top-2 bottom-2 left-0 w-2 cursor-w-resize"
+                onPointerDown={onResizeStart("w")}
+              />
 
-          {/* Northeast */}
-          <div
-            className="absolute top-0 right-0 w-2 h-2 cursor-ne-resize"
-            onPointerDown={onResizeStart("ne")}
-          />
+              {/* Corner handles */}
+              {/* Northwest */}
+              <div
+                className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize"
+                onPointerDown={onResizeStart("nw")}
+              />
 
-          {/* Southwest */}
-          <div
-            className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize"
-            onPointerDown={onResizeStart("sw")}
-          />
+              {/* Northeast */}
+              <div
+                className="absolute top-0 right-0 w-2 h-2 cursor-ne-resize"
+                onPointerDown={onResizeStart("ne")}
+              />
 
-          {/* Southeast */}
-          <div
-            className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize"
-            onPointerDown={onResizeStart("se")}
-          />
-        </>
-      )}
-    </div>
+              {/* Southwest */}
+              <div
+                className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize"
+                onPointerDown={onResizeStart("sw")}
+              />
+
+              {/* Southeast */}
+              <div
+                className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize"
+                onPointerDown={onResizeStart("se")}
+              />
+            </>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </>
   );
 };
