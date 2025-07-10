@@ -39,16 +39,13 @@ export const StartPage = () => {
   const buttonLabel = isDownloading ? "Downloading..." : `Download Egg`;
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto p-8">
       {/* Header */}
       <header className="mb-8 text-center">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <Globe className="w-8 h-8 text-blue-500" />
-          <h1 className="text-3xl font-bold text-gray-900">
-            Welcome to Internet
-          </h1>
+          <h1 className="text-3xl font-bold text-white">Welcome to Internet</h1>
         </div>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-white">
           Your gateway to explore, learn, & discover
         </p>
       </header>

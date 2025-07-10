@@ -2,20 +2,20 @@ import { useEffect, useRef, useState } from "react";
 
 import { StartPage } from "./fake_pages/StartPage";
 import { IncompletePage } from "./fake_pages/IncompletePage";
-import { QueuePage } from "./fake_pages/QueuePage";
 import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
 import { WindowHistoryNavigation } from "@/components/window/windowNavigation/WindowHistoryNavigation";
 import { BrowserAddressBar } from "./BrowserAddressBar";
 import { BrowserBookmarks } from "./BrowserBookmarks";
 import { BrowserDownload } from "./BrowserDownload";
-import { PREDEFINED_ADDRESS } from "@/constants/urls";
+import {
+  PREDEFINED_ADDRESS,
+  WEB_PAGE_REGISTRY,
+  type BookmarkItem,
+} from "./browserConstants";
+import { useScreenMonitor } from "@/hooks/useScreenSize";
 
 // TODO: when we click on 'search' we should focus on the search bar
-
-const WEB_PAGE_REGISTRY: Record<string, React.ComponentType> = {
-  "www.how-is-he-still-unemployed.com": QueuePage,
-};
 
 const renderContent = (addressBarUrl: string) => {
   console.log("BROWSER_DEBUG renderContent", addressBarUrl);
@@ -37,13 +37,13 @@ interface BrowserContentProps {
 }
 
 export const BrowserContent = ({ windowId }: BrowserContentProps) => {
+  const screenSize = useScreenMonitor();
   const predefinedAddress = PREDEFINED_ADDRESS;
   const initialUrl = "";
   const [addressBarUrl, setAddressBarUrl] = useState(initialUrl);
   const [addressViewed, setAddressViewed] = useState(initialUrl);
-  const precicate = (window: WindowType) => window.windowId === windowId;
-  const window = useNewStore((state) => state.findOneWindow(precicate))!;
-  console.log("BROWSER_DEBUG window", window);
+  // const precicate = (window: WindowType) => window.windowId === windowId;
+  // const window = useNewStore((state) => state.findOneWindow(precicate))!;
   const addToHistory = useNewStore((state) => state.addToHistory);
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -88,15 +88,31 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
     }
   };
 
+  const handleBookmarkSelect = (bookmark: BookmarkItem) => {
+    console.log(
+      "BROWSER_DEBUG handleBookmarkSelect in BrowserContent.tsx: ",
+      bookmark
+    );
+    setAddressBarUrl(bookmark.url);
+    setAddressViewed(bookmark.url);
+    addToHistory(windowId, bookmark.url);
+  };
+
+  const isMobile = screenSize.isXs || screenSize.isSm;
+
   // Desktop: Navigation at top (original layout)
   return (
-    <div className="h-full flex flex-col">
+    <div
+      className={`h-full flex flex-col ${
+        isMobile ? "flex-col-reverse" : "flex-col"
+      }`}
+    >
       <div className="flex-none sticky top-0 bg-neutral-300 z-10 flex items-center gap-4 p-4">
         {/* <h1 className="text-2xl font-bold text-black">TEMP</h1> */}
         <WindowHistoryNavigation
           windowId={windowId}
           firstHistoryItem={initialUrl}
-          showForwardButton={true}
+          showForwardButton={!isMobile}
           showBackButton={true}
           onHistoryChange={handleHistoryChange}
         />
@@ -106,8 +122,11 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
           onKeyDown={handleKeyDown}
           onClick={handleClick}
         />
-        <BrowserBookmarks />
-        <BrowserDownload />
+        <BrowserBookmarks
+          onBookmarkSelect={handleBookmarkSelect}
+          windowId={windowId}
+        />
+        {!isMobile && <BrowserDownload />}
       </div>
 
       <div ref={contentRef} className="flex-1 overflow-auto">
