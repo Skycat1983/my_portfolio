@@ -304,6 +304,17 @@ const whatsAppConversations = {
   },
 } as const satisfies Record<AiId, ConversationDefinition>;
 
+export const DEFAULT_MESSAGE_COUNT = Object.values(
+  whatsAppConversations
+).reduce((acc, curr) => acc + curr.messages.length, 0);
+
+export const NON_USER_MESSAGE_COUNT = Object.values(
+  whatsAppConversations
+).reduce(
+  (acc, conv) => acc + conv.messages.filter((m) => m.sender !== "user").length,
+  0
+);
+
 // === CONVERSION FUNCTION ===
 
 // Generate deterministic conversation ID

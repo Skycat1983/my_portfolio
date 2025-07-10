@@ -3,6 +3,12 @@ import { toast } from "sonner";
 import { useNewStore } from "@/hooks/useStore";
 import { Toaster } from "../ui/sonner";
 import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
+import { WHATSAPP } from "@/constants/images";
+import {
+  DEFAULT_MESSAGE_COUNT,
+  NON_USER_MESSAGE_COUNT,
+} from "@/constants/whatsAppData";
+import { selectVisibleConversationMessages } from "../applications/whatsApp/selectors/messageSelectors";
 
 // Create trophy icon component
 const TrophyIcon = () => (
@@ -11,7 +17,28 @@ const TrophyIcon = () => (
   </div>
 );
 
+const WhatsAppIcon = () => (
+  <div className="flex items-center justify-center">
+    <img src={WHATSAPP} alt="WhatsApp" className="w-6 h-6" />
+  </div>
+);
+
 export const Toast = () => {
+  const whatsApp = useNewStore((s) => s.whatsApp);
+  console.log("whatsApp", whatsApp);
+  // const messagesFromAI = selectVisibleConversationMessages(whatsApp, "ai_work");
+  const nonUserMessageCount = NON_USER_MESSAGE_COUNT;
+  console.log("nonUserMessageCount", nonUserMessageCount);
+  const whatsAppMessages = useNewStore((s) => s.whatsApp.messages.allIds);
+  const deliveredMessagesReceived = whatsAppMessages.filter(
+    (message) =>
+      whatsApp.messages.byId[message].sender !== "user_self" &&
+      (whatsApp.messages.byId[message].deliveryStatus === "delivered" ||
+        whatsApp.messages.byId[message].deliveryStatus === "read")
+  );
+  console.log("deliveredMessages", deliveredMessagesReceived);
+  const whatsAppInitialized = useNewStore((s) => s.whatsApp.isInitialized);
+  console.log("whatsAppMessages", whatsAppMessages);
   const clickOnSomethingAchieved = useNewStore(
     (s) => s.clickOnSomethingAchieved
   );
@@ -23,6 +50,24 @@ export const Toast = () => {
   const operatingSystemSwitchedAchieved = useNewStore(
     (s) => s.operatingSystemSwitchedAchieved
   );
+
+  useEffect(() => {
+    if (
+      whatsAppInitialized &&
+      deliveredMessagesReceived.length > nonUserMessageCount
+    ) {
+      toast.success("WhatsApp", {
+        description: "You have a new message",
+        duration: 4000,
+        icon: <WhatsAppIcon />,
+      });
+    }
+  }, [
+    whatsAppMessages,
+    whatsAppInitialized,
+    nonUserMessageCount,
+    deliveredMessagesReceived,
+  ]);
 
   useEffect(() => {
     if (clickOnSomethingAchieved) {

@@ -22,6 +22,9 @@ export const AppLayout = () => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const customWallpaper = useNewStore((s) => s.customWallpaper);
   const openWindows = useNewStore((s) => s.openWindows);
+  const histories = useNewStore((s) => s.histories);
+  console.log("AppLayout.tsx: openWindows", openWindows);
+  console.log("AppLayout.tsx: histories", histories);
 
   // Wifi state for staggered message delivery
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
