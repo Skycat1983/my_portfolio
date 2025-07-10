@@ -57,7 +57,7 @@ export const QueuePage = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto p-8">
       {/* Main queue notice */}
       <div className="bg-red-50 border-2 border-red-200 rounded-lg p-8 mb-8 text-center">
         <div className="animate-pulse">

@@ -4,6 +4,7 @@ import { VerifyButton } from "../VerifyButton";
 import { useEffect, useState } from "react";
 import { ME_BG_REMOVED } from "@/constants/images";
 import { CaptchaSquare } from "../CaptchaSquare";
+import { useScreenMonitor } from "@/hooks/useScreenSize";
 
 const arraysMatch = (arr1: number[], arr2: number[]) => {
   return arr1.length === arr2.length && arr1.every((id) => arr2.includes(id));
@@ -21,6 +22,7 @@ export const GridTricks = ({
   currentIndex,
   totalCaptchas,
 }: CaptchaSlideProps) => {
+  const screenSize = useScreenMonitor();
   const [initialised, setInitialised] = useState(false);
   const [trickeryPhase, setTrickeryPhase] = useState(0);
   const [newGridClassName, setNewGridClassName] = useState<string | null>(null);
@@ -30,7 +32,42 @@ export const GridTricks = ({
       setInitialised(true);
       return;
     }
-  }, [selected, initialised]);
+    if (screenSize.isXs || screenSize.isSm) {
+      const handleMobileTrickery = () => {
+        if (!initialised) {
+          return;
+        }
+
+        const arr1 = [0, 2, 5, 3];
+        if (arraysMatch(selected, arr1)) {
+          // On hover, make first column roughly 40% width, others share remaining 60%
+          onGridClassChange(
+            "grid grid-cols-[40%_30%_30%] grid-rows-4 w-full h-full"
+          );
+        }
+        const arr2 = [2, 5];
+        if (arraysMatch(selected, arr2)) {
+          onGridClassChange(
+            "grid grid-cols-[40%_20%_40%] grid-rows-4 w-full h-full"
+          );
+        }
+        if (selected.length === 0) {
+          // On hover, expand the first column to ~40% width
+          setNewGridClassName(
+            "grid grid-cols-[40%_20%_40%] grid-rows-[12.5%_12.5%_25%_25%_25%] w-full h-full"
+          );
+
+          // setTrickeryPhase(1);
+        }
+        const arr3 = [0, 1, 2];
+        if (arraysMatch(selected, arr3)) {
+          console.log("arr3 matches");
+          setTrickeryPhase(1);
+        }
+      };
+      handleMobileTrickery();
+    }
+  }, [selected, initialised, screenSize, onGridClassChange]);
 
   const handleMouseEnter = () => {
     if (!initialised) {
@@ -99,8 +136,8 @@ export const GridTricks = ({
           <div className="absolute inset-0 bg-white/10 pointer-events-none" />
         )}
       </div>
-      <div className="flex flex-col items-center justify-center bg-white w-1/4 h-[100px]">
-        <div className="flex flex-row items-center justify-start gap-4 w-full px-8">
+      <div className="flex flex-col items-center justify-center bg-white w-full h-[100px]">
+        <div className="flex flex-row items-center justify-start gap-4 w-full px-2 md:px-8">
           <RotateCcw className="size-10 text-neutral-900 rounded-full p-2" />
           <Info className="size-10 text-neutral-900 rounded-full p-2" />
           <h4 className="text-neutral-900 text-xl font-bold">

@@ -2,7 +2,7 @@ import { RefreshCw, WifiOff } from "lucide-react";
 
 export const OfflinePage: React.FC = () => {
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-gray-50 p-6">
+    <div className="h-full flex flex-col items-center justify-center bg-gray-50 p-8">
       {/* Icon */}
       <WifiOff className="w-16 h-16 text-gray-400 mb-6" />
 

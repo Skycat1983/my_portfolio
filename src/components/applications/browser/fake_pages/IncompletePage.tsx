@@ -10,8 +10,8 @@ export const IncompletePage = ({ url }: IncompletePageProps) => {
   // Get the current URL from this window's URL property
 
   return (
-    <div className="max-w-4xl mx-auto text-center">
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 mb-8">
+    <div className="max-w-4xl mx-auto text-center p-8 flex flex-col items-center justify-center h-full">
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 ">
         <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-gray-900 mb-4">
           Incomplete URL

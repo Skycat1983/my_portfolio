@@ -129,7 +129,10 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
         {!isMobile && <BrowserDownload />}
       </div>
 
-      <div ref={contentRef} className="flex-1 overflow-auto">
+      <div
+        ref={contentRef}
+        className="flex-1 overflow-auto flex flex-col items-start justify-start"
+      >
         {renderContent(addressViewed)}
       </div>
     </div>
