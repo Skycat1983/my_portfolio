@@ -48,6 +48,9 @@ export const Toast = () => {
   );
 
   useEffect(() => {
+    console.log("TOAST: whatsAppInitialized", whatsAppInitialized);
+    console.log("TOAST: deliveredMessagesReceived", deliveredMessagesReceived);
+    console.log("TOAST: nonUserMessageCount", nonUserMessageCount);
     if (
       whatsAppInitialized &&
       deliveredMessagesReceived.length > nonUserMessageCount

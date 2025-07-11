@@ -102,12 +102,16 @@ export const useWhatsAppHistory = (
     (view: WhatsAppView, params?: ViewState["params"]): boolean => {
       console.log("useWhatsAppHistory: navigateToView", view, params);
 
+      // we don't want the phone call screen to be added to the history
+      // ! potential_issue: unsure if this hack will cause issues with the back button or history
+      // if (view !== "phoneCall") {
       // Add to history first
       const historySuccess = addToHistory(historyId, { view, params });
       if (!historySuccess) {
         console.log("useWhatsAppHistory: failed to add to history");
         return false;
       }
+      // }
 
       // Update WhatsApp state
       // setView(view);

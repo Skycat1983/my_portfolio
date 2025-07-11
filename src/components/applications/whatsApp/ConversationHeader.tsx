@@ -1,8 +1,8 @@
 import React from "react";
 import { useNewStore } from "@/hooks/useStore";
-import { ArrowLeft, Phone } from "lucide-react";
+import { ArrowLeft, Phone, PhoneOff } from "lucide-react";
 import { ChatOptionsMenu } from "./ChatOptionsMenu";
-import type { ContactId } from "./types";
+import type { ContactId, ConversationId } from "./types";
 import { selectConversationHeader } from "./selectors/componentSelectors";
 
 interface ConversationHeaderProps {
@@ -11,6 +11,12 @@ interface ConversationHeaderProps {
   onArchive?: (contactId: ContactId) => void;
   onUnarchive?: (contactId: ContactId) => void;
   onViewProfile?: (contactId: ContactId) => void;
+  onPhoneCall?: (
+    avatar: string,
+    name: string,
+    phoneNumber: string,
+    conversationId: ConversationId
+  ) => void;
 }
 
 export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
@@ -19,6 +25,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onArchive,
   onUnarchive,
   onViewProfile,
+  onPhoneCall,
 }) => {
   // ! in use
   const whatsApp = useNewStore((state) => state.whatsApp);
@@ -28,7 +35,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
     conversationId,
     wifiEnabled
   );
-  // console.log("WhatsApp: ConversationHeader headerData", headerData);
+  console.log("WhatsApp: ConversationHeader headerData", headerData);
   // console.log("WhatsApp: ConversationHeader conversationId", conversationId);
 
   if (!headerData) return null;
@@ -82,8 +89,21 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         <button
           className="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700"
           aria-label="Voice call"
+          onClick={() =>
+            onPhoneCall?.(
+              headerData.avatar,
+              headerData.name,
+              headerData.phoneNumber,
+              conversationId
+            )
+          }
+          disabled={!wifiEnabled}
         >
-          <Phone size={20} />
+          {wifiEnabled ? (
+            <Phone size={20} />
+          ) : (
+            <PhoneOff size={20} className="text-gray-400" />
+          )}
         </button>
         {onArchive && onUnarchive && (
           <ChatOptionsMenu

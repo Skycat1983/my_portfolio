@@ -11,7 +11,7 @@ const Toaster = ({ position, ...props }: ToasterProps) => {
   // otherwise on mobile we do top-center, else bottom-center
   const defaultPosition: ToasterProps["position"] = isMobile
     ? "top-center"
-    : "bottom-center";
+    : "bottom-right";
 
   return (
     <Sonner
