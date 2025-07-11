@@ -74,6 +74,7 @@ export type ConversationParticipants = [ContactId, ContactId];
 
 // Type helper for UI views
 export type WhatsAppView = "chatList" | "chat" | "archive" | "contact";
+// | "phoneCall";
 
 export interface WhatsAppMessage extends Message {
   deliveryStatus: DeliveryStatus;

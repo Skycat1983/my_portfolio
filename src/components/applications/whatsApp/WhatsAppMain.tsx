@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useWhatsAppHistory } from "./hooks/useWhatsAppHistory";
 import { ChatListScreen } from "./ChatListScreen";
 import { ChatScreen } from "./ChatScreen";
@@ -7,24 +7,37 @@ import { ContactScreen } from "./ContactScreen";
 import { CircleUserRound } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
 import type { WindowType } from "@/types/storeTypes";
-import type { Conversation } from "./types";
+import type { Conversation, ConversationId } from "./types";
+import { PhoneCallScreen } from "./PhoneCallScreen";
+import { buildSystemInstruction } from "./utils";
+import { createMessage, processAIResponse } from "./messageUtils";
+import { selectConversationParticipant } from "./selectors/contactSelectors";
+import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
 
 interface WhatsAppMainProps {
   windowId: WindowType["windowId"];
 }
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
+  const [isPhoneCall, setIsPhoneCall] = useState<{
+    avatar: string;
+    name: string;
+    phoneNumber: string;
+    conversationId: ConversationId;
+  } | null>(null);
   const { whatsAppView, navigateToView, goBack, cleanup } =
     useWhatsAppHistory(windowId);
 
+  const whatsApp = useNewStore((state) => state.whatsApp);
   const archiveContact = useNewStore((state) => state.archiveContact);
   const unarchiveContact = useNewStore((state) => state.unarchiveContact);
   const markConversationMessagesAsRead = useNewStore(
     (state) => state.markConversationMessagesAsRead
   );
+  const addMessage = useNewStore((state) => state.addMessage);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
-  console.log("whatsApp: wifiEnabled", wifiEnabled);
-
+  const setTyping = useNewStore((state) => state.setTyping);
+  console.log("WhatsAppMain: whatsApp", whatsApp);
   // Handle cleanup when window closes
   useEffect(() => {
     return () => {
@@ -33,12 +46,113 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
     };
   }, [cleanup]);
 
+  const handlePhoneCallAIResponse = async (
+    phoneCallConversationId: ConversationId
+  ) => {
+    console.log(
+      "WhatsApp: WhatsAppMain handlePhoneCallAIResponse",
+      phoneCallConversationId
+    );
+
+    // Get the contact for this conversation
+    const contact = selectConversationParticipant(
+      whatsApp,
+      phoneCallConversationId
+    );
+
+    // Only respond if contact exists and is an AI
+    if (!contact || contact.type !== "ai") {
+      return;
+    }
+
+    try {
+      // Get conversation messages for context using existing selector
+      const conversationMessages = selectVisibleConversationMessages(
+        whatsApp,
+        phoneCallConversationId
+      );
+
+      // Create special system instruction for missed calls
+      const missedCallInstruction = `${contact.systemInstruction}
+
+IMPORTANT: The user just tried to call you but you couldn't answer the phone. Respond with a brief, character-appropriate reason why you're not available to take calls right now. Keep it natural and in-character. Do not mention that this is a simulation or that you're an AI.`;
+
+      const enhancedInstruction = buildSystemInstruction(
+        missedCallInstruction,
+        conversationMessages
+      );
+
+      if (wifiEnabled) {
+        setTyping(phoneCallConversationId, true);
+      }
+
+      // Call AI for missed call response
+      const response = await processAIResponse(
+        "User attempted to call but call could not be completed",
+        enhancedInstruction
+      );
+
+      console.log(
+        "WhatsApp: WhatsAppMain handlePhoneCallAIResponse response",
+        response
+      );
+
+      // Determine delivery status based on wifi and viewing state
+      const isViewingChat = whatsAppView?.view === "chat";
+      const isViewingThisConversation =
+        whatsAppView?.params?.conversationId === phoneCallConversationId;
+
+      const receivedMessageStatus =
+        isViewingChat && isViewingThisConversation && wifiEnabled
+          ? "read"
+          : wifiEnabled
+          ? "delivered"
+          : "sent";
+
+      // Create AI message with wifi-aware delivery status
+      const missedCallMessage = createMessage(
+        response,
+        contact.id, // sender: AI contact ID
+        "user_self", // receiver: user
+        receivedMessageStatus
+      );
+
+      addMessage(phoneCallConversationId, missedCallMessage);
+    } catch (error) {
+      console.error("Phone call AI response error:", error);
+
+      // Fallback message on error
+      const errorMessage = createMessage(
+        "Sorry, I missed your call and can't respond right now.",
+        contact.id,
+        "user_self",
+        "pending"
+      );
+      addMessage(phoneCallConversationId, errorMessage);
+    } finally {
+      setTyping(phoneCallConversationId, false);
+    }
+  };
+
   const handleConversationClick = React.useCallback(
     (conversationId: Conversation["id"]) => {
       markConversationMessagesAsRead(conversationId);
       navigateToView("chat", { conversationId });
     },
     [markConversationMessagesAsRead, navigateToView]
+  );
+
+  const handlePhoneCallClick = React.useCallback(
+    (
+      avatar: string,
+      name: string,
+      phoneNumber: string,
+      conversationId: ConversationId
+    ) => {
+      // navigateToView("phoneCall", { conversationId });
+      setIsPhoneCall({ avatar, name, phoneNumber, conversationId });
+    },
+    []
   );
 
   const handleArchiveClick = React.useCallback(() => {
@@ -75,13 +189,17 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
     <div className="h-full w-full bg-gray-800">
       <div className="flex items-center justify-between p-4 border-b border-gray-700">
         <h2 className="text-xl font-semibold text-white">
-          {whatsAppView?.view === "chatList"
+          {isPhoneCall
+            ? "Calling..."
+            : whatsAppView?.view === "chatList"
             ? "Chats"
             : whatsAppView?.view === "chat"
             ? "Chat"
             : whatsAppView?.view === "archive"
             ? "Archive"
-            : "Contact"}
+            : whatsAppView?.view === "contact"
+            ? "Contact"
+            : "WhatsApp"}
         </h2>
         <div className="flex gap-2">
           <button
@@ -95,14 +213,15 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
       </div>
 
       <div className="h-[calc(100%-4rem)]">
-        {whatsAppView?.view === "chatList" && (
+        {whatsAppView?.view === "chatList" && !isPhoneCall && (
           <ChatListScreen
             onSelectConversation={handleConversationClick}
             onViewArchived={handleArchiveClick}
           />
         )}
         {whatsAppView?.view === "chat" &&
-          whatsAppView.params?.conversationId && (
+          whatsAppView.params?.conversationId &&
+          !isPhoneCall && (
             <ChatScreen
               windowId={windowId}
               conversationId={whatsAppView.params.conversationId}
@@ -110,20 +229,33 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
               onArchive={handleArchiveContact}
               onUnarchive={handleUnarchiveContact}
               onViewProfile={handleViewProfile}
+              onPhoneCall={handlePhoneCallClick}
             />
           )}
-        {whatsAppView?.view === "archive" && (
+        {whatsAppView?.view === "archive" && !isPhoneCall && (
           <ArchiveScreen
             onBack={goBack}
             onSelectContact={handleConversationClick}
             onUnarchive={handleUnarchiveContact}
           />
         )}
-        {whatsAppView?.view === "contact" && whatsAppView.params?.contactId && (
-          <ContactScreen
-            contactId={whatsAppView.params.contactId}
-            onBack={goBack}
-            onViewProfile={handleViewProfile}
+        {whatsAppView?.view === "contact" &&
+          whatsAppView.params?.contactId &&
+          !isPhoneCall && (
+            <ContactScreen
+              contactId={whatsAppView.params.contactId}
+              onBack={goBack}
+              onViewProfile={handleViewProfile}
+            />
+          )}
+        {isPhoneCall && (
+          <PhoneCallScreen
+            avatar={isPhoneCall.avatar}
+            name={isPhoneCall.name}
+            phoneNumber={isPhoneCall.phoneNumber}
+            conversationId={isPhoneCall.conversationId}
+            onHangUp={() => setIsPhoneCall(null)}
+            onPhoneCallEnd={handlePhoneCallAIResponse}
           />
         )}
       </div>

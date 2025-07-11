@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import type { ContactId } from "./types";
+import type { ContactId, ConversationId } from "./types";
 import { MessageComponent } from "./MessageComponent";
 import { TypingIndicator } from "./TypingIndicator";
 import { buildSystemInstruction } from "./utils";
@@ -21,6 +21,12 @@ interface ChatScreenProps {
   onUnarchive: (contactId: ContactId) => void;
   onViewProfile?: (contactId: ContactId) => void;
   windowId: WindowType["windowId"];
+  onPhoneCall: (
+    avatar: string,
+    name: string,
+    phoneNumber: string,
+    conversationId: ConversationId
+  ) => void;
 }
 
 export const ChatScreen: React.FC<ChatScreenProps> = ({
@@ -30,6 +36,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   onUnarchive,
   onViewProfile,
   windowId,
+  onPhoneCall,
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
   console.log("WhatsApp: ChatScreen whatsApp", whatsApp);
@@ -157,6 +164,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
         onViewProfile={
           onViewProfile ? () => onViewProfile(contactId ?? "") : undefined
         }
+        onPhoneCall={onPhoneCall}
       />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2 text-white">

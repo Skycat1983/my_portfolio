@@ -80,15 +80,6 @@ export const selectedConversationMessagesByStatus = (
     );
 };
 
-// export const selectPendingConversationMessages = (state: WhatsAppState, conversationId: ConversationId): Message[] => {
-//   const messageIds = state.messages.byConversation[conversationId] || [];
-//   return messageIds
-//     .map((id: MessageId) => state.messages.byId[id])
-//     .filter((message: Message | undefined): message is Message => !!message && message.deliveryStatus === "pending");
-// };
-
-//   export const selectPendingContactMessages = (state: WhatsAppState, contactId: ContactId): Message[] => {}
-
 //! in use
 export const selectUnreadMessageCount = (
   state: WhatsAppState,
