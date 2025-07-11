@@ -4,10 +4,10 @@ import { useNewStore } from "@/hooks/useStore";
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./WindowControls";
 import theme from "@/styles/theme";
-import type { WindowType } from "@/types/storeTypes";
+import type { Window } from "./windowTypes";
 
 interface WindowHeaderProps {
-  windowId: WindowType["windowId"];
+  windowId: Window["windowId"];
   title?: string;
   nodeType?: string;
   className?: string;
@@ -24,7 +24,9 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
 }) => {
   const operatingSystem = useNewStore((state) => state.operatingSystem);
   const screenDimensions = useNewStore((state) => state.screenDimensions);
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) =>
+    s.findWindow((w) => w.windowId === windowId)
+  );
   const focusWindow = useNewStore((s) => s.focusWindow);
   const currentTheme = useNewStore((s) => s.theme);
   const { onDragStart } = useWindowDrag(windowId);

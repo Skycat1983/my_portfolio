@@ -1,9 +1,12 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
+import type { Window } from "../windowTypes";
 
-export function useWindowDrag(windowId: string) {
+export function useWindowDrag(windowId: Window["windowId"]) {
   // Get the window data using the proper store method
-  const windowData = useNewStore((s) => s.getWindowById(windowId));
+  const windowData = useNewStore((s) =>
+    s.findWindow((w) => w.windowId === windowId)
+  );
   const moveWindow = useNewStore((s) => s.moveWindow);
 
   const onDragStart = useCallback(

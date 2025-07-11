@@ -18,44 +18,14 @@ type Props = {
 };
 
 export const ApplicationNode = ({ node, view }: Props) => {
-  const { componentKey } = node;
+  console.log("node", node);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  // console.log("APP_NODE_01: app", id, componentKey, node);
-  // ─────────── node-specific store actions ───────────
-  // const openTerminal = useNewStore((s) => s.openTerminal);
-  const openWindowWithComponentKey = useNewStore(
-    (s) => s.openWindowWithComponentKey
-  );
-  const getWindowByApplicationId = useNewStore(
-    (s) => s.getWindowByApplicationId
-  );
-  const focusWindow = useNewStore((s) => s.focusWindow);
+  const openWindow = useNewStore((s) => s.openWindow);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    // Use applicationId for focus logic to handle dock/desktop instances
-    const windowAlreadyOpen = getWindowByApplicationId(node.applicationId);
-    console.log("APP_NODE_02: windowAlreadyOpen", windowAlreadyOpen);
-    console.log("APP_NODE_02: windowAlreadyOpen", node);
-
-    if (windowAlreadyOpen) {
-      console.log(
-        "APP_NODE_04: focusing existing window",
-        windowAlreadyOpen.windowId
-      );
-      focusWindow(windowAlreadyOpen.windowId);
-      return;
-    }
-
-    console.log("APP_NODE_05: opening new window for", node.id);
-    openWindowWithComponentKey(node, componentKey, node.applicationId);
-  }, [
-    node,
-    getWindowByApplicationId,
-    openWindowWithComponentKey,
-    focusWindow,
-    componentKey,
-  ]);
+    openWindow(node);
+  }, [node, openWindow]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
@@ -111,3 +81,39 @@ export const ApplicationNode = ({ node, view }: Props) => {
     </div>
   );
 };
+// const handleActivate = useCallback(() => {
+//   openWindow(node);
+//   // Use applicationId for focus logic to handle dock/desktop instances
+//   // const windowAlreadyOpen = getWindowByApplicationId(node.applicationId);
+//   // console.log("APP_NODE_02: windowAlreadyOpen", windowAlreadyOpen);
+//   // console.log("APP_NODE_02: windowAlreadyOpen", node);
+
+//   // if (windowAlreadyOpen) {
+//   //   console.log(
+//   //     "APP_NODE_04: focusing existing window",
+//   //     windowAlreadyOpen.windowId
+//   //   );
+//   //   focusWindow(windowAlreadyOpen.windowId);
+//   //   return;
+//   // }
+
+//   // console.log("APP_NODE_05: opening new window for", node.id);
+//   // openWindowWithComponentKey(node, componentKey, node.applicationId);
+// }, [
+//   node,
+//   openWindow
+//   // getWindowByApplicationId,
+//   // openWindowWithComponentKey,
+//   // focusWindow,
+//   // componentKey,
+// ]);
+// console.log("APP_NODE_01: app", id, componentKey, node);
+// ─────────── node-specific store actions ───────────
+// const openTerminal = useNewStore((s) => s.openTerminal);
+// const openWindowWithComponentKey = useNewStore(
+//   (s) => s.openWindowWithComponentKey
+// );
+// const getWindowByApplicationId = useNewStore(
+//   (s) => s.getWindowByApplicationId
+// );
+// const focusWindow = useNewStore((s) => s.focusWindow);

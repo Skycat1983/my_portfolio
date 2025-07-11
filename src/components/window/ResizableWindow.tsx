@@ -1,14 +1,14 @@
 import React from "react";
 import { useWindowResize } from "./hooks/useWindowResize";
 import { WindowHeader } from "./WindowHeader";
-import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
-import { getWindowComponent } from "./WindowComponentRegistry";
 import theme from "@/styles/theme";
 import { AnimatePresence, motion } from "framer-motion";
+import type { Window } from "./windowTypes";
+import { getWindowComponent } from "@/constants/applicationRegistry";
 
 interface ResizableWindowProps {
-  window: WindowType;
+  window: Window;
   // children?: React.ReactNode;
 }
 
@@ -19,7 +19,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   const {
     windowId,
     nodeId,
-    componentKey,
+    applicationRegistryId,
     title,
     width,
     height,
@@ -34,11 +34,11 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   const focusWindow = useNewStore((s) => s.focusWindow);
   const currentTheme = useNewStore((s) => s.theme);
 
-  if (isMinimized || !componentKey) {
+  if (isMinimized || !applicationRegistryId) {
     return null;
   }
 
-  const RegistryComponent = getWindowComponent(componentKey);
+  const RegistryComponent = getWindowComponent(applicationRegistryId);
 
   const windowStyle = isMaximized
     ? {
@@ -97,11 +97,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
             style={{ backgroundColor: contentBgColor }}
           >
             {RegistryComponent ? (
-              <RegistryComponent
-                windowId={windowId}
-                nodeId={nodeId}
-                window={window}
-              />
+              <RegistryComponent windowId={windowId} nodeId={nodeId} />
             ) : (
               <div>No component found</div>
             )}

@@ -1,4 +1,9 @@
-import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
+import type {
+  ApplicationState,
+  SetState,
+  GetState,
+  WindowType,
+} from "@/types/storeTypes";
 import type {
   Window,
   WindowableNode,
@@ -51,8 +56,19 @@ interface WindowActions {
   // ═══════════════════════════════════════════════════════════════════════════════
 
   openWindow: (node: WindowableNode) => string | null; // Returns windowId or null if failed
-  focusWindow: (windowId: string) => boolean; // Returns true if window was found and focused
-  closeWindow: (windowId: string) => boolean; // Returns true if window was found and closed
+  focusWindow: (windowId: Window["windowId"]) => boolean; // Returns true if window was found and focused
+  closeWindow: (windowId: Window["windowId"]) => boolean; // Returns true if window was found and closed
+  moveWindow: (windowId: Window["windowId"], x: number, y: number) => boolean; // Returns true if window was found and moved
+  resizeWindow: (
+    windowId: Window["windowId"],
+    width: number,
+    height: number
+  ) => boolean; // Returns true if window was found and resized
+
+  setWindowBounds: (
+    windowId: Window["windowId"],
+    bounds: { x: number; y: number; width: number; height: number }
+  ) => boolean;
 }
 
 export type WindowSlice = WindowState & WindowActions;
@@ -411,6 +427,69 @@ export const createWindowSlice = (
 
       console.log("closeWindow: closed window", windowId);
       return true;
+    },
+
+    /**
+     * Move a window to specific coordinates
+     */
+    moveWindow: (
+      windowId: Window["windowId"],
+      x: number,
+      y: number
+    ): boolean => {
+      console.log("moveWindow: moving window", windowId, "to", x, ",", y);
+      return slice.updateWindow(
+        (window: Window) => window.windowId === windowId,
+        {
+          x,
+          y,
+        }
+      );
+    },
+
+    /**
+     * Resize a window to specific dimensions
+     */
+    resizeWindow: (
+      windowId: Window["windowId"],
+      width: number,
+      height: number
+    ): boolean => {
+      console.log(
+        "resizeWindow: resizing window",
+        windowId,
+        "to",
+        width,
+        "x",
+        height
+      );
+
+      return slice.updateWindow(
+        (window: Window) => window.windowId === windowId,
+        {
+          width,
+          height,
+        }
+      );
+    },
+
+    /**
+     * Set window bounds (position + size) in one operation
+     */
+    setWindowBounds: (
+      windowId: Window["windowId"],
+      bounds: { x: number; y: number; width: number; height: number }
+    ): boolean => {
+      console.log(
+        "setWindowBounds: setting bounds for window",
+        windowId,
+        bounds
+      );
+
+      return slice.updateWindow(
+        (window: Window) => window.windowId === windowId,
+        bounds
+      );
     },
   };
 

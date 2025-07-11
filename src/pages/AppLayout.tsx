@@ -23,6 +23,7 @@ export const AppLayout = () => {
   const customWallpaper = useNewStore((s) => s.customWallpaper);
   const openWindows = useNewStore((s) => s.openWindows);
   const histories = useNewStore((s) => s.histories);
+  const windows = useNewStore((s) => s.windows);
   console.log("AppLayout.tsx: openWindows", openWindows);
   console.log("AppLayout.tsx: histories", histories);
 
@@ -70,7 +71,7 @@ export const AppLayout = () => {
           {/* <ListView nodes={nodes} /> */}
         </div>
 
-        {openWindows.map((window) => (
+        {windows.map((window) => (
           <ResizableWindow key={window.windowId} window={window} />
         ))}
 

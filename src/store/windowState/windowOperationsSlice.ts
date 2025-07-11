@@ -59,18 +59,18 @@ export interface WindowOperationsActions {
   // toggleMaximizeWindow: (windowId: WindowType["windowId"]) => boolean;
 
   //   ! WINDOW FRAME OPERATIONS
-  moveWindow: (
+  moveWindow2: (
     windowId: WindowType["windowId"],
     x: number,
     y: number
   ) => boolean;
-  resizeWindow: (
+  resizeWindow2: (
     windowId: WindowType["windowId"],
     width: number,
     height: number
   ) => boolean;
 
-  setWindowBounds: (
+  setWindowBounds2: (
     windowId: WindowType["windowId"],
     bounds: { x: number; y: number; width: number; height: number }
   ) => boolean;
@@ -349,7 +349,7 @@ export const createWindowOperationsSlice = (
   /**
    * Move a window to specific coordinates
    */
-  moveWindow: (
+  moveWindow2: (
     windowId: WindowType["windowId"],
     x: number,
     y: number
@@ -368,7 +368,7 @@ export const createWindowOperationsSlice = (
   /**
    * Resize a window to specific dimensions
    */
-  resizeWindow: (
+  resizeWindow2: (
     windowId: WindowType["windowId"],
     width: number,
     height: number
@@ -394,7 +394,7 @@ export const createWindowOperationsSlice = (
   /**
    * Set window bounds (position + size) in one operation
    */
-  setWindowBounds: (
+  setWindowBounds2: (
     windowId: WindowType["windowId"],
     bounds: { x: number; y: number; width: number; height: number }
   ): boolean => {

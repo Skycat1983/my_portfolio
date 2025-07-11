@@ -1,11 +1,14 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
+import type { Window } from "../windowTypes";
 
 type ResizeHandle = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
 
-export function useWindowResize(windowId: string) {
+export function useWindowResize(windowId: Window["windowId"]) {
   // Get the window data using the proper store method
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) =>
+    s.findWindow((w) => w.windowId === windowId)
+  );
   const setWindowBounds = useNewStore((s) => s.setWindowBounds);
 
   const onResizeStart = useCallback(
