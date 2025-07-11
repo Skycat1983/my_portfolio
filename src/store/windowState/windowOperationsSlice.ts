@@ -52,8 +52,8 @@ export interface WindowOperationsActions {
     applicationNode: ApplicationEntry,
     documentConfig: DocumentConfig
   ) => void;
-  closeWindow: (windowId: WindowType["windowId"]) => void;
-  focusWindow: (windowId: WindowType["windowId"]) => void;
+  closeWindow2: (windowId: WindowType["windowId"]) => void;
+  bringWindowToFront: (windowId: WindowType["windowId"]) => void;
   minimizeWindow: (windowId: WindowType["windowId"]) => boolean;
   maximizeWindow: (windowId: WindowType["windowId"]) => boolean;
   // toggleMaximizeWindow: (windowId: WindowType["windowId"]) => boolean;
@@ -254,7 +254,7 @@ export const createWindowOperationsSlice = (
   /**
    * Close a window and clean up associated history
    */
-  closeWindow: (windowId: WindowType["windowId"]): void => {
+  closeWindow2: (windowId: WindowType["windowId"]): void => {
     console.log("closeWindow: closing window", windowId);
 
     const state = get();
@@ -297,8 +297,8 @@ export const createWindowOperationsSlice = (
   /**
    * Focus a window by bringing it to the front (update zIndex)
    */
-  focusWindow: (windowId: WindowType["windowId"]): boolean => {
-    console.log("focusWindow: focusing window", windowId);
+  bringWindowToFront: (windowId: WindowType["windowId"]): boolean => {
+    console.log("bringWindowToFront: bringing window to front", windowId);
 
     const state = get();
     const window = state.findOneWindow(

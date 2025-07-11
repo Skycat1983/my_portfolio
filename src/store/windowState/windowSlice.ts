@@ -7,6 +7,7 @@ import type {
 import {
   generateWindowId,
   getApplicationConfig,
+  requiresHistory,
 } from "@/constants/applicationRegistry";
 import type { DocumentEntry } from "@/components/nodes/nodeTypes";
 
@@ -46,10 +47,12 @@ interface WindowActions {
   windowCount: (predicate: (window: Window) => boolean) => number;
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // NODE-BASED WINDOW OPERATIONS
+  // WINDOW LIFECYCLE OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════════
 
-  openWindowFromNode: (node: WindowableNode) => string | null; // Returns windowId or null if failed
+  openWindow: (node: WindowableNode) => string | null; // Returns windowId or null if failed
+  focusWindow: (windowId: string) => boolean; // Returns true if window was found and focused
+  closeWindow: (windowId: string) => boolean; // Returns true if window was found and closed
 }
 
 export type WindowSlice = WindowState & WindowActions;
@@ -57,293 +60,359 @@ export type WindowSlice = WindowState & WindowActions;
 export const createWindowSlice = (
   set: SetState<ApplicationState>,
   get: GetState<ApplicationState>
-): WindowSlice => ({
-  // ═══════════════════════════════════════════════════════════════════════════════
-  // STATE
-  // ═══════════════════════════════════════════════════════════════════════════════
+): WindowSlice => {
+  const slice: WindowSlice = {
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════════════════════
 
-  windows: [],
+    windows: [],
 
-  // ═══════════════════════════════════════════════════════════════════════════════
-  // PREDICATE-BASED CRUD OPERATIONS
-  // ═══════════════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PREDICATE-BASED CRUD OPERATIONS
+    // ═══════════════════════════════════════════════════════════════════════════════
 
-  /**
-   * Find single window by predicate
-   */
-  findWindow: (predicate: (window: Window) => boolean) => {
-    const state = get();
-    return state.windows.find(predicate);
-  },
+    /**
+     * Find single window by predicate
+     */
+    findWindow: (predicate: (window: Window) => boolean) => {
+      const state = get();
+      return state.windows.find(predicate);
+    },
 
-  /**
-   * Find multiple windows by predicate
-   */
-  findWindows: (predicate: (window: Window) => boolean) => {
-    const state = get();
-    return state.windows.filter(predicate);
-  },
+    /**
+     * Find multiple windows by predicate
+     */
+    findWindows: (predicate: (window: Window) => boolean) => {
+      const state = get();
+      return state.windows.filter(predicate);
+    },
 
-  /**
-   * Check if any window matches predicate
-   */
-  hasWindow: (predicate: (window: Window) => boolean) => {
-    const state = get();
-    return state.windows.some(predicate);
-  },
+    /**
+     * Check if any window matches predicate
+     */
+    hasWindow: (predicate: (window: Window) => boolean) => {
+      const state = get();
+      return state.windows.some(predicate);
+    },
 
-  /**
-   * Create a single window
-   */
-  createWindow: (window: Window): boolean => {
-    console.log("createWindow: creating window", window.windowId);
+    /**
+     * Create a single window
+     */
+    createWindow: (window: Window): boolean => {
+      console.log("createWindow: creating window", window.windowId);
 
-    const currentState = get();
+      const currentState = get();
 
-    // Check if window already exists
-    if (currentState.windows.find((w) => w.windowId === window.windowId)) {
-      console.log("createWindow: window already exists", window.windowId);
-      return false;
-    }
-
-    set((state) => ({
-      windows: [...state.windows, window],
-      nextZIndex: Math.max(state.nextZIndex, window.zIndex + 1),
-    }));
-
-    return true;
-  },
-
-  /**
-   * Create multiple windows
-   */
-  createWindows: (windows: Window[]): boolean => {
-    console.log("createWindows: creating", windows.length, "windows");
-
-    const currentState = get();
-
-    // Filter out windows that already exist
-    const validWindows = windows.filter((window) => {
+      // Check if window already exists
       if (currentState.windows.find((w) => w.windowId === window.windowId)) {
-        console.log("createWindows: skipping existing window", window.windowId);
+        console.log("createWindow: window already exists", window.windowId);
         return false;
       }
+
+      set((state) => ({
+        windows: [...state.windows, window],
+        nextZIndex: Math.max(state.nextZIndex, window.zIndex + 1),
+      }));
+
       return true;
-    });
+    },
 
-    if (validWindows.length === 0) {
-      console.log("createWindows: no valid windows to create");
-      return false;
-    }
+    /**
+     * Create multiple windows
+     */
+    createWindows: (windows: Window[]): boolean => {
+      console.log("createWindows: creating", windows.length, "windows");
 
-    const maxZIndex = Math.max(...validWindows.map((w) => w.zIndex));
+      const currentState = get();
 
-    set((state) => ({
-      windows: [...state.windows, ...validWindows],
-      nextZIndex: Math.max(state.nextZIndex, maxZIndex + 1),
-    }));
-
-    return true;
-  },
-
-  /**
-   * Update single window by predicate
-   */
-  updateWindow: (
-    predicate: (window: Window) => boolean,
-    updates: Partial<Window>
-  ): boolean => {
-    console.log("updateWindow: updating window with predicate");
-
-    const currentState = get();
-    const windowToUpdate = currentState.windows.find(predicate);
-
-    if (!windowToUpdate) {
-      console.log("updateWindow: no window matches predicate");
-      return false;
-    }
-
-    const updatedWindow = {
-      ...windowToUpdate,
-      ...updates,
-      windowId: windowToUpdate.windowId, // Prevent ID from being changed
-    } as Window;
-
-    set((state) => ({
-      windows: state.windows.map((window) =>
-        window.windowId === windowToUpdate.windowId ? updatedWindow : window
-      ),
-      // Update nextZIndex if we're updating zIndex
-      nextZIndex:
-        updates.zIndex && updates.zIndex >= state.nextZIndex
-          ? updates.zIndex + 1
-          : state.nextZIndex,
-    }));
-
-    return true;
-  },
-
-  /**
-   * Update multiple windows by predicate
-   */
-  updateWindows: (
-    predicate: (window: Window) => boolean,
-    updates: Partial<Window>
-  ): number => {
-    console.log("updateWindows: updating windows with predicate");
-
-    const currentState = get();
-    const windowsToUpdate = currentState.windows.filter(predicate);
-
-    if (windowsToUpdate.length === 0) {
-      console.log("updateWindows: no windows match predicate");
-      return 0;
-    }
-
-    const maxUpdatedZIndex = updates.zIndex ? updates.zIndex : 0;
-
-    set((state) => ({
-      windows: state.windows.map((window) => {
-        if (predicate(window)) {
-          return {
-            ...window,
-            ...updates,
-            windowId: window.windowId, // Prevent ID from being changed
-          } as Window;
+      // Filter out windows that already exist
+      const validWindows = windows.filter((window) => {
+        if (currentState.windows.find((w) => w.windowId === window.windowId)) {
+          console.log(
+            "createWindows: skipping existing window",
+            window.windowId
+          );
+          return false;
         }
-        return window;
-      }),
-      nextZIndex:
-        maxUpdatedZIndex >= state.nextZIndex
-          ? maxUpdatedZIndex + 1
-          : state.nextZIndex,
-    }));
+        return true;
+      });
 
-    return windowsToUpdate.length;
-  },
-
-  /**
-   * Delete single window by predicate
-   */
-  deleteWindow: (predicate: (window: Window) => boolean): boolean => {
-    console.log("deleteWindow: deleting window with predicate");
-
-    const currentState = get();
-    const windowToDelete = currentState.windows.find(predicate);
-
-    if (!windowToDelete) {
-      console.log("deleteWindow: no window matches predicate");
-      return false;
-    }
-
-    set((state) => ({
-      windows: state.windows.filter(
-        (window) => window.windowId !== windowToDelete.windowId
-      ),
-    }));
-
-    return true;
-  },
-
-  /**
-   * Delete multiple windows by predicate
-   */
-  deleteWindows: (predicate: (window: Window) => boolean): number => {
-    console.log("deleteWindows: deleting windows with predicate");
-
-    const currentState = get();
-    const windowsToDelete = currentState.windows.filter(predicate);
-
-    if (windowsToDelete.length === 0) {
-      console.log("deleteWindows: no windows match predicate");
-      return 0;
-    }
-
-    console.log("deleteWindows: deleting", windowsToDelete.length, "windows");
-
-    set((state) => ({
-      windows: state.windows.filter((window) => !predicate(window)),
-    }));
-
-    return windowsToDelete.length;
-  },
-
-  /**
-   * Count windows matching predicate
-   */
-  windowCount: (predicate: (window: Window) => boolean): number => {
-    const state = get();
-    return state.windows.filter(predicate).length;
-  },
-
-  // ═══════════════════════════════════════════════════════════════════════════════
-  // NODE-BASED WINDOW OPERATIONS
-  // ═══════════════════════════════════════════════════════════════════════════════
-
-  /**
-   * Open a window from any windowable node (applications, documents, directories)
-   */
-  openWindowFromNode: (node: WindowableNode): string | null => {
-    console.log("openWindowFromNode: opening window for node", node.id);
-
-    // Build context from node properties
-    const context: WindowCreationContext = {
-      nodeId: node.id,
-      ...(node.type === "document" && {
-        documentConfigId: (node as DocumentEntry).documentConfigId,
-      }),
-    };
-
-    const config = getApplicationConfig(node.applicationRegistryId);
-    const windowId = generateWindowId(node.applicationRegistryId, context);
-
-    // Check if window already exists (for single-instance apps)
-    if (!config.allowMultipleWindows) {
-      const state = get();
-      const existingWindow = state.windows.find((w) => w.windowId === windowId);
-      if (existingWindow) {
-        console.log("openWindowFromNode: focusing existing window", windowId);
-        // Focus existing window by updating its zIndex
-        set((state) => ({
-          windows: state.windows.map((w) =>
-            w.windowId === windowId ? { ...w, zIndex: state.nextZIndex } : w
-          ),
-          nextZIndex: state.nextZIndex + 1,
-        }));
-        return windowId;
+      if (validWindows.length === 0) {
+        console.log("createWindows: no valid windows to create");
+        return false;
       }
-    }
 
-    const state = get();
+      const maxZIndex = Math.max(...validWindows.map((w) => w.zIndex));
 
-    // Calculate position (offset for multiple windows)
-    const windowCount = state.windows.length;
-    const x = 100 * (windowCount + 1);
-    const y = 100 * (windowCount + 1);
+      set((state) => ({
+        windows: [...state.windows, ...validWindows],
+        nextZIndex: Math.max(state.nextZIndex, maxZIndex + 1),
+      }));
 
-    // Create new window with registry configuration
-    const newWindow: Window = {
-      windowId,
-      title: node.label, // Use node label as window title
-      nodeId: node.id,
-      applicationRegistryId: node.applicationRegistryId,
-      x,
-      y,
-      width: config.width,
-      height: config.height,
-      zIndex: state.nextZIndex,
-      fixed: config.fixedSize,
-      isMinimized: false,
-      isMaximized: config.defaultMaximized,
-    };
+      return true;
+    },
 
-    // Add the window to the state
-    set((state) => ({
-      windows: [...state.windows, newWindow],
-      nextZIndex: state.nextZIndex + 1,
-    }));
+    /**
+     * Update single window by predicate
+     */
+    updateWindow: (
+      predicate: (window: Window) => boolean,
+      updates: Partial<Window>
+    ): boolean => {
+      console.log("updateWindow: updating window with predicate");
 
-    console.log("openWindowFromNode: created window", windowId);
-    return windowId;
-  },
-});
+      const currentState = get();
+      const windowToUpdate = currentState.windows.find(predicate);
+
+      if (!windowToUpdate) {
+        console.log("updateWindow: no window matches predicate");
+        return false;
+      }
+
+      const updatedWindow = {
+        ...windowToUpdate,
+        ...updates,
+        windowId: windowToUpdate.windowId, // Prevent ID from being changed
+      } as Window;
+
+      set((state) => ({
+        windows: state.windows.map((window) =>
+          window.windowId === windowToUpdate.windowId ? updatedWindow : window
+        ),
+        // Update nextZIndex if we're updating zIndex
+        nextZIndex:
+          updates.zIndex && updates.zIndex >= state.nextZIndex
+            ? updates.zIndex + 1
+            : state.nextZIndex,
+      }));
+
+      return true;
+    },
+
+    /**
+     * Update multiple windows by predicate
+     */
+    updateWindows: (
+      predicate: (window: Window) => boolean,
+      updates: Partial<Window>
+    ): number => {
+      console.log("updateWindows: updating windows with predicate");
+
+      const currentState = get();
+      const windowsToUpdate = currentState.windows.filter(predicate);
+
+      if (windowsToUpdate.length === 0) {
+        console.log("updateWindows: no windows match predicate");
+        return 0;
+      }
+
+      const maxUpdatedZIndex = updates.zIndex ? updates.zIndex : 0;
+
+      set((state) => ({
+        windows: state.windows.map((window) => {
+          if (predicate(window)) {
+            return {
+              ...window,
+              ...updates,
+              windowId: window.windowId, // Prevent ID from being changed
+            } as Window;
+          }
+          return window;
+        }),
+        nextZIndex:
+          maxUpdatedZIndex >= state.nextZIndex
+            ? maxUpdatedZIndex + 1
+            : state.nextZIndex,
+      }));
+
+      return windowsToUpdate.length;
+    },
+
+    /**
+     * Delete single window by predicate
+     */
+    deleteWindow: (predicate: (window: Window) => boolean): boolean => {
+      console.log("deleteWindow: deleting window with predicate");
+
+      const currentState = get();
+      const windowToDelete = currentState.windows.find(predicate);
+
+      if (!windowToDelete) {
+        console.log("deleteWindow: no window matches predicate");
+        return false;
+      }
+
+      set((state) => ({
+        windows: state.windows.filter(
+          (window) => window.windowId !== windowToDelete.windowId
+        ),
+      }));
+
+      return true;
+    },
+
+    /**
+     * Delete multiple windows by predicate
+     */
+    deleteWindows: (predicate: (window: Window) => boolean): number => {
+      console.log("deleteWindows: deleting windows with predicate");
+
+      const currentState = get();
+      const windowsToDelete = currentState.windows.filter(predicate);
+
+      if (windowsToDelete.length === 0) {
+        console.log("deleteWindows: no windows match predicate");
+        return 0;
+      }
+
+      console.log("deleteWindows: deleting", windowsToDelete.length, "windows");
+
+      set((state) => ({
+        windows: state.windows.filter((window) => !predicate(window)),
+      }));
+
+      return windowsToDelete.length;
+    },
+
+    /**
+     * Count windows matching predicate
+     */
+    windowCount: (predicate: (window: Window) => boolean): number => {
+      const state = get();
+      return state.windows.filter(predicate).length;
+    },
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // WINDOW LIFECYCLE OPERATIONS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Open a window from any windowable node (applications, documents, directories)
+     */
+    openWindow: (node: WindowableNode): string | null => {
+      console.log("openWindowFromNode: opening window for node", node.id);
+
+      // Build context from node properties
+      const context: WindowCreationContext = {
+        nodeId: node.id,
+        ...(node.type === "document" && {
+          documentConfigId: (node as DocumentEntry).documentConfigId,
+        }),
+      };
+
+      const config = getApplicationConfig(node.applicationRegistryId);
+      const windowId = generateWindowId(node.applicationRegistryId, context);
+
+      // Check if window already exists (for single-instance apps)
+      if (!config.allowMultipleWindows) {
+        const state = get();
+        const existingWindow = state.windows.find(
+          (w) => w.windowId === windowId
+        );
+        if (existingWindow) {
+          console.log("openWindowFromNode: focusing existing window", windowId);
+          // Use the focusWindow method from this slice
+          slice.focusWindow(windowId);
+          return windowId;
+        }
+      }
+
+      const state = get();
+
+      // Calculate position (offset for multiple windows)
+      const windowCount = state.windows.length;
+      const x = 100 * (windowCount + 1);
+      const y = 100 * (windowCount + 1);
+
+      // Create new window with registry configuration
+      const newWindow: Window = {
+        windowId,
+        title: node.label, // Use node label as window title
+        nodeId: node.id,
+        applicationRegistryId: node.applicationRegistryId,
+        x,
+        y,
+        width: config.width,
+        height: config.height,
+        zIndex: state.nextZIndex,
+        fixed: config.fixedSize,
+        isMinimized: false,
+        isMaximized: config.defaultMaximized,
+      };
+
+      // Add the window to the state
+      set((state) => ({
+        windows: [...state.windows, newWindow],
+        nextZIndex: state.nextZIndex + 1,
+      }));
+
+      console.log("openWindowFromNode: created window", windowId);
+      return windowId;
+    },
+
+    /**
+     * Focus a window by its ID
+     */
+    focusWindow: (windowId: WindowableNode["id"]): boolean => {
+      console.log("focusWindow: focusing window", windowId);
+
+      const currentState = get();
+      const windowToFocus = currentState.windows.find(
+        (w) => w.windowId === windowId
+      );
+
+      if (!windowToFocus) {
+        console.log("focusWindow: no window found with ID", windowId);
+        return false;
+      }
+
+      // Update zIndex to bring window to front
+      set((state) => ({
+        windows: state.windows.map((w) =>
+          w.windowId === windowId ? { ...w, zIndex: state.nextZIndex } : w
+        ),
+        nextZIndex: state.nextZIndex + 1,
+      }));
+
+      console.log("focusWindow: focused window", windowId);
+      return true;
+    },
+
+    /**
+     * Close a window by its ID and delete its history if required
+     */
+    closeWindow: (windowId: string): boolean => {
+      console.log("closeWindow: closing window", windowId);
+
+      const currentState = get();
+      const windowToClose = currentState.windows.find(
+        (w) => w.windowId === windowId
+      );
+
+      if (!windowToClose) {
+        console.log("closeWindow: no window found with ID", windowId);
+        return false;
+      }
+
+      // Delete the window
+      set((state) => ({
+        windows: state.windows.filter((w) => w.windowId !== windowId),
+      }));
+
+      // Note: For applications that require history, the history entry
+      // should be deleted externally using the history slice's deleteHistory action
+      // with windowId as the historyId (they are the same for apps that require history)
+      if (requiresHistory(windowToClose.applicationRegistryId)) {
+        console.log(
+          "closeWindow: window requires history - history should be deleted externally"
+        );
+      }
+
+      console.log("closeWindow: closed window", windowId);
+      return true;
+    },
+  };
+
+  return slice;
+};
