@@ -20,7 +20,9 @@ export const BrowserBookmarks = ({
   windowId,
   onBookmarkSelect,
 }: BrowserBookmarksProps) => {
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) =>
+    s.findWindow((w) => w.windowId === windowId)
+  );
   console.log("BROWSER_BOOKMARKS_DEBUG: Window state:", window);
   // When maximized, we need to account for the +1000 zIndex boost
   const baseZIndex = window?.zIndex || 0;
