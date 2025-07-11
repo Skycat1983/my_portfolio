@@ -12,7 +12,7 @@ import type {
 import type { SetState, GetState, ApplicationState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";
-import { desktopRootId } from "@/constants/nodes";
+import { desktopRootId } from "@/constants/nodeHierarchy";
 
 interface NodeBusinessActions {
   // Complex node operations

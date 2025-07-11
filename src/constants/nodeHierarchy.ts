@@ -1,6 +1,7 @@
 import { convertObjectsToMap } from "../lib/objToMap";
 import type { DirectoryObject } from "../components/nodes/nodeTypes";
 import { DOCUMENTS } from "./documentRegistry";
+import { createNodeFromTemplate } from "./nodeRegistry";
 import {
   ROBOCROP,
   SKYNOT,
@@ -9,25 +10,12 @@ import {
   IMAGE1,
   PDF,
   EGG_BROKEN,
-  TROPHY1,
-  GTA6_LOGO,
-  PLANET,
-  FINDER,
-  TERMINAL,
-  SAFARI,
-  MAPS,
   FOLDER_MAC,
   FOLDER_WINDOWS,
-  WHATSAPP,
-  EDGE,
   BIN_FULL,
   BIN_EMPTY,
-  PAGES,
-  WORD,
   LINKEDIN,
-  CALCULATOR,
   MAIL,
-  SETTINGS,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -70,62 +58,21 @@ export const rootNodes: DirectoryObject = {
       applicationRegistryId: "finder",
       size: null,
       children: [
-        {
+        createNodeFromTemplate("whatsAppApp", {
           id: "whatsapp-desktop",
-          label: "WhatsApp",
-          type: "application",
-          image: WHATSAPP,
-          alternativeImage: null,
-          componentKey: "whatsApp",
-          applicationId: "whatsApp",
-          applicationRegistryId: "whatsApp",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-13T15:45:00Z",
-          size: 145000000, // 145MB for WhatsApp
-        },
-        {
+          location: "desktop",
+        }),
+        createNodeFromTemplate("calculatorApp", {
           id: "calculator-desktop",
-          label: "Calculator",
-          type: "application",
-          image: CALCULATOR,
-          alternativeImage: null,
-          componentKey: "calculator",
-          applicationId: "calculator",
-          applicationRegistryId: "calculator",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-17T08:45:00Z",
-          size: 65000000, // 65MB for calculator
-        },
-        {
+          location: "desktop",
+        }),
+        createNodeFromTemplate("browserApp", {
           id: "browser-desktop",
-          label: "Internet",
-          type: "application",
-          image: SAFARI,
-          alternativeImage: EDGE,
-          componentKey: "browser",
-          applicationId: "browser",
-          applicationRegistryId: "browser",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-19T15:30:00Z",
-          size: 245000000, // 245MB for browser
-        },
-        {
+          location: "desktop",
+        }),
+        createNodeFromTemplate("terminalApp", {
           id: "terminal",
-          label: "Terminal",
-          type: "application",
-          image: TERMINAL,
-          alternativeImage: null,
-          componentKey: "terminal",
-          applicationId: "terminal",
-          applicationRegistryId: "terminal",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-18T14:20:00Z",
-          size: 85000000, // 85MB for terminal
-        },
+        }),
         {
           id: "trash",
           label: "Trash",
@@ -364,64 +311,20 @@ export const rootNodes: DirectoryObject = {
           dateModified: "2024-03-20T13:15:00Z",
           size: null,
           children: [
-            {
+            createNodeFromTemplate("gtaViApp", {
               id: "gtaiv",
-              label: "GTAVI",
-              type: "application",
-              image: GTA6_LOGO,
-              alternativeImage: null,
-              componentKey: "gtaVi",
-              applicationId: "gtaVi",
-              applicationRegistryId: "gtaVi",
-              macExtension: ".app",
-              windowsExtension: ".exe",
-              dateModified: "2024-03-15T11:20:00Z",
-              size: 185000000, // 185MB for game
-            },
-            {
+            }),
+            createNodeFromTemplate("geoGameApp", {
               id: "geo",
-              label: "Flag Quest",
-              type: "application",
-              image: PLANET,
-              alternativeImage: null,
-              componentKey: "geoGame",
-              applicationId: "geoGame",
-              applicationRegistryId: "geoGame",
-              macExtension: ".app",
-              windowsExtension: ".exe",
-              dateModified: "2024-03-14T14:30:00Z",
-              size: 125000000, // 125MB for game
-            },
+            }),
           ],
         },
-        {
+        createNodeFromTemplate("achievementsApp", {
           id: "achievements",
-          label: "Achievements",
-          type: "application",
-          image: TROPHY1,
-          alternativeImage: null,
-          componentKey: "achievements",
-          applicationId: "achievements",
-          applicationRegistryId: "achievements",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-12T10:30:00Z",
-          size: 95000000, // 95MB for achievements app
-        },
-        {
+        }),
+        createNodeFromTemplate("portfolioDocument", {
           id: "sample-document",
-          label: "Portfolio Document",
-          type: "document",
-          image: PAGES,
-          alternativeImage: WORD,
-          applicationId: "documentEditor",
-          documentConfigId: "sample_document_config",
-          applicationRegistryId: "documentEditor",
-          macExtension: ".txt",
-          windowsExtension: ".txt",
-          dateModified: "2024-03-20T09:00:00Z",
-          size: 25000, // 25KB for text document
-        },
+        }),
         // {
         //   id: "downloads",
         //   label: "Downloads",
@@ -450,21 +353,9 @@ export const rootNodes: DirectoryObject = {
       dateModified: "2024-03-20T10:00:00Z",
       size: null,
       children: [
-        {
+        createNodeFromTemplate("finderApp", {
           id: "finder",
-          label: "Finder",
-          type: "application",
-          image: FINDER,
-          alternativeImage: FINDER,
-          componentKey: "finder",
-          applicationId: "finder",
-          applicationRegistryId: "finder",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-20T10:00:00Z",
-          size: null,
-          // children: [],
-        },
+        }),
         {
           id: "mail",
           label: "Mail",
@@ -477,62 +368,21 @@ export const rootNodes: DirectoryObject = {
           dateModified: "2024-03-19T16:30:00Z",
           size: 512, // 512 bytes for function
         },
-        {
+        createNodeFromTemplate("mapsApp", {
           id: "maps",
-          label: "Maps",
-          type: "application",
-          image: MAPS,
-          alternativeImage: null,
-          componentKey: "maps",
-          applicationId: "maps",
-          applicationRegistryId: "maps",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-18T13:45:00Z",
-          size: 155000000, // 155MB for maps
-        },
-        {
+        }),
+        createNodeFromTemplate("calculatorApp", {
           id: "calculator-dock",
-          label: "Calculator",
-          type: "application",
-          image: CALCULATOR,
-          alternativeImage: null,
-          componentKey: "calculator",
-          applicationId: "calculator",
-          applicationRegistryId: "calculator",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-17T08:45:00Z",
-          size: 65000000, // 65MB for calculator
-        },
-        {
+          location: "dock",
+        }),
+        createNodeFromTemplate("settingsApp", {
           id: "settings-dock",
-          label: "Settings",
-          type: "application",
-          image: SETTINGS,
-          alternativeImage: null,
-          componentKey: "settings",
-          applicationId: "settings",
-          applicationRegistryId: "settings",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-12T10:30:00Z",
-          size: 95000000, // 95MB for settings app
-        },
-        {
+          location: "dock",
+        }),
+        createNodeFromTemplate("pagesApp", {
           id: "pages-dock",
-          label: "Pages",
-          type: "application",
-          image: PAGES,
-          alternativeImage: WORD,
-          componentKey: "documentEditor",
-          applicationId: "documentEditor",
-          applicationRegistryId: "documentEditor",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-16T11:20:00Z",
-          size: 175000000, // 175MB for document editor
-        },
+          location: "dock",
+        }),
         {
           id: "github-dock",
           label: "GitHub",
@@ -557,62 +407,22 @@ export const rootNodes: DirectoryObject = {
           dateModified: "2024-03-14T09:15:00Z",
           size: 1024, // 1KB for link file
         },
-        {
+        createNodeFromTemplate("whatsAppApp", {
           id: "whatsapp-dock",
-          label: "WhatsApp",
-          type: "application",
-          image: WHATSAPP,
-          alternativeImage: null,
-          componentKey: "whatsApp",
-          applicationId: "whatsApp",
-          applicationRegistryId: "whatsApp",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-13T15:45:00Z",
-          size: 145000000, // 145MB for WhatsApp
-        },
-        {
+          location: "dock",
+        }),
+        createNodeFromTemplate("achievementsApp", {
           id: "achievements-dock",
-          label: "Achievements",
-          type: "application",
-          image: TROPHY1,
-          alternativeImage: null,
-          componentKey: "achievements",
-          applicationId: "achievements",
-          applicationRegistryId: "achievements",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-12T10:30:00Z",
-          size: 95000000, // 95MB for achievements app
-        },
-        {
+          location: "dock",
+        }),
+        createNodeFromTemplate("terminalApp", {
           id: "terminal-dock",
-          label: "Terminal",
-          type: "application",
-          image: TERMINAL,
-          alternativeImage: null,
-          componentKey: "terminal",
-          applicationId: "terminal",
-          applicationRegistryId: "terminal",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-18T14:20:00Z",
-          size: 85000000, // 85MB for terminal
-        },
-        {
+          location: "dock",
+        }),
+        createNodeFromTemplate("browserApp", {
           id: "browser-dock",
-          label: "Internet",
-          type: "application",
-          image: SAFARI,
-          alternativeImage: null,
-          componentKey: "browser",
-          applicationId: "browser",
-          applicationRegistryId: "browser",
-          macExtension: ".app",
-          windowsExtension: ".exe",
-          dateModified: "2024-03-19T15:30:00Z",
-          size: 245000000, // 245MB for browser
-        },
+          location: "dock",
+        }),
       ],
     },
   ],

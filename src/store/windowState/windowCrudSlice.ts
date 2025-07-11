@@ -1,4 +1,4 @@
-import { defaultNodeMap } from "@/constants/nodes";
+import { defaultNodeMap } from "@/constants/nodeHierarchy";
 import type { NodeMap } from "@/components/nodes/nodeTypes";
 import type {
   WindowType,

@@ -1,4 +1,4 @@
-import { defaultNodeMap, defaultRootId } from "@/constants/nodes";
+import { defaultNodeMap, defaultRootId } from "@/constants/nodeHierarchy";
 import type { NodeEntry, NodeMap } from "@/components/nodes/nodeTypes";
 import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 

@@ -10,7 +10,7 @@ import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryContent } from "../components/applications/directory/DirectoryContent";
-import { desktopRootId } from "../constants/nodes";
+import { desktopRootId } from "../constants/nodeHierarchy";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
 
 export const AppLayout = () => {

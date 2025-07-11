@@ -1,6 +1,6 @@
 import type { NodeEntry } from "@/components/nodes/nodeTypes";
 import { useNewStore } from "@/hooks/useStore";
-import { desktopRootId } from "@/constants/nodes";
+import { desktopRootId } from "@/constants/nodeHierarchy";
 import { NodeSwitch } from "@/components/nodes/NodeSwitch";
 
 type DirectoryLayoutProps = {

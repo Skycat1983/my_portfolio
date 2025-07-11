@@ -6,7 +6,7 @@ import { useNewStore } from "@/hooks/useStore";
 // import { Mail, Phone } from "lucide-react";
 // import { DockItem } from "./DockItem";
 
-import { dockRootId } from "@/constants/nodes";
+import { dockRootId } from "@/constants/nodeHierarchy";
 import { NodeSwitch } from "../nodes/NodeSwitch";
 
 export interface DockItemData {

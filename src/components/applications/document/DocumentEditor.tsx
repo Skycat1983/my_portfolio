@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
-import { desktopRootId } from "@/constants/nodes";
+import { desktopRootId } from "@/constants/nodeHierarchy";
 import { PAGES, WORD } from "@/constants/images";
 
 // Import the new components

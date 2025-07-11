@@ -1,14 +1,14 @@
 import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 import type {
   Window,
+  WindowableNode,
   WindowCreationContext,
 } from "@/components/window/windowTypes";
-import type { ApplicationRegistryId } from "@/constants/applicationRegistry";
 import {
-  generateWindowId as createWindowId,
+  generateWindowId,
   getApplicationConfig,
 } from "@/constants/applicationRegistry";
-import type { NodeEntry, ApplicationEntry } from "@/components/nodes/nodeTypes";
+import type { DocumentEntry } from "@/components/nodes/nodeTypes";
 
 interface WindowState {
   windows: Window[];
@@ -46,17 +46,10 @@ interface WindowActions {
   windowCount: (predicate: (window: Window) => boolean) => number;
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // REGISTRY-BASED SMART OPERATIONS
+  // NODE-BASED WINDOW OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════════
 
-  openApplication: (
-    applicationRegistryId: ApplicationRegistryId,
-    context?: WindowCreationContext
-  ) => string | null; // Returns windowId or null if failed
-  openFromNode: (
-    node: NodeEntry,
-    context?: WindowCreationContext
-  ) => string | null; // Returns windowId or null if failed
+  openWindowFromNode: (node: WindowableNode) => string | null; // Returns windowId or null if failed
 }
 
 export type WindowSlice = WindowState & WindowActions;
@@ -284,29 +277,32 @@ export const createWindowSlice = (
   },
 
   // ═══════════════════════════════════════════════════════════════════════════════
-  // REGISTRY-BASED SMART OPERATIONS
+  // NODE-BASED WINDOW OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════════
 
   /**
-   * Open an application directly by ApplicationRegistryId (for dock items, etc.)
+   * Open a window from any windowable node (applications, documents, directories)
    */
-  openApplication: (
-    applicationRegistryId: ApplicationRegistryId,
-    context?: WindowCreationContext
-  ): string | null => {
-    console.log("openApplication: opening application", applicationRegistryId);
+  openWindowFromNode: (node: WindowableNode): string | null => {
+    console.log("openWindowFromNode: opening window for node", node.id);
 
-    const config = getApplicationConfig(applicationRegistryId);
+    // Build context from node properties
+    const context: WindowCreationContext = {
+      nodeId: node.id,
+      ...(node.type === "document" && {
+        documentConfigId: (node as DocumentEntry).documentConfigId,
+      }),
+    };
 
-    // Generate window ID based on application scope
-    const windowId = createWindowId(applicationRegistryId, context);
+    const config = getApplicationConfig(node.applicationRegistryId);
+    const windowId = generateWindowId(node.applicationRegistryId, context);
 
     // Check if window already exists (for single-instance apps)
     if (!config.allowMultipleWindows) {
       const state = get();
       const existingWindow = state.windows.find((w) => w.windowId === windowId);
       if (existingWindow) {
-        console.log("openApplication: focusing existing window", windowId);
+        console.log("openWindowFromNode: focusing existing window", windowId);
         // Focus existing window by updating its zIndex
         set((state) => ({
           windows: state.windows.map((w) =>
@@ -328,9 +324,9 @@ export const createWindowSlice = (
     // Create new window with registry configuration
     const newWindow: Window = {
       windowId,
-      title: applicationRegistryId, // Default title
-      nodeId: context?.nodeId || `${applicationRegistryId}-default`, // Default nodeId
-      applicationRegistryId,
+      title: node.label, // Use node label as window title
+      nodeId: node.id,
+      applicationRegistryId: node.applicationRegistryId,
       x,
       y,
       width: config.width,
@@ -341,70 +337,13 @@ export const createWindowSlice = (
       isMaximized: config.defaultMaximized,
     };
 
-    // Use set to add the window to the state
+    // Add the window to the state
     set((state) => ({
       windows: [...state.windows, newWindow],
       nextZIndex: state.nextZIndex + 1,
     }));
 
-    console.log("openApplication: created window", windowId);
+    console.log("openWindowFromNode: created window", windowId);
     return windowId;
   },
-
-  /**
-   * Open a window from a node (handles different node types)
-   */
-  openFromNode: (
-    node: NodeEntry,
-    context?: WindowCreationContext
-  ): string | null => {
-    console.log("openFromNode: opening window for node", node.id);
-
-    const windowSlice = get() as WindowSlice & ApplicationState; // Type assertion to access slice methods
-
-    // Handle different node types
-    switch (node.type) {
-      case "application": {
-        const applicationNode = node as ApplicationEntry;
-        return windowSlice.openApplication(
-          applicationNode.applicationRegistryId,
-          {
-            nodeId: node.id,
-            ...context,
-          }
-        );
-      }
-
-      case "document": {
-        const documentNode =
-          node as import("@/components/nodes/nodeTypes").DocumentEntry;
-        // For documents, we need the document config ID for proper window scoping
-        return windowSlice.openApplication(documentNode.applicationRegistryId, {
-          nodeId: node.id,
-          documentConfigId: documentNode.documentConfigId,
-          ...context,
-        });
-      }
-
-      case "directory": {
-        const directoryNode =
-          node as import("@/components/nodes/nodeTypes").DirectoryEntry;
-        return windowSlice.openApplication(
-          directoryNode.applicationRegistryId,
-          {
-            nodeId: node.id,
-            ...context,
-          }
-        );
-      }
-
-      default:
-        console.error("openFromNode: unsupported node type", node.type);
-        return null;
-    }
-  },
-
-  /**
-   * Open window or focus existing based on application configuration
-   */
 });
