@@ -72,7 +72,7 @@ export const PhoneCallScreen: React.FC<PhoneCallScreenProps> = ({
     <div className="h-full flex flex-col bg-gray-900">
       {/* Header */}
       <div className="bg-gray-800 text-white py-3 px-4 flex items-center border-b border-gray-700 justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full justify-center">
           <Lock />
           <h2 className="font-semibold">End-to-End Encrypted</h2>
         </div>

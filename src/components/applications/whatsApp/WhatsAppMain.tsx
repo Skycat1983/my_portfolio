@@ -13,6 +13,7 @@ import { buildSystemInstruction } from "./utils";
 import { createMessage, processAIResponse } from "./messageUtils";
 import { selectConversationParticipant } from "./selectors/contactSelectors";
 import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface WhatsAppMainProps {
   windowId: WindowType["windowId"];
@@ -25,8 +26,25 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
     phoneNumber: string;
     conversationId: ConversationId;
   } | null>(null);
+
+  // Track navigation direction for animations
+  const [navigationDirection, setNavigationDirection] = useState<
+    "forward" | "backward" | "initial"
+  >("initial");
+
   const { whatsAppView, navigateToView, goBack, cleanup } =
     useWhatsAppHistory(windowId);
+
+  // Set direction to forward after initial load
+  useEffect(() => {
+    if (navigationDirection === "initial" && whatsAppView) {
+      // Small delay to let initial animation complete
+      const timer = setTimeout(() => {
+        setNavigationDirection("forward");
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [navigationDirection, whatsAppView]);
 
   const whatsApp = useNewStore((state) => state.whatsApp);
   const archiveContact = useNewStore((state) => state.archiveContact);
@@ -38,6 +56,51 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const setTyping = useNewStore((state) => state.setTyping);
   console.log("WhatsAppMain: whatsApp", whatsApp);
+
+  // Animation variants with improved synchronization
+  const slideVariants = {
+    initial: (direction: "forward" | "backward" | "initial") => {
+      if (direction === "initial") {
+        return { y: "-100%", opacity: 0 }; // Enter from top
+      }
+      return {
+        x: direction === "forward" ? "100%" : "-100%", // forward: from right, backward: from left
+        opacity: 0,
+      };
+    },
+    animate: {
+      x: 0,
+      y: 0,
+      opacity: 1,
+    },
+    exit: (direction: "forward" | "backward" | "initial") => {
+      if (direction === "initial") {
+        return { y: "100%", opacity: 0 }; // Exit to bottom (shouldn't happen)
+      }
+      return {
+        x: direction === "forward" ? "-100%" : "100%", // forward: to left, backward: to right
+        opacity: 0,
+      };
+    },
+  };
+
+  const transition = {
+    duration: 0.3,
+  };
+
+  // Generate unique key for AnimatePresence
+  const getViewKey = () => {
+    if (!whatsAppView) return "loading";
+
+    const baseKey = whatsAppView.view;
+    const params = whatsAppView.params;
+
+    if (params?.conversationId) return `${baseKey}-${params.conversationId}`;
+    if (params?.contactId) return `${baseKey}-${params.contactId}`;
+
+    return baseKey;
+  };
+
   // Handle cleanup when window closes
   useEffect(() => {
     return () => {
@@ -136,6 +199,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
 
   const handleConversationClick = React.useCallback(
     (conversationId: Conversation["id"]) => {
+      setNavigationDirection("forward");
       markConversationMessagesAsRead(conversationId);
       navigateToView("chat", { conversationId });
     },
@@ -156,12 +220,14 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
   );
 
   const handleArchiveClick = React.useCallback(() => {
+    setNavigationDirection("forward");
     navigateToView("archive");
   }, [navigateToView]);
 
   const handleArchiveContact = React.useCallback(
     (contactId: string) => {
       archiveContact(contactId);
+      setNavigationDirection("backward");
       navigateToView("chatList");
     },
     [archiveContact, navigateToView]
@@ -176,14 +242,21 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
 
   const handleViewProfile = React.useCallback(
     (contactId: string) => {
+      setNavigationDirection("forward");
       navigateToView("contact", { contactId });
     },
     [navigateToView]
   );
 
   const handleAccountClick = React.useCallback(() => {
+    setNavigationDirection("forward");
     navigateToView("contact", { contactId: "user_self" });
   }, [navigateToView]);
+
+  const handleGoBack = React.useCallback(() => {
+    setNavigationDirection("backward");
+    goBack();
+  }, [goBack]);
 
   return (
     <div className="h-full w-full bg-gray-800">
@@ -211,53 +284,65 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
           </button>
         </div>
       </div>
-
-      <div className="h-[calc(100%-4rem)]">
-        {whatsAppView?.view === "chatList" && !isPhoneCall && (
-          <ChatListScreen
-            onSelectConversation={handleConversationClick}
-            onViewArchived={handleArchiveClick}
-          />
-        )}
-        {whatsAppView?.view === "chat" &&
-          whatsAppView.params?.conversationId &&
-          !isPhoneCall && (
-            <ChatScreen
-              windowId={windowId}
-              conversationId={whatsAppView.params.conversationId}
-              onBack={goBack}
-              onArchive={handleArchiveContact}
-              onUnarchive={handleUnarchiveContact}
-              onViewProfile={handleViewProfile}
-              onPhoneCall={handlePhoneCallClick}
-            />
-          )}
-        {whatsAppView?.view === "archive" && !isPhoneCall && (
-          <ArchiveScreen
-            onBack={goBack}
-            onSelectContact={handleConversationClick}
-            onUnarchive={handleUnarchiveContact}
-          />
-        )}
-        {whatsAppView?.view === "contact" &&
-          whatsAppView.params?.contactId &&
-          !isPhoneCall && (
-            <ContactScreen
-              contactId={whatsAppView.params.contactId}
-              onBack={goBack}
-              onViewProfile={handleViewProfile}
-            />
-          )}
-        {isPhoneCall && (
-          <PhoneCallScreen
-            avatar={isPhoneCall.avatar}
-            name={isPhoneCall.name}
-            phoneNumber={isPhoneCall.phoneNumber}
-            conversationId={isPhoneCall.conversationId}
-            onHangUp={() => setIsPhoneCall(null)}
-            onPhoneCallEnd={handlePhoneCallAIResponse}
-          />
-        )}
+      <div className="h-[calc(100%-4rem)] relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={getViewKey()}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={slideVariants}
+            custom={navigationDirection}
+            transition={transition}
+            className="absolute inset-0 w-full h-full"
+          >
+            {whatsAppView?.view === "chatList" && !isPhoneCall && (
+              <ChatListScreen
+                onSelectConversation={handleConversationClick}
+                onViewArchived={handleArchiveClick}
+              />
+            )}
+            {whatsAppView?.view === "chat" &&
+              whatsAppView.params?.conversationId &&
+              !isPhoneCall && (
+                <ChatScreen
+                  windowId={windowId}
+                  conversationId={whatsAppView.params.conversationId}
+                  onBack={handleGoBack}
+                  onArchive={handleArchiveContact}
+                  onUnarchive={handleUnarchiveContact}
+                  onViewProfile={handleViewProfile}
+                  onPhoneCall={handlePhoneCallClick}
+                />
+              )}
+            {whatsAppView?.view === "archive" && !isPhoneCall && (
+              <ArchiveScreen
+                onBack={handleGoBack}
+                onSelectContact={handleConversationClick}
+                onUnarchive={handleUnarchiveContact}
+              />
+            )}
+            {whatsAppView?.view === "contact" &&
+              whatsAppView.params?.contactId &&
+              !isPhoneCall && (
+                <ContactScreen
+                  contactId={whatsAppView.params.contactId}
+                  onBack={handleGoBack}
+                  onViewProfile={handleViewProfile}
+                />
+              )}
+            {isPhoneCall && (
+              <PhoneCallScreen
+                avatar={isPhoneCall.avatar}
+                name={isPhoneCall.name}
+                phoneNumber={isPhoneCall.phoneNumber}
+                conversationId={isPhoneCall.conversationId}
+                onHangUp={() => setIsPhoneCall(null)}
+                onPhoneCallEnd={handlePhoneCallAIResponse}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
