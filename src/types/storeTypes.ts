@@ -14,6 +14,10 @@ import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
 import type { HistoryInstance } from "@/store/contentState/historySlice";
 import type { WeatherSlice } from "@/store/systemState/weatherSlice";
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// LEGACY TYPES (Maintain for backward compatibility)
+// ═══════════════════════════════════════════════════════════════════════════════
+
 // Interface for props that window content components receive
 // Note: This is now flexible - components can define their own prop interfaces
 export interface WindowContentProps {
@@ -22,33 +26,6 @@ export interface WindowContentProps {
   window?: WindowType; // Optional for backward compatibility
 }
 // TODO: Implement these types
-
-// interface WindowBase {
-//   windowId: ApplicationEntry["id"];
-//   title: string;
-//   nodeId: NodeEntry["id"];
-//   applicationId?: ApplicationEntry["applicationId"]; // Application identity for focus/duplicate logic (optional for non-application windows)
-//   nodeType: string;
-//   height: number;
-//   width: number;
-//   x: number;
-//   y: number;
-//   zIndex: number;
-//   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
-// }
-// interface WindowFixed extends WindowBase {
-//   fixed: true;
-// }
-
-// interface WindowAdjustable extends WindowBase {
-//   fixed: false;
-//   isMinimized?: boolean;
-//   isMaximized?: boolean;
-// }
-
-// interface WindowDocument extends WindowBase {
-//   documentConfig: DocumentConfig;
-// }
 
 // Full Window interface with ALL possible properties across all window types
 export interface WindowType {
@@ -211,6 +188,8 @@ interface NodeState {
 interface WindowState {
   openWindows: WindowType[];
   nextZIndex: number;
+  // New registry-based windows
+  newOpenWindows: Window[];
 }
 
 // Collection-based states

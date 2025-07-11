@@ -54,6 +54,8 @@ export const createWindowCrudSlice = (
   nextZIndex: 1000,
   nodeMap: defaultNodeMap,
 
+  // ! NEW ACTIONS ABOVE THIS LINE
+
   // Find operations
   findOneWindow: (predicate: (window: WindowType) => boolean) => {
     const state = get();

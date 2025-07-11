@@ -205,3 +205,5 @@ export type NodeEntry =
 export interface NodeMap {
   [id: string]: NodeEntry;
 }
+
+export type NodeId = keyof NodeMap;
