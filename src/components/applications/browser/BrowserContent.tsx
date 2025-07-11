@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { StartPage } from "./fake_pages/StartPage";
 import { IncompletePage } from "./fake_pages/IncompletePage";
-import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
 import { WindowHistoryNavigation } from "@/components/window/windowNavigation/WindowHistoryNavigation";
 import { BrowserAddressBar } from "./BrowserAddressBar";
@@ -14,6 +13,8 @@ import {
   type BookmarkItem,
 } from "./browserConstants";
 import { useScreenMonitor } from "@/hooks/useScreenSize";
+import type { WindowId } from "@/constants/applicationRegistry";
+import type { WindowContentProps } from "@/types/storeTypes";
 
 // TODO: when we click on 'search' we should focus on the search bar
 
@@ -32,11 +33,10 @@ const renderContent = (addressBarUrl: string) => {
   return <IncompletePage url={addressBarUrl} />;
 };
 
-interface BrowserContentProps {
-  windowId: WindowType["windowId"];
-}
+export const BrowserContent = ({ windowId }: WindowContentProps) => {
+  // Type-safe cast for internal use - we know this is a browser window
+  const typedWindowId = windowId as WindowId<"browser">;
 
-export const BrowserContent = ({ windowId }: BrowserContentProps) => {
   const screenSize = useScreenMonitor();
   const predefinedAddress = PREDEFINED_ADDRESS;
   const initialUrl = "";
@@ -72,7 +72,7 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
     if (e.key === "Enter") {
       console.log("BROWSER_DEBUG handleKeyDown", e.currentTarget.value);
       setAddressViewed(e.currentTarget.value);
-      addToHistory(windowId, e.currentTarget.value);
+      addToHistory(typedWindowId, e.currentTarget.value);
     }
   };
 
@@ -95,7 +95,7 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
     );
     setAddressBarUrl(bookmark.url);
     setAddressViewed(bookmark.url);
-    addToHistory(windowId, bookmark.url);
+    addToHistory(typedWindowId, bookmark.url);
   };
 
   const isMobile = screenSize.isXs || screenSize.isSm;
@@ -110,7 +110,7 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
       <div className="flex-none sticky top-0 bg-neutral-300 z-10 flex items-center gap-4 p-4">
         {/* <h1 className="text-2xl font-bold text-black">TEMP</h1> */}
         <WindowHistoryNavigation
-          windowId={windowId}
+          windowId={typedWindowId}
           firstHistoryItem={initialUrl}
           showForwardButton={!isMobile}
           showBackButton={true}
@@ -124,7 +124,7 @@ export const BrowserContent = ({ windowId }: BrowserContentProps) => {
         />
         <BrowserBookmarks
           onBookmarkSelect={handleBookmarkSelect}
-          windowId={windowId}
+          windowId={typedWindowId}
         />
         {!isMobile && <BrowserDownload />}
       </div>

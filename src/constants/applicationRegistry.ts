@@ -36,7 +36,7 @@ interface ApplicationConfig {
   defaultMaximized: boolean;
 }
 
-export const APPLICATION_REGISTRY = {
+export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
   // ─────────── File Management ───────────
   finder: {
     component: Finder,

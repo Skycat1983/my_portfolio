@@ -40,7 +40,7 @@ interface WindowActions {
 
   // Query operations (remain here as they're fundamental)
   countWindows: (predicate: (window: WindowType) => boolean) => number;
-  windowExists: (predicate: (window: WindowType) => boolean) => boolean;
+  windowExists2: (predicate: (window: WindowType) => boolean) => boolean;
 }
 
 export type WindowCrudSlice = WindowState & WindowActions;
@@ -250,7 +250,7 @@ export const createWindowCrudSlice = (
     return state.openWindows.filter(predicate).length;
   },
 
-  windowExists: (predicate: (window: WindowType) => boolean): boolean => {
+  windowExists2: (predicate: (window: WindowType) => boolean): boolean => {
     const state = get();
     return state.openWindows.some(predicate);
   },

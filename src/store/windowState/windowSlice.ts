@@ -1,9 +1,4 @@
-import type {
-  ApplicationState,
-  SetState,
-  GetState,
-  WindowType,
-} from "@/types/storeTypes";
+import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 import type {
   Window,
   WindowableNode,
@@ -18,6 +13,7 @@ import type { DocumentEntry } from "@/components/nodes/nodeTypes";
 
 interface WindowState {
   windows: Window[];
+  nextZIndex: number;
 }
 
 interface WindowActions {
@@ -28,7 +24,7 @@ interface WindowActions {
   // Find operations (predicate-based)
   findWindow: (predicate: (window: Window) => boolean) => Window | undefined;
   findWindows: (predicate: (window: Window) => boolean) => Window[];
-  hasWindow: (predicate: (window: Window) => boolean) => boolean;
+  windowExists: (predicate: (window: Window) => boolean) => boolean;
 
   // Create operations
   createWindow: (window: Window) => boolean;
@@ -83,7 +79,7 @@ export const createWindowSlice = (
     // ═══════════════════════════════════════════════════════════════════════════════
 
     windows: [],
-
+    nextZIndex: 1000,
     // ═══════════════════════════════════════════════════════════════════════════════
     // PREDICATE-BASED CRUD OPERATIONS
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -107,7 +103,7 @@ export const createWindowSlice = (
     /**
      * Check if any window matches predicate
      */
-    hasWindow: (predicate: (window: Window) => boolean) => {
+    windowExists: (predicate: (window: Window) => boolean) => {
       const state = get();
       return state.windows.some(predicate);
     },

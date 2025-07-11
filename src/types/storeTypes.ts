@@ -22,9 +22,9 @@ import type { Window } from "@/components/window/windowTypes";
 // Interface for props that window content components receive
 // Note: This is now flexible - components can define their own prop interfaces
 export interface WindowContentProps {
-  windowId: WindowType["windowId"];
+  windowId: Window["windowId"];
   nodeId: string;
-  window?: WindowType; // Optional for backward compatibility
+  window?: Window; // Optional for backward compatibility
 }
 // TODO: Implement these types
 

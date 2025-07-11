@@ -1,13 +1,13 @@
-import type { WindowType } from "@/types/storeTypes";
 import { useWindowHistoryNavigation } from "./useWindowHistoryNavigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import theme from "@/styles/theme";
 import { useNewStore } from "@/hooks/useStore";
 import { cn } from "@/lib/utils";
 import { browserButtonStyles } from "@/components/applications/browser/BrowserFrame.styles";
+import type { Window } from "../windowTypes";
 
 interface NavigationProps {
-  windowId: WindowType["windowId"];
+  windowId: Window["windowId"];
   firstHistoryItem: unknown;
   showForwardButton?: boolean;
   showBackButton?: boolean;
