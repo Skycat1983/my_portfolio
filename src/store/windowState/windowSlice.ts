@@ -49,15 +49,14 @@ interface WindowActions {
   // REGISTRY-BASED SMART OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════════
 
-  createWindowFromNode: (
+  openApplication: (
+    applicationRegistryId: ApplicationRegistryId,
+    context?: WindowCreationContext
+  ) => string | null; // Returns windowId or null if failed
+  openFromNode: (
     node: NodeEntry,
     context?: WindowCreationContext
   ) => string | null; // Returns windowId or null if failed
-
-  openOrFocusWindow: (
-    applicationRegistryId: ApplicationRegistryId,
-    context?: WindowCreationContext
-  ) => string | null; // Returns windowId (existing or new)
 }
 
 export type WindowSlice = WindowState & WindowActions;
@@ -289,43 +288,32 @@ export const createWindowSlice = (
   // ═══════════════════════════════════════════════════════════════════════════════
 
   /**
-   * Create a window from a node using application registry configuration
+   * Open an application directly by ApplicationRegistryId (for dock items, etc.)
    */
-  createWindowFromNode: (
-    node: NodeEntry,
+  openApplication: (
+    applicationRegistryId: ApplicationRegistryId,
     context?: WindowCreationContext
   ): string | null => {
-    console.log("createWindowFromNode: creating window for node", node.id);
-
-    if (node.type !== "application") {
-      console.error("createWindowFromNode: node must be application type");
-      return null;
-    }
-
-    const applicationNode = node as ApplicationEntry;
-
-    // Use applicationRegistryId if available, fallback to componentKey
-    const applicationRegistryId = (applicationNode.applicationRegistryId ||
-      applicationNode.componentKey) as ApplicationRegistryId;
+    console.log("openApplication: opening application", applicationRegistryId);
 
     const config = getApplicationConfig(applicationRegistryId);
 
     // Generate window ID based on application scope
-    const windowId = createWindowId(applicationRegistryId, {
-      nodeId: node.id,
-      ...context,
-    });
+    const windowId = createWindowId(applicationRegistryId, context);
 
     // Check if window already exists (for single-instance apps)
     if (!config.allowMultipleWindows) {
       const state = get();
       const existingWindow = state.windows.find((w) => w.windowId === windowId);
       if (existingWindow) {
-        console.log("createWindowFromNode: focusing existing window", windowId);
+        console.log("openApplication: focusing existing window", windowId);
         // Focus existing window by updating its zIndex
-        state.updateWindow((w) => w.windowId === windowId, {
-          zIndex: state.nextZIndex,
-        });
+        set((state) => ({
+          windows: state.windows.map((w) =>
+            w.windowId === windowId ? { ...w, zIndex: state.nextZIndex } : w
+          ),
+          nextZIndex: state.nextZIndex + 1,
+        }));
         return windowId;
       }
     }
@@ -340,8 +328,8 @@ export const createWindowSlice = (
     // Create new window with registry configuration
     const newWindow: Window = {
       windowId,
-      title: node.label,
-      nodeId: node.id,
+      title: applicationRegistryId, // Default title
+      nodeId: context?.nodeId || `${applicationRegistryId}-default`, // Default nodeId
       applicationRegistryId,
       x,
       y,
@@ -353,45 +341,70 @@ export const createWindowSlice = (
       isMaximized: config.defaultMaximized,
     };
 
-    const success = state.createWindow(newWindow);
+    // Use set to add the window to the state
+    set((state) => ({
+      windows: [...state.windows, newWindow],
+      nextZIndex: state.nextZIndex + 1,
+    }));
 
-    if (success) {
-      console.log("createWindowFromNode: created window", windowId);
-      return windowId;
+    console.log("openApplication: created window", windowId);
+    return windowId;
+  },
+
+  /**
+   * Open a window from a node (handles different node types)
+   */
+  openFromNode: (
+    node: NodeEntry,
+    context?: WindowCreationContext
+  ): string | null => {
+    console.log("openFromNode: opening window for node", node.id);
+
+    const windowSlice = get() as WindowSlice & ApplicationState; // Type assertion to access slice methods
+
+    // Handle different node types
+    switch (node.type) {
+      case "application": {
+        const applicationNode = node as ApplicationEntry;
+        return windowSlice.openApplication(
+          applicationNode.applicationRegistryId,
+          {
+            nodeId: node.id,
+            ...context,
+          }
+        );
+      }
+
+      case "document": {
+        const documentNode =
+          node as import("@/components/nodes/nodeTypes").DocumentEntry;
+        // For documents, we need the document config ID for proper window scoping
+        return windowSlice.openApplication(documentNode.applicationRegistryId, {
+          nodeId: node.id,
+          documentConfigId: documentNode.documentConfigId,
+          ...context,
+        });
+      }
+
+      case "directory": {
+        const directoryNode =
+          node as import("@/components/nodes/nodeTypes").DirectoryEntry;
+        return windowSlice.openApplication(
+          directoryNode.applicationRegistryId,
+          {
+            nodeId: node.id,
+            ...context,
+          }
+        );
+      }
+
+      default:
+        console.error("openFromNode: unsupported node type", node.type);
+        return null;
     }
-
-    return null;
   },
 
   /**
    * Open window or focus existing based on application configuration
    */
-  openOrFocusWindow: (
-    applicationRegistryId: ApplicationRegistryId,
-    context?: WindowCreationContext
-  ): string | null => {
-    console.log("openOrFocusWindow: processing", applicationRegistryId);
-
-    const config = getApplicationConfig(applicationRegistryId);
-
-    // Generate potential window ID
-    const windowId = createWindowId(applicationRegistryId, context);
-
-    // For single-instance apps, check if already open
-    if (!config.allowMultipleWindows) {
-      const state = get();
-      const existingWindow = state.findWindow((w) => w.windowId === windowId);
-      if (existingWindow) {
-        console.log("openOrFocusWindow: focusing existing", windowId);
-        state.updateWindow((w) => w.windowId === windowId, {
-          zIndex: state.nextZIndex,
-        });
-        return windowId;
-      }
-    }
-
-    // For multi-instance apps or when no existing window, we need a node
-    console.log("openOrFocusWindow: would need node to create new window");
-    return null; // Caller should use createWindowFromNode with actual node
-  },
 });

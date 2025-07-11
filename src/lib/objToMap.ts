@@ -30,6 +30,7 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           componentKey: nodeObj.componentKey,
+          applicationRegistryId: nodeObj.applicationRegistryId,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
           children: [], // Will be populated below
@@ -54,6 +55,7 @@ export const convertObjectsToMap = (
           alternativeImage: nodeObj.alternativeImage ?? null,
           componentKey: nodeObj.componentKey,
           applicationId: nodeObj.applicationId,
+          applicationRegistryId: nodeObj.applicationRegistryId,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,
@@ -119,6 +121,7 @@ export const convertObjectsToMap = (
           alternativeImage: nodeObj.alternativeImage ?? null,
           applicationId: nodeObj.applicationId,
           documentConfigId: nodeObj.documentConfigId,
+          applicationRegistryId: nodeObj.applicationRegistryId,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,

@@ -6,7 +6,12 @@ import type {
   ApplicationRegistryId,
   WindowId,
 } from "@/constants/applicationRegistry";
-import type { NodeId } from "@/components/nodes/nodeTypes";
+import type {
+  ApplicationEntry,
+  DirectoryEntry,
+  DocumentEntry,
+  NodeId,
+} from "@/components/nodes/nodeTypes";
 import type { DocumentConfig } from "@/types/storeTypes";
 
 // New Window interface for the application registry system
@@ -52,3 +57,5 @@ export interface NewWindowContentProps {
   applicationRegistryId: ApplicationRegistryId;
   window: Window;
 }
+
+export type WindowableNode = DirectoryEntry | ApplicationEntry | DocumentEntry;

@@ -214,4 +214,4 @@ export interface NodeMap {
   [id: string]: NodeEntry;
 }
 
-export type NodeId = keyof NodeMap;
+export type NodeId = string;
