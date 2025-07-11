@@ -15,13 +15,14 @@ export interface PhoneCallScreenProps {
 export const PhoneCallScreen: React.FC<PhoneCallScreenProps> = ({
   avatar,
   name,
+  phoneNumber,
   conversationId,
   onHangUp,
   onPhoneCallEnd,
 }) => {
   const [micEnabled, setMicEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(false);
-  const [callDuration, setCallDuration] = useState(0);
+  const [callEnded, setCallEnded] = useState(false);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
 
   // Auto hang up after 3 seconds and handle wifi disconnection
@@ -32,6 +33,9 @@ export const PhoneCallScreen: React.FC<PhoneCallScreenProps> = ({
     }
 
     const autoHangupTimer = setTimeout(() => {
+      // Set call ended state first
+      setCallEnded(true);
+
       // Call AI response callback first (might be async)
       try {
         onPhoneCallEnd?.(conversationId);
@@ -39,29 +43,29 @@ export const PhoneCallScreen: React.FC<PhoneCallScreenProps> = ({
         console.error("Phone call end callback error:", error);
       }
 
-      // Then end the call UI state
-      onHangUp();
+      // Show call ended screen for 1 second, then hang up
+      setTimeout(() => {
+        onHangUp();
+      }, 1000);
     }, 3000);
 
     return () => clearTimeout(autoHangupTimer);
   }, [wifiEnabled, onHangUp, onPhoneCallEnd, conversationId]);
 
-  // Timer for call duration
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCallDuration((prev) => prev + 1);
+  const handleManualHangup = () => {
+    setCallEnded(true);
+
+    // Call AI response callback
+    try {
+      onPhoneCallEnd?.(conversationId);
+    } catch (error) {
+      console.error("Phone call end callback error:", error);
+    }
+
+    // Show call ended screen for 1 second, then hang up
+    setTimeout(() => {
+      onHangUp();
     }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Format time as MM:SS
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
   };
 
   return (
@@ -77,10 +81,14 @@ export const PhoneCallScreen: React.FC<PhoneCallScreenProps> = ({
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col">
-        {/* Name and Timer */}
+        {/* Name and Call Status */}
         <div className="text-center py-6">
           <h1 className="text-2xl font-semibold mb-2 text-white">{name}</h1>
-          <p className="text-lg text-gray-300">{formatTime(callDuration)}</p>
+          {callEnded ? (
+            <p className="text-lg text-red-400">Call ended • 00:00:00</p>
+          ) : (
+            <p className="text-lg text-gray-300">Calling {phoneNumber}...</p>
+          )}
         </div>
 
         {/* Avatar - centered in remaining space */}
@@ -97,38 +105,44 @@ export const PhoneCallScreen: React.FC<PhoneCallScreenProps> = ({
 
       {/* Footer - fixed at bottom */}
       <div className="bg-gray-900 text-white py-8 px-4 flex items-center border-t border-gray-700 justify-center">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => setMicEnabled(!micEnabled)}
-            className="text-gray-300 hover:text-white transition-colors p-3 rounded-full hover:bg-gray-700"
-            aria-label={micEnabled ? "Mute microphone" : "Unmute microphone"}
-          >
-            {micEnabled ? <Mic size={24} /> : <MicOff size={24} />}
-          </button>
-
-          <button
-            onClick={() => setVideoEnabled(!videoEnabled)}
-            className="text-gray-300 hover:text-white transition-colors p-3 rounded-full hover:bg-gray-700"
-            aria-label={videoEnabled ? "Turn off camera" : "Turn on camera"}
-          >
-            {videoEnabled ? <Video size={24} /> : <VideoOff size={24} />}
-          </button>
-
-          <button
-            onClick={onHangUp}
-            className="text-white transition-colors p-3 rounded-full hover:bg-red-600 bg-red-500"
-            aria-label="Hang up"
-          >
-            <div
-              className="w-6 h-6 flex items-center justify-center"
-              style={{
-                rotate: "135deg",
-              }}
+        {!callEnded ? (
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => setMicEnabled(!micEnabled)}
+              className="text-gray-300 hover:text-white transition-colors p-3 rounded-full hover:bg-gray-700"
+              aria-label={micEnabled ? "Mute microphone" : "Unmute microphone"}
             >
-              <Phone size={24} />
-            </div>
-          </button>
-        </div>
+              {micEnabled ? <Mic size={24} /> : <MicOff size={24} />}
+            </button>
+
+            <button
+              onClick={() => setVideoEnabled(!videoEnabled)}
+              className="text-gray-300 hover:text-white transition-colors p-3 rounded-full hover:bg-gray-700"
+              aria-label={videoEnabled ? "Turn off camera" : "Turn on camera"}
+            >
+              {videoEnabled ? <Video size={24} /> : <VideoOff size={24} />}
+            </button>
+
+            <button
+              onClick={handleManualHangup}
+              className="text-white transition-colors p-3 rounded-full hover:bg-red-600 bg-red-500"
+              aria-label="Hang up"
+            >
+              <div
+                className="w-6 h-6 flex items-center justify-center"
+                style={{
+                  rotate: "135deg",
+                }}
+              >
+                <Phone size={24} />
+              </div>
+            </button>
+          </div>
+        ) : (
+          <div className="text-center">
+            <p className="text-gray-400 text-sm">Call ended</p>
+          </div>
+        )}
       </div>
     </div>
   );
