@@ -10,7 +10,7 @@ import {
   getTitleFrame,
   getTitleBase,
 } from "./node.styles";
-import type { FunctionEntry } from "@/types/nodeTypes";
+import type { FunctionEntry } from "@/components/nodes/nodeTypes";
 import { getNodeFunction } from "@/components/window/WindowComponentRegistry";
 
 type Props = { node: FunctionEntry; view: "icons" | "list" | "columns" };

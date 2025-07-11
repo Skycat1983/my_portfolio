@@ -8,7 +8,7 @@ import type {
   ApplicationEntry,
   FunctionEntry,
   DocumentEntry,
-} from "../types/nodeTypes";
+} from "../components/nodes/nodeTypes";
 
 // CONVERSION FUNCTION: Object Tree → Operational Map
 export const convertObjectsToMap = (

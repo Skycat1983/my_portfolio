@@ -6,7 +6,7 @@ import type {
   EasterEggEntry,
   FunctionEntry,
   DocumentEntry,
-} from "@/types/nodeTypes";
+} from "@/components/nodes/nodeTypes";
 import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import clsx from "clsx";

@@ -24,6 +24,10 @@ import {
   type WindowOperationsSlice,
 } from "../store/windowState/windowOperationsSlice";
 import {
+  createWindowSlice,
+  type WindowSlice,
+} from "../store/windowState/windowSlice";
+import {
   createSystemSlice,
   type SystemSlice,
 } from "../store/systemState/systemSlice";
@@ -86,6 +90,7 @@ export type StoreSlice = NodeCrudSlice &
   SelectionSlice &
   WindowCrudSlice &
   WindowOperationsSlice &
+  WindowSlice &
   SystemSlice &
   AchievementSlice &
   HistorySlice &
@@ -108,6 +113,7 @@ export const useNewStore = create<Store>((set, get) => ({
   // Window state management
   ...createWindowCrudSlice(set, get),
   ...createWindowOperationsSlice(set, get),
+  ...createWindowSlice(set, get),
 
   // System state management
   ...createSystemSlice(set),
@@ -124,6 +130,9 @@ export const useNewStore = create<Store>((set, get) => ({
   // Initialize collection state
   histories: {},
   documents: new Map(),
+
+  // Initialize new window state
+  windows: [],
 
   // Required state properties
   weather: createWeatherSlice(set),

@@ -1,5 +1,5 @@
 import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
-import type { NodeEntry, DirectoryEntry } from "@/types/nodeTypes";
+import type { NodeEntry, DirectoryEntry } from "@/components/nodes/nodeTypes";
 
 interface TerminalState {
   currentWorkingDirectory: string;

@@ -1,8 +1,9 @@
 import type {
   NODE_FUNCTION_REGISTRY,
   WINDOW_COMPONENT_REGISTRY,
-} from "../components/window/WindowComponentRegistry";
-import type { DOCUMENT_CONFIG_REGISTRY } from "../constants/documents";
+} from "../window/WindowComponentRegistry";
+import type { DOCUMENT_CONFIG_REGISTRY } from "../../constants/documentRegistry";
+import type { ApplicationRegistryId } from "@/constants/applicationRegistry";
 
 // NEW SIMPLIFIED TYPE SYSTEM
 export type NodeType =
@@ -75,6 +76,7 @@ export interface DirectoryObject extends BaseNodeObject {
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   macExtension: MacDirectoryExtensions;
   windowsExtension: WindowsDirectoryExtensions;
+  applicationRegistryId: ApplicationRegistryId;
   children: NodeObject[];
   size: null; // Override size to always be null for directories
 }
@@ -86,6 +88,8 @@ export interface DirectoryEntry extends BaseNodeEntry {
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   macExtension: MacDirectoryExtensions;
   windowsExtension: WindowsDirectoryExtensions;
+  applicationRegistryId: ApplicationRegistryId;
+
   children: string[]; // Array of child IDs
 }
 
@@ -95,6 +99,7 @@ export interface ApplicationObject extends BaseNodeObject {
   alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   applicationId: string; // Application identity separate from node identity
+  applicationRegistryId: ApplicationRegistryId;
   macExtension: MacApplicationExtensions;
   windowsExtension: WindowsApplicationExtensions;
 }
@@ -105,6 +110,7 @@ export interface ApplicationEntry extends BaseNodeEntry {
   alternativeImage: string | null;
   componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   applicationId: string; // Application identity separate from node identity
+  applicationRegistryId: ApplicationRegistryId;
   macExtension: MacApplicationExtensions;
   windowsExtension: WindowsApplicationExtensions;
 }
@@ -171,6 +177,7 @@ export interface DocumentObject extends BaseNodeObject {
   alternativeImage: string | null;
   applicationId: string; // Application that handles this document type
   documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
+  applicationRegistryId: ApplicationRegistryId;
   macExtension: MacDocumentExtensions;
   windowsExtension: WindowsDocumentExtensions;
 }
@@ -181,6 +188,7 @@ export interface DocumentEntry extends BaseNodeEntry {
   alternativeImage: string | null;
   applicationId: string; // Application that handles this document type
   documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
+  applicationRegistryId: ApplicationRegistryId;
   macExtension: MacDocumentExtensions;
   windowsExtension: WindowsDocumentExtensions;
 }

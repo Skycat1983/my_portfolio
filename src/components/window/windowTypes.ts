@@ -2,8 +2,11 @@
 // NEW WINDOW SYSTEM TYPES (Application Registry Based)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import type { ApplicationId, WindowId } from "@/constants/applicationRegistry";
-import type { NodeId } from "@/types/nodeTypes";
+import type {
+  ApplicationRegistryId,
+  WindowId,
+} from "@/constants/applicationRegistry";
+import type { NodeId } from "@/components/nodes/nodeTypes";
 import type { DocumentConfig } from "@/types/storeTypes";
 
 // New Window interface for the application registry system
@@ -12,7 +15,7 @@ export interface Window {
   windowId: WindowId; // Generated using our new ID system
   title: string;
   nodeId: NodeId;
-  applicationId: ApplicationId; // Type-safe application ID from registry
+  applicationRegistryId: ApplicationRegistryId; // Type-safe application ID from registry
 
   // Position and dimensions
   x: number;
@@ -25,10 +28,6 @@ export interface Window {
   fixed: boolean;
   isMinimized: boolean;
   isMaximized: boolean;
-
-  // Component configuration
-  componentKey: ApplicationId; // Same as applicationId in our unified system
-
   // Optional configurations
   documentConfig?: DocumentConfig; // Only present for document windows
 }
@@ -50,6 +49,6 @@ export interface NewWindowState {
 export interface NewWindowContentProps {
   windowId: WindowId;
   nodeId: NodeId;
-  applicationId: ApplicationId;
+  applicationRegistryId: ApplicationRegistryId;
   window: Window;
 }

@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import { EGG_BROKEN } from "@/constants/nodes";
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { EasterEggEntry } from "@/types/nodeTypes";
+import type { EasterEggEntry } from "@/components/nodes/nodeTypes";
 import {
   getTitleFrame,
   getImageSize,

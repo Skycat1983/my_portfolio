@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { DocumentEntry } from "@/types/nodeTypes";
+import type { DocumentEntry } from "@/components/nodes/nodeTypes";
 import {
   getContainerClasses,
   getImageSize,
@@ -57,8 +57,8 @@ export const DocumentNode = ({ node, view }: Props) => {
     const applicationNode = Object.values(useNewStore.getState().nodeMap).find(
       (node) =>
         node.type === "application" &&
-        (node as import("@/types/nodeTypes").ApplicationEntry).applicationId ===
-          applicationId
+        (node as import("@/components/nodes/nodeTypes").ApplicationEntry)
+          .applicationId === applicationId
     );
 
     if (!applicationNode) {
@@ -83,7 +83,7 @@ export const DocumentNode = ({ node, view }: Props) => {
     console.log("DOC_NODE_06: opening new window for document", id);
     openWindowWithDocumentConfig(
       node,
-      applicationNode as import("@/types/nodeTypes").ApplicationEntry,
+      applicationNode as import("@/components/nodes/nodeTypes").ApplicationEntry,
       documentConfig
     );
   }, [

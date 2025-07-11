@@ -8,7 +8,7 @@ import { PAGES, WORD } from "@/constants/images";
 import { DocumentHeader } from "./DocumentHeader";
 import { DocumentContent } from "./DocumentContent";
 import { DocumentFooter } from "./DocumentFooter";
-import type { DocumentEntry } from "@/types/nodeTypes";
+import type { DocumentEntry } from "@/components/nodes/nodeTypes";
 
 type TextAlignment = "left" | "center" | "right";
 

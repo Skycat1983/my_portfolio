@@ -8,7 +8,7 @@ import type {
   NodeEntry,
   DirectoryEntry,
   EasterEggEntry,
-} from "@/types/nodeTypes";
+} from "@/components/nodes/nodeTypes";
 import type { SetState, GetState, ApplicationState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";

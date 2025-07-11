@@ -1,5 +1,5 @@
 import type { DocumentConfig, SetState, GetState } from "@/types/storeTypes";
-import { SAMPLE_DOCUMENT_CONFIG } from "@/constants/documents";
+import { SAMPLE_DOCUMENT_CONFIG } from "@/constants/documentRegistry";
 
 export interface DocumentRegistryState {
   configs: Map<string, DocumentConfig>;

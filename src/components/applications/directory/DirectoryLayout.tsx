@@ -1,4 +1,4 @@
-import type { NodeEntry } from "@/types/nodeTypes";
+import type { NodeEntry } from "@/components/nodes/nodeTypes";
 import { useNewStore } from "@/hooks/useStore";
 import { desktopRootId } from "@/constants/nodes";
 import { NodeSwitch } from "@/components/nodes/NodeSwitch";

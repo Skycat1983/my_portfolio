@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNodeEvents } from "./hooks/useNodeEvents";
-import type { LinkEntry } from "@/types/nodeTypes";
+import type { LinkEntry } from "@/components/nodes/nodeTypes";
 import {
   getContainerClasses,
   getImageSize,

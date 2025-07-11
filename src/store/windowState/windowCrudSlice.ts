@@ -1,5 +1,5 @@
 import { defaultNodeMap } from "@/constants/nodes";
-import type { NodeMap } from "@/types/nodeTypes";
+import type { NodeMap } from "@/components/nodes/nodeTypes";
 import type {
   WindowType,
   ApplicationState,

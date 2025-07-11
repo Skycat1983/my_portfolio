@@ -55,9 +55,35 @@ Portfolio System`,
   },
 };
 
+// Default empty document config for when Pages app is opened directly
+export const DEFAULT_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "default_document_config",
+  content: ``,
+  textStyle: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    isBold: false,
+    isItalic: false,
+    isUnderlined: false,
+    color: "#000000",
+    textAlign: "left" as const,
+  },
+  pageSettings: {
+    backgroundColor: "#ffffff",
+  },
+  metadata: {
+    title: "Untitled Document",
+    createdAt: new Date(),
+    modifiedAt: new Date(),
+    wordCount: 0,
+    charCount: 0,
+  },
+};
+
 // Document Config Registry for type safety (similar to WINDOW_COMPONENT_REGISTRY)
 export const DOCUMENT_CONFIG_REGISTRY = {
   sample_document_config: SAMPLE_DOCUMENT_CONFIG,
+  default_document_config: DEFAULT_DOCUMENT_CONFIG,
 } as const;
 
 export const SAMPLE_DOCUMENT_ID = "sample_document_config";

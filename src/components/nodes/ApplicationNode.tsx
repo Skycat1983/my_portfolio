@@ -9,7 +9,7 @@ import {
   getTileWrapper,
   getTitleBase,
 } from "./node.styles";
-import type { ApplicationEntry } from "@/types/nodeTypes";
+import type { ApplicationEntry } from "@/components/nodes/nodeTypes";
 import { getTitleFrame } from "./node.styles";
 
 type Props = {

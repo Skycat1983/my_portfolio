@@ -181,24 +181,24 @@ export const APPLICATION_REGISTRY = {
 // TYPE-SAFE DERIVED TYPES & UTILITIES
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export type ApplicationId = keyof typeof APPLICATION_REGISTRY;
+export type ApplicationRegistryId = keyof typeof APPLICATION_REGISTRY;
 
-export type ComponentKey = ApplicationId;
+export type ComponentKey = ApplicationRegistryId;
 
 // Type-safe component registry (for backward compatibility)
 export const WINDOW_COMPONENT_REGISTRY: Record<
-  ApplicationId,
+  ApplicationRegistryId,
   React.ComponentType<WindowContentProps>
 > = Object.fromEntries(
   Object.entries(APPLICATION_REGISTRY).map(([key, config]) => [
     key,
     config.component,
   ])
-) as Record<ApplicationId, React.ComponentType<WindowContentProps>>;
+) as Record<ApplicationRegistryId, React.ComponentType<WindowContentProps>>;
 
 // Type-safe dimensions registry (for backward compatibility)
 export const WINDOW_DIMENSIONS_REGISTRY: Record<
-  ApplicationId,
+  ApplicationRegistryId,
   { width: number; height: number; fixed: boolean }
 > = Object.fromEntries(
   Object.entries(APPLICATION_REGISTRY).map(([key, config]) => [
@@ -209,7 +209,10 @@ export const WINDOW_DIMENSIONS_REGISTRY: Record<
       fixed: config.fixedSize,
     },
   ])
-) as Record<ApplicationId, { width: number; height: number; fixed: boolean }>;
+) as Record<
+  ApplicationRegistryId,
+  { width: number; height: number; fixed: boolean }
+>;
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // TYPE-SAFE ID GENERATION FUNCTIONS
@@ -221,8 +224,8 @@ type DocumentConfigId = string;
 type Timestamp = number;
 
 // Window ID generation based on application scope
-export type WindowId<T extends ApplicationId = ApplicationId> =
-  T extends ApplicationId
+export type WindowId<T extends ApplicationRegistryId = ApplicationRegistryId> =
+  T extends ApplicationRegistryId
     ? (typeof APPLICATION_REGISTRY)[T]["windowScope"] extends "per-application"
       ? `${T}-singleton`
       : (typeof APPLICATION_REGISTRY)[T]["windowScope"] extends "per-node"
@@ -233,7 +236,7 @@ export type WindowId<T extends ApplicationId = ApplicationId> =
     : never;
 
 // History ID = Window ID (for applications that require history)
-export type HistoryId<T extends ApplicationId = ApplicationId> =
+export type HistoryId<T extends ApplicationRegistryId = ApplicationRegistryId> =
   (typeof APPLICATION_REGISTRY)[T]["requiresHistory"] extends true
     ? WindowId<T>
     : never;
@@ -241,7 +244,7 @@ export type HistoryId<T extends ApplicationId = ApplicationId> =
 /**
  * Generate a type-safe window ID based on application configuration
  */
-export const generateWindowId = <T extends ApplicationId>(
+export const generateWindowId = <T extends ApplicationRegistryId>(
   applicationId: T,
   context?: {
     nodeId?: NodeId;
@@ -279,7 +282,7 @@ export const generateWindowId = <T extends ApplicationId>(
 /**
  * Generate a history ID (same as window ID for applications that need history)
  */
-export const generateHistoryId = <T extends ApplicationId>(
+export const generateHistoryId = <T extends ApplicationRegistryId>(
   applicationId: T,
   context?: {
     nodeId?: NodeId;
@@ -300,7 +303,7 @@ export const generateHistoryId = <T extends ApplicationId>(
  * Check if an application allows multiple windows
  */
 export const allowsMultipleWindows = (
-  applicationId: ApplicationId
+  applicationId: ApplicationRegistryId
 ): boolean => {
   return APPLICATION_REGISTRY[applicationId].allowMultipleWindows;
 };
@@ -308,7 +311,9 @@ export const allowsMultipleWindows = (
 /**
  * Check if an application requires history
  */
-export const requiresHistory = (applicationId: ApplicationId): boolean => {
+export const requiresHistory = (
+  applicationId: ApplicationRegistryId
+): boolean => {
   return APPLICATION_REGISTRY[applicationId].requiresHistory;
 };
 
@@ -316,7 +321,7 @@ export const requiresHistory = (applicationId: ApplicationId): boolean => {
  * Get application configuration
  */
 export const getApplicationConfig = (
-  applicationId: ApplicationId
+  applicationId: ApplicationRegistryId
 ): ApplicationConfig => {
   return APPLICATION_REGISTRY[applicationId];
 };
@@ -327,11 +332,11 @@ export const getApplicationConfig = (
 
 // For components that still use the old registry pattern
 export const getWindowComponent = (
-  componentKey: ApplicationId
+  componentKey: ApplicationRegistryId
 ): React.ComponentType<WindowContentProps> | undefined => {
   return WINDOW_COMPONENT_REGISTRY[componentKey];
 };
 
-export const getAvailableComponentKeys = (): ApplicationId[] => {
-  return Object.keys(APPLICATION_REGISTRY) as ApplicationId[];
+export const getAvailableComponentKeys = (): ApplicationRegistryId[] => {
+  return Object.keys(APPLICATION_REGISTRY) as ApplicationRegistryId[];
 };

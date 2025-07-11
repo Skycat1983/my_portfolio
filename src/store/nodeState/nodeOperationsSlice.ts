@@ -1,4 +1,4 @@
-import type { NodeEntry, DirectoryEntry } from "@/types/nodeTypes";
+import type { NodeEntry, DirectoryEntry } from "@/components/nodes/nodeTypes";
 import type { SetState, GetState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { DocumentRegistrySlice } from "../contentState/documentRegistrySlice";
@@ -93,7 +93,8 @@ export const createNodeOperationsSlice = (
 
     // Clean up document registry if this is a document node
     if (node?.type === "document") {
-      const documentNode = node as import("@/types/nodeTypes").DocumentEntry;
+      const documentNode =
+        node as import("@/components/nodes/nodeTypes").DocumentEntry;
       console.log(
         "deleteNodeByID: cleaning up document config",
         documentNode.documentConfigId

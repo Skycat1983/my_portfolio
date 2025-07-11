@@ -5,7 +5,7 @@ import type {
   NodeEntry,
   ApplicationEntry,
   DocumentEntry,
-} from "@/types/nodeTypes";
+} from "@/components/nodes/nodeTypes";
 import type { SystemSlice } from "../systemState/systemSlice";
 import type { HistorySlice } from "../contentState/historySlice";
 import {

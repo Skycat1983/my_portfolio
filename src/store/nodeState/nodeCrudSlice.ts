@@ -1,5 +1,5 @@
 import { defaultNodeMap, defaultRootId } from "@/constants/nodes";
-import type { NodeEntry, NodeMap } from "@/types/nodeTypes";
+import type { NodeEntry, NodeMap } from "@/components/nodes/nodeTypes";
 import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 interface NodeState {

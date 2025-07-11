@@ -3,7 +3,7 @@ import type {
   DirectoryEntry,
   NodeEntry,
   NodeMap,
-} from "./nodeTypes";
+} from "../components/nodes/nodeTypes";
 import type {
   OperatingSystem,
   ScreenDimensions,
@@ -13,6 +13,7 @@ import type { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowCompon
 import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
 import type { HistoryInstance } from "@/store/contentState/historySlice";
 import type { WeatherSlice } from "@/store/systemState/weatherSlice";
+import type { Window } from "@/components/window/windowTypes";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // LEGACY TYPES (Maintain for backward compatibility)
@@ -188,8 +189,8 @@ interface NodeState {
 interface WindowState {
   openWindows: WindowType[];
   nextZIndex: number;
-  // New registry-based windows
-  newOpenWindows: Window[];
+  // New registry-based windows (from windowTypes.ts)
+  windows: Window[];
 }
 
 // Collection-based states

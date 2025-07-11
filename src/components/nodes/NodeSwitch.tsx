@@ -6,7 +6,7 @@ import type {
   ApplicationEntry,
   FunctionEntry,
   DocumentEntry,
-} from "@/types/nodeTypes";
+} from "@/components/nodes/nodeTypes";
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
 import { ApplicationNode } from "./ApplicationNode";

@@ -1,4 +1,4 @@
-import type { NodeEntry } from "@/types/nodeTypes";
+import type { NodeEntry } from "@/components/nodes/nodeTypes";
 import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
