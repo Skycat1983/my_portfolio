@@ -1,4 +1,4 @@
-import type { DocumentConfig } from "@/types/storeTypes";
+import type { TextStyle } from "@/types/storeTypes";
 
 export const RESUME_PATH = "/documents/resume.pdf";
 export const RECOMMENDATIONS_PATH = "/documents/recommendation.pdf";
@@ -10,9 +10,53 @@ export const DOCUMENTS = {
   REVIEW: REVIEW_PATH,
 };
 
+export interface DocumentConfig {
+  id: string; // Unique config identifier
+  mutable: boolean; // Whether the document config is mutable
+  content: string; // Document text content
+  textStyle: TextStyle; // Font, size, colors, alignment
+  pageSettings: {
+    backgroundColor: string; // Page background color
+  };
+  metadata: {
+    title: string;
+    createdAt: Date;
+    modifiedAt: Date;
+    wordCount: number;
+    charCount: number;
+  };
+}
+
+// Default empty document config for when Pages app is opened directly
+export const DEFAULT_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "default_document_config",
+  mutable: false,
+  content: ``,
+  textStyle: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    isBold: false,
+    isItalic: false,
+    isUnderlined: false,
+    color: "#000000",
+    textAlign: "left" as const,
+  },
+  pageSettings: {
+    backgroundColor: "#ffffff",
+  },
+  metadata: {
+    title: "Untitled Document",
+    createdAt: new Date(),
+    modifiedAt: new Date(),
+    wordCount: 0,
+    charCount: 0,
+  },
+};
+
 // Sample document configuration for demonstration
 export const SAMPLE_DOCUMENT_CONFIG: DocumentConfig = {
   id: "sample_document_config",
+  mutable: true,
   content: `Welcome to My Portfolio Document
 
 This is a sample document that demonstrates the document management system in this portfolio application. 
@@ -55,31 +99,6 @@ Portfolio System`,
   },
 };
 
-// Default empty document config for when Pages app is opened directly
-export const DEFAULT_DOCUMENT_CONFIG: DocumentConfig = {
-  id: "default_document_config",
-  content: ``,
-  textStyle: {
-    fontFamily: "Inter",
-    fontSize: 14,
-    isBold: false,
-    isItalic: false,
-    isUnderlined: false,
-    color: "#000000",
-    textAlign: "left" as const,
-  },
-  pageSettings: {
-    backgroundColor: "#ffffff",
-  },
-  metadata: {
-    title: "Untitled Document",
-    createdAt: new Date(),
-    modifiedAt: new Date(),
-    wordCount: 0,
-    charCount: 0,
-  },
-};
-
 // Document Config Registry for type safety (similar to WINDOW_COMPONENT_REGISTRY)
 export const DOCUMENT_CONFIG_REGISTRY = {
   sample_document_config: SAMPLE_DOCUMENT_CONFIG,
@@ -87,3 +106,7 @@ export const DOCUMENT_CONFIG_REGISTRY = {
 } as const;
 
 export const SAMPLE_DOCUMENT_ID = "sample_document_config";
+
+export const getDocumentConfig = (id: string) => {
+  return DOCUMENT_CONFIG_REGISTRY[id as keyof typeof DOCUMENT_CONFIG_REGISTRY];
+};

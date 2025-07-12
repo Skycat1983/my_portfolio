@@ -1,5 +1,9 @@
-import type { DocumentConfig, SetState, GetState } from "@/types/storeTypes";
-import { SAMPLE_DOCUMENT_CONFIG } from "@/constants/documentRegistry";
+import type { SetState, GetState } from "@/types/storeTypes";
+import {
+  DEFAULT_DOCUMENT_CONFIG,
+  SAMPLE_DOCUMENT_CONFIG,
+  type DocumentConfig,
+} from "@/constants/documentRegistry";
 
 export interface DocumentRegistryState {
   configs: Map<string, DocumentConfig>;
@@ -32,6 +36,7 @@ export const createDocumentRegistrySlice = (
   // Initialize with sample document configuration
   const initialConfigs = new Map<string, DocumentConfig>();
   initialConfigs.set(SAMPLE_DOCUMENT_CONFIG.id, SAMPLE_DOCUMENT_CONFIG);
+  initialConfigs.set(DEFAULT_DOCUMENT_CONFIG.id, DEFAULT_DOCUMENT_CONFIG);
 
   return {
     // State

@@ -16,6 +16,8 @@ import {
   BIN_EMPTY,
   LINKEDIN,
   MAIL,
+  PAGES,
+  WORD,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -379,10 +381,24 @@ export const rootNodes: DirectoryObject = {
           id: "settings-dock",
           location: "dock",
         }),
-        createNodeFromTemplate("pagesApp", {
+        {
           id: "pages-dock",
-          location: "dock",
-        }),
+          label: "Pages",
+          type: "document",
+          image: PAGES,
+          alternativeImage: WORD,
+          applicationRegistryId: "documentEditor",
+          applicationId: "documentEditor",
+          documentConfigId: "default_document_config",
+          macExtension: ".txt",
+          windowsExtension: ".txt",
+          dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
+          size: 512, // TODO: add size
+        },
+        // createNodeFromTemplate("pagesApp", {
+        //   id: "pages-dock",
+        //   location: "dock",
+        // }),
         {
           id: "github-dock",
           label: "GitHub",

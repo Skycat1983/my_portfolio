@@ -29,7 +29,7 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
   onHistoryChange,
 }) => {
   const currentTheme = useNewStore((s) => s.theme);
-  const bgColor = theme.colors[currentTheme].background.primary;
+  const bgColor = theme.colors[currentTheme].background.secondary;
   const borderColor = theme.colors[currentTheme].border.primary;
   console.log("HISTORY_DEBUG nodeId", nodeId);
   // const textColor = theme.colors[currentTheme].text.primary;

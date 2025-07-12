@@ -11,16 +11,19 @@ import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import clsx from "clsx";
 import { Separator } from "../ui/separator";
+import type { WindowId } from "@/constants/applicationRegistry";
+// import theme from "@/styles/theme";
 
 interface ListViewProps {
   nodes: NodeEntry[];
-  windowId: string;
+  windowId: WindowId;
 }
 
 const ROW_HEIGHT = 35; // px
 const ROW_PADDING = 4; // px
 
 export const ListView = ({ nodes, windowId }: ListViewProps) => {
+  const themeMode = useNewStore((state) => state.theme);
   const [sortBy, setSortBy] = React.useState<
     "name" | "type" | "size" | "modified"
   >("name");
@@ -29,7 +32,8 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
   );
   const selectedNodeId = useNewStore((state) => state.selectedNodeId);
   const selectOneNode = useNewStore((state) => state.selectOneNode);
-  const theme = useNewStore((state) => state.theme);
+  // const bgColor = theme.colors[themeMode].background.secondary;
+  // const borderColor = theme.colors[themeMode].border.primary;
 
   const handleSort = (column: "name" | "type" | "size" | "modified") => {
     if (sortBy === column) {
@@ -161,7 +165,7 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
   const textColor = "text-white";
 
   const getBackgroundColor = (index: number) => {
-    if (theme === "light") {
+    if (themeMode === "light") {
       return index % 2 === 0 ? "bg-gray-50" : "bg-white";
     }
     return index % 2 === 0 ? "bg-gray-800/50" : "bg-gray-900/50";
@@ -173,7 +177,7 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
       <div
         className={clsx(
           "px-4 border-b sticky top-0 z-10",
-          theme === "light"
+          themeMode === "light"
             ? "bg-gray-100 border-gray-200"
             : "bg-gray-800 border-gray-700"
         )}

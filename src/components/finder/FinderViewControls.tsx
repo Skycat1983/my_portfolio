@@ -38,18 +38,20 @@ const getIcon = (view: "icons" | "list" | "columns") => {
 export const FinderViewControls: React.FC<FinderViewProps> = ({
   view,
   onChangeView,
-  zIndex = 0,
+  // zIndex = 0,
   windowId,
   ...menuProps
 }) => {
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) =>
+    s.findWindow((w) => w.windowId === windowId)
+  );
   // When maximized, we need to account for the +1000 zIndex boost
-  const menuZ = window?.isMaximized ? zIndex + 1001 : zIndex + 1;
+  const menuZ = window!.zIndex + 1;
 
   console.log("FINDER_VIEW_CONTROLS_01: Window state:", {
     windowId,
     isMaximized: window?.isMaximized,
-    baseZIndex: zIndex,
+    baseZIndex: window!.zIndex,
     calculatedMenuZ: menuZ,
   });
 

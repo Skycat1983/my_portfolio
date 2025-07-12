@@ -355,10 +355,6 @@ export const createWindowSlice = (
       }
 
       if (existingWindow) {
-        console.log(
-          "openWindowFromNode: focusing existing window",
-          existingWindow.windowId
-        );
         // Use the focusWindow method from this slice
         slice.focusWindow(existingWindow.windowId);
         return existingWindow.windowId;

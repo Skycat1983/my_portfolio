@@ -23,7 +23,7 @@ export const WindowHistoryNavigation = ({
 }: NavigationProps) => {
   const themeMode = useNewStore((state) => state.theme);
   const screenDimensions = useNewStore((s) => s.screenDimensions);
-  const bgColor = theme.colors[themeMode].background.primary;
+  const bgColor = theme.colors[themeMode].background.secondary;
   const iconColor = theme.colors[themeMode].text.primary;
   const { history, goBack, goForward, canGoBack, canGoForward } =
     useWindowHistoryNavigation({
@@ -45,7 +45,7 @@ export const WindowHistoryNavigation = ({
 
   return (
     <div
-      className="flex items-center gap-2 h-auto"
+      className="flex items-center gap-2 h-auto pl-2"
       style={{ backgroundColor: bgColor }}
     >
       {showBackButton && (
@@ -60,7 +60,7 @@ export const WindowHistoryNavigation = ({
           )}
         >
           <ChevronLeft
-            size={screenDimensions.isMobile ? 20 : 14}
+            size={screenDimensions.isMobile ? 20 : 20}
             color={iconColor}
           />
         </button>
@@ -77,7 +77,7 @@ export const WindowHistoryNavigation = ({
           )}
         >
           <ChevronRight
-            size={screenDimensions.isMobile ? 20 : 14}
+            size={screenDimensions.isMobile ? 20 : 20}
             color={iconColor}
           />
         </button>

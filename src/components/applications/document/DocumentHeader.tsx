@@ -66,7 +66,7 @@ export const DocumentHeader = ({
 
   return (
     <div className="bg-white border-b border-gray-300 p-3">
-      <div className="flex items-center justify-center gap-3 overflow-x-auto">
+      <div className="flex items-center justify-start gap-3 overflow-x-auto">
         {/* Save button - always visible, aligned to the right */}
         <div className="">
           <SaveButton

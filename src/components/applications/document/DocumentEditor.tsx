@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import type { WindowType } from "@/types/storeTypes";
 import { useNewStore } from "@/hooks/useStore";
 import { desktopRootId } from "@/constants/nodeHierarchy";
 import { PAGES, WORD } from "@/constants/images";
@@ -8,7 +7,9 @@ import { PAGES, WORD } from "@/constants/images";
 import { DocumentHeader } from "./DocumentHeader";
 import { DocumentContent } from "./DocumentContent";
 import { DocumentFooter } from "./DocumentFooter";
-import type { DocumentEntry } from "@/components/nodes/nodeTypes";
+import type { DocumentEntry, NodeId } from "@/components/nodes/nodeTypes";
+import type { WindowId } from "@/constants/applicationRegistry";
+import { getDocumentConfig } from "@/constants/documentRegistry";
 
 type TextAlignment = "left" | "center" | "right";
 
@@ -32,11 +33,11 @@ const DEFAULT_TEXT_STYLE: TextStyle = {
   textAlign: "left",
 };
 interface DocumentEditorProps {
-  windowId: WindowType["windowId"];
-  nodeId: WindowType["nodeId"];
+  windowId: WindowId;
+  nodeId: NodeId;
 }
 
-export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
+export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const [content, setContent] = useState("");
   const [isModified, setIsModified] = useState(false);
   const [pageBackgroundColor, setPageBackgroundColor] = useState("#FFFFFF");
@@ -45,10 +46,12 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
   const [documentLabel, setDocumentLabel] = useState("Untitled");
 
   // Store actions for save functionality
-  const windowData = useNewStore((s) => s.getWindowById(windowId));
+  const windowData = useNewStore((s) =>
+    s.findWindow((w) => w.windowId === windowId)
+  );
   const generateConfigId = useNewStore((s) => s.generateConfigId);
   const setDocumentConfig = useNewStore((s) => s.setDocumentConfig);
-  const updateWindowById = useNewStore((s) => s.updateWindowById);
+  const updateWindowById = useNewStore((s) => s.updateWindow);
   const createOneNode = useNewStore((s) => s.createOneNode);
   const getNodeByID = useNewStore((s) => s.getNodeByID);
   const generateUniqueLabel = useNewStore((s) => s.generateUniqueLabel);
@@ -56,28 +59,17 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
 
   // Initialize document state from window configuration if available
   useEffect(() => {
-    if (windowData?.documentConfig) {
-      console.log(
-        "DocumentEditor: initializing from saved config",
-        windowData.documentConfig
-      );
-
-      const config = windowData.documentConfig;
-      setContent(config.content);
-      setTextStyle(config.textStyle);
-      setPageBackgroundColor(config.pageSettings.backgroundColor);
-      setDocumentLabel(config.metadata.title || "Untitled");
+    const node = getNodeByID(nodeId);
+    if (node && node.type === "document") {
+      const documentConfig = getDocumentConfig(node.documentConfigId);
+      console.log("DocumentEditor: documentConfig", documentConfig);
+      setContent(documentConfig.content);
+      setTextStyle(documentConfig.textStyle);
+      setPageBackgroundColor(documentConfig.pageSettings.backgroundColor);
+      setDocumentLabel(documentConfig.metadata.title || "Untitled");
       setIsModified(false); // Document is saved, so not modified initially
-
-      console.log(
-        "DocumentEditor: loaded document with",
-        config.metadata.wordCount,
-        "words"
-      );
-    } else {
-      console.log("DocumentEditor: initializing new document with defaults");
     }
-  }, [windowData?.documentConfig]);
+  }, [nodeId, getNodeByID]);
 
   if (!windowData) {
     return null;
@@ -128,12 +120,16 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
       .filter((word) => word.length > 0).length;
     const charCount = content.length;
 
-    // Check if this is an existing document or new document
-    const isExistingDocument = !!windowData.documentConfig;
+    const documentConfig = getDocumentConfig(nodeId);
+    // const isExistingDocument = documentConfig.mutable;
 
-    if (isExistingDocument) {
+    // Check if this is an existing document or new document
+    // const isExistingDocument = !!windowData.documentConfig;
+
+    if (documentConfig.mutable) {
+      console.log("DocumentEditor: updating existing mutable document config");
       // Update existing document configuration
-      const configId = windowData.documentConfig!.id;
+      const configId = documentConfig.id;
 
       // Get the current node to update its label
       const nodeId = windowData.nodeId;
@@ -191,6 +187,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
       const configId = generateConfigId();
       const newConfig = {
         id: configId,
+        mutable: true,
         content,
         textStyle,
         pageSettings: {
@@ -229,6 +226,7 @@ export const DocumentEditor = ({ windowId }: DocumentEditorProps) => {
           alternativeImage: documentAlternativeImage,
           componentKey: "documentEditor",
           documentConfigId: configId, // Link to the saved configuration
+          applicationRegistryId: "documentEditor",
           applicationId: "documentEditor",
           macExtension: ".txt",
           windowsExtension: ".txt",

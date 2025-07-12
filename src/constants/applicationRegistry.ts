@@ -49,18 +49,6 @@ export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
     defaultMaximized: false,
   },
 
-  // Legacy alias for finder (backward compatibility)
-  // directory: {
-  //   component: Finder,
-  //   allowMultipleWindows: true,
-  //   windowScope: "per-node" as const,
-  //   width: 800,
-  //   height: 600,
-  //   fixedSize: false,
-  //   requiresHistory: true,
-  //   defaultMaximized: false,
-  // },
-
   // ─────────── Document Applications ───────────
   documentEditor: {
     component: DocumentEditor,

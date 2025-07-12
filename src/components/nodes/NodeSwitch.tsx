@@ -10,7 +10,6 @@ import type {
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
 import { ApplicationNode } from "./ApplicationNode";
-import { FinderNode } from "./FinderNodeBackup";
 import { FunctionNode } from "./FunctionNode";
 import { DocumentNode } from "./DocumentNode";
 import type { WindowId } from "@/constants/applicationRegistry";

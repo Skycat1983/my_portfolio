@@ -14,6 +14,7 @@ import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
 import type { HistoryInstance } from "@/store/contentState/historySlice";
 import type { WeatherSlice } from "@/store/systemState/weatherSlice";
 import type { Window } from "@/components/window/windowTypes";
+import type { DocumentConfig } from "@/constants/documentRegistry";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // LEGACY TYPES (Maintain for backward compatibility)
@@ -143,22 +144,6 @@ export interface TextStyle {
   isUnderlined: boolean;
   color: string;
   textAlign: TextAlignment;
-}
-
-export interface DocumentConfig {
-  id: string; // Unique config identifier
-  content: string; // Document text content
-  textStyle: TextStyle; // Font, size, colors, alignment
-  pageSettings: {
-    backgroundColor: string; // Page background color
-  };
-  metadata: {
-    title: string;
-    createdAt: Date;
-    modifiedAt: Date;
-    wordCount: number;
-    charCount: number;
-  };
 }
 
 // === STATE TYPES ===
