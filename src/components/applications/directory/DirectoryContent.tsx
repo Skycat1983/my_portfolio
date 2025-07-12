@@ -1,7 +1,7 @@
 import { useNewStore } from "@/hooks/useStore";
 import { useNodeDrag } from "@/components/nodes/hooks/useNodeDrag";
 
-import { DirectoryLayout } from "./DirectoryLayout";
+import { DirectoryLayout } from "../../../pages/DesktopLayout";
 import { desktopRootId } from "@/constants/nodeHierarchy";
 
 interface DirectoryContentProps {

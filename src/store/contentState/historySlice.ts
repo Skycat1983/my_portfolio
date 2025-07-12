@@ -1,13 +1,9 @@
-import type {
-  ApplicationState,
-  SetState,
-  GetState,
-  WindowType,
-} from "@/types/storeTypes";
+import type { Window } from "@/components/window/windowTypes";
+import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 // Generic history instance that can store any type of items
 export interface HistoryInstance<T = unknown> {
-  id: WindowType["windowId"]; // Unique identifier for this history
+  id: Window["windowId"]; // Unique identifier for this history
   items: T[]; // Generic array of history items
   currentIndex: number; // Current position (-1 = no items, 0 = first item)
 }

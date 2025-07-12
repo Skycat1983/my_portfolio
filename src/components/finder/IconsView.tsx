@@ -2,10 +2,11 @@ import type { NodeEntry } from "@/components/nodes/nodeTypes";
 import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface IconsViewProps {
   nodes: NodeEntry[];
-  windowId: string;
+  windowId: WindowId;
   view: "icons" | "list" | "columns";
   nodeId: string;
 }
@@ -26,12 +27,7 @@ export const IconsView = ({
           <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
             {nodes.map((node) => (
               <div key={node.id} className="w-20 md:w-24">
-                <NodeSwitch
-                  node={node}
-                  layout="window"
-                  windowId={windowId}
-                  view={view}
-                />
+                <NodeSwitch node={node} windowId={windowId} view={view} />
               </div>
             ))}
           </div>
@@ -45,12 +41,7 @@ export const IconsView = ({
         >
           {nodes.map((node) => (
             <div key={node.id} className="w-20 flex-shrink-0">
-              <NodeSwitch
-                node={node}
-                layout="window"
-                windowId={windowId}
-                view={view}
-              />
+              <NodeSwitch node={node} windowId={windowId} view={view} />
             </div>
           ))}
         </div>

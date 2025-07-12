@@ -316,21 +316,53 @@ export const createWindowSlice = (
       const config = getApplicationConfig(node.applicationRegistryId);
       const windowId = generateWindowId(node.applicationRegistryId, context);
 
-      // Check if window already exists (for single-instance apps)
-      if (!config.allowMultipleWindows) {
-        const state = get();
-        const existingWindow = state.windows.find(
-          (w) => w.windowId === windowId
-        );
-        if (existingWindow) {
-          console.log("openWindowFromNode: focusing existing window", windowId);
-          // Use the focusWindow method from this slice
-          slice.focusWindow(windowId);
-          return windowId;
-        }
+      // Check if window already exists based on window scope
+      const state = get();
+      const { windowScope } = config;
+
+      let existingWindow: Window | undefined;
+
+      switch (windowScope) {
+        case "per-application":
+          // Only one window per application type (e.g., calculator, browser)
+          existingWindow = state.windows.find(
+            (w) => w.applicationRegistryId === node.applicationRegistryId
+          );
+          break;
+
+        case "per-nodeId":
+          // One window per node (e.g., finder - each directory gets its own window)
+          existingWindow = state.windows.find(
+            (w) =>
+              w.applicationRegistryId === node.applicationRegistryId &&
+              w.nodeId === node.id
+          );
+          break;
+
+        case "per-document":
+          // One window per document (e.g., documentEditor)
+          //  we can use nodeId since each document node is unique (simpler than tracking documentConfigId separately)
+          existingWindow = state.windows.find(
+            (w) =>
+              w.applicationRegistryId === node.applicationRegistryId &&
+              w.nodeId === node.id
+          );
+          break;
+
+        default:
+          console.warn(`Unknown window scope: ${windowScope}`);
+          break;
       }
 
-      const state = get();
+      if (existingWindow) {
+        console.log(
+          "openWindowFromNode: focusing existing window",
+          existingWindow.windowId
+        );
+        // Use the focusWindow method from this slice
+        slice.focusWindow(existingWindow.windowId);
+        return existingWindow.windowId;
+      }
 
       // Calculate position (offset for multiple windows)
       const windowCount = state.windows.length;

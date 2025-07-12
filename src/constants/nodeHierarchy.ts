@@ -439,6 +439,9 @@ export { EGG_BROKEN };
 export const { nodeMap: defaultNodeMap, rootId: defaultRootId } =
   convertObjectsToMap(rootNodes);
 
+export type DesktopRootId = "desktop-root";
+export type DockRootId = "dock-root";
 // Legacy support - desktop root ID for components that expect it
-export const desktopRootId = "desktop-root";
-export const dockRootId = "dock-root";
+export const desktopRootId: DesktopRootId = "desktop-root";
+export const dockRootId: DockRootId = "dock-root";
+export type RootDirectoryId = DesktopRootId | DockRootId;

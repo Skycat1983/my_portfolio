@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useNewStore } from "@/hooks/useStore";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface UseFinderHistoryReturn {
   // Navigation methods
@@ -27,11 +28,11 @@ interface UseFinderHistoryReturn {
  * Custom hook for managing finder navigation history and column view
  * Coordinates between the generic history slice and window state
  */
-export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
-  const historyId = `finder-${windowId}`;
-
+export const useFinderHistory = (
+  windowId: WindowId
+): UseFinderHistoryReturn => {
   // Get current window
-  const window = useNewStore((state) => state.getWindowById(windowId));
+  const findWindow = useNewStore((state) => state.findWindow);
 
   // History slice actions
   const createHistory = useNewStore((state) => state.createHistory);
@@ -55,24 +56,26 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
 
   // Initialize history instance when hook is first used
   useEffect(() => {
-    if (!historyExists(historyId) && window) {
+    const window = findWindow((w) => w.windowId === windowId);
+
+    if (!historyExists(windowId) && window) {
       console.log(
         "useFinderHistory: initializing history for",
-        historyId,
+        windowId,
         "with nodeId:",
         window.nodeId
       );
-      createHistory(historyId, window.nodeId);
+      createHistory(windowId, window.nodeId);
     }
-  }, [historyId, window?.nodeId, historyExists, createHistory, window]);
+  }, [windowId, findWindow, historyExists, createHistory]);
 
   // Get current history state
-  const currentNodeId = getCurrentItem(historyId) as string | undefined;
-  const currentIndex = getCurrentIndex(historyId);
-  const historyItems = getHistoryItems(historyId) as string[];
-  const historyLength = getHistoryLength(historyId);
-  const canGoBack = canGoBackInHistory(historyId);
-  const canGoForward = canGoForwardInHistory(historyId);
+  const currentNodeId = getCurrentItem(windowId) as string | undefined;
+  const currentIndex = getCurrentIndex(windowId);
+  const historyItems = getHistoryItems(windowId) as string[];
+  const historyLength = getHistoryLength(windowId);
+  const canGoBack = canGoBackInHistory(windowId);
+  const canGoForward = canGoForwardInHistory(windowId);
 
   console.log("useFinderHistory: canGoBack", canGoBack);
   console.log("useFinderHistory: canGoForward", canGoForward);
@@ -99,9 +102,9 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
       }
 
       // Add to history first
-      const historySuccess = addToHistory(historyId, nodeId);
+      const historySuccess = addToHistory(windowId, nodeId);
       if (!historySuccess) {
-        console.log("useFinderHistory: failed to add to history", historyId);
+        console.log("useFinderHistory: failed to add to history", windowId);
         return false;
       }
 
@@ -123,14 +126,14 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
       console.log("useFinderHistory: successfully navigated to", nodeId);
       return true;
     },
-    [historyId, windowId, window, addToHistory, getNodeByID, updateWindowById]
+    [windowId, addToHistory, getNodeByID, updateWindowById]
   );
 
   /**
    * Navigate back in history
    */
   const goBack = useCallback((): boolean => {
-    console.log("useFinderHistory: goBack in", historyId);
+    console.log("useFinderHistory: goBack in", windowId);
 
     if (!canGoBack) {
       console.log("useFinderHistory: cannot go back");
@@ -138,14 +141,14 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
     }
 
     // Navigate back in history
-    const historySuccess = goBackInHistory(historyId);
+    const historySuccess = goBackInHistory(windowId);
     if (!historySuccess) {
       console.log("useFinderHistory: failed to go back in history");
       return false;
     }
 
     // Get the new current item after going back
-    const newNodeId = getCurrentItem(historyId) as string;
+    const newNodeId = getCurrentItem(windowId) as string;
     if (!newNodeId) {
       console.log("useFinderHistory: no current item after going back");
       return false;
@@ -169,20 +172,19 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
     console.log("useFinderHistory: successfully went back to", newNodeId);
     return true;
   }, [
-    historyId,
+    windowId,
     canGoBack,
     goBackInHistory,
     getCurrentItem,
     getNodeByID,
     updateWindowById,
-    windowId,
   ]);
 
   /**
    * Navigate forward in history
    */
   const goForward = useCallback((): boolean => {
-    console.log("useFinderHistory: goForward in", historyId);
+    console.log("useFinderHistory: goForward in", windowId);
 
     if (!canGoForward) {
       console.log("useFinderHistory: cannot go forward");
@@ -190,14 +192,14 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
     }
 
     // Navigate forward in history
-    const historySuccess = goForwardInHistory(historyId);
+    const historySuccess = goForwardInHistory(windowId);
     if (!historySuccess) {
       console.log("useFinderHistory: failed to go forward in history");
       return false;
     }
 
     // Get the new current item after going forward
-    const newNodeId = getCurrentItem(historyId) as string;
+    const newNodeId = getCurrentItem(windowId) as string;
     if (!newNodeId) {
       console.log("useFinderHistory: no current item after going forward");
       return false;
@@ -223,13 +225,12 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
     console.log("useFinderHistory: successfully went forward to", newNodeId);
     return true;
   }, [
-    historyId,
+    windowId,
     canGoForward,
     goForwardInHistory,
     getCurrentItem,
     getNodeByID,
     updateWindowById,
-    windowId,
   ]);
 
   /**
@@ -237,7 +238,7 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
    */
   const goToIndex = useCallback(
     (index: number): boolean => {
-      console.log("useFinderHistory: goToIndex", index, "in", historyId);
+      console.log("useFinderHistory: goToIndex", index, "in", windowId);
 
       if (index < 0 || index >= historyLength) {
         console.log("useFinderHistory: index out of bounds", index);
@@ -245,14 +246,14 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
       }
 
       // Navigate to specific index in history
-      const historySuccess = goToIndexInHistory(historyId, index);
+      const historySuccess = goToIndexInHistory(windowId, index);
       if (!historySuccess) {
         console.log("useFinderHistory: failed to go to index in history");
         return false;
       }
 
       // Get the current item at the new index
-      const newNodeId = getCurrentItem(historyId) as string;
+      const newNodeId = getCurrentItem(windowId) as string;
       if (!newNodeId) {
         console.log("useFinderHistory: no current item at index", index);
         return false;
@@ -284,13 +285,12 @@ export const useFinderHistory = (windowId: string): UseFinderHistoryReturn => {
       return true;
     },
     [
-      historyId,
+      windowId,
       historyLength,
       goToIndexInHistory,
       getCurrentItem,
       getNodeByID,
       updateWindowById,
-      windowId,
     ]
   );
 

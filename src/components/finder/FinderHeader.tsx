@@ -1,10 +1,11 @@
 import React from "react";
-import { FinderNavigation } from "./FinderNavigation";
 import { Input } from "../ui/input";
 import { FinderViewControls } from "./FinderViewControls";
 import { useNewStore } from "@/hooks/useStore";
 import theme from "@/styles/theme";
-// import { WindowHistoryNavigation } from "../window/windowNavigation/WindowHistoryNavigation";
+import { WindowHistoryNavigation } from "../window/windowNavigation/WindowHistoryNavigation";
+import { EmptyTrashButton } from "./EmptyTrashButton";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 type FinderHeaderProps = {
   zIndex: number;
@@ -14,6 +15,7 @@ type FinderHeaderProps = {
   setInput: (v: string) => void;
   windowId: string;
   nodeId: string;
+  onHistoryChange: (currentItem: unknown) => void;
 };
 
 export const FinderHeader: React.FC<FinderHeaderProps> = ({
@@ -24,6 +26,7 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
   setInput,
   windowId,
   nodeId,
+  onHistoryChange,
 }) => {
   const currentTheme = useNewStore((s) => s.theme);
   const bgColor = theme.colors[currentTheme].background.primary;
@@ -39,14 +42,16 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
         borderColor: borderColor,
       }}
     >
-      <FinderNavigation windowId={windowId} />
-      {/* <WindowHistoryNavigation
-        windowId={windowId}
-        firstHistoryItem={nodeId}
-        showForwardButton={true}
-        showBackButton={true}
-        onHistoryChange={handleHistoryChange}
-      /> */}
+      <div className="flex items-center gap-2">
+        <WindowHistoryNavigation
+          windowId={windowId as WindowId}
+          firstHistoryItem={nodeId}
+          showForwardButton={true}
+          showBackButton={true}
+          onHistoryChange={onHistoryChange}
+        />
+        <EmptyTrashButton windowId={windowId} />
+      </div>
 
       <Input
         placeholder="Search"

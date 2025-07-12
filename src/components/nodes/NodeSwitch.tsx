@@ -10,25 +10,20 @@ import type {
 import { LinkNode } from "./LinkNode";
 import { EasterEggNode } from "./EasterEggNode";
 import { ApplicationNode } from "./ApplicationNode";
-import { FinderNode } from "./FinderNode";
+import { FinderNode } from "./FinderNodeBackup";
 import { FunctionNode } from "./FunctionNode";
 import { DocumentNode } from "./DocumentNode";
-
-type LayoutType = "desktop" | "window" | "dock";
+import type { WindowId } from "@/constants/applicationRegistry";
+import { DirectoryNode } from "./DirectoryNode";
+import type { DesktopRootId, DockRootId } from "@/constants/nodeHierarchy";
 
 type NodeSwitchProps = {
   node: NodeEntry;
-  windowId: string;
-  layout?: LayoutType;
+  windowId: WindowId | DesktopRootId | DockRootId;
   view: "icons" | "list" | "columns";
 };
 
-export const NodeSwitch = ({
-  node,
-  layout = "window",
-  windowId,
-  view,
-}: NodeSwitchProps) => {
+export const NodeSwitch = ({ node, windowId, view }: NodeSwitchProps) => {
   switch (node.type) {
     case "easter-egg":
       return (
@@ -37,10 +32,10 @@ export const NodeSwitch = ({
 
     case "directory":
       return (
-        <FinderNode
+        <DirectoryNode
           key={node.id}
           nodeEntry={node as DirectoryEntry}
-          layout={layout}
+          // layout={layout}
           windowId={windowId}
           view={view}
         />

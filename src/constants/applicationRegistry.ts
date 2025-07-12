@@ -2,7 +2,7 @@ import React from "react";
 import { DocumentEditor } from "../components/applications/document/DocumentEditor";
 import { Finder } from "../components/finder/Finder";
 import { TerminalContent } from "../components/applications/terminal/TerminalContent";
-import { BrowserContent } from "../components/applications/browser/BrowserContent";
+import { BrowserContent } from "../components/applications/browser/BrowserMain";
 import type { WindowContentProps } from "@/types/storeTypes";
 import { GeoGame } from "../components/applications/geoGame/GeoGame";
 import GTAVI from "../components/applications/GTAVI/GTAVI";
@@ -16,7 +16,7 @@ import { WhatsAppWrapper } from "../components/applications/whatsApp/WhatsAppWra
 // APPLICATION REGISTRY - CONSOLIDATED CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════════════════
 
-type WindowScope = "per-application" | "per-node" | "per-document";
+type WindowScope = "per-application" | "per-nodeId" | "per-document";
 
 interface ApplicationConfig {
   // Component & rendering
@@ -41,7 +41,7 @@ export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
   finder: {
     component: Finder,
     allowMultipleWindows: true,
-    windowScope: "per-node" as const, // One window per directory node
+    windowScope: "per-nodeId" as const, // One window per directory node
     width: 800,
     height: 600,
     fixedSize: false,
@@ -50,16 +50,16 @@ export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
   },
 
   // Legacy alias for finder (backward compatibility)
-  directory: {
-    component: Finder,
-    allowMultipleWindows: true,
-    windowScope: "per-node" as const,
-    width: 800,
-    height: 600,
-    fixedSize: false,
-    requiresHistory: true,
-    defaultMaximized: false,
-  },
+  // directory: {
+  //   component: Finder,
+  //   allowMultipleWindows: true,
+  //   windowScope: "per-node" as const,
+  //   width: 800,
+  //   height: 600,
+  //   fixedSize: false,
+  //   requiresHistory: true,
+  //   defaultMaximized: false,
+  // },
 
   // ─────────── Document Applications ───────────
   documentEditor: {
@@ -228,7 +228,7 @@ export type WindowId<T extends ApplicationRegistryId = ApplicationRegistryId> =
   T extends ApplicationRegistryId
     ? (typeof APPLICATION_REGISTRY)[T]["windowScope"] extends "per-application"
       ? `${T}-singleton`
-      : (typeof APPLICATION_REGISTRY)[T]["windowScope"] extends "per-node"
+      : (typeof APPLICATION_REGISTRY)[T]["windowScope"] extends "per-nodeId"
       ? `${T}-${NodeId}`
       : (typeof APPLICATION_REGISTRY)[T]["windowScope"] extends "per-document"
       ? `${T}-${DocumentConfigId}`
@@ -258,7 +258,7 @@ export const generateWindowId = <T extends ApplicationRegistryId>(
     case "per-application":
       return `${applicationId}-singleton` as WindowId<T>;
 
-    case "per-node":
+    case "per-nodeId":
       if (!context?.nodeId) {
         throw new Error(
           `Node ID required for ${applicationId} (per-node scope)`

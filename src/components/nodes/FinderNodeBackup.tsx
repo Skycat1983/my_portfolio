@@ -12,13 +12,14 @@ import {
   getTitleBase,
 } from "./node.styles";
 import { BIN_EMPTY, BIN_FULL, FINDER } from "@/constants/images";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 type LayoutType = "desktop" | "window" | "dock";
 
 type Props = {
   nodeEntry: DirectoryEntry;
   layout?: LayoutType;
-  windowId: string;
+  windowId: WindowId;
   view: "icons" | "list" | "columns";
 };
 
@@ -37,11 +38,12 @@ export const FinderNode = ({
 
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const openWindowWithComponentKey = useNewStore(
-    (s) => s.openWindowWithComponentKey
-  );
-  const focusWindow = useNewStore((s) => s.focusWindow);
-  const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
+  // const openWindowWithComponentKey = useNewStore(
+  //   (s) => s.openWindowWithComponentKey
+  // );
+  const openWindow = useNewStore((s) => s.openWindow);
+  // const focusWindow = useNewStore((s) => s.focusWindow);
+  // const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
 
   // Always call the hook (React rules), but only use when in window context
   const finderHistory = useFinderHistory(windowId || "dummy");
@@ -49,33 +51,8 @@ export const FinderNode = ({
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    const windowAlreadyOpen = getWindowByNodeId(nodeEntry.id);
-
-    if (windowAlreadyOpen) {
-      focusWindow(windowAlreadyOpen.windowId);
-      return;
-    }
-
-    // Context-aware navigation logic
-    if (layout === "desktop" || !windowId) {
-      // Desktop context: open new window
-      openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey, "finder");
-    } else {
-      // Window context: use finder history for navigation
-      const success = finderHistory.navigateToNode(nodeEntry.id);
-      if (!success) {
-        openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey, "finder");
-      }
-    }
-  }, [
-    getWindowByNodeId,
-    layout,
-    windowId,
-    openWindowWithComponentKey,
-    focusWindow,
-    finderHistory,
-    nodeEntry,
-  ]);
+    openWindow(nodeEntry);
+  }, [openWindow, nodeEntry]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
@@ -145,3 +122,22 @@ export const FinderNode = ({
     </div>
   );
 };
+
+// const windowAlreadyOpen = getWindowByNodeId(nodeEntry.id);
+
+// if (windowAlreadyOpen) {
+//   focusWindow(windowAlreadyOpen.windowId);
+//   return;
+// }
+
+// // Context-aware navigation logic
+// if (layout === "desktop" || !windowId) {
+//   // Desktop context: open new window
+//   openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey, "finder");
+// } else {
+//   // Window context: use finder history for navigation
+//   const success = finderHistory.navigateToNode(nodeEntry.id);
+//   if (!success) {
+//     openWindowWithComponentKey(nodeEntry, nodeEntry.componentKey, "finder");
+//   }
+// }

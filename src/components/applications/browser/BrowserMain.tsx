@@ -70,7 +70,6 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      console.log("BROWSER_DEBUG handleKeyDown", e.currentTarget.value);
       setAddressViewed(e.currentTarget.value);
       addToHistory(typedWindowId, e.currentTarget.value);
     }
@@ -80,8 +79,7 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
     console.log("BROWSER_DEBUG handleClick", e.currentTarget.value);
   };
 
-  const handleHistoryChange = (currentItem: unknown, currentIndex: number) => {
-    console.log("BROWSER_DEBUG handleHistoryChange", currentItem, currentIndex);
+  const handleHistoryChange = (currentItem: unknown) => {
     if (typeof currentItem === "string") {
       setAddressViewed(currentItem);
       setAddressBarUrl(currentItem);

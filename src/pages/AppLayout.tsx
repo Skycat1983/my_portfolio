@@ -12,6 +12,8 @@ import { Widgets } from "../components/widgets/WidgetsLayout";
 import { DirectoryContent } from "../components/applications/directory/DirectoryContent";
 import { desktopRootId } from "../constants/nodeHierarchy";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
+import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
+import { DesktopLayout, DirectoryLayout } from "@/pages/DesktopLayout";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -24,6 +26,9 @@ export const AppLayout = () => {
   const openWindows = useNewStore((s) => s.openWindows);
   const histories = useNewStore((s) => s.histories);
   const windows = useNewStore((s) => s.windows);
+  const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+  const nodes = getChildrenByParentID(desktopRootId);
+
   console.log("AppLayout.tsx: openWindows", openWindows);
   console.log("AppLayout.tsx: histories", histories);
 
@@ -67,7 +72,15 @@ export const AppLayout = () => {
 
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
-          <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} />
+          <NodeDropZoneWrapper nodeId={desktopRootId} shrinkToFit={false}>
+            {/* <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} /> */}
+            <DesktopLayout
+              nodes={nodes}
+              // windowId={desktopRootId}
+              // desktopId={desktopRootId}
+            />
+          </NodeDropZoneWrapper>
+          {/* <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} /> */}
           {/* <ListView nodes={nodes} /> */}
         </div>
 

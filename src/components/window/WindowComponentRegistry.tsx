@@ -2,7 +2,7 @@ import React from "react";
 import { DocumentEditor } from "../applications/document/DocumentEditor";
 import { Finder } from "../finder/Finder";
 import { TerminalContent } from "../applications/terminal/TerminalContent";
-import { BrowserContent } from "../applications/browser/BrowserContent";
+import { BrowserContent } from "../applications/browser/BrowserMain";
 import type { WindowContentProps } from "@/types/storeTypes";
 import { GeoGame } from "../applications/geoGame/GeoGame";
 import GTAVI from "../applications/GTAVI/GTAVI";

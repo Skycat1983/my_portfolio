@@ -1,21 +1,22 @@
 import { useNewStore } from "@/hooks/useStore";
 import { useCallback, useEffect } from "react";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface WindowHistoryNavigationProps {
-  historyId: string;
+  windowId: WindowId;
   firstHistoryItem: unknown;
   onHistoryChange?: (currentItem: unknown, currentIndex: number) => void;
 }
 
 export const useWindowHistoryNavigation = ({
-  historyId,
+  windowId,
   firstHistoryItem,
   onHistoryChange,
 }: WindowHistoryNavigationProps) => {
   const createHistory = useNewStore((s) => s.createHistory);
 
   //   ! HISTORY OPERATIONS
-  const history = useNewStore((s) => s.histories[historyId]);
+  const history = useNewStore((s) => s.histories[windowId]);
   const historyExists = useNewStore((state) => state.historyExists);
   const goBackInHistory = useNewStore((state) => state.goBack);
   const goForwardInHistory = useNewStore((state) => state.goForward);
@@ -25,31 +26,31 @@ export const useWindowHistoryNavigation = ({
   const getCurrentIndex = useNewStore((state) => state.getCurrentIndex);
 
   useEffect(() => {
-    if (!historyExists(historyId)) {
-      createHistory(historyId, firstHistoryItem);
+    if (!historyExists(windowId)) {
+      createHistory(windowId, firstHistoryItem);
     }
-  }, [historyId, historyExists, createHistory, firstHistoryItem]);
+  }, [windowId, historyExists, createHistory, firstHistoryItem]);
 
   const goBack = useCallback((): boolean => {
-    if (!canGoBackInHistory(historyId)) {
+    if (!canGoBackInHistory(windowId)) {
       return false;
     }
     // Navigate back in history
-    const historySuccess = goBackInHistory(historyId);
+    const historySuccess = goBackInHistory(windowId);
     if (!historySuccess) {
       return false;
     }
 
     // Trigger callback on successful navigation
     if (onHistoryChange) {
-      const newCurrentItem = getCurrentItem(historyId);
-      const newCurrentIndex = getCurrentIndex(historyId);
+      const newCurrentItem = getCurrentItem(windowId);
+      const newCurrentIndex = getCurrentIndex(windowId);
       onHistoryChange(newCurrentItem, newCurrentIndex);
     }
 
     return true;
   }, [
-    historyId,
+    windowId,
     canGoBackInHistory,
     goBackInHistory,
     onHistoryChange,
@@ -58,25 +59,25 @@ export const useWindowHistoryNavigation = ({
   ]);
 
   const goForward = useCallback((): boolean => {
-    if (!canGoForwardInHistory(historyId)) {
+    if (!canGoForwardInHistory(windowId)) {
       return false;
     }
 
-    const historySuccess = goForwardInHistory(historyId);
+    const historySuccess = goForwardInHistory(windowId);
     if (!historySuccess) {
       return false;
     }
 
     // Trigger callback on successful navigation
     if (onHistoryChange) {
-      const newCurrentItem = getCurrentItem(historyId);
-      const newCurrentIndex = getCurrentIndex(historyId);
+      const newCurrentItem = getCurrentItem(windowId);
+      const newCurrentIndex = getCurrentIndex(windowId);
       onHistoryChange(newCurrentItem, newCurrentIndex);
     }
 
     return true;
   }, [
-    historyId,
+    windowId,
     canGoForwardInHistory,
     goForwardInHistory,
     onHistoryChange,
@@ -88,7 +89,7 @@ export const useWindowHistoryNavigation = ({
     history,
     goBack,
     goForward,
-    canGoBack: canGoBackInHistory(historyId),
-    canGoForward: canGoForwardInHistory(historyId),
+    canGoBack: canGoBackInHistory(windowId),
+    canGoForward: canGoForwardInHistory(windowId),
   };
 };

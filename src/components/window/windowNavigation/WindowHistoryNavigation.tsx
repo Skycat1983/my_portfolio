@@ -4,10 +4,10 @@ import theme from "@/styles/theme";
 import { useNewStore } from "@/hooks/useStore";
 import { cn } from "@/lib/utils";
 import { browserButtonStyles } from "@/components/applications/browser/BrowserFrame.styles";
-import type { Window } from "../windowTypes";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface NavigationProps {
-  windowId: Window["windowId"];
+  windowId: WindowId;
   firstHistoryItem: unknown;
   showForwardButton?: boolean;
   showBackButton?: boolean;
@@ -25,10 +25,9 @@ export const WindowHistoryNavigation = ({
   const screenDimensions = useNewStore((s) => s.screenDimensions);
   const bgColor = theme.colors[themeMode].background.primary;
   const iconColor = theme.colors[themeMode].text.primary;
-  const historyId = `${windowId}`;
   const { history, goBack, goForward, canGoBack, canGoForward } =
     useWindowHistoryNavigation({
-      historyId,
+      windowId,
       firstHistoryItem,
       onHistoryChange,
     });

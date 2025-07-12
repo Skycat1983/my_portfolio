@@ -7,15 +7,17 @@ import { theme } from "@/styles/theme";
 
 export const Finder = ({
   windowId,
-  nodeId = "desktop-root",
+  nodeId,
 }: {
   windowId: string;
   nodeId: string;
 }) => {
+  console.log("HISTORY_DEBUG Finder rendering", { windowId, nodeId });
   // const nodeMap = useNewStore((s) => s.nodeMap);
   const defaultFinderView = useNewStore((s) => s.defaultFinderView);
   const currentTheme = useNewStore((s) => s.theme);
   const window = useNewStore((s) => s.getWindowById(windowId));
+  const updateWindow = useNewStore((s) => s.updateWindow);
   const [input, setInput] = React.useState("");
   const [view, setView] = React.useState<"icons" | "list" | "columns">(
     defaultFinderView
@@ -24,6 +26,16 @@ export const Finder = ({
 
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const children = getChildrenByParentID(nodeId);
+
+  // Handle history changes from WindowHistoryNavigation
+  const handleHistoryChange = React.useCallback(
+    (currentItem: unknown) => {
+      if (typeof currentItem === "string") {
+        updateWindow((w) => w.windowId === windowId, { nodeId: currentItem });
+      }
+    },
+    [windowId, updateWindow]
+  );
 
   const filteredNodes = children.filter((node) =>
     node.label.toLowerCase().includes(input.toLowerCase())
@@ -51,6 +63,7 @@ export const Finder = ({
         setInput={setInput}
         windowId={windowId}
         nodeId={nodeId}
+        onHistoryChange={handleHistoryChange}
       />
       <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
         <FinderBody

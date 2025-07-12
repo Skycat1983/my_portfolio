@@ -5,26 +5,16 @@ import { NodeSwitch } from "@/components/nodes/NodeSwitch";
 
 type DirectoryLayoutProps = {
   nodes: NodeEntry[];
-  windowId: string;
+  // desktopId: string;
+  // isWindow: boolean;
 };
 
-export const DirectoryLayout = ({ nodes, windowId }: DirectoryLayoutProps) => {
+export const DesktopLayout = ({
+  nodes,
+}: // desktopId,
+DirectoryLayoutProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-  const isWindow = windowId !== desktopRootId;
-
-  // Window directory layout
-  if (isWindow) {
-    return (
-      <div className="w-full h-full flex justify-start items-start gap-6 flex-wrap">
-        {nodes.map((node) => (
-          <div key={node.id} className="w-20 flex-shrink-0">
-            <NodeSwitch node={node} windowId={windowId} view="icons" />
-          </div>
-        ))}
-      </div>
-    );
-  }
-  // Desktop/Mobile home page directory layout
+  const windowId = desktopRootId;
 
   return (
     <>
@@ -54,3 +44,19 @@ export const DirectoryLayout = ({ nodes, windowId }: DirectoryLayoutProps) => {
     </>
   );
 };
+
+// const isWindow = windowId !== desktopRootId;
+
+// Window directory layout
+// if (isWindow) {
+//   return (
+//     <div className="w-full h-full flex justify-start items-start gap-6 flex-wrap">
+//       {nodes.map((node) => (
+//         <div key={node.id} className="w-20 flex-shrink-0">
+//           <NodeSwitch node={node} windowId={windowId} view="icons" />
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
+// Desktop/Mobile home page directory layout

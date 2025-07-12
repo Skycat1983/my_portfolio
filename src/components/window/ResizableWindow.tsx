@@ -26,17 +26,13 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
     x,
     y,
     zIndex,
-    isMinimized,
+    // isMinimized,
     isMaximized,
     fixed,
   } = window;
   const { onResizeStart } = useWindowResize(window.windowId);
   const focusWindow = useNewStore((s) => s.focusWindow);
   const currentTheme = useNewStore((s) => s.theme);
-
-  if (isMinimized || !applicationRegistryId) {
-    return null;
-  }
 
   const RegistryComponent = getWindowComponent(applicationRegistryId);
 
