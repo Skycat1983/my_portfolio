@@ -9,10 +9,10 @@ import { createMessage, processAIResponse } from "./messageUtils";
 import { Send, WifiOff } from "lucide-react";
 import { ConversationHeader } from "./ConversationHeader";
 import type { ViewState } from "./hooks/useWhatsAppHistory";
-import type { WindowType } from "@/types/storeTypes";
 import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
 import { selectConversationParticipant } from "./selectors/contactSelectors";
 import { selectIsTyping } from "./selectors/componentSelectors";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface ChatScreenProps {
   conversationId: ContactId;
@@ -20,7 +20,7 @@ interface ChatScreenProps {
   onArchive: (contactId: ContactId) => void;
   onUnarchive: (contactId: ContactId) => void;
   onViewProfile?: (contactId: ContactId) => void;
-  windowId: WindowType["windowId"];
+  windowId: WindowId;
   onPhoneCall: (
     avatar: string,
     name: string,
@@ -41,7 +41,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   const whatsApp = useNewStore((state) => state.whatsApp);
   console.log("WhatsApp: ChatScreen whatsApp", whatsApp);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
-  const historyId = `whatsapp-${windowId}`;
+  const historyId = windowId;
   const whatsAppView = useNewStore((state) =>
     state.getCurrentItem(historyId)
   ) as ViewState | undefined;

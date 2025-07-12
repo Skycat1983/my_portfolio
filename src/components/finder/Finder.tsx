@@ -4,12 +4,13 @@ import { FinderBody } from "./FinderBody";
 import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import { theme } from "@/styles/theme";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 export const Finder = ({
   windowId,
   nodeId,
 }: {
-  windowId: string;
+  windowId: WindowId;
   nodeId: string;
 }) => {
   console.log("HISTORY_DEBUG Finder rendering", { windowId, nodeId });

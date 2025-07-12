@@ -6,7 +6,6 @@ import { ArchiveScreen } from "./ArchiveScreen";
 import { ContactScreen } from "./ContactScreen";
 import { CircleUserRound } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
-import type { WindowType } from "@/types/storeTypes";
 import type { Conversation, ConversationId } from "./types";
 import { PhoneCallScreen } from "./PhoneCallScreen";
 import { buildSystemInstruction } from "./utils";
@@ -14,9 +13,10 @@ import { createMessage, processAIResponse } from "./messageUtils";
 import { selectConversationParticipant } from "./selectors/contactSelectors";
 import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
 import { motion, AnimatePresence } from "framer-motion";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface WhatsAppMainProps {
-  windowId: WindowType["windowId"];
+  windowId: WindowId;
 }
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {

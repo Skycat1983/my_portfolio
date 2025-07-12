@@ -37,7 +37,7 @@ export const DirectoryNode = ({ nodeEntry, windowId, view }: Props) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindow = useNewStore((s) => s.openWindow);
   const updateWindow = useNewStore((s) => s.updateWindow);
-  const history = useNewStore((s) => s.histories[windowId]);
+  // const history = useNewStore((s) => s.histories[windowId]);
   const addToHistory = useNewStore((s) => s.addToHistory);
 
   // ─────────── node-specific activation ───────────

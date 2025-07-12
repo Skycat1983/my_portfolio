@@ -2,12 +2,13 @@ import type { NodeEntry } from "@/components/nodes/nodeTypes";
 import { IconsView } from "./IconsView";
 import { ColumnsView } from "./ColumnsView";
 import { ListView } from "./ListView";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface FinderBodyProps {
   view: "icons" | "list" | "columns";
   nodes: NodeEntry[];
   nodeId: string;
-  windowId: string;
+  windowId: WindowId;
 }
 
 export const FinderBody = ({
