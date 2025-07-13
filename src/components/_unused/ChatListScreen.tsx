@@ -1,9 +1,10 @@
 import React from "react";
 import { useNewStore } from "@/hooks/useStore";
-import { selectArchivedConversations } from "./selectors/componentSelectors";
+import { selectArchivedConversations } from "../applications/whatsApp/selectors/componentSelectors";
 import { Separator } from "@/components/ui/separator";
 import { Archive } from "lucide-react";
-import { selectActiveConversationPreviews } from "./selectors/conversationSelectors";
+import { selectActiveConversationPreviews } from "../applications/whatsApp/selectors/conversationSelectors";
+import { formatTimestamp } from "../applications/whatsApp/whatsAppUtils";
 
 interface ChatListScreenProps {
   onSelectConversation: (conversationId: string) => void;
@@ -39,20 +40,6 @@ export const ChatListScreen: React.FC<ChatListScreenProps> = ({
       typingValue
     );
     return typingValue;
-  };
-
-  const formatTimestamp = (timestamp: string) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffHours < 1) return "now";
-    if (diffHours < 24) return `${diffHours}h`;
-    if (diffDays < 7) return `${diffDays}d`;
-    return date.toLocaleDateString();
   };
 
   return (

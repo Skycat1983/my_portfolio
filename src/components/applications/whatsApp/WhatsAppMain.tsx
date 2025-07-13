@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useWhatsAppHistory } from "./hooks/useWhatsAppHistory";
-import { ChatListScreen } from "./ChatListScreen";
 import { ChatScreen } from "./ChatScreen";
-import { ArchiveScreen } from "./ArchiveScreen";
 import { ContactScreen } from "./ContactScreen";
 import { CircleUserRound } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
 import type { Conversation, ConversationId } from "./types";
 import { PhoneCallScreen } from "./PhoneCallScreen";
-import { buildSystemInstruction } from "./utils";
+import { buildSystemInstruction } from "./whatsAppUtils";
 import { createMessage, processAIResponse } from "./messageUtils";
 import { selectConversationParticipant } from "./selectors/contactSelectors";
 import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
 import { motion, AnimatePresence } from "framer-motion";
 import type { WindowId } from "@/constants/applicationRegistry";
 import { Input } from "@/components/ui/input";
+import { ChatList } from "./ChatList";
 
 interface WhatsAppMainProps {
   windowId: WindowId;
@@ -202,6 +201,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
   const handleConversationClick = React.useCallback(
     (conversationId: Conversation["id"]) => {
       setNavigationDirection("forward");
+      setSearchQuery(""); // Reset search when navigating to chat
       markConversationMessagesAsRead(conversationId);
       navigateToView("chat", { conversationId });
     },
@@ -223,6 +223,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
 
   const handleArchiveClick = React.useCallback(() => {
     setNavigationDirection("forward");
+    setSearchQuery(""); // Reset search when navigating to archive
     navigateToView("archive");
   }, [navigateToView]);
 
@@ -230,6 +231,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
     (contactId: string) => {
       archiveContact(contactId);
       setNavigationDirection("backward");
+      setSearchQuery(""); // Reset search when navigating back
       navigateToView("chatList");
     },
     [archiveContact, navigateToView]
@@ -245,6 +247,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
   const handleViewProfile = React.useCallback(
     (contactId: string) => {
       setNavigationDirection("forward");
+      setSearchQuery(""); // Reset search when navigating to profile
       navigateToView("contact", { contactId });
     },
     [navigateToView]
@@ -252,13 +255,33 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
 
   const handleAccountClick = React.useCallback(() => {
     setNavigationDirection("forward");
+    setSearchQuery(""); // Reset search when navigating to account
     navigateToView("contact", { contactId: "user_self" });
   }, [navigateToView]);
 
   const handleGoBack = React.useCallback(() => {
     setNavigationDirection("backward");
+    setSearchQuery(""); // Reset search when going back
     goBack();
   }, [goBack]);
+
+  // Get placeholder text based on current view
+  const getSearchPlaceholder = () => {
+    if (!whatsAppView) return "Search";
+
+    switch (whatsAppView.view) {
+      case "chatList":
+        return "Search contacts";
+      case "chat":
+        return "Search conversation";
+      case "archive":
+        return "Search archived";
+      case "contact":
+        return "Search";
+      default:
+        return "Search";
+    }
+  };
 
   return (
     <div className="h-full w-full bg-gray-800">
@@ -278,7 +301,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
         </h2>
         <div className="w-full px-8">
           <Input
-            placeholder="Search"
+            placeholder={getSearchPlaceholder()}
             className="w-full"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -307,10 +330,11 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
             className="absolute inset-0 w-full h-full"
           >
             {whatsAppView?.view === "chatList" && !isPhoneCall && (
-              <ChatListScreen
+              <ChatList
+                searchQuery={searchQuery}
+                archiveList={false}
                 onSelectConversation={handleConversationClick}
                 onViewArchived={handleArchiveClick}
-                searchQuery={searchQuery}
               />
             )}
             {whatsAppView?.view === "chat" &&
@@ -319,6 +343,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
                 <ChatScreen
                   windowId={windowId}
                   conversationId={whatsAppView.params.conversationId}
+                  searchQuery={searchQuery}
                   onBack={handleGoBack}
                   onArchive={handleArchiveContact}
                   onUnarchive={handleUnarchiveContact}
@@ -327,11 +352,12 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
                 />
               )}
             {whatsAppView?.view === "archive" && !isPhoneCall && (
-              <ArchiveScreen
-                onBack={handleGoBack}
-                onSelectContact={handleConversationClick}
-                onUnarchive={handleUnarchiveContact}
+              <ChatList
                 searchQuery={searchQuery}
+                archiveList={true}
+                onSelectConversation={handleConversationClick}
+                onBack={handleGoBack}
+                onUnarchive={handleUnarchiveContact}
               />
             )}
             {whatsAppView?.view === "contact" &&

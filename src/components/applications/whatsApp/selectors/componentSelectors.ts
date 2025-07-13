@@ -1,68 +1,29 @@
 import { selectConversationParticipant } from "./contactSelectors";
 import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
 import type { ConversationId } from "../types";
-import {
-  selectConversationPreview,
-  sortConversationPreviewsByTime,
-} from "./conversationSelectors";
-
-export const selectChatListConversations = (
-  state: WhatsAppState,
-  type: "active" | "archived"
-): string[] =>
-  state.conversations.allIds.filter((id) => {
-    const conv = state.conversations.byId[id];
-    if (!conv) return false;
-
-    const hasArchived = conv.participants.some((pid) =>
-      state.contacts.archived.has(pid)
-    );
-
-    // keep it if it matches the requested type
-    return type === "active" ? !hasArchived : hasArchived;
-  });
+import { sortConversationPreviewsByTime } from "./conversationSelectors";
+import { selectMessagesByConversation } from "./messageSelectors";
 
 // Get all data needed for conversation header
 export const selectConversationHeader = (
   state: WhatsAppState,
-  conversationId: ConversationId,
-  wifiEnabled: boolean
+  conversationId: ConversationId
 ) => {
   const participant = selectConversationParticipant(state, conversationId);
-  const lastSeenTimestamp = selectLastSeenTimestamp(state);
+  // const lastSeenTimestamp = selectLastSeenTimestamp(state);
 
   if (!participant) return null;
-
-  // Format lastSeen timestamp for display
-  const formatLastSeen = (timestamp: number): string => {
-    const now = new Date();
-    const lastSeen = new Date(timestamp);
-    const diffMs = now.getTime() - lastSeen.getTime();
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMinutes < 1) return "just now";
-    if (diffMinutes < 60) return `${diffMinutes}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 1) return "yesterday";
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return lastSeen.toLocaleDateString();
-  };
 
   return {
     id: conversationId,
     name: participant.name,
     avatar: participant.avatar,
     phoneNumber: participant.phoneNumber,
-    isOnline: wifiEnabled,
-    lastSeen: wifiEnabled
-      ? "online"
-      : `last seen ${formatLastSeen(lastSeenTimestamp)}`,
+    isTyping: selectIsTyping(state, conversationId),
   };
 };
 
-// ! in use
+// * in use
 export const selectActiveConversations = (
   state: WhatsAppState
 ): ConversationId[] => {
@@ -78,7 +39,7 @@ export const selectActiveConversations = (
   });
 };
 
-// ! in use
+// * in use
 export const selectArchivedConversations = (state: WhatsAppState) => {
   return state.conversations.allIds.filter((convId) => {
     const conversation = state.conversations.byId[convId];
@@ -89,19 +50,8 @@ export const selectArchivedConversations = (state: WhatsAppState) => {
   });
 };
 
-export const selectArchivedConversationPreviews = (state: WhatsAppState) => {
-  const archivedConversations = selectChatListConversations(state, "archived");
-  const previews = archivedConversations
-    .map((convId) => selectConversationPreview(state, convId))
-    .filter(
-      (preview): preview is NonNullable<typeof preview> => preview !== null
-    );
-
-  return sortConversationPreviewsByTime(previews);
-};
-
-export const selectLastSeenTimestamp = (state: WhatsAppState): number =>
-  state.network.lastSeenTimestamp;
+// export const selectLastSeenTimestamp = (state: WhatsAppState): number =>
+//   state.network.lastSeenTimestamp;
 
 export const selectIsTyping = (
   state: WhatsAppState,
@@ -110,18 +60,60 @@ export const selectIsTyping = (
 
 // export const searchConversationByQuery = (state)
 
-// * NEW
+//* NEW
 export const selectChatlistPreviews = (
   state: WhatsAppState,
-  archived: boolean,
-  searchQuery: string
+  archived: boolean
 ) => {
+  console.log("WhatsAppRework: ChatList state", state);
+
+  // 1. select conversations
   const conversations = archived
     ? selectArchivedConversations(state)
     : selectActiveConversations(state);
 
-  console.log(
-    "WhatsAppPreviews: selectChatlistPreviews conversations",
-    conversations
-  );
+  console.log("WhatsAppRework: ChatList conversations", conversations);
+
+  // 2. Build preview data for each conversation
+  const previews = conversations.map((convId) => {
+    // all messages in the conversation
+    const messages = selectMessagesByConversation(state, convId);
+
+    // filter out 'sent' messages
+    const visibleMessages = messages.filter(
+      (message) => message.deliveryStatus !== "sent"
+    );
+
+    const unreadCount = visibleMessages.filter(
+      (message) =>
+        message.deliveryStatus === "delivered" && message.sender !== "user_self"
+    ).length;
+
+    const participant = selectConversationParticipant(state, convId);
+
+    // Get the contact ID for unarchiving (the non-user participant)
+    const conversation = state.conversations.byId[convId];
+    const contactId = conversation?.participants.find(
+      (id) => id !== "user_self"
+    );
+
+    return {
+      id: convId,
+      contactId: contactId, // Add contact ID for unarchiving
+      messages: visibleMessages,
+      unreadCount,
+      name: participant?.name,
+      avatar: participant?.avatar,
+      lastMessage: visibleMessages[visibleMessages.length - 1],
+      lastMessageTime: visibleMessages[visibleMessages.length - 1].timestamp,
+      // TODO: Add other preview properties here
+      isTyping: selectIsTyping(state, convId),
+    };
+  });
+
+  console.log("WhatsAppRework: ChatList previews", previews);
+
+  const sortedPreviews = sortConversationPreviewsByTime(previews);
+
+  return sortedPreviews;
 };

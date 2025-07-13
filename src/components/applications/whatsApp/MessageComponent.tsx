@@ -4,6 +4,11 @@ import { MessageStatus } from "./MessageStatus";
 
 interface MessageComponentProps {
   message: Message;
+  searchQuery?: string;
+  highlightSearchText?: (
+    text: string,
+    query: string
+  ) => string | (string | React.ReactElement)[];
 }
 
 const formatTimestamp = (timestamp: string) => {
@@ -13,10 +18,18 @@ const formatTimestamp = (timestamp: string) => {
 
 export const MessageComponent: React.FC<MessageComponentProps> = ({
   message,
+  searchQuery = "",
+  highlightSearchText,
 }) => {
   const deliveryStatus = message.deliveryStatus;
   console.log("WhatsApp: MessageComponent deliveryStatus", deliveryStatus);
   const isUser = message.sender === "user_self";
+
+  // Use highlight function if provided, otherwise show plain text
+  const messageContent =
+    highlightSearchText && searchQuery
+      ? highlightSearchText(message.content, searchQuery)
+      : message.content;
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-2`}>
@@ -28,7 +41,7 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
         }`}
       >
         <p className="text-sm whitespace-pre-wrap break-words">
-          {message.content}
+          {messageContent}
         </p>
         <div
           className={`flex items-center justify-between text-xs mt-1 ${

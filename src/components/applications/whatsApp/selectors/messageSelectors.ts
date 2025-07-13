@@ -166,3 +166,18 @@ export const selectConversationMessageStatus = (
     hasPending: pendingCount > 0,
   };
 };
+// * NEW
+export const selectMessagesByConversation = (
+  state: WhatsAppState,
+  conversationId: ConversationId
+): Message[] => {
+  const messageIds = state.messages.byConversation[conversationId] || [];
+  return messageIds.map((id: MessageId) => state.messages.byId[id]);
+};
+
+export const filterMessagesByStatus = (
+  messages: Message[],
+  status: DeliveryStatus
+): Message[] => {
+  return messages.filter((message) => message.deliveryStatus === status);
+};

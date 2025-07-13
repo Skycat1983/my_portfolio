@@ -1,8 +1,9 @@
 import React from "react";
-import type { ContactId } from "./types";
+import type { ContactId } from "../applications/whatsApp/types";
 import { useNewStore } from "@/hooks/useStore";
 import { ArrowLeft } from "lucide-react";
-import { selectArchivedConversationPreviews } from "./selectors/componentSelectors";
+import { selectArchivedConversationPreviews } from "../applications/whatsApp/selectors/componentSelectors";
+import { formatTimestamp } from "../applications/whatsApp/whatsAppUtils";
 
 interface ArchiveScreenProps {
   onBack: () => void;
@@ -18,20 +19,6 @@ export const ArchiveScreen: React.FC<ArchiveScreenProps> = ({
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
   const archivedContacts = selectArchivedConversationPreviews(whatsApp);
-
-  const formatTimestamp = (timestamp: string) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffHours < 1) return "now";
-    if (diffHours < 24) return `${diffHours}h`;
-    if (diffDays < 7) return `${diffDays}d`;
-    return date.toLocaleDateString();
-  };
 
   return (
     <div className="h-full flex flex-col">

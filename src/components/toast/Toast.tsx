@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useNewStore } from "@/hooks/useStore";
 import { Toaster } from "../ui/sonner";
@@ -21,6 +21,11 @@ const WhatsAppIcon = () => (
 
 export const Toast = () => {
   const whatsApp = useNewStore((s) => s.whatsApp);
+  const wifiEnabled = useNewStore((s) => s.wifiEnabled);
+
+  // Track the last message count we've notified about
+  const lastNotifiedMessageCount = useRef(NON_USER_MESSAGE_COUNT);
+
   console.log("whatsApp", whatsApp);
   // const messagesFromAI = selectVisibleConversationMessages(whatsApp, "ai_work");
   const nonUserMessageCount = NON_USER_MESSAGE_COUNT;
@@ -48,24 +53,37 @@ export const Toast = () => {
   );
 
   useEffect(() => {
+    console.log("TOAST: whatsAppMessages", whatsAppMessages);
     console.log("TOAST: whatsAppInitialized", whatsAppInitialized);
     console.log("TOAST: deliveredMessagesReceived", deliveredMessagesReceived);
     console.log("TOAST: nonUserMessageCount", nonUserMessageCount);
+    console.log("TOAST: wifiEnabled", wifiEnabled);
+    console.log(
+      "TOAST: lastNotifiedMessageCount",
+      lastNotifiedMessageCount.current
+    );
+
+    // Only show toast if we have more messages than we've previously notified about
     if (
       whatsAppInitialized &&
-      deliveredMessagesReceived.length > nonUserMessageCount
+      wifiEnabled &&
+      deliveredMessagesReceived.length > lastNotifiedMessageCount.current
     ) {
       toast.success("WhatsApp", {
         description: "You have a new message",
         duration: 4000,
         icon: <WhatsAppIcon />,
       });
+
+      // Update the ref to the current message count
+      lastNotifiedMessageCount.current = deliveredMessagesReceived.length;
     }
   }, [
     whatsAppMessages,
     whatsAppInitialized,
     nonUserMessageCount,
     deliveredMessagesReceived,
+    wifiEnabled,
   ]);
 
   useEffect(() => {

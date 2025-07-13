@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import type { ContactId, ConversationId } from "./types";
 import { MessageComponent } from "./MessageComponent";
 import { TypingIndicator } from "./TypingIndicator";
-import { buildSystemInstruction } from "./utils";
+import { buildSystemInstruction } from "./whatsAppUtils";
 import { useNewStore } from "@/hooks/useStore";
 
 import { createMessage, processAIResponse } from "./messageUtils";
@@ -16,6 +16,7 @@ import type { WindowId } from "@/constants/applicationRegistry";
 
 interface ChatScreenProps {
   conversationId: ContactId;
+  searchQuery: string;
   onBack: () => void;
   onArchive: (contactId: ContactId) => void;
   onUnarchive: (contactId: ContactId) => void;
@@ -31,6 +32,7 @@ interface ChatScreenProps {
 
 export const ChatScreen: React.FC<ChatScreenProps> = ({
   conversationId,
+  searchQuery,
   onBack,
   onArchive,
   onUnarchive,
@@ -154,6 +156,28 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     }
   };
 
+  // Helper function to highlight text that matches search query
+  const highlightSearchText = (text: string, query: string) => {
+    if (!query.trim()) return text;
+
+    const regex = new RegExp(
+      `(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi"
+    );
+    const parts = text.split(regex);
+
+    return parts.map((part, index) => {
+      if (part.toLowerCase() === query.toLowerCase()) {
+        return (
+          <span key={index} className="bg-yellow-300 text-black px-1 rounded">
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="h-full flex flex-col bg-gray-900">
       <ConversationHeader
@@ -169,7 +193,12 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2 text-white">
         {messages.map((message) => (
-          <MessageComponent key={message.id} message={message} />
+          <MessageComponent
+            key={message.id}
+            message={message}
+            searchQuery={searchQuery}
+            highlightSearchText={highlightSearchText}
+          />
         ))}
 
         {isTyping && <TypingIndicator />}

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import { ArrowLeft, Phone, PhoneOff } from "lucide-react";
 import { ChatOptionsMenu } from "./ChatOptionsMenu";
 import type { ContactId, ConversationId } from "./types";
-import { selectConversationHeader } from "./selectors/componentSelectors";
+import { selectConversationParticipant } from "./selectors/contactSelectors";
+import { selectIsTyping } from "./selectors/componentSelectors";
+import { formatTimestamp } from "./whatsAppUtils";
 
 interface ConversationHeaderProps {
   conversationId: string;
@@ -27,22 +29,40 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onViewProfile,
   onPhoneCall,
 }) => {
-  // ! in use
+  const [lastSeenTimestamp, setLastSeenTimestamp] = useState<number | null>(
+    null
+  );
   const whatsApp = useNewStore((state) => state.whatsApp);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
-  const headerData = selectConversationHeader(
-    whatsApp,
-    conversationId,
-    wifiEnabled
-  );
-  console.log("WhatsApp: ConversationHeader headerData", headerData);
-  // console.log("WhatsApp: ConversationHeader conversationId", conversationId);
+  const participant = selectConversationParticipant(whatsApp, conversationId);
+  const isTyping = selectIsTyping(whatsApp, conversationId);
 
-  if (!headerData) return null;
+  // Track wifi state changes to update last seen timestamp
+  useEffect(() => {
+    if (!wifiEnabled && lastSeenTimestamp === null) {
+      // WiFi just went off and we haven't set a timestamp yet
+      setLastSeenTimestamp(Date.now());
+    } else if (wifiEnabled) {
+      // WiFi is back on, clear the last seen timestamp
+      setLastSeenTimestamp(null);
+    }
+  }, [wifiEnabled, lastSeenTimestamp]);
+
+  if (!participant) return null;
 
   const handleContactClick = () => {
     if (onViewProfile) {
       onViewProfile(conversationId);
+    }
+  };
+
+  const getStatusDisplay = () => {
+    if (wifiEnabled) {
+      return isTyping ? "typing..." : "online";
+    } else {
+      return lastSeenTimestamp
+        ? `last seen ${formatTimestamp(lastSeenTimestamp.toString())}`
+        : "offline";
     }
   };
 
@@ -68,19 +88,19 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
       >
         <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-xl mr-3">
           <img
-            src={headerData.avatar}
-            alt={headerData.name}
+            src={participant.avatar}
+            alt={participant.name}
             className="w-full h-full object-cover rounded-full"
           />
         </div>
 
         <div className="flex-1">
-          <h2 className="font-semibold">{headerData.name}</h2>
+          <h2 className="font-semibold">{participant.name}</h2>
           <div className="flex items-center gap-1">
-            {headerData.isOnline && (
+            {wifiEnabled && !isTyping && (
               <div className="w-2 h-2 rounded-full bg-green-500" />
             )}
-            <p className="text-xs text-gray-400">{headerData.lastSeen}</p>
+            <p className="text-xs text-gray-400">{getStatusDisplay()}</p>
           </div>
         </div>
       </div>
@@ -91,9 +111,9 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
           aria-label="Voice call"
           onClick={() =>
             onPhoneCall?.(
-              headerData.avatar,
-              headerData.name,
-              headerData.phoneNumber,
+              participant.avatar,
+              participant.name,
+              participant.phoneNumber || "",
               conversationId
             )
           }

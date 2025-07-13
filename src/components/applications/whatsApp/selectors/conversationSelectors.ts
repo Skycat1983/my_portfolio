@@ -11,11 +11,9 @@ import {
   selectUnreadMessageCount,
   selectVisibleLastMessage,
 } from "./messageSelectors";
-import {
-  selectActiveConversations,
-  selectIsTyping,
-} from "./componentSelectors";
+import { selectIsTyping } from "./componentSelectors";
 
+//! in use
 export const sortConversationPreviewsByTime = <
   T extends { lastMessageTime: string }
 >(
@@ -74,21 +72,6 @@ export const selectConversationPreview = (
     unreadCount,
     isTyping,
   };
-};
-
-// Get all active conversation previews
-// ! in use
-export const selectActiveConversationPreviews = (state: WhatsAppState) => {
-  // the converstaions that are not archived
-  const activeConversations = selectActiveConversations(state);
-  // get the previews for the each conversation
-  const previews = activeConversations
-    .map((convId) => selectConversationPreview(state, convId))
-    .filter(
-      (preview): preview is NonNullable<typeof preview> => preview !== null
-    );
-
-  return sortConversationPreviewsByTime(previews);
 };
 
 // Get delivered messages in a conversation (eligible for read marking)
