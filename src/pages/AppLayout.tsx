@@ -9,11 +9,11 @@ import { useScreenMonitor } from "../hooks/useScreenSize";
 import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
-import { DirectoryContent } from "../components/applications/directory/DirectoryContent";
 import { desktopRootId } from "../constants/nodeHierarchy";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
 import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
-import { DesktopLayout, DirectoryLayout } from "@/pages/DesktopLayout";
+import { DesktopLayout } from "@/pages/DesktopLayout";
+import { BrowserContent } from "@/components/applications/browser/BrowserMain";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -64,6 +64,7 @@ export const AppLayout = () => {
       }}
     >
       <MenubarLayout />
+      {/* <BrowserContent windowId={"browser"} nodeId={"browser"} /> */}
 
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
       <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">

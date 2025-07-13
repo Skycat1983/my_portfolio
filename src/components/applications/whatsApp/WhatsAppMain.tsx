@@ -14,12 +14,14 @@ import { selectConversationParticipant } from "./selectors/contactSelectors";
 import { selectVisibleConversationMessages } from "./selectors/messageSelectors";
 import { motion, AnimatePresence } from "framer-motion";
 import type { WindowId } from "@/constants/applicationRegistry";
+import { Input } from "@/components/ui/input";
 
 interface WhatsAppMainProps {
   windowId: WindowId;
 }
 
 export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
+  const [searchQuery, setSearchQuery] = useState("");
   const [isPhoneCall, setIsPhoneCall] = useState<{
     avatar: string;
     name: string;
@@ -274,6 +276,14 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
             ? "Contact"
             : "WhatsApp"}
         </h2>
+        <div className="w-full px-8">
+          <Input
+            placeholder="Search"
+            className="w-full"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
         <div className="flex gap-2">
           <button
             onClick={handleAccountClick}
@@ -300,6 +310,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
               <ChatListScreen
                 onSelectConversation={handleConversationClick}
                 onViewArchived={handleArchiveClick}
+                searchQuery={searchQuery}
               />
             )}
             {whatsAppView?.view === "chat" &&
@@ -320,6 +331,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
                 onBack={handleGoBack}
                 onSelectContact={handleConversationClick}
                 onUnarchive={handleUnarchiveContact}
+                searchQuery={searchQuery}
               />
             )}
             {whatsAppView?.view === "contact" &&

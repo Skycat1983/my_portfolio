@@ -3,25 +3,24 @@ import { useNewStore } from "@/hooks/useStore";
 import { MacWindowControls } from "../controls/MacWindowControls";
 import { WindowsWindowControls } from "../controls/WindowsWindowControls";
 import { MobileWindowControls } from "../controls/MobileWindowControls";
-import type { WindowType } from "@/types/storeTypes";
+import type { WindowId } from "@/constants/applicationRegistry";
 
-export const WindowControls = ({
-  windowId,
-}: {
-  windowId: WindowType["windowId"];
-}) => {
+export const WindowControls = ({ windowId }: { windowId: WindowId }) => {
   const operatingSystem = useNewStore((state) => state.operatingSystem);
   const screenDimensions = useNewStore((state) => state.screenDimensions);
   const closeWindow = useNewStore((state) => state.closeWindow);
   // const minimizeWindow = useNewStore((state) => state.minimizeWindow);
-  const updateWindowById = useNewStore((state) => state.updateWindowById);
-  const window = useNewStore((state) => state.getWindowById(windowId));
+  const updateWindow = useNewStore((state) => state.updateWindow);
+  const window = useNewStore((state) =>
+    state.findWindow((w) => w.windowId === windowId)
+  );
 
+  console.log("WindowControls: window", window);
   const toggleMaximizeWindow = () => {
     if (window?.isMaximized) {
-      updateWindowById(windowId, { isMaximized: false });
+      updateWindow(windowId, { isMaximized: false });
     } else {
-      updateWindowById(windowId, { isMaximized: true });
+      updateWindow(windowId, { isMaximized: true });
     }
   };
 

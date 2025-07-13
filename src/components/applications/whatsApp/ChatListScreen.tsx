@@ -8,6 +8,7 @@ import { selectActiveConversationPreviews } from "./selectors/conversationSelect
 interface ChatListScreenProps {
   onSelectConversation: (conversationId: string) => void;
   onViewArchived: () => void;
+  searchQuery: string;
 }
 
 export const ChatListScreen: React.FC<ChatListScreenProps> = ({

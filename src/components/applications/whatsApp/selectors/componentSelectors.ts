@@ -107,3 +107,21 @@ export const selectIsTyping = (
   state: WhatsAppState,
   conversationId: ConversationId
 ): boolean => !!state.ui.typing[conversationId];
+
+// export const searchConversationByQuery = (state)
+
+// * NEW
+export const selectChatlistPreviews = (
+  state: WhatsAppState,
+  archived: boolean,
+  searchQuery: string
+) => {
+  const conversations = archived
+    ? selectArchivedConversations(state)
+    : selectActiveConversations(state);
+
+  console.log(
+    "WhatsAppPreviews: selectChatlistPreviews conversations",
+    conversations
+  );
+};

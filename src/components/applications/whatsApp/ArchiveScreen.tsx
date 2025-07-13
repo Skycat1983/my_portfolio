@@ -8,6 +8,7 @@ interface ArchiveScreenProps {
   onBack: () => void;
   onSelectContact: (contactId: ContactId) => void;
   onUnarchive: (contactId: ContactId) => void;
+  searchQuery: string;
 }
 
 export const ArchiveScreen: React.FC<ArchiveScreenProps> = ({
