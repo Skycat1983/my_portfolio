@@ -10,7 +10,7 @@ export const CaptchaHeader = ({ task, text }: CaptchaHeaderProps) => {
     <div
       className="
         bg-blue-500
-        w-full
+        w-auto
         h-48            /* 12rem tall */
         flex
         justify-start /* left align horizontally */

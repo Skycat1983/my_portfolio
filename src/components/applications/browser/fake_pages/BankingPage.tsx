@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { CaptchaMain } from "./captcha/CaptchaMain";
 
 type BankingVariant = "modern" | "corporate" | "dark" | "colorful" | "classic";
 
@@ -251,6 +252,9 @@ const BankingPage: React.FC = () => {
             </button>
           ))}
         </div>
+      </div>
+      <div className="absolute h-full w-full flex flex-col justify-center items-center bg-blue-100/10">
+        <CaptchaMain />
       </div>
 
       {/* Current Variant Display */}

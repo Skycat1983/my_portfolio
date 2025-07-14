@@ -31,7 +31,7 @@ export const CaptchaMain = () => {
   const [gridClassName, setGridClassName] = useState(
     "grid grid-cols-3 grid-rows-4 w-full h-full"
   );
-  const [currentIndex, setCurrentIndex] = useState(2);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<number[]>([]);
   const [verifyState, setVerifyState] = useState<VerifyState>("idle");
 
@@ -104,10 +104,9 @@ export const CaptchaMain = () => {
   const gridMoveIndex = 1;
   const divsToRender =
     currentIndex === gridMoveIndex && selected.length === 0 ? 15 : 12;
-
   return (
     <div
-      className={`absolute w-[${width}] h-full flex flex-col justify-center items-center bg-red-100`}
+      className={`absolute w-auto h-auto flex flex-col justify-center items-center bg-red-100`}
     >
       <CaptchaHeader
         task={currentCaptcha.task}
@@ -129,3 +128,27 @@ export const CaptchaMain = () => {
     </div>
   );
 };
+//   return (
+//     <div
+//       className={`absolute w-full h-full flex flex-col justify-center items-center bg-red-100`}
+//     >
+//       <CaptchaHeader
+//         task={currentCaptcha.task}
+//         text={currentCaptcha.text}
+//         width={width}
+//       />
+//       <CaptchaComponent
+//         data={currentCaptcha}
+//         selected={selected}
+//         onToggleSquare={toggleSquare}
+//         onVerify={handleVerify}
+//         gridClassName={gridClassName}
+//         onGridClassChange={handleGridClassChange}
+//         divsToRender={divsToRender}
+//         verifyState={verifyState}
+//         currentIndex={currentIndex}
+//         totalCaptchas={captchaData.length}
+//       />
+//     </div>
+//   );
+// };
