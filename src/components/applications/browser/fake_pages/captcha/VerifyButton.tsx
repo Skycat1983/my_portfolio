@@ -1,6 +1,6 @@
-import { Button } from "../ui/button";
+import { Button } from "../../../../ui/button";
 import { Check, X } from "lucide-react";
-import LoadingSpinner from "../atoms/LoadingSpinner";
+import LoadingSpinner from "../../../../atoms/LoadingSpinner";
 import type { VerifyState } from "./types";
 
 interface VerifyButtonProps {

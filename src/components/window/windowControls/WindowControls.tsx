@@ -1,28 +1,22 @@
 import { useNewStore } from "@/hooks/useStore";
 
-import { MacWindowControls } from "../controls/MacWindowControls";
-import { WindowsWindowControls } from "../controls/WindowsWindowControls";
-import { MobileWindowControls } from "../controls/MobileWindowControls";
+import { MacWindowControls } from "./MacWindowControls";
+import { WindowsWindowControls } from "./WindowsWindowControls";
+import { MobileWindowControls } from "./MobileWindowControls";
 import type { WindowId } from "@/constants/applicationRegistry";
 
 export const WindowControls = ({ windowId }: { windowId: WindowId }) => {
   const operatingSystem = useNewStore((state) => state.operatingSystem);
   const screenDimensions = useNewStore((state) => state.screenDimensions);
   const closeWindow = useNewStore((state) => state.closeWindow);
-  // const minimizeWindow = useNewStore((state) => state.minimizeWindow);
-  const updateWindow = useNewStore((state) => state.updateWindow);
+  const toggleMaximizeWindow = useNewStore(
+    (state) => state.toggleMaximizeWindow
+  );
   const window = useNewStore((state) =>
     state.findWindow((w) => w.windowId === windowId)
   );
 
   console.log("WindowControls: window", window);
-  const toggleMaximizeWindow = () => {
-    if (window?.isMaximized) {
-      updateWindow(windowId, { isMaximized: false });
-    } else {
-      updateWindow(windowId, { isMaximized: true });
-    }
-  };
 
   // On mobile, always use mobile controls regardless of OS
   if (screenDimensions.isMobile) {
@@ -36,7 +30,7 @@ export const WindowControls = ({ windowId }: { windowId: WindowId }) => {
         isMaximized={window?.isMaximized}
         onClose={() => closeWindow(windowId)}
         // onMinimize={() => minimizeWindow(windowId)}
-        onMaximize={() => toggleMaximizeWindow()}
+        onMaximize={() => toggleMaximizeWindow(windowId)}
         isFixed={window?.fixed}
       />
     );
@@ -46,7 +40,7 @@ export const WindowControls = ({ windowId }: { windowId: WindowId }) => {
         isMaximized={window?.isMaximized}
         onClose={() => closeWindow(windowId)}
         // onMinimize={() => minimizeWindow(windowId)}
-        onMaximize={() => toggleMaximizeWindow()}
+        onMaximize={() => toggleMaximizeWindow(windowId)}
         isFixed={window?.fixed}
       />
     );

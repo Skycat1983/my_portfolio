@@ -2,7 +2,7 @@ import React from "react";
 import { useNewStore } from "@/hooks/useStore";
 
 import { useWindowDrag } from "./hooks";
-import { WindowControls } from "./WindowControls";
+import { WindowControls } from "./windowControls/WindowControls";
 import theme from "@/styles/theme";
 import type { Window } from "./windowTypes";
 

@@ -14,6 +14,7 @@ import { useStaggeredMessageDelivery } from "../components/applications/whatsApp
 import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
 import { DesktopLayout } from "@/pages/DesktopLayout";
 import { BrowserContent } from "@/components/applications/browser/BrowserMain";
+import { CaptchaPage } from "@/components/applications/browser/fake_pages/CaptchaPage";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -64,24 +65,20 @@ export const AppLayout = () => {
       }}
     >
       <MenubarLayout />
-      {/* <BrowserContent windowId={"browser"} nodeId={"browser"} /> */}
 
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
       <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
         {/* WIDGETS */}
         <Widgets />
+        {/* <div className="flex-1 min-h-0 w-full">
+          <CaptchaPage />
+        </div> */}
 
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
           <NodeDropZoneWrapper nodeId={desktopRootId} shrinkToFit={false}>
-            {/* <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} /> */}
-            <DesktopLayout
-              nodes={nodes}
-              // windowId={desktopRootId}
-              // desktopId={desktopRootId}
-            />
+            <DesktopLayout nodes={nodes} />
           </NodeDropZoneWrapper>
-          {/* <DirectoryContent windowId={desktopRootId} nodeId={desktopRootId} /> */}
           {/* <ListView nodes={nodes} /> */}
         </div>
 

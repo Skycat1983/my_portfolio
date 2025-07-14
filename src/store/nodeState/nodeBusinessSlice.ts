@@ -236,6 +236,7 @@ export const createNodeBusinessSlice = (
       macExtension: null,
       windowsExtension: null,
       dateModified: new Date().toISOString(),
+      applicationRegistryId: "finder",
       size: 0,
     };
 

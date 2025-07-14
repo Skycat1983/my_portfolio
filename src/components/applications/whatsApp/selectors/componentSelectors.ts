@@ -4,25 +4,6 @@ import type { ConversationId } from "../types";
 import { sortConversationPreviewsByTime } from "./conversationSelectors";
 import { selectMessagesByConversation } from "./messageSelectors";
 
-// Get all data needed for conversation header
-export const selectConversationHeader = (
-  state: WhatsAppState,
-  conversationId: ConversationId
-) => {
-  const participant = selectConversationParticipant(state, conversationId);
-  // const lastSeenTimestamp = selectLastSeenTimestamp(state);
-
-  if (!participant) return null;
-
-  return {
-    id: conversationId,
-    name: participant.name,
-    avatar: participant.avatar,
-    phoneNumber: participant.phoneNumber,
-    isTyping: selectIsTyping(state, conversationId),
-  };
-};
-
 // * in use
 export const selectActiveConversations = (
   state: WhatsAppState

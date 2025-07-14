@@ -65,6 +65,8 @@ interface WindowActions {
     windowId: Window["windowId"],
     bounds: { x: number; y: number; width: number; height: number }
   ) => boolean;
+
+  toggleMaximizeWindow: (windowId: Window["windowId"]) => boolean;
 }
 
 export type WindowSlice = WindowState & WindowActions;
@@ -514,6 +516,21 @@ export const createWindowSlice = (
         (window: Window) => window.windowId === windowId,
         bounds
       );
+    },
+
+    toggleMaximizeWindow: (windowId: Window["windowId"]): boolean => {
+      console.log("maximizeWindow: maximizing window", windowId);
+
+      const predicate = (window: Window) => window.windowId === windowId;
+      const window = slice.findWindow(predicate);
+
+      if (!window) {
+        console.log("toggleMaximizeWindow: no window found with ID", windowId);
+        return false;
+      }
+      return slice.updateWindow(predicate, {
+        isMaximized: !window.isMaximized,
+      });
     },
   };
 

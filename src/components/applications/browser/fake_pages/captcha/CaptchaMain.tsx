@@ -31,7 +31,7 @@ export const CaptchaMain = () => {
   const [gridClassName, setGridClassName] = useState(
     "grid grid-cols-3 grid-rows-4 w-full h-full"
   );
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(2);
   const [selected, setSelected] = useState<number[]>([]);
   const [verifyState, setVerifyState] = useState<VerifyState>("idle");
 
@@ -107,7 +107,7 @@ export const CaptchaMain = () => {
 
   return (
     <div
-      className={`w-[${width}] h-full flex flex-col justify-center items-center`}
+      className={`w-[${width}] h-full flex flex-col justify-center items-center bg-red-100`}
     >
       <CaptchaHeader
         task={currentCaptcha.task}

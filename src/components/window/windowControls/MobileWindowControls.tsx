@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import theme from "@/styles/theme";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useNewStore } from "@/hooks/useStore";
 
 interface MobileWindowControlsProps {

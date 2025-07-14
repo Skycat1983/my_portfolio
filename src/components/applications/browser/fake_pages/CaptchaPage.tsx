@@ -1,4 +1,4 @@
-import { CaptchaMain } from "@/components/captcha/CaptchaMain";
+import { CaptchaMain } from "@/components/applications/browser/fake_pages/captcha/CaptchaMain";
 
 export const CaptchaPage = () => {
   return (

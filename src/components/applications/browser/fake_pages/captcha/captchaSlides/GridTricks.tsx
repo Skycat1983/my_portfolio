@@ -116,7 +116,7 @@ export const GridTricks = ({
   return (
     <>
       <div
-        className={`w-full h-full bg-cover bg-center bg-no-repeat relative`}
+        className={`w-full h-full bg-contain bg-center bg-no-repeat relative`}
         style={{ backgroundImage: `url(${data.src})` }}
       >
         <div className={newGridClassName || gridClassName}>

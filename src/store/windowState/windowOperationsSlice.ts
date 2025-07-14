@@ -55,7 +55,7 @@ export interface WindowOperationsActions {
   closeWindow2: (windowId: WindowType["windowId"]) => void;
   bringWindowToFront: (windowId: WindowType["windowId"]) => void;
   minimizeWindow: (windowId: WindowType["windowId"]) => boolean;
-  maximizeWindow: (windowId: WindowType["windowId"]) => boolean;
+  maximizeWindow2: (windowId: WindowType["windowId"]) => boolean;
   // toggleMaximizeWindow: (windowId: WindowType["windowId"]) => boolean;
 
   //   ! WINDOW FRAME OPERATIONS
@@ -333,7 +333,7 @@ export const createWindowOperationsSlice = (
    * Maximize a window
    */
   // TODO
-  maximizeWindow: (windowId: WindowType["windowId"]): boolean => {
+  maximizeWindow2: (windowId: WindowType["windowId"]): boolean => {
     console.log("maximizeWindow: maximizing window", windowId);
 
     return get().updateOneWindow(
