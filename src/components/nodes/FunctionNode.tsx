@@ -16,25 +16,20 @@ import { getNodeFunction } from "@/components/window/WindowComponentRegistry";
 type Props = { node: FunctionEntry; view: "icons" | "list" | "columns" };
 
 export const FunctionNode = ({ node, view }: Props) => {
-  const { id, functionKey } = node;
+  const { functionKey } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   // ─────────── node-specific store actions ───────────
-
-  const getWindowByNodeId = useNewStore((s) => s.getWindowByNodeId);
-  const focusWindow = useNewStore((s) => s.focusWindow);
 
   const nodeFunction = getNodeFunction(functionKey);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    const windowAlreadyOpen = getWindowByNodeId(id);
-
-    if (windowAlreadyOpen) {
-      focusWindow(windowAlreadyOpen.windowId);
-      return;
-    }
+    // if (windowAlreadyOpen) {
+    //   focusWindow(windowAlreadyOpen.windowId);
+    //   return;
+    // }
     nodeFunction();
-  }, [id, nodeFunction, getWindowByNodeId, focusWindow]);
+  }, [nodeFunction]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({

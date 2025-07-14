@@ -81,6 +81,7 @@ const initialWhatsAppState: WhatsAppState = {
     lastSeenTimestamp: Date.now(),
   },
   isInitialized: false,
+  callHistory: [],
 };
 
 // Combined store type with all slices
@@ -137,4 +138,5 @@ export const useNewStore = create<Store>((set, get) => ({
   // Required state properties
   weather: createWeatherSlice(set),
   whatsApp: initialWhatsAppState,
+  currentContext: "desktop",
 }));

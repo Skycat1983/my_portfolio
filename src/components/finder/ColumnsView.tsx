@@ -3,12 +3,13 @@ import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import { useEffect, useRef, useMemo } from "react";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 export const ColumnsView = ({
   windowId,
   view,
 }: {
-  windowId: string;
+  windowId: WindowId;
   view: "icons" | "list" | "columns";
 }) => {
   const selectedNodeId = useNewStore((s) => s.selectedNodeId);

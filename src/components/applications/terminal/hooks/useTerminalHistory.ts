@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNewStore } from "@/hooks/useStore";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface UseTerminalHistoryReturn {
   // Navigation methods
@@ -24,9 +25,9 @@ interface UseTerminalHistoryReturn {
  * Coordinates between the generic history slice and terminal-specific navigation behavior
  */
 export const useTerminalHistory = (
-  windowId: string
+  windowId: WindowId
 ): UseTerminalHistoryReturn => {
-  const historyId = `terminal-${windowId}`;
+  const historyId = windowId;
 
   // History slice actions
   const createHistory = useNewStore((state) => state.createHistory);

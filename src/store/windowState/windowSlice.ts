@@ -8,6 +8,7 @@ import {
   generateWindowId,
   getApplicationConfig,
   requiresHistory,
+  type WindowId,
 } from "@/constants/applicationRegistry";
 import type { DocumentEntry } from "@/components/nodes/nodeTypes";
 
@@ -56,9 +57,9 @@ interface WindowActions {
   // ═══════════════════════════════════════════════════════════════════════════════
 
   openWindow: (node: WindowableNode) => string | null; // Returns windowId or null if failed
-  focusWindow: (windowId: Window["windowId"]) => boolean; // Returns true if window was found and focused
-  closeWindow: (windowId: Window["windowId"]) => boolean; // Returns true if window was found and closed
-  moveWindow: (windowId: Window["windowId"], x: number, y: number) => boolean; // Returns true if window was found and moved
+  focusWindow: (windowId: WindowId) => boolean; // Returns true if window was found and focused
+  closeWindow: (windowId: WindowId) => boolean; // Returns true if window was found and closed
+  moveWindow: (windowId: WindowId, x: number, y: number) => boolean; // Returns true if window was found and moved
   resizeWindow: (
     windowId: Window["windowId"],
     width: number,

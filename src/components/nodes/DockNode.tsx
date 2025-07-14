@@ -11,11 +11,8 @@ import {
   getTitleBase,
 } from "./node.styles";
 import { BIN_EMPTY, BIN_FULL, FINDER } from "@/constants/images";
-import type { WindowId } from "@/constants/applicationRegistry";
 import type { DockRootId } from "@/constants/nodeHierarchy";
 import { getNodeFunction } from "../window/WindowComponentRegistry";
-
-type LayoutType = "desktop" | "window" | "dock";
 
 type Props = {
   nodeEntry: NodeEntry;
@@ -27,7 +24,7 @@ type Props = {
 export const DockNode = ({
   nodeEntry,
   //   layout = "window",
-  windowId,
+  //   windowId,
   view,
 }: Props) => {
   // ─────────── node-specific store actions ───────────

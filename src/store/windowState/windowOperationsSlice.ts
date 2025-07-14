@@ -53,7 +53,6 @@ export interface WindowOperationsActions {
     applicationNode: ApplicationEntry,
     documentConfig: DocumentConfig
   ) => void;
-  closeWindow2: (windowId: WindowType["windowId"]) => void;
   bringWindowToFront: (windowId: WindowType["windowId"]) => void;
   minimizeWindow: (windowId: WindowType["windowId"]) => boolean;
   maximizeWindow2: (windowId: WindowType["windowId"]) => boolean;
@@ -253,49 +252,6 @@ export const createWindowOperationsSlice = (
   },
 
   /**
-   * Close a window and clean up associated history
-   */
-  closeWindow2: (windowId: WindowType["windowId"]): void => {
-    console.log("closeWindow: closing window", windowId);
-
-    const state = get();
-
-    // Clean up finder history for this window if it exists
-    const finderHistoryId = `finder-${windowId}`;
-    if (state.historyExists(finderHistoryId)) {
-      console.log("closeWindow: cleaning up finder history", finderHistoryId);
-      state.deleteHistory(finderHistoryId);
-    }
-
-    const browserHistoryId = `browser-${windowId}`;
-    if (state.historyExists(browserHistoryId)) {
-      console.log("closeWindow: cleaning up browser history", browserHistoryId);
-      state.deleteHistory(browserHistoryId);
-    }
-
-    const terminalHistoryId = `terminal-${windowId}`;
-    if (state.historyExists(terminalHistoryId)) {
-      console.log(
-        "closeWindow: cleaning up terminal history",
-        terminalHistoryId
-      );
-      state.deleteHistory(terminalHistoryId);
-    }
-
-    const whatsAppHistoryId = `whatsapp-${windowId}`;
-    if (state.historyExists(whatsAppHistoryId)) {
-      console.log(
-        "closeWindow: cleaning up whatsapp history",
-        whatsAppHistoryId
-      );
-      state.deleteHistory(whatsAppHistoryId);
-    }
-
-    // Finally, delete the window itself
-    state.deleteOneWindow((window: WindowType) => window.windowId === windowId);
-  },
-
-  /**
    * Focus a window by bringing it to the front (update zIndex)
    */
   bringWindowToFront: (windowId: WindowType["windowId"]): boolean => {
@@ -411,7 +367,9 @@ export const createWindowOperationsSlice = (
    * Check if a window is open for a specific node
    */
   isNodeIdWindowOpen: (nodeId: string): boolean => {
-    return get().windowExists((window: WindowType) => window.nodeId === nodeId);
+    return get().windowExists2(
+      (window: WindowType) => window.nodeId === nodeId
+    );
   },
 
   /**
@@ -432,7 +390,7 @@ export const createWindowOperationsSlice = (
   /**
    * Update a window by its ID (builds on updateOneWindow)
    */
-  updateWindowById: (
+  updateWindowById2: (
     windowId: WindowType["windowId"],
     updates: Partial<WindowType>
   ): boolean => {
