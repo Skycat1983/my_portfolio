@@ -3,6 +3,7 @@ import type {
   Conversation,
   Message,
   DeliveryStatus,
+  Contact,
 } from "../components/applications/whatsApp/types";
 import {
   BILLGATES,
@@ -18,7 +19,7 @@ import {
 
 // === TYPE-SAFE FOUNDATION ===
 
-const USER_CONTACT = {
+export const USER_CONTACT = {
   id: "user_self",
   type: "user" as const,
   name: "Me",
@@ -26,7 +27,7 @@ const USER_CONTACT = {
   phoneNumber: "+49 (0)157704564698",
 } as const;
 
-const AI_CONTACTS = [
+export const AI_CONTACTS = [
   {
     id: "ai_emily",
     type: "ai" as const,
@@ -126,6 +127,66 @@ interface ConversationMessage {
 interface ConversationDefinition {
   messages: ConversationMessage[];
 }
+
+export interface CallHistoryItem {
+  id: string;
+  timestamp: string;
+  avatar: string;
+  duration: number;
+  caller: Contact;
+  receiver: Contact;
+}
+
+export const CALL_HISTORY: CallHistoryItem[] = [
+  {
+    id: "1",
+    timestamp: "2021-01-01",
+    duration: 100,
+    avatar: AI_CONTACTS[0].avatar,
+    caller: AI_CONTACTS[0],
+    receiver: USER_CONTACT,
+  },
+  {
+    id: "2",
+    timestamp: "2021-01-02",
+    duration: 100,
+    avatar: AI_CONTACTS[1].avatar,
+    caller: AI_CONTACTS[1],
+    receiver: USER_CONTACT,
+  },
+  {
+    id: "3",
+    timestamp: "2021-01-03",
+    duration: 100,
+    avatar: AI_CONTACTS[2].avatar,
+    caller: AI_CONTACTS[2],
+    receiver: USER_CONTACT,
+  },
+  {
+    id: "4",
+    timestamp: "2021-01-04",
+    duration: 0,
+    avatar: AI_CONTACTS[3].avatar,
+    caller: AI_CONTACTS[3],
+    receiver: USER_CONTACT,
+  },
+  {
+    id: "5",
+    timestamp: "2021-01-04",
+    duration: 0,
+    avatar: AI_CONTACTS[3].avatar,
+    caller: AI_CONTACTS[3],
+    receiver: USER_CONTACT,
+  },
+  {
+    id: "6",
+    timestamp: "2021-01-05",
+    duration: 100,
+    avatar: AI_CONTACTS[4].avatar,
+    caller: AI_CONTACTS[4],
+    receiver: USER_CONTACT,
+  },
+];
 
 // === TIMESTAMP HELPER ===
 
@@ -421,5 +482,6 @@ export const createInitialState = (): WhatsAppState => {
       lastSeenTimestamp: Date.now(),
     },
     isInitialized: true,
+    callHistory: CALL_HISTORY,
   };
 };

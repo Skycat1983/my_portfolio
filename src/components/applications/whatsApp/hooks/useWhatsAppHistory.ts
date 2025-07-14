@@ -55,6 +55,9 @@ export const useWhatsAppHistory = (
   const getCurrentItem = useNewStore((state) => state.getCurrentItem);
   const getHistoryLength = useNewStore((state) => state.getHistoryLength);
   const deleteHistory = useNewStore((state) => state.deleteHistory);
+  const findWindow = useNewStore((state) => state.findWindow);
+  const window = findWindow((w) => w.windowId === windowId);
+  console.log("WhatsApp: useWhatsAppHistory window", window);
 
   // WhatsApp actions
   // const setView = useNewStore((state) => state.setView);
@@ -73,8 +76,12 @@ export const useWhatsAppHistory = (
         "useWhatsAppHistory: initializing history for window",
         windowId
       );
-      // Initialize with chatList view
-      const initialView = { view: "chatList" as const };
+      const window = findWindow((w) => w.windowId === windowId);
+      // console.log("WhatsApp: useWhatsAppHistory window", window);
+      const initialView =
+        window?.nodeId === "phone"
+          ? { view: "recentCalls" as const }
+          : { view: "chatList" as const };
       createHistory(historyId, initialView);
       console.log(
         "WhatsApp: useWhatsAppHistory useEffect, historyExists2",
@@ -89,7 +96,14 @@ export const useWhatsAppHistory = (
         currentViewItem
       );
     }
-  }, [historyId, historyExists, createHistory, windowId, getCurrentItem]);
+  }, [
+    historyId,
+    historyExists,
+    createHistory,
+    windowId,
+    getCurrentItem,
+    findWindow,
+  ]);
 
   const historyLength = getHistoryLength(historyId);
   const canGoBack = canGoBackInHistory(historyId);

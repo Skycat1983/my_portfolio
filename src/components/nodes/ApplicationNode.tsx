@@ -36,7 +36,8 @@ export const ApplicationNode = ({ node, view }: Props) => {
     parentId: node.parentId,
   });
 
-  const showLabel = node.parentId !== "dock-root";
+  const showLabel =
+    node.parentId !== "dock-root" && node.parentId !== "mobile-dock-root";
   const image =
     operatingSystem === "mac"
       ? node.image

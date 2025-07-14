@@ -14,11 +14,11 @@ import { FunctionNode } from "./FunctionNode";
 import { DocumentNode } from "./DocumentNode";
 import type { WindowId } from "@/constants/applicationRegistry";
 import { DirectoryNode } from "./DirectoryNode";
-import type { DesktopRootId, DockRootId } from "@/constants/nodeHierarchy";
+import type { RootDirectoryId } from "@/constants/nodeHierarchy";
 
 type NodeSwitchProps = {
   node: NodeEntry;
-  windowId: WindowId | DesktopRootId | DockRootId;
+  windowId: WindowId | RootDirectoryId;
   view: "icons" | "list" | "columns";
 };
 

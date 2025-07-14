@@ -15,6 +15,7 @@ import type { HistoryInstance } from "@/store/contentState/historySlice";
 import type { WeatherSlice } from "@/store/systemState/weatherSlice";
 import type { Window } from "@/components/window/windowTypes";
 import type { DocumentConfig } from "@/constants/documentRegistry";
+import type { DeviceContext } from "@/store/nodeState/nodeCrudSlice";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // LEGACY TYPES (Maintain for backward compatibility)
@@ -165,6 +166,9 @@ interface SystemState {
 // Node management state
 interface NodeState {
   nodeMap: NodeMap;
+  desktopNodeMap: NodeMap;
+  mobileNodeMap: NodeMap;
+  currentContext: DeviceContext;
   rootId: string;
   selectedNodeId: string | null;
   selectedNodeIds: string[];

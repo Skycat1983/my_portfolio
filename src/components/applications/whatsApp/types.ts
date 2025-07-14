@@ -73,7 +73,12 @@ export type NormalizedCollection<T extends { id: string }> = {
 export type ConversationParticipants = [ContactId, ContactId];
 
 // Type helper for UI views
-export type WhatsAppView = "chatList" | "chat" | "archive" | "contact";
+export type WhatsAppView =
+  | "chatList"
+  | "chat"
+  | "archive"
+  | "contact"
+  | "recentCalls";
 // | "phoneCall";
 
 export interface WhatsAppMessage extends Message {

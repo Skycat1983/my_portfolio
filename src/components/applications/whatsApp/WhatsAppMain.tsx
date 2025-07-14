@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { WindowId } from "@/constants/applicationRegistry";
 import { Input } from "@/components/ui/input";
 import { ChatList } from "./ChatList";
+import { RecentCalls } from "./RecentCalls";
 
 interface WhatsAppMainProps {
   windowId: WindowId;
@@ -297,16 +298,18 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
             ? "Archive"
             : whatsAppView?.view === "contact"
             ? "Contact"
-            : "WhatsApp"}
+            : "Recent Calls"}
         </h2>
-        <div className="w-full px-8">
-          <Input
-            placeholder={getSearchPlaceholder()}
-            className="w-full"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        {whatsAppView?.view !== "recentCalls" && (
+          <div className="w-full px-8">
+            <Input
+              placeholder={getSearchPlaceholder()}
+              className="w-full"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        )}
         <div className="flex gap-2">
           <button
             onClick={handleAccountClick}
@@ -369,6 +372,9 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
                   onViewProfile={handleViewProfile}
                 />
               )}
+            {whatsAppView?.view === "recentCalls" && !isPhoneCall && (
+              <RecentCalls />
+            )}
             {isPhoneCall && (
               <PhoneCallScreen
                 avatar={isPhoneCall.avatar}

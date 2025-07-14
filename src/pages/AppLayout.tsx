@@ -9,7 +9,7 @@ import { useScreenMonitor } from "../hooks/useScreenSize";
 import Dock from "../components/dock/Dock";
 import { MenubarLayout } from "../components/menubar/MenubarLayout";
 import { Widgets } from "../components/widgets/WidgetsLayout";
-import { desktopRootId } from "../constants/nodeHierarchy";
+// Context-aware root IDs are now obtained from store methods
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
 import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
 import { DesktopLayout } from "@/pages/DesktopLayout";
@@ -26,7 +26,12 @@ export const AppLayout = () => {
   const histories = useNewStore((s) => s.histories);
   const windows = useNewStore((s) => s.windows);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
-  const nodes = getChildrenByParentID(desktopRootId);
+  const getCurrentRootId = useNewStore((s) => s.getCurrentRootId);
+  const updateLegacyFields = useNewStore((s) => s.updateLegacyFields);
+  const deleteWindows = useNewStore((s) => s.deleteWindows);
+
+  const currentDesktopRootId = getCurrentRootId("main");
+  const nodes = getChildrenByParentID(currentDesktopRootId);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
   // Handle staggered message delivery when wifi comes back online
@@ -40,12 +45,31 @@ export const AppLayout = () => {
   const screenInfo = useScreenMonitor();
   const { isMobile } = screenInfo;
 
+  // Handle context switching when screen size changes
+  useEffect(() => {
+    console.log("AppLayout: isMobile changed to", isMobile);
+
+    // Update node legacy fields for new context
+    updateLegacyFields();
+
+    // Close finder windows since hierarchy changed
+    const deletedWindows = deleteWindows(
+      (window) => window.applicationRegistryId === "finder"
+    );
+
+    console.log(
+      "AppLayout: closed",
+      deletedWindows,
+      "finder windows due to context switch"
+    );
+  }, [isMobile, updateLegacyFields, deleteWindows]);
+
   useEffect(() => {
     const browserNode = getNodeByID("browser-desktop");
     if (browserNode && browserNode.type === "application") {
       console.log("AppLayout.tsx: useEffect");
 
-      openWindow(browserNode);
+      // openWindow(browserNode);
     }
   }, [openWindow, getNodeByID]);
 
@@ -87,7 +111,10 @@ export const AppLayout = () => {
 
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
-          <NodeDropZoneWrapper nodeId={desktopRootId} shrinkToFit={false}>
+          <NodeDropZoneWrapper
+            nodeId={currentDesktopRootId}
+            shrinkToFit={false}
+          >
             <DesktopLayout nodes={nodes} />
           </NodeDropZoneWrapper>
           {/* <ListView nodes={nodes} /> */}

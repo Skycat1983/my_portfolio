@@ -15,6 +15,7 @@ import {
   isAIContact,
   isUserContact,
 } from "@/components/applications/whatsApp/types";
+import { CALL_HISTORY, type CallHistoryItem } from "@/constants/whatsAppData";
 
 export interface WhatsAppState {
   contacts: NormalizedCollection<Contact> & {
@@ -31,6 +32,7 @@ export interface WhatsAppState {
     lastSeenTimestamp: number; // Track when user was last seen online
   };
   isInitialized: boolean;
+  callHistory: CallHistoryItem[];
 }
 
 export interface WhatsAppActions {
@@ -110,6 +112,7 @@ const initialState: WhatsAppState = {
     lastSeenTimestamp: Date.now(),
   },
   isInitialized: false,
+  callHistory: CALL_HISTORY,
 };
 
 export const createWhatsAppSlice = (

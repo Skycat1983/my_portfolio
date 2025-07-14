@@ -1,12 +1,7 @@
 import React from "react";
 import { useNewStore } from "@/hooks/useStore";
-// import type { LinkEntry } from "@/types/nodeTypes";
-// import type { WindowedNode } from "@/store/windowState/windowOperationsSlice";
-// import { SAFARI, EDGE } from "@/constants/images";
-// import { Mail, Phone } from "lucide-react";
-// import { DockItem } from "./DockItem";
 
-import { dockRootId } from "@/constants/nodeHierarchy";
+// Context-aware dock root ID is now obtained from store methods
 import { NodeSwitch } from "../nodes/NodeSwitch";
 
 export interface DockItemData {
@@ -23,12 +18,14 @@ const Dock: React.FC = () => {
   const getChildrenByParentID = useNewStore(
     (state) => state.getChildrenByParentID
   );
+  const getCurrentRootId = useNewStore((state) => state.getCurrentRootId);
 
   if (operatingSystem === "windows") {
     return null;
   }
 
-  const dockNodes = getChildrenByParentID(dockRootId);
+  const currentDockRootId = getCurrentRootId("dock");
+  const dockNodes = getChildrenByParentID(currentDockRootId);
 
   console.log("dockNodes", dockNodes);
 
@@ -38,7 +35,7 @@ const Dock: React.FC = () => {
     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
       {/* Dock Background */}
       <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl p-3">
-        <div className="hidden sm:flex items-center space-x-2">
+        <div className="flex items-center space-x-2">
           {dockNodes.map((item) => (
             <div
               key={item.id}
@@ -46,11 +43,9 @@ const Dock: React.FC = () => {
             >
               <NodeSwitch
                 node={item}
-                // layout="dock"
-                windowId={dockRootId}
+                windowId={currentDockRootId}
                 view="icons"
               />
-              {/* <DockItem key={item.id} item={item} onItemClick={handleItemClick} /> */}
             </div>
           ))}
         </div>

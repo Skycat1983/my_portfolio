@@ -16,13 +16,14 @@ import type { WindowId } from "@/constants/applicationRegistry";
 import {
   desktopRootId,
   dockRootId,
-  type DesktopRootId,
-  type DockRootId,
+  mobileDockRootId,
+  mobileRootId,
+  type RootDirectoryId,
 } from "@/constants/nodeHierarchy";
 
 type Props = {
   nodeEntry: DirectoryEntry;
-  windowId: WindowId | DesktopRootId | DockRootId;
+  windowId: WindowId | RootDirectoryId;
   view: "icons" | "list" | "columns";
 };
 
@@ -42,7 +43,11 @@ export const DirectoryNode = ({ nodeEntry, windowId, view }: Props) => {
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
-    const isRealWindow = windowId !== desktopRootId && windowId !== dockRootId;
+    const isRealWindow =
+      windowId !== desktopRootId &&
+      windowId !== dockRootId &&
+      windowId !== mobileRootId &&
+      windowId !== mobileDockRootId;
     if (isRealWindow) {
       addToHistory(windowId, nodeEntry.id);
       updateWindow((w) => w.windowId === windowId, { nodeId: nodeEntry.id });

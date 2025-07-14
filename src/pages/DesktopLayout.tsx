@@ -20,13 +20,20 @@ DirectoryLayoutProps) => {
     <>
       {/* Mobile/Tablet: Use CSS Grid for better centering control */}
       <div className="block lg:hidden">
-        <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
+        <div className="grid grid-cols-[repeat(auto-fit,_minmax(50px,_1fr))] justify-items-center gap-x-6 gap-y-12 w-full md:justify-items-start">
+          {nodes.map((node) => (
+            <div key={node.id} className="w-18 rounded-xl md:w-24">
+              <NodeSwitch node={node} windowId={windowId} view="icons" />
+            </div>
+          ))}
+        </div>
+        {/* <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
           {nodes.map((node) => (
             <div key={node.id} className="w-20 md:w-24">
               <NodeSwitch node={node} windowId={windowId} view="icons" />
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Desktop: Use the working logic from commented code */}

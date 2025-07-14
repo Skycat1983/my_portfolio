@@ -18,6 +18,8 @@ import {
   MAIL,
   PAGES,
   WORD,
+  PORTFOLIO,
+  PHONE,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -64,10 +66,7 @@ export const rootNodes: DirectoryObject = {
           id: "whatsapp-desktop",
           location: "desktop",
         }),
-        createNodeFromTemplate("calculatorApp", {
-          id: "calculator-desktop",
-          location: "desktop",
-        }),
+
         createNodeFromTemplate("browserApp", {
           id: "browser-desktop",
           location: "desktop",
@@ -510,18 +509,18 @@ export const mobileNodes: DirectoryObject = {
       applicationRegistryId: "finder",
       size: null,
       children: [
-        createNodeFromTemplate("whatsAppApp", {
-          id: "whatsapp-desktop",
-          location: "desktop",
-        }),
+        // createNodeFromTemplate("whatsAppApp", {
+        //   id: "whatsapp-desktop",
+        //   location: "desktop",
+        // }),
         createNodeFromTemplate("calculatorApp", {
           id: "calculator-desktop",
           location: "desktop",
         }),
-        createNodeFromTemplate("browserApp", {
-          id: "browser-desktop",
-          location: "desktop",
-        }),
+        // createNodeFromTemplate("browserApp", {
+        //   id: "browser-desktop",
+        //   location: "desktop",
+        // }),
         createNodeFromTemplate("terminalApp", {
           id: "terminal",
         }),
@@ -554,8 +553,8 @@ export const mobileNodes: DirectoryObject = {
           id: "portfolio",
           label: "Portfolio",
           type: "directory",
-          image: FOLDER_MAC,
-          alternativeImage: FOLDER_WINDOWS,
+          image: PORTFOLIO,
+          alternativeImage: null,
           componentKey: "finder",
           applicationRegistryId: "finder",
           macExtension: null,
@@ -801,10 +800,7 @@ export const mobileNodes: DirectoryObject = {
         createNodeFromTemplate("mapsApp", {
           id: "maps",
         }),
-        createNodeFromTemplate("calculatorApp", {
-          id: "calculator-dock",
-          location: "dock",
-        }),
+
         createNodeFromTemplate("settingsApp", {
           id: "settings-dock",
           location: "dock",
@@ -825,12 +821,14 @@ export const mobileNodes: DirectoryObject = {
       size: null,
       children: [
         {
-          id: "mail",
-          label: "Mail",
-          type: "function",
-          image: MAIL,
+          id: "phone",
+          label: "Phone",
+          type: "application",
+          image: PHONE,
           alternativeImage: null,
-          functionKey: "emailMe",
+          applicationRegistryId: "whatsApp",
+          componentKey: "phone",
+          applicationId: "phone",
           macExtension: ".txt",
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z",
@@ -861,14 +859,22 @@ export const defaultNodes: DirectoryObject = rootNodes
 // Export the broken egg image for use in other components
 export { EGG_BROKEN };
 
-// OPERATIONAL MAP READY FOR USE - Now includes both desktop and dock nodes
+// OPERATIONAL MAPS READY FOR USE
 export const { nodeMap: defaultNodeMap, rootId: defaultRootId } =
   convertObjectsToMap(rootNodes);
 
+export const { nodeMap: mobileNodeMap, rootId: mobileRootIdSystem } =
+  convertObjectsToMap(mobileNodes);
+
 export type DesktopRootId = "desktop-root";
 export type DockRootId = "dock-root";
+
+export type DesktopRoot = DesktopRootId | DockRootId;
+
 export type MobileRootId = "mobile-home-root";
 export type MobileDockRootId = "mobile-dock-root";
+
+export type MobileRoot = MobileRootId | MobileDockRootId;
 
 // Legacy support - desktop root ID for components that expect it
 export const desktopRootId: DesktopRootId = "desktop-root";
@@ -876,4 +882,4 @@ export const dockRootId: DockRootId = "dock-root";
 export const mobileRootId: MobileRootId = "mobile-home-root";
 export const mobileDockRootId: MobileDockRootId = "mobile-dock-root";
 
-export type RootDirectoryId = DesktopRootId | DockRootId;
+export type RootDirectoryId = DesktopRoot | MobileRoot;
