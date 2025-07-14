@@ -107,7 +107,7 @@ export const CaptchaMain = () => {
 
   return (
     <div
-      className={`w-[${width}] h-full flex flex-col justify-center items-center bg-red-100`}
+      className={`absolute w-[${width}] h-full flex flex-col justify-center items-center bg-red-100`}
     >
       <CaptchaHeader
         task={currentCaptcha.task}

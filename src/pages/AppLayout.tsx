@@ -75,7 +75,7 @@ export const AppLayout = () => {
     if (browserNode && browserNode.type === "application") {
       console.log("AppLayout.tsx: useEffect");
 
-      // openWindow(browserNode);
+      openWindow(browserNode);
     }
   }, [openWindow, getNodeByID]);
 

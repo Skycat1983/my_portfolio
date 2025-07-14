@@ -30,13 +30,13 @@ export { IMAGE1, IMAGE2, PDF, PAGES, WORD, MAIL, PHONE };
 // Folders & system icons
 import BIN_EMPTY from "../assets/icons_m/bin_empty.png";
 import BIN_FULL from "../assets/icons_m/bin_full.png";
-import CALCULATOR from "../assets/icons_m/calculator.png";
+import CALCULATOR from "../assets/icons_m/calculator3.png";
 import FOLDER_MAC from "../assets/icons_m/folder_os.png";
 import FOLDER_WINDOWS from "../assets/icons_m/folder_ms.png";
 import FINDER from "../assets/icons_m/finder_large.png";
 import SETTINGS from "../assets/icons_m/settings.png";
-import MAPS from "../assets/icons_m/maps.png";
-import PORTFOLIO from "../assets/icons_m/portfolio.png";
+import MAPS from "../assets/icons_m/google-maps.png";
+import PORTFOLIO from "../assets/icons_m/code(1).png";
 export {
   BIN_EMPTY,
   BIN_FULL,
@@ -62,7 +62,7 @@ import JOST from "../assets/avatars/jost.png";
 export { TIMCOOK, ELONMUSK, BILLGATES, ME, EMILY, WORK, SCAM, MUM, JOST };
 
 // Profile icons
-import GITHUB from "../assets/icons_m/github_black.png";
+import GITHUB from "../assets/icons_m/github2.png";
 import LINKEDIN from "../assets/icons_m/linked_in2.png";
 export { GITHUB, LINKEDIN };
 
@@ -80,38 +80,6 @@ import SAFARI from "../assets/icons_m/safari.png";
 import TERMINAL from "../assets/icons_m/terminal.png";
 import WHATSAPP from "../assets/icons_m/whatsapp.png";
 export { EDGE, FIREFOX, SAFARI, TERMINAL, WHATSAPP };
-
-// Stack / Tech icons
-// import CSS from "../assets/icons_m/css.png";
-// import EXPRESS from "../assets/icons_m/express.png";
-// import FIREBASE from "../assets/icons_m/firebase.png";
-// import HTML from "../assets/icons_m/html.png";
-// import JEST from "../assets/icons_m/jest.png";
-// import JAVASCRIPT from "../assets/icons_m/javascript.png";
-// import MONGODB from "../assets/icons_m/mongo_db.png";
-// import NEXT1 from "../assets/icons_m/next1.png";
-// import NEXT2 from "../assets/icons_m/next2.png";
-// import NODEJS from "../assets/icons_m/nodejs.png";
-// import POSTMAN from "../assets/icons_m/postman.png";
-// import REACT from "../assets/icons_m/react.png";
-// import TAILWIND from "../assets/icons_m/tailwind.png";
-// import TYPESCRIPT from "../assets/icons_m/typescript.png";
-// export {
-//   CSS,
-//   EXPRESS,
-//   FIREBASE,
-//   HTML,
-//   JEST,
-//   JAVASCRIPT,
-//   MONGODB,
-//   NEXT1,
-//   NEXT2,
-//   NODEJS,
-//   POSTMAN,
-//   REACT,
-//   TAILWIND,
-//   TYPESCRIPT,
-// };
 
 // Captcha icons
 import GRAPES from "../assets/captcha/grapes.png";

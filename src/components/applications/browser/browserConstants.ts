@@ -1,9 +1,9 @@
-import { CaptchaPage } from "./fake_pages/CaptchaPage";
+import BankingPage from "./fake_pages/BankingPage";
 import { QueuePage } from "./fake_pages/QueuePage";
 
 export const WEB_PAGE_REGISTRY: Record<string, React.ComponentType> = {
   "www.how-is-he-still-unemployed.com": QueuePage,
-  "www.banking.com": CaptchaPage,
+  "www.banking.com": BankingPage,
 };
 
 export const PREDEFINED_ADDRESS = "www.how-is-he-still-unemployed.com";
