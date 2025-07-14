@@ -35,6 +35,23 @@ interface NodeActions {
   // Query operations (remain here as they're fundamental)
   countNodes: (predicate: (node: NodeEntry) => boolean) => number;
   nodeExists: (predicate: (node: NodeEntry) => boolean) => boolean;
+
+  // Utility operations
+  isUniqueNodePropertyValue: (
+    baseValue: string,
+    propertyKey: keyof NodeEntry,
+    options?: {
+      predicate?: (node: NodeEntry) => boolean;
+    }
+  ) => boolean;
+  generateUniqueNodePropertyValue: (
+    baseValue: string,
+    propertyKey: keyof NodeEntry,
+    options?: {
+      predicate?: (node: NodeEntry) => boolean;
+      separator?: "parentheses" | "underscore";
+    }
+  ) => string;
 }
 
 export type NodeCrudSlice = NodeState & NodeActions;
@@ -260,5 +277,96 @@ export const createNodeCrudSlice = (
   nodeExists: (predicate: (node: NodeEntry) => boolean): boolean => {
     const state = get();
     return Object.values(state.nodeMap).some(predicate);
+  },
+
+  // Utility operations
+  generateUniqueNodePropertyValue: (
+    baseValue: string,
+    propertyKey: keyof NodeEntry,
+    options?: {
+      predicate?: (node: NodeEntry) => boolean;
+      separator?: "parentheses" | "underscore";
+    }
+  ) => {
+    console.log(
+      "generateUniquePropertyValue: checking for unique value",
+      baseValue,
+      "for property",
+      propertyKey
+    );
+
+    const state = get();
+    const { predicate, separator = "underscore" } = options || {};
+
+    // Filter nodes based on predicate (default to all nodes)
+    const nodesToCheck = predicate
+      ? Object.values(state.nodeMap).filter(predicate)
+      : Object.values(state.nodeMap);
+
+    // Check if base value is available
+    const baseValueExists = nodesToCheck.some(
+      (node) => node[propertyKey] === baseValue
+    );
+
+    if (!baseValueExists) {
+      console.log(
+        "generateUniquePropertyValue: base value is unique",
+        baseValue
+      );
+      return baseValue;
+    }
+
+    // Find existing numbered variations
+    const usedNumbers = new Set<number>();
+    const escapedBaseValue = baseValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const patterns = {
+      parentheses: new RegExp(`^${escapedBaseValue} \\((\\d+)\\)$`),
+      underscore: new RegExp(`^${escapedBaseValue}_(\\d+)$`),
+    };
+
+    const pattern = patterns[separator];
+
+    nodesToCheck.forEach((node) => {
+      const value = node[propertyKey] as string;
+      const match = value?.match?.(pattern);
+      if (match) {
+        usedNumbers.add(parseInt(match[1], 10));
+      }
+    });
+
+    // Find the lowest available number starting from 1
+    let counter = 1;
+    while (usedNumbers.has(counter)) {
+      counter++;
+    }
+
+    const uniqueValue =
+      separator === "parentheses"
+        ? `${baseValue} (${counter})`
+        : `${baseValue}_${counter}`;
+
+    console.log(
+      "generateUniquePropertyValue: generated unique value",
+      uniqueValue
+    );
+    return uniqueValue;
+  },
+
+  isUniqueNodePropertyValue: (
+    baseValue: string,
+    propertyKey: keyof NodeEntry,
+    options?: {
+      predicate?: (node: NodeEntry) => boolean;
+    }
+  ) => {
+    const state = get();
+    const { predicate } = options || {};
+
+    const nodesToCheck = predicate
+      ? Object.values(state.nodeMap).filter(predicate)
+      : Object.values(state.nodeMap);
+
+    return nodesToCheck.some((node) => node[propertyKey] === baseValue);
   },
 });

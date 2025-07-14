@@ -324,9 +324,23 @@ export const rootNodes: DirectoryObject = {
         createNodeFromTemplate("achievementsApp", {
           id: "achievements",
         }),
-        createNodeFromTemplate("portfolioDocument", {
-          id: "sample-document",
-        }),
+        // createNodeFromTemplate("portfolioDocument", {
+        //   id: "sample-document",
+        // }),
+        {
+          id: "pages-desktop",
+          label: "About",
+          type: "document",
+          image: PAGES,
+          alternativeImage: WORD,
+          applicationRegistryId: "documentEditor",
+          applicationId: "documentEditor",
+          documentConfigId: "sample_document_config",
+          macExtension: ".txt",
+          windowsExtension: ".txt",
+          dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
+          size: 512, // TODO: add size
+        },
         // {
         //   id: "downloads",
         //   label: "Downloads",

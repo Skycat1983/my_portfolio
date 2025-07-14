@@ -12,7 +12,7 @@ import type {
   DocumentEntry,
   NodeId,
 } from "@/components/nodes/nodeTypes";
-import type { DocumentConfig } from "@/types/storeTypes";
+import type { DocumentConfig } from "@/constants/documentRegistry";
 
 // New Window interface for the application registry system
 export interface Window {

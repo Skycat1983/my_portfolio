@@ -35,6 +35,10 @@ interface WindowActions {
     predicate: (window: Window) => boolean,
     updates: Partial<Window>
   ) => boolean;
+  updateWindowById: (
+    windowId: Window["windowId"],
+    updates: Partial<Window>
+  ) => boolean;
   updateWindows: (
     predicate: (window: Window) => boolean,
     updates: Partial<Window>
@@ -202,6 +206,16 @@ export const createWindowSlice = (
       }));
 
       return true;
+    },
+    updateWindowById: (
+      windowId: Window["windowId"],
+      updates: Partial<Window>
+    ): boolean => {
+      console.log("updateWindowById: updating window by ID", windowId);
+      return slice.updateWindow(
+        (window) => window.windowId === windowId,
+        updates
+      );
     },
 
     /**

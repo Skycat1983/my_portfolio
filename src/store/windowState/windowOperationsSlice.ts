@@ -1,4 +1,4 @@
-import type { DocumentConfig, WindowType } from "@/types/storeTypes";
+import type { WindowType } from "@/types/storeTypes";
 import type { SetState, GetState } from "@/types/storeTypes";
 import type { WindowCrudSlice } from "./windowCrudSlice";
 import type {
@@ -12,6 +12,7 @@ import {
   WINDOW_COMPONENT_REGISTRY,
   WINDOW_DIMENSIONS_REGISTRY,
 } from "@/components/window/WindowComponentRegistry";
+import type { DocumentConfig } from "@/constants/documentRegistry";
 
 // Simplified windowed node type - only directories and applications can open windows
 export type WindowedNode = Exclude<NodeEntry, { type: "easter-egg" | "link" }>;
@@ -75,7 +76,7 @@ export interface WindowOperationsActions {
     bounds: { x: number; y: number; width: number; height: number }
   ) => boolean;
 
-  updateWindowById: (
+  updateWindowById2: (
     windowId: WindowType["windowId"],
     updates: Partial<WindowType>
   ) => boolean;

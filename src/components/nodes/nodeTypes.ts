@@ -176,7 +176,7 @@ export interface DocumentObject extends BaseNodeObject {
   image: string; // Required for documents
   alternativeImage: string | null;
   applicationId: string; // Application that handles this document type
-  documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
+  documentConfigId: string; // Type-safe config key
   applicationRegistryId: ApplicationRegistryId;
   macExtension: MacDocumentExtensions;
   windowsExtension: WindowsDocumentExtensions;
@@ -187,7 +187,8 @@ export interface DocumentEntry extends BaseNodeEntry {
   image: string;
   alternativeImage: string | null;
   applicationId: string; // Application that handles this document type
-  documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
+  documentConfigId: string; // Type-safe config key
+  // documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY; // Type-safe config key
   applicationRegistryId: ApplicationRegistryId;
   macExtension: MacDocumentExtensions;
   windowsExtension: WindowsDocumentExtensions;

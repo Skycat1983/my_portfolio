@@ -35,7 +35,7 @@ interface ApplicationConfig {
   requiresHistory: boolean;
   defaultMaximized: boolean;
 }
-
+// TODO: remove per-document scope from all code. is effectively the same as per-nodeId
 export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
   // ─────────── File Management ───────────
   finder: {
@@ -53,7 +53,7 @@ export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
   documentEditor: {
     component: DocumentEditor,
     allowMultipleWindows: true,
-    windowScope: "per-document" as const, // One window per document instance
+    windowScope: "per-nodeId" as const, // One window per document instance
     width: 1000,
     height: 800,
     fixedSize: false,

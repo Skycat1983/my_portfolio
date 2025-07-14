@@ -45,7 +45,7 @@ export const DEFAULT_DOCUMENT_CONFIG: DocumentConfig = {
     backgroundColor: "#ffffff",
   },
   metadata: {
-    title: "Untitled Document",
+    title: "Untitled",
     createdAt: new Date(),
     modifiedAt: new Date(),
     wordCount: 0,

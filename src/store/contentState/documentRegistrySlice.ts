@@ -12,7 +12,7 @@ export interface DocumentRegistryState {
 export interface DocumentRegistryActions {
   // Core registry operations
   getDocumentConfig: (id: string) => DocumentConfig | undefined;
-  setDocumentConfig: (id: string, config: DocumentConfig) => void;
+  setDocumentConfig: (id: string, config: DocumentConfig) => DocumentConfig;
   deleteDocumentConfig: (id: string) => boolean;
 
   // Utility operations
@@ -53,13 +53,14 @@ export const createDocumentRegistrySlice = (
     /**
      * Store a document configuration with the given ID
      */
-    setDocumentConfig: (id: string, config: DocumentConfig): void => {
-      console.log("setDocumentConfig: storing config for ID", id, config);
+    setDocumentConfig: (id: string, config: DocumentConfig): DocumentConfig => {
+      console.log("DocumentEditorDebug: storing config for ID", id, config);
       set((state: DocumentRegistrySlice) => {
         const newConfigs = new Map(state.configs);
         newConfigs.set(id, config);
         return { configs: newConfigs };
       });
+      return config;
     },
 
     /**
@@ -68,7 +69,11 @@ export const createDocumentRegistrySlice = (
     deleteDocumentConfig: (id: string): boolean => {
       console.log("deleteDocumentConfig: removing config for ID", id);
       const state = get();
-
+      const isDeleteable = state.configs.get(id)?.mutable;
+      if (!isDeleteable) {
+        console.log("deleteDocumentConfig: config is not mutable");
+        return false;
+      }
       if (!state.configs.has(id)) {
         console.log("deleteDocumentConfig: config not found for ID", id);
         return false;
