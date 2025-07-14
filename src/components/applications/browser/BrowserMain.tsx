@@ -41,8 +41,8 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
   const predefinedAddress = PREDEFINED_ADDRESS;
   const initialUrl = "";
   const [addressBarUrl, setAddressBarUrl] = useState(initialUrl);
-  const [addressViewed, setAddressViewed] = useState("www.banking.com");
-  // const [addressViewed, setAddressViewed] = useState(initialUrl);
+  // const [addressViewed, setAddressViewed] = useState("www.banking.com");
+  const [addressViewed, setAddressViewed] = useState(initialUrl);
 
   // const precicate = (window: WindowType) => window.windowId === windowId;
   // const window = useNewStore((state) => state.findOneWindow(precicate))!;
