@@ -1,9 +1,9 @@
-import { DRESS, GRAPES, ME } from "../../../../../constants/images";
+import { DRESS, GRAPES, ME_CAPTCHA } from "../../../../../constants/images";
 
 export const CAPTCHA_DATA = [
   {
     title: "just_me",
-    src: ME,
+    src: ME_CAPTCHA,
     task: "select all squares with",
     text: "highly employable web developers",
     correctAnswers: [1, 4, 6, 7, 8, 9, 10, 11], // placeholder array
@@ -17,7 +17,7 @@ export const CAPTCHA_DATA = [
   },
   {
     title: "grid_tricks",
-    src: ME,
+    src: ME_CAPTCHA,
     task: "select all squares WITHOUT",
     text: "highly employable web developers",
     correctAnswers: [0, 1], // placeholder array

@@ -33,13 +33,13 @@ export const CaptchaSquare = ({
       {image && (
         <motion.div
           className="w-1/3 h-full absolute top-0 right-0"
-          initial={{ x: "100%" }} // start off-screen right
-          animate={{ x: 0 }} // slide into place
+          initial={{ x: "90%" }} // start off-screen right
+          animate={{ x: "30%" }} // slide into place
           transition={{
             type: "tween", // or 'spring'
             ease: "easeOut",
             duration: 2,
-            delay: 0.5,
+            delay: 0.2,
           }}
         >
           <div style={style} className="w-full h-full" />

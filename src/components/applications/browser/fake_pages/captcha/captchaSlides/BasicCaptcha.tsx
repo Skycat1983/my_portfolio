@@ -23,7 +23,7 @@ export const BasicCaptcha = ({
           <img
             src={data.src}
             alt="Captcha challenge"
-            className="max-w-full max-h-full object-contain"
+            className="max-w-sm max-h-full object-contain"
             draggable={false}
           />
 
@@ -46,7 +46,7 @@ export const BasicCaptcha = ({
       </div>
 
       {/* Bottom controls with same width as image container */}
-      <div className="flex flex-col items-center justify-center bg-white w-full h-[100px] flex-shrink-0">
+      <div className="flex flex-col items-center justify-center bg-white w-auto h-[100px] w-full">
         <div className="flex flex-row items-center justify-start gap-4 w-full px-2 md:px-8 max-w-full">
           <RotateCcw className="size-10 text-neutral-900 rounded-full p-2" />
           <Info className="size-10 text-neutral-900 rounded-full p-2" />

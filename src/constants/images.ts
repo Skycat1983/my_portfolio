@@ -84,9 +84,10 @@ export { EDGE, FIREFOX, SAFARI, TERMINAL, WHATSAPP };
 // Captcha icons
 import GRAPES from "../assets/captcha/grapes.png";
 import DRESS from "../assets/captcha/dress.png";
+import ME_CAPTCHA from "../assets/captcha/me.png";
 import ME_BG_REMOVED from "../assets/captcha/me_bg_removed.png";
 
-export { GRAPES, DRESS, ME_BG_REMOVED };
+export { GRAPES, DRESS, ME_BG_REMOVED, ME_CAPTCHA };
 
 // GTA 6 assets
 import GTA6_LOADING from "../assets/wallpapers/gta6_loading.png";
