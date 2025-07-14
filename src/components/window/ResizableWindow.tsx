@@ -9,11 +9,13 @@ import { getWindowComponent } from "@/constants/applicationRegistry";
 
 interface ResizableWindowProps {
   window: Window;
+  isMobile: boolean;
   // children?: React.ReactNode;
 }
 
 export const ResizableWindow: React.FC<ResizableWindowProps> = ({
   window,
+  isMobile,
   // children,
 }) => {
   const {
@@ -36,21 +38,22 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const RegistryComponent = getWindowComponent(applicationRegistryId);
 
-  const windowStyle = isMaximized
-    ? {
-        left: 0,
-        top: 0,
-        width: "100vw",
-        height: "100vh",
-        zIndex: zIndex + 1000, // Ensure fullscreen windows are above everything
-      }
-    : {
-        left: x,
-        top: y,
-        width,
-        height,
-        zIndex,
-      };
+  const windowStyle =
+    isMaximized || isMobile
+      ? {
+          left: 0,
+          top: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: zIndex + 1000, // Ensure fullscreen windows are above everything
+        }
+      : {
+          left: x,
+          top: y,
+          width,
+          height,
+          zIndex,
+        };
 
   // Get theme-specific colors
   const bgColor = theme.colors[currentTheme].background.primary;

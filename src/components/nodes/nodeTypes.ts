@@ -2,7 +2,6 @@ import type {
   NODE_FUNCTION_REGISTRY,
   WINDOW_COMPONENT_REGISTRY,
 } from "../window/WindowComponentRegistry";
-import type { DOCUMENT_CONFIG_REGISTRY } from "../../constants/documentRegistry";
 import type { ApplicationRegistryId } from "@/constants/applicationRegistry";
 
 // NEW SIMPLIFIED TYPE SYSTEM

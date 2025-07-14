@@ -57,7 +57,7 @@ export const DEFAULT_DOCUMENT_CONFIG: DocumentConfig = {
 export const SAMPLE_DOCUMENT_CONFIG: DocumentConfig = {
   id: "sample_document_config",
   mutable: true,
-  content: `Welcome to My Portfolio Document
+  content: `Welcome to My Portfolio Hub
 
 This is a sample document that demonstrates the document management system in this portfolio application. 
 
@@ -72,12 +72,10 @@ This document represents a new node type called "document" which links to both:
 1. An application (Pages) via applicationId
 2. A saved document configuration via documentConfigId
 
-You can edit this document using the toolbar above. Changes are automatically saved to the document registry.
-
-Try opening the Pages app from the dock while this document is open - you'll see the focus logic working correctly!
+You can edit this document using the toolbar above. Changes are saved to the document registry if you click the 'save' button.
 
 Best regards,
-Portfolio System`,
+Heron`,
   textStyle: {
     fontFamily: "Inter",
     fontSize: 14,

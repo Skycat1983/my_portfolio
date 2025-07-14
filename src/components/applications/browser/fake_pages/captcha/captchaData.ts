@@ -1,4 +1,4 @@
-import { DRESS, GRAPES, ME } from "./images";
+import { DRESS, GRAPES, ME } from "../../../../../constants/images";
 
 export const CAPTCHA_DATA = [
   {

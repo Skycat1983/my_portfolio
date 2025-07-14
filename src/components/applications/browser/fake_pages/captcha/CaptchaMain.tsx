@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CAPTCHA_DATA } from "@/constants/captchaData";
+import { CAPTCHA_DATA } from "@/components/applications/browser/fake_pages/captcha/captchaData";
 import { CaptchaHeader } from "./CaptchaHeader";
 import { GridTricks, BasicCaptcha, GrapesCaptcha } from "./captchaSlides";
 import type { CaptchaData, VerifyState } from "./types";

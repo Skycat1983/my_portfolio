@@ -2,7 +2,7 @@ import { CaptchaMain } from "@/components/applications/browser/fake_pages/captch
 
 export const CaptchaPage = () => {
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center bg-white p-8">
+    <div className="w-full h-full flex flex-col justify-center items-center bg-red-100 p-8">
       <CaptchaMain />
     </div>
   );

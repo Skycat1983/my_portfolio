@@ -75,7 +75,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const generateConfigId = useNewStore((s) => s.generateConfigId);
   const getDocumentConfig = useNewStore((s) => s.getDocumentConfig);
   const setDocumentConfig = useNewStore((s) => s.setDocumentConfig);
-  const configs = useNewStore((s) => s.configs);
 
   // Initialize document state from window configuration if available
   useEffect(() => {
@@ -255,18 +254,11 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
         const updatedConfig = setDocumentConfig(config.id, newConfig);
         console.log("DocumentEditorDebug: updated config", updatedConfig);
 
-        // const uniqueNodeLabel = generateUniqueNodePropertyValue(
-        //   node.label,
-        //   "label",
-        //   {
-        //     separator: "parentheses",
-        //   }
-        // );
-
-        console.log("DocumentEditorDebug: configs", configs);
         updateNodeByID(node.id, {
           documentConfigId: updatedConfig.id,
           label: documentLabel,
+          dateModified: now.toISOString(),
+          size: charCount,
         });
         // updateWindowById(window.windowId, {
         //   documentConfig: updatedConfig,
@@ -312,48 +304,3 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
     </div>
   );
 };
-
-// Create new document node (save to root directory for now)
-// const currentNode = getNodeByID(window.nodeId);
-// const savedDocumentId = `saved-doc-${Date.now()}`;
-
-// // if (currentNode) {
-// //   // Get image from current node if it has one, otherwise use default document image
-// //   const documentImage = PAGES;
-// //   const documentAlternativeImage = WORD;
-
-// //   // Generate unique label for the document
-// //   const uniqueLabel = generateUniqueLabel(documentLabel, desktopRootId);
-
-// //   const newDocumentNode = {
-// //     id: savedDocumentId,
-// //     parentId: desktopRootId, // Save to root directory
-// //     type: "document" as const,
-// //     label: uniqueLabel,
-// //     image: documentImage,
-// //     alternativeImage: documentAlternativeImage,
-// //     componentKey: "documentEditor",
-// //     documentConfigId: configId, // Link to the saved configuration
-// //     applicationRegistryId: "documentEditor",
-// //     applicationId: "documentEditor",
-// //     macExtension: ".txt",
-// //     windowsExtension: ".txt",
-// //     dateModified: now.toISOString(),
-// //     size: charCount,
-// //   };
-
-// //   console.log(
-// //     "DocumentEditor: creating document node",
-// //     savedDocumentId,
-// //     "with label",
-// //     uniqueLabel
-// //   );
-// //   createOneNode(newDocumentNode as DocumentEntry);
-
-// //   // Update current window to reference the saved document
-// //   updateWindowById(window.windowId, {
-// //     nodeId: savedDocumentId,
-// //     title: uniqueLabel,
-// //     documentConfig: newConfig,
-// //   });
-// // }

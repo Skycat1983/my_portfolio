@@ -13,8 +13,7 @@ import { desktopRootId } from "../constants/nodeHierarchy";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
 import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
 import { DesktopLayout } from "@/pages/DesktopLayout";
-import { BrowserContent } from "@/components/applications/browser/BrowserMain";
-import { CaptchaPage } from "@/components/applications/browser/fake_pages/CaptchaPage";
+import { useEffect } from "react";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -24,24 +23,35 @@ export const AppLayout = () => {
   );
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const customWallpaper = useNewStore((s) => s.customWallpaper);
-  const openWindows = useNewStore((s) => s.openWindows);
   const histories = useNewStore((s) => s.histories);
   const windows = useNewStore((s) => s.windows);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const nodes = getChildrenByParentID(desktopRootId);
-
-  console.log("AppLayout.tsx: openWindows", openWindows);
-  console.log("AppLayout.tsx: histories", histories);
-
-  // Wifi state for staggered message delivery
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
   // Handle staggered message delivery when wifi comes back online
   useStaggeredMessageDelivery(wifiEnabled);
 
+  // Temp debug state
+  const getNodeByID = useNewStore((s) => s.getNodeByID);
+  const openWindow = useNewStore((s) => s.openWindow);
+
   // Monitor screen dimensions and update store
   const screenInfo = useScreenMonitor();
   const { isMobile } = screenInfo;
+
+  useEffect(() => {
+    const browserNode = getNodeByID("browser-desktop");
+    if (browserNode && browserNode.type === "application") {
+      console.log("AppLayout.tsx: useEffect");
+
+      openWindow(browserNode);
+    }
+  }, [openWindow, getNodeByID]);
+
+  console.log("AppLayout.tsx: histories", histories);
+
+  // Wifi state for staggered message delivery
 
   const background =
     customWallpaper ||
@@ -73,6 +83,7 @@ export const AppLayout = () => {
         {/* <div className="flex-1 min-h-0 w-full">
           <CaptchaPage />
         </div> */}
+        {/* <CaptchaPage /> */}
 
         {/* DESKTOP NODES */}
         <div className="flex-1 min-h-0 w-full">
@@ -83,7 +94,11 @@ export const AppLayout = () => {
         </div>
 
         {windows.map((window) => (
-          <ResizableWindow key={window.windowId} window={window} />
+          <ResizableWindow
+            key={window.windowId}
+            window={window}
+            isMobile={isMobile}
+          />
         ))}
 
         <Dock />
