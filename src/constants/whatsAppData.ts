@@ -135,6 +135,7 @@ export interface CallHistoryItem {
   duration: number;
   caller: Contact;
   receiver: Contact;
+  conversationId: ConversationId;
 }
 
 export const CALL_HISTORY: CallHistoryItem[] = [
@@ -145,6 +146,7 @@ export const CALL_HISTORY: CallHistoryItem[] = [
     avatar: AI_CONTACTS[0].avatar,
     caller: AI_CONTACTS[0],
     receiver: USER_CONTACT,
+    conversationId: "user_self_ai_emily",
   },
   {
     id: "2",
@@ -153,6 +155,7 @@ export const CALL_HISTORY: CallHistoryItem[] = [
     avatar: AI_CONTACTS[1].avatar,
     caller: AI_CONTACTS[1],
     receiver: USER_CONTACT,
+    conversationId: "user_self_ai_jost",
   },
   {
     id: "3",
@@ -161,6 +164,7 @@ export const CALL_HISTORY: CallHistoryItem[] = [
     avatar: AI_CONTACTS[2].avatar,
     caller: AI_CONTACTS[2],
     receiver: USER_CONTACT,
+    conversationId: "user_self_ai_tim",
   },
   {
     id: "4",
@@ -169,6 +173,7 @@ export const CALL_HISTORY: CallHistoryItem[] = [
     avatar: AI_CONTACTS[3].avatar,
     caller: AI_CONTACTS[3],
     receiver: USER_CONTACT,
+    conversationId: "user_self_ai_elon",
   },
   {
     id: "5",
@@ -177,6 +182,7 @@ export const CALL_HISTORY: CallHistoryItem[] = [
     avatar: AI_CONTACTS[3].avatar,
     caller: AI_CONTACTS[3],
     receiver: USER_CONTACT,
+    conversationId: "user_self_ai_bill",
   },
   {
     id: "6",
@@ -185,6 +191,7 @@ export const CALL_HISTORY: CallHistoryItem[] = [
     avatar: AI_CONTACTS[4].avatar,
     caller: AI_CONTACTS[4],
     receiver: USER_CONTACT,
+    conversationId: "user_self_ai_work",
   },
 ];
 

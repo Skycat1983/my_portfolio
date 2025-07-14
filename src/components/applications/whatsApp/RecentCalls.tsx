@@ -2,8 +2,18 @@ import { Separator } from "@/components/ui/separator";
 import type { CallHistoryItem } from "@/constants/whatsAppData";
 import { useNewStore } from "@/hooks/useStore";
 import { Phone, PhoneMissed } from "lucide-react";
+import type { ConversationId } from "./types";
 
-export const RecentCalls = () => {
+interface RecentCallsProps {
+  onPhoneCall: (
+    avatar: string,
+    name: string,
+    phoneNumber: string,
+    conversationId: ConversationId
+  ) => void;
+}
+
+export const RecentCalls: React.FC<RecentCallsProps> = ({ onPhoneCall }) => {
   const callHistory = useNewStore((state) => state.whatsApp.callHistory);
   const getTextColour = (historyItem: CallHistoryItem) => {
     if (historyItem.duration > 0) {
@@ -16,7 +26,18 @@ export const RecentCalls = () => {
     <div className="flex flex-col gap-4 p-4">
       {callHistory.map((call) => (
         <>
-          <div key={call.id} className="flex items-center gap-2">
+          <div
+            key={call.id}
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() =>
+              onPhoneCall(
+                call.avatar,
+                call.caller.name,
+                call.caller.phoneNumber,
+                call.conversationId
+              )
+            }
+          >
             <div className="w-10 h-10 rounded-full bg-gray-200">
               <img
                 src={call.avatar}

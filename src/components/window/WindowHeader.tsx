@@ -4,11 +4,11 @@ import { useNewStore } from "@/hooks/useStore";
 import { useWindowDrag } from "./hooks";
 import { WindowControls } from "./windowControls/WindowControls";
 import theme from "@/styles/theme";
-import type { Window } from "./windowTypes";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface WindowHeaderProps {
-  windowId: Window["windowId"];
-  title?: string;
+  windowId: WindowId;
+  title: string;
   nodeType?: string;
   className?: string;
   zIndex?: number;
@@ -35,7 +35,7 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
     return null;
   }
 
-  const displayTitle = title || `Window ${windowId.slice(-8)}`;
+  const displayTitle = title;
 
   const handleHeaderClick = () => {
     focusWindow(windowId);

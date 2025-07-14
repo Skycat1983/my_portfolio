@@ -373,7 +373,7 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
                 />
               )}
             {whatsAppView?.view === "recentCalls" && !isPhoneCall && (
-              <RecentCalls />
+              <RecentCalls onPhoneCall={handlePhoneCallClick} />
             )}
             {isPhoneCall && (
               <PhoneCallScreen
