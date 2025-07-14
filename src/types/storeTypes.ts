@@ -9,7 +9,6 @@ import type {
   ScreenDimensions,
   TimeFormat,
 } from "../store/systemState/systemSlice";
-import type { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
 import type { WhatsAppState } from "@/store/contentState/whatsAppSlice";
 import type { HistoryInstance } from "@/store/contentState/historySlice";
 import type { WeatherSlice } from "@/store/systemState/weatherSlice";
@@ -46,7 +45,6 @@ export interface WindowType {
   fixed: boolean;
   isMinimized?: boolean;
   isMaximized?: boolean;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY; // Optional component key for registry lookup
   documentConfig?: DocumentConfig; // Optional document configuration for saved documents
 }
 
@@ -176,9 +174,7 @@ interface NodeState {
 
 // Window management state
 interface WindowState {
-  openWindows: WindowType[];
   nextZIndex: number;
-  // New registry-based windows (from windowTypes.ts)
   windows: Window[];
 }
 

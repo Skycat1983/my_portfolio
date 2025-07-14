@@ -1,7 +1,4 @@
-import type {
-  NODE_FUNCTION_REGISTRY,
-  WINDOW_COMPONENT_REGISTRY,
-} from "../window/WindowComponentRegistry";
+import type { NODE_FUNCTION_REGISTRY } from "../../constants/functionNodeRegistry";
 import type { ApplicationRegistryId } from "@/constants/applicationRegistry";
 
 // NEW SIMPLIFIED TYPE SYSTEM
@@ -72,7 +69,6 @@ export interface DirectoryObject extends BaseNodeObject {
   type: "directory";
   image: string; // Required for directories
   alternativeImage: string | null;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   macExtension: MacDirectoryExtensions;
   windowsExtension: WindowsDirectoryExtensions;
   applicationRegistryId: ApplicationRegistryId;
@@ -84,7 +80,6 @@ export interface DirectoryEntry extends BaseNodeEntry {
   type: "directory";
   image: string;
   alternativeImage: string | null;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   macExtension: MacDirectoryExtensions;
   windowsExtension: WindowsDirectoryExtensions;
   applicationRegistryId: ApplicationRegistryId;
@@ -96,7 +91,6 @@ export interface ApplicationObject extends BaseNodeObject {
   type: "application";
   image: string; // Required for applications
   alternativeImage: string | null;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   applicationId: string; // Application identity separate from node identity
   applicationRegistryId: ApplicationRegistryId;
   macExtension: MacApplicationExtensions;
@@ -107,7 +101,6 @@ export interface ApplicationEntry extends BaseNodeEntry {
   type: "application";
   image: string;
   alternativeImage: string | null;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   applicationId: string; // Application identity separate from node identity
   applicationRegistryId: ApplicationRegistryId;
   macExtension: MacApplicationExtensions;

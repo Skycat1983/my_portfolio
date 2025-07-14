@@ -17,7 +17,7 @@ export const Finder = ({
   // const nodeMap = useNewStore((s) => s.nodeMap);
   const defaultFinderView = useNewStore((s) => s.defaultFinderView);
   const currentTheme = useNewStore((s) => s.theme);
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) => s.findWindowById(windowId));
   const updateWindow = useNewStore((s) => s.updateWindow);
   const [input, setInput] = React.useState("");
   const [view, setView] = React.useState<"icons" | "list" | "columns">(

@@ -16,7 +16,7 @@ export const ColumnsView = ({
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const history = useFinderHistory(windowId);
   const containerRef = useRef<HTMLDivElement>(null);
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) => s.findWindowById(windowId));
   const isMaximized = window?.isMaximized;
 
   // Get column path using new helper method

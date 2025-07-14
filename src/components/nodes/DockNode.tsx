@@ -12,7 +12,7 @@ import {
 } from "./node.styles";
 import { BIN_EMPTY, BIN_FULL, FINDER } from "@/constants/images";
 import type { DockRootId } from "@/constants/nodeHierarchy";
-import { getNodeFunction } from "../window/WindowComponentRegistry";
+import { getNodeFunction } from "../../constants/functionNodeRegistry";
 
 type Props = {
   nodeEntry: NodeEntry;

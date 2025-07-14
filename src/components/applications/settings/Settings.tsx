@@ -11,6 +11,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Columns3, Grid2x2, List } from "lucide-react";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 // List of major cities with their timezones
 const CITIES = [
@@ -47,7 +48,7 @@ const CITIES = [
 ];
 
 interface SettingsProps {
-  windowId: string;
+  windowId: WindowId;
 }
 
 export const Settings = ({ windowId }: SettingsProps) => {
@@ -63,7 +64,7 @@ export const Settings = ({ windowId }: SettingsProps) => {
   const setTimezone = useNewStore((state) => state.setTimezone);
   const setCustomWallpaper = useNewStore((state) => state.setCustomWallpaper);
   const fetchWeather = useNewStore((state) => state.weather.fetchWeather);
-  const window = useNewStore((state) => state.getWindowById(windowId));
+  const window = useNewStore((state) => state.findWindowById(windowId));
   const zIndex = window?.zIndex ?? 0;
   const defaultFinderView = useNewStore((state) => state.defaultFinderView);
   const setDefaultFinderView = useNewStore(

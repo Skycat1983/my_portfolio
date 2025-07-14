@@ -232,7 +232,6 @@ export const createNodeBusinessSlice = (
       parentId: desktopRootId,
       image: FOLDER_MAC,
       alternativeImage: FOLDER_WINDOWS,
-      componentKey: "finder",
       macExtension: null,
       windowsExtension: null,
       dateModified: new Date().toISOString(),

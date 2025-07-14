@@ -82,36 +82,36 @@ import WHATSAPP from "../assets/icons_m/whatsapp.png";
 export { EDGE, FIREFOX, SAFARI, TERMINAL, WHATSAPP };
 
 // Stack / Tech icons
-import CSS from "../assets/icons_m/css.png";
-import EXPRESS from "../assets/icons_m/express.png";
-import FIREBASE from "../assets/icons_m/firebase.png";
-import HTML from "../assets/icons_m/html.png";
-import JEST from "../assets/icons_m/jest.png";
-import JAVASCRIPT from "../assets/icons_m/javascript.png";
-import MONGODB from "../assets/icons_m/mongo_db.png";
-import NEXT1 from "../assets/icons_m/next1.png";
-import NEXT2 from "../assets/icons_m/next2.png";
-import NODEJS from "../assets/icons_m/nodejs.png";
-import POSTMAN from "../assets/icons_m/postman.png";
-import REACT from "../assets/icons_m/react.png";
-import TAILWIND from "../assets/icons_m/tailwind.png";
-import TYPESCRIPT from "../assets/icons_m/typescript.png";
-export {
-  CSS,
-  EXPRESS,
-  FIREBASE,
-  HTML,
-  JEST,
-  JAVASCRIPT,
-  MONGODB,
-  NEXT1,
-  NEXT2,
-  NODEJS,
-  POSTMAN,
-  REACT,
-  TAILWIND,
-  TYPESCRIPT,
-};
+// import CSS from "../assets/icons_m/css.png";
+// import EXPRESS from "../assets/icons_m/express.png";
+// import FIREBASE from "../assets/icons_m/firebase.png";
+// import HTML from "../assets/icons_m/html.png";
+// import JEST from "../assets/icons_m/jest.png";
+// import JAVASCRIPT from "../assets/icons_m/javascript.png";
+// import MONGODB from "../assets/icons_m/mongo_db.png";
+// import NEXT1 from "../assets/icons_m/next1.png";
+// import NEXT2 from "../assets/icons_m/next2.png";
+// import NODEJS from "../assets/icons_m/nodejs.png";
+// import POSTMAN from "../assets/icons_m/postman.png";
+// import REACT from "../assets/icons_m/react.png";
+// import TAILWIND from "../assets/icons_m/tailwind.png";
+// import TYPESCRIPT from "../assets/icons_m/typescript.png";
+// export {
+//   CSS,
+//   EXPRESS,
+//   FIREBASE,
+//   HTML,
+//   JEST,
+//   JAVASCRIPT,
+//   MONGODB,
+//   NEXT1,
+//   NEXT2,
+//   NODEJS,
+//   POSTMAN,
+//   REACT,
+//   TAILWIND,
+//   TYPESCRIPT,
+// };
 
 // Captcha icons
 import GRAPES from "../assets/captcha/grapes.png";

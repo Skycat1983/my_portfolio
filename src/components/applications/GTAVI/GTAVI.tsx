@@ -8,7 +8,7 @@ import type { WindowId } from "@/constants/applicationRegistry";
 type GamePhase = "loading" | "running" | "crashed";
 
 const GTAVI = ({ windowId }: { windowId: WindowId }) => {
-  const window = useNewStore((state) => state.getWindowById(windowId));
+  const window = useNewStore((state) => state.findWindowById(windowId));
   const operatingSystem = useNewStore((state) => state.operatingSystem);
   const closeWindow = useNewStore((state) => state.closeWindow);
 

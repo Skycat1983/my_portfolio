@@ -8,9 +8,7 @@ export const StartPage = () => {
   const downloadEgg = useNewStore((s) => s.downloadEgg);
   const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
   // const focusWindow = useNewStore((s) => s.focusWindow);
-  const openWindowWithComponentKey = useNewStore(
-    (s) => s.openWindowWithComponentKey
-  );
+  const openWindow = useNewStore((s) => s.openWindow);
   const incrementEggsDownloadedAchievement = useNewStore(
     (s) => s.incrementEggsDownloadedAchievement
   );
@@ -71,7 +69,7 @@ export const StartPage = () => {
         <div
           onClick={() => {
             const downloadsFolder = ensureDownloadsFolder();
-            openWindowWithComponentKey(downloadsFolder, "finder", "downloads");
+            openWindow(downloadsFolder);
           }}
           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
         >

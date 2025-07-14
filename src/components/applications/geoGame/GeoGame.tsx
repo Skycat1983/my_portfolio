@@ -3,10 +3,11 @@ import { useNewStore } from "@/hooks/useStore";
 import { GameMenu } from "./GameMenu";
 import { GameInterface } from "./GameInterface";
 import { GameOverScreen } from "./GameOverScreen";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 // Main GeoGame Component
-export const GeoGame = ({ windowId }: { windowId: string }) => {
-  const window = useNewStore((s) => s.getWindowById(windowId));
+export const GeoGame = ({ windowId }: { windowId: WindowId }) => {
+  const window = useNewStore((s) => s.findWindowById(windowId));
   const gameStatus = useNewStore((s) => s.gameStatus);
   const loadCountries = useNewStore((s) => s.loadCountries);
   const isLoadingCountries = useNewStore((s) => s.isLoadingCountries);

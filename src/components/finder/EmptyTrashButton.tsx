@@ -1,15 +1,16 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
+import type { WindowId } from "@/constants/applicationRegistry";
 
 interface EmptyTrashButtonProps {
-  windowId: string;
+  windowId: WindowId;
 }
 
 export const EmptyTrashButton: React.FC<EmptyTrashButtonProps> = ({
   windowId,
 }) => {
-  const window = useNewStore((s) => s.getWindowById(windowId));
+  const window = useNewStore((s) => s.findWindowById(windowId));
   const screenDimensions = useNewStore((s) => s.screenDimensions);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const deleteManyNodes = useNewStore((s) => s.deleteManyNodes);

@@ -8,8 +8,6 @@ import type {
   MacDocumentExtensions,
   WindowsDocumentExtensions,
 } from "@/components/nodes/nodeTypes";
-import type { WINDOW_COMPONENT_REGISTRY } from "@/components/window/WindowComponentRegistry";
-import type { DOCUMENT_CONFIG_REGISTRY } from "@/constants/documentRegistry";
 import {
   CALCULATOR,
   WHATSAPP,
@@ -44,7 +42,6 @@ interface BaseNodeTemplate {
 interface ApplicationTemplate extends BaseNodeTemplate {
   type: "application";
   applicationRegistryId: ApplicationRegistryId;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   applicationId: string;
   macExtension: MacApplicationExtensions;
   windowsExtension: WindowsApplicationExtensions;
@@ -53,7 +50,6 @@ interface ApplicationTemplate extends BaseNodeTemplate {
 interface DirectoryTemplate extends BaseNodeTemplate {
   type: "directory";
   applicationRegistryId: ApplicationRegistryId;
-  componentKey: keyof typeof WINDOW_COMPONENT_REGISTRY;
   macExtension: MacDirectoryExtensions;
   windowsExtension: WindowsDirectoryExtensions;
   size: null; // Always null for directories
@@ -63,7 +59,6 @@ interface DocumentTemplate extends BaseNodeTemplate {
   type: "document";
   applicationRegistryId: ApplicationRegistryId;
   applicationId: string;
-  documentConfigId: keyof typeof DOCUMENT_CONFIG_REGISTRY;
   macExtension: MacDocumentExtensions;
   windowsExtension: WindowsDocumentExtensions;
 }
@@ -77,7 +72,6 @@ export const NODE_TEMPLATES = {
   calculatorApp: {
     type: "application",
     applicationRegistryId: "calculator",
-    componentKey: "calculator",
     applicationId: "calculator",
     label: "Calculator",
     image: CALCULATOR,
@@ -91,7 +85,6 @@ export const NODE_TEMPLATES = {
   whatsAppApp: {
     type: "application",
     applicationRegistryId: "whatsApp",
-    componentKey: "whatsApp",
     applicationId: "whatsApp",
     label: "WhatsApp",
     image: WHATSAPP,
@@ -105,7 +98,6 @@ export const NODE_TEMPLATES = {
   terminalApp: {
     type: "application",
     applicationRegistryId: "terminal",
-    componentKey: "terminal",
     applicationId: "terminal",
     label: "Terminal",
     image: TERMINAL,
@@ -119,7 +111,6 @@ export const NODE_TEMPLATES = {
   browserApp: {
     type: "application",
     applicationRegistryId: "browser",
-    componentKey: "browser",
     applicationId: "browser",
     label: "Internet",
     image: SAFARI,
@@ -133,7 +124,6 @@ export const NODE_TEMPLATES = {
   achievementsApp: {
     type: "application",
     applicationRegistryId: "achievements",
-    componentKey: "achievements",
     applicationId: "achievements",
     label: "Achievements",
     image: TROPHY1,
@@ -147,7 +137,6 @@ export const NODE_TEMPLATES = {
   gtaViApp: {
     type: "application",
     applicationRegistryId: "gtaVi",
-    componentKey: "gtaVi",
     applicationId: "gtaVi",
     label: "GTAVI",
     image: GTA6_LOGO,
@@ -161,7 +150,6 @@ export const NODE_TEMPLATES = {
   geoGameApp: {
     type: "application",
     applicationRegistryId: "geoGame",
-    componentKey: "geoGame",
     applicationId: "geoGame",
     label: "Flag Quest",
     image: PLANET,
@@ -175,7 +163,6 @@ export const NODE_TEMPLATES = {
   finderApp: {
     type: "application",
     applicationRegistryId: "finder",
-    componentKey: "finder",
     applicationId: "finder",
     label: "Finder",
     image: FINDER,
@@ -189,7 +176,6 @@ export const NODE_TEMPLATES = {
   mapsApp: {
     type: "application",
     applicationRegistryId: "maps",
-    componentKey: "maps",
     applicationId: "maps",
     label: "Maps",
     image: MAPS,
@@ -203,7 +189,6 @@ export const NODE_TEMPLATES = {
   settingsApp: {
     type: "application",
     applicationRegistryId: "settings",
-    componentKey: "settings",
     applicationId: "settings",
     label: "Settings",
     image: SETTINGS,
@@ -217,7 +202,6 @@ export const NODE_TEMPLATES = {
   pagesApp: {
     type: "application",
     applicationRegistryId: "documentEditor",
-    componentKey: "documentEditor",
     applicationId: "documentEditor",
     label: "Pages",
     image: PAGES,
@@ -232,7 +216,6 @@ export const NODE_TEMPLATES = {
   finderDirectory: {
     type: "directory",
     applicationRegistryId: "finder",
-    componentKey: "finder",
     label: "Folder",
     image: FOLDER_MAC,
     alternativeImage: FOLDER_WINDOWS,
@@ -247,7 +230,6 @@ export const NODE_TEMPLATES = {
     type: "document",
     applicationRegistryId: "documentEditor",
     applicationId: "documentEditor",
-    documentConfigId: "sample_document_config",
     label: "Portfolio Document",
     image: PAGES,
     alternativeImage: WORD,

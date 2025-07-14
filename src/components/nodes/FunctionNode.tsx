@@ -11,7 +11,7 @@ import {
   getTitleBase,
 } from "./node.styles";
 import type { FunctionEntry } from "@/components/nodes/nodeTypes";
-import { getNodeFunction } from "@/components/window/WindowComponentRegistry";
+import { getNodeFunction } from "@/constants/functionNodeRegistry";
 
 type Props = { node: FunctionEntry; view: "icons" | "list" | "columns" };
 

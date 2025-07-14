@@ -15,14 +15,7 @@ import {
   createSelectionSlice,
   type SelectionSlice,
 } from "../store/nodeState/nodeSelectionSlice";
-import {
-  createWindowCrudSlice,
-  type WindowCrudSlice,
-} from "../store/windowState/windowCrudSlice";
-import {
-  createWindowOperationsSlice,
-  type WindowOperationsSlice,
-} from "../store/windowState/windowOperationsSlice";
+
 import {
   createWindowSlice,
   type WindowSlice,
@@ -89,8 +82,6 @@ export type StoreSlice = NodeCrudSlice &
   NodeOperationsSlice &
   NodeBusinessSlice &
   SelectionSlice &
-  WindowCrudSlice &
-  WindowOperationsSlice &
   WindowSlice &
   SystemSlice &
   AchievementSlice &
@@ -112,8 +103,6 @@ export const useNewStore = create<Store>((set, get) => ({
   ...createSelectionSlice(set, get),
 
   // Window state management
-  ...createWindowCrudSlice(set, get),
-  ...createWindowOperationsSlice(set, get),
   ...createWindowSlice(set, get),
 
   // System state management

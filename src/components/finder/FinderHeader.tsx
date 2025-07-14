@@ -13,7 +13,7 @@ type FinderHeaderProps = {
   onChangeView: (v: "icons" | "list" | "columns") => void;
   input: string;
   setInput: (v: string) => void;
-  windowId: string;
+  windowId: WindowId;
   nodeId: string;
   onHistoryChange: (currentItem: unknown) => void;
 };

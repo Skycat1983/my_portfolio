@@ -24,6 +24,7 @@ interface WindowActions {
 
   // Find operations (predicate-based)
   findWindow: (predicate: (window: Window) => boolean) => Window | undefined;
+  findWindowById: (windowId: WindowId) => Window | undefined;
   findWindows: (predicate: (window: Window) => boolean) => Window[];
   windowExists: (predicate: (window: Window) => boolean) => boolean;
 
@@ -97,6 +98,11 @@ export const createWindowSlice = (
     findWindow: (predicate: (window: Window) => boolean) => {
       const state = get();
       return state.windows.find(predicate);
+    },
+
+    findWindowById: (windowId: WindowId) => {
+      const state = get();
+      return state.windows.find((w) => w.windowId === windowId);
     },
 
     /**
