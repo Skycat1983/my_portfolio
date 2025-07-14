@@ -42,19 +42,19 @@ export const GridTricks = ({
         if (arraysMatch(selected, arr1)) {
           // On hover, make first column roughly 40% width, others share remaining 60%
           onGridClassChange(
-            "grid grid-cols-[40%_27%_33%] grid-rows-4 w-full h-full"
+            "grid grid-cols-[44%_23%_33%] grid-rows-4 w-full h-full"
           );
         }
         const arr2 = [2, 5];
         if (arraysMatch(selected, arr2)) {
           onGridClassChange(
-            "grid grid-cols-[40%_20%_40%] grid-rows-4 w-full h-full"
+            "grid grid-cols-[44%_12%_44%] grid-rows-4 w-full h-full"
           );
         }
         if (selected.length === 0) {
           // On hover, expand the first column to ~40% width
           setNewGridClassName(
-            "grid grid-cols-[40%_20%_40%] grid-rows-[12.5%_12.5%_25%_25%_25%] w-full h-full"
+            "grid grid-cols-[44%_12%_44%] grid-rows-[12.5%_12.5%_25%_25%_25%] w-full h-full"
           );
 
           // setTrickeryPhase(1);
@@ -78,24 +78,25 @@ export const GridTricks = ({
     if (arraysMatch(selected, arr1)) {
       // On hover, make first column roughly 40% width, others share remaining 60%
       onGridClassChange(
-        "grid grid-cols-[40%_30%_30%] grid-rows-4 w-full h-full"
+        "grid grid-cols-[44%_23%_33%] grid-rows-4 w-full h-full"
       );
     }
     const arr2 = [2, 5];
     if (arraysMatch(selected, arr2)) {
       onGridClassChange(
-        "grid grid-cols-[40%_20%_40%] grid-rows-4 w-full h-full"
+        "grid grid-cols-[44%_12%_44%] grid-rows-4 w-full h-full"
       );
     }
     if (selected.length === 0) {
       // On hover, expand the first column to ~40% width
       setNewGridClassName(
-        "grid grid-cols-[40%_20%_40%] grid-rows-[12.5%_12.5%_25%_25%_25%] w-full h-full"
+        "grid grid-cols-[44%_12%_44%] grid-rows-[12.5%_12.5%_25%_25%_25%] w-full h-full"
       );
 
       // setTrickeryPhase(1);
     }
     const arr3 = [0, 1, 2];
+    // const arr4 = [0, 1];
     if (arraysMatch(selected, arr3)) {
       console.log("arr3 matches");
       setTrickeryPhase(1);
