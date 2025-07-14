@@ -22,6 +22,7 @@ export const AppLayout = () => {
     (s) => s.unlockClickOnSomethingAchievement
   );
   const operatingSystem = useNewStore((s) => s.operatingSystem);
+  const toggleOS = useNewStore((s) => s.toggleOS);
   const customWallpaper = useNewStore((s) => s.customWallpaper);
   const histories = useNewStore((s) => s.histories);
   const windows = useNewStore((s) => s.windows);
@@ -56,13 +57,18 @@ export const AppLayout = () => {
     const deletedWindows = deleteWindows(
       (window) => window.applicationRegistryId === "finder"
     );
+    if (isMobile) {
+      if (operatingSystem !== "mac") {
+        toggleOS();
+      }
+    }
 
     console.log(
       "AppLayout: closed",
       deletedWindows,
       "finder windows due to context switch"
     );
-  }, [isMobile, updateLegacyFields, deleteWindows]);
+  }, [isMobile, updateLegacyFields, deleteWindows, operatingSystem, toggleOS]);
 
   useEffect(() => {
     const browserNode = getNodeByID("browser-desktop");

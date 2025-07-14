@@ -416,7 +416,7 @@ export const rootNodes: DirectoryObject = {
           type: "link",
           image: LINKEDIN,
           alternativeImage: null,
-          url: "https://www.linkedin.com/in/skycat1983/",
+          url: "https://www.linkedin.com/in/heron-laoutaris/",
           macExtension: ".webloc",
           windowsExtension: ".url",
           dateModified: "2024-03-14T09:15:00Z",
@@ -444,7 +444,8 @@ export const rootNodes: DirectoryObject = {
           type: "link",
           image: LINKEDIN,
           alternativeImage: null,
-          url: "https://www.linkedin.com/in/skycat1983/",
+          url: "https://www.linkedin.com/in/heron-laoutaris/",
+
           macExtension: ".webloc",
           windowsExtension: ".url",
           dateModified: "2024-03-14T09:15:00Z",
@@ -496,18 +497,15 @@ export const mobileNodes: DirectoryObject = {
       applicationRegistryId: "finder",
       size: null,
       children: [
-        // createNodeFromTemplate("whatsAppApp", {
-        //   id: "whatsapp-desktop",
-        //   location: "desktop",
-        // }),
+        createNodeFromTemplate("mapsApp", {
+          id: "maps",
+        }),
+
         createNodeFromTemplate("calculatorApp", {
           id: "calculator-desktop",
           location: "desktop",
         }),
-        // createNodeFromTemplate("browserApp", {
-        //   id: "browser-desktop",
-        //   location: "desktop",
-        // }),
+
         createNodeFromTemplate("terminalApp", {
           id: "terminal",
         }),
@@ -529,7 +527,7 @@ export const mobileNodes: DirectoryObject = {
           type: "link",
           image: LINKEDIN,
           alternativeImage: null,
-          url: "https://www.linkedin.com/in/skycat1983/",
+          url: "https://www.linkedin.com/in/heron-laoutaris/",
           macExtension: ".webloc",
           windowsExtension: ".url",
           dateModified: "2024-03-14T09:15:00Z",
@@ -764,6 +762,11 @@ export const mobileNodes: DirectoryObject = {
           dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
           size: 512, // TODO: add size
         },
+
+        createNodeFromTemplate("settingsApp", {
+          id: "settings-dock",
+          location: "dock",
+        }),
         {
           id: "trash",
           label: "Trash",
@@ -777,14 +780,6 @@ export const mobileNodes: DirectoryObject = {
           size: null,
           children: [],
         },
-        createNodeFromTemplate("mapsApp", {
-          id: "maps",
-        }),
-
-        createNodeFromTemplate("settingsApp", {
-          id: "settings-dock",
-          location: "dock",
-        }),
       ],
     },
     {
