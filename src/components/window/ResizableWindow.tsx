@@ -92,7 +92,7 @@ export const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
           {/* Window Content */}
           <div
-            className="pt-9 h-full overflow-auto"
+            className="pt-9 h-full overflow-auto p-4"
             style={{ backgroundColor: contentBgColor }}
           >
             {RegistryComponent ? (

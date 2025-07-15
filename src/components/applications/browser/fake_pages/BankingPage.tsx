@@ -86,7 +86,7 @@ const BankingPage: React.FC = () => {
   );
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full p-4">
       {/* Banking Login Display with conditional opacity */}
       <div
         className={`relative w-full h-full transition-opacity duration-1000 ${

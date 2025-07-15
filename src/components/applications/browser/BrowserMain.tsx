@@ -107,7 +107,7 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
         isMobile ? "flex-col-reverse" : "flex-col"
       }`}
     >
-      <div className="flex-none sticky top-0 bg-neutral-300 z-10 flex items-center gap-4 p-4">
+      <div className="flex-none sticky top-0 bg-neutral-300 z-10 flex items-center gap-4 py-4 px-2">
         {/* <h1 className="text-2xl font-bold text-black">TEMP</h1> */}
         <WindowHistoryNavigation
           windowId={typedWindowId}

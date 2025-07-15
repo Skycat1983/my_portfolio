@@ -106,7 +106,7 @@ export const CaptchaMain = () => {
     currentIndex === gridMoveIndex && selected.length === 0 ? 15 : 12;
   return (
     <div
-      className={`absolute w-auto h-auto flex flex-col justify-center items-center bg-red-100`}
+      className={`relative w-auto h-auto flex flex-col justify-center items-center bg-red-100`}
     >
       <CaptchaHeader
         task={currentCaptcha.task}
