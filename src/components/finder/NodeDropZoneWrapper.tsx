@@ -15,6 +15,8 @@ export const NodeDropZoneWrapper = ({
 
   const dragHandlers = useNodeDrag();
 
+  console.log("MOVENODEDEBUG: draghandlers", dragHandlers);
+
   // const padding = shrinkToFit ? "p-0" : isWindow ? "p-0" : "p-0";
   const heightWidth = !shrinkToFit ? "h-full w-full" : "h-auto w-auto";
 
@@ -33,6 +35,7 @@ export const NodeDropZoneWrapper = ({
         return dragHandlers.handleDragLeave(e);
       }}
       onDrop={(e) => {
+        // console.log("MOVENODEDEBUG: onDrop", e);
         return dragHandlers.handleDrop(e, nodeId);
       }}
     >

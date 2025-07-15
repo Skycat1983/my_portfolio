@@ -1,5 +1,4 @@
 import { CaptchaMain } from "@/components/applications/browser/fake_pages/captcha/CaptchaMain";
-import BankingPage from "./BankingPage";
 
 export const CaptchaPage = () => {
   return (

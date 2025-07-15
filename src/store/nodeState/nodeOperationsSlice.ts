@@ -74,7 +74,12 @@ export const createNodeOperationsSlice = (
     nodeId: NodeEntry["id"],
     updates: Partial<NodeEntry>
   ): boolean => {
-    console.log("updateNodeByID: updating node", nodeId, "with", updates);
+    console.log(
+      "MOVENODEDEBUG: moveNodeByID: updateNodeByID: updating node:",
+      nodeId,
+      "with",
+      updates
+    );
     return get().updateOneNode(
       (node: NodeEntry) => node.id === nodeId,
       updates
@@ -121,7 +126,7 @@ export const createNodeOperationsSlice = (
     updates: Partial<DirectoryEntry>
   ): boolean => {
     console.log(
-      "updateDirectoryByID: updating directory",
+      "MOVENODEDEBUG: updateDirectoryByID: 3 updating directory",
       directoryId,
       "with",
       updates

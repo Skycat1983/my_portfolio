@@ -8,7 +8,11 @@ import {
   mobileDockRootId,
   type RootDirectoryId,
 } from "@/constants/nodeHierarchy";
-import type { NodeEntry, NodeMap } from "@/components/nodes/nodeTypes";
+import type {
+  NodeEntry,
+  NodeMap,
+  DirectoryEntry,
+} from "@/components/nodes/nodeTypes";
 import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 export type DeviceContext = "desktop" | "mobile";
@@ -144,18 +148,41 @@ export const createNodeCrudSlice = (
 
       const currentState = get();
 
-      // Check if node already exists
-      if (currentState.nodeMap[node.id]) {
+      // Check if node already exists in the correct nodeMap
+      const currentNodeMap = slice.getCurrentNodeMap();
+      if (currentNodeMap[node.id]) {
         console.log("createOneNode: node already exists", node.id);
         return false;
       }
 
-      set((state) => ({
-        nodeMap: {
-          ...state.nodeMap,
-          [node.id]: node,
-        },
-      }));
+      // 🚨 FIX: Update the correct nodeMap based on device context
+      const isMobile = currentState.screenDimensions.isMobile;
+
+      if (isMobile) {
+        set((state) => ({
+          mobileNodeMap: {
+            ...state.mobileNodeMap,
+            [node.id]: node,
+          },
+          // Also update legacy field for backwards compatibility
+          nodeMap: {
+            ...state.nodeMap,
+            [node.id]: node,
+          },
+        }));
+      } else {
+        set((state) => ({
+          desktopNodeMap: {
+            ...state.desktopNodeMap,
+            [node.id]: node,
+          },
+          // Also update legacy field for backwards compatibility
+          nodeMap: {
+            ...state.nodeMap,
+            [node.id]: node,
+          },
+        }));
+      }
 
       return true;
     },
@@ -203,26 +230,96 @@ export const createNodeCrudSlice = (
       predicate: (node: NodeEntry) => boolean,
       updates: Partial<NodeEntry>
     ): boolean => {
-      console.log("updateOneNodeByPredicate in nodeCrudSlice");
+      // console.log(
+      //   "MOVENODEDEBUG: moveNodeByID updateOneNode in nodeCrudSlice",
+      //   predicate,
+      //   updates
+      // );
 
       const currentState = get();
-      const nodeToUpdate = Object.values(currentState.nodeMap).find(predicate);
 
+      // 🚨 FIX: Use the same nodeMap for both read and write
+      const currentNodeMap = slice.getCurrentNodeMap();
+      const nodeToUpdate = Object.values(currentNodeMap).find(predicate);
+
+      // 🚨 CRITICAL DEBUG: Track directory "a" updates specifically
+      if (nodeToUpdate?.id === "a") {
+        console.log("🔍 CRUD_DEBUG: Directory A being updated!", {
+          nodeId: nodeToUpdate.id,
+          currentChildren:
+            nodeToUpdate.type === "directory"
+              ? nodeToUpdate.children
+              : "not-directory",
+          newChildren:
+            "children" in updates
+              ? (updates as Partial<DirectoryEntry>).children
+              : "no-children-update",
+          updateKeys: Object.keys(updates),
+          timestamp: Date.now(),
+          stackTrace: new Error().stack?.split("\n").slice(0, 5),
+          usingNodeMap: currentState.screenDimensions.isMobile
+            ? "mobileNodeMap"
+            : "desktopNodeMap",
+        });
+      }
+
+      // console.log(
+      //   "MOVENODEDEBUG: moveNodeByID updateOneNode: nodeToUpdate",
+      //   nodeToUpdate
+      // );
       if (!nodeToUpdate) {
         console.log("updateOneNodeByPredicate: no node matches predicate");
         return false;
       }
 
-      set((state) => ({
-        nodeMap: {
-          ...state.nodeMap,
-          [nodeToUpdate.id]: {
-            ...nodeToUpdate,
-            ...updates,
-            id: nodeToUpdate.id, // Prevent ID from being changed
-          } as NodeEntry,
-        },
-      }));
+      // 🚨 FIX: Update the correct nodeMap based on device context
+      const isMobile = currentState.screenDimensions.isMobile;
+      const updatedNode = {
+        ...nodeToUpdate,
+        ...updates,
+        id: nodeToUpdate.id, // Prevent ID from being changed
+      } as NodeEntry;
+
+      if (isMobile) {
+        set((state) => ({
+          mobileNodeMap: {
+            ...state.mobileNodeMap,
+            [nodeToUpdate.id]: updatedNode,
+          },
+          // Also update legacy field for backwards compatibility
+          nodeMap: {
+            ...state.nodeMap,
+            [nodeToUpdate.id]: updatedNode,
+          },
+        }));
+      } else {
+        set((state) => ({
+          desktopNodeMap: {
+            ...state.desktopNodeMap,
+            [nodeToUpdate.id]: updatedNode,
+          },
+          // Also update legacy field for backwards compatibility
+          nodeMap: {
+            ...state.nodeMap,
+            [nodeToUpdate.id]: updatedNode,
+          },
+        }));
+      }
+
+      // 🚨 CRITICAL DEBUG: Verify directory "a" after update
+      if (nodeToUpdate?.id === "a") {
+        const updatedCurrentNodeMap = slice.getCurrentNodeMap();
+        const updatedDirectoryA = updatedCurrentNodeMap["a"];
+        console.log("🔍 CRUD_DEBUG: Directory A after update:", {
+          nodeId: updatedDirectoryA?.id,
+          children:
+            updatedDirectoryA?.type === "directory"
+              ? updatedDirectoryA.children
+              : "not-directory",
+          timestamp: Date.now(),
+          verifiedFromCorrectMap: true,
+        });
+      }
 
       return true;
     },
@@ -267,26 +364,56 @@ export const createNodeCrudSlice = (
       console.log("deleteOneNode in nodeCrudSlice");
 
       const currentState = get();
-      const nodeToDelete = Object.values(currentState.nodeMap).find(predicate);
+      const currentNodeMap = slice.getCurrentNodeMap();
+      const nodeToDelete = Object.values(currentNodeMap).find(predicate);
 
       if (!nodeToDelete) {
         console.log("deleteOneNodeByPredicate: no node matches predicate");
         return false;
       }
 
-      set((state) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [nodeToDelete.id]: _, ...remainingNodes } = state.nodeMap;
+      // 🚨 FIX: Delete from the correct nodeMap based on device context
+      const isMobile = currentState.screenDimensions.isMobile;
 
-        return {
-          nodeMap: remainingNodes,
-          // Clear selection if the deleted node was selected
-          selectedNodeId:
-            state.selectedNodeId === nodeToDelete.id
-              ? null
-              : state.selectedNodeId,
-        };
-      });
+      if (isMobile) {
+        set((state) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [nodeToDelete.id]: _, ...remainingMobileNodes } =
+            state.mobileNodeMap;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [nodeToDelete.id]: __, ...remainingLegacyNodes } =
+            state.nodeMap;
+
+          return {
+            mobileNodeMap: remainingMobileNodes,
+            nodeMap: remainingLegacyNodes, // Also update legacy field
+            // Clear selection if the deleted node was selected
+            selectedNodeId:
+              state.selectedNodeId === nodeToDelete.id
+                ? null
+                : state.selectedNodeId,
+          };
+        });
+      } else {
+        set((state) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [nodeToDelete.id]: _, ...remainingDesktopNodes } =
+            state.desktopNodeMap;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [nodeToDelete.id]: __, ...remainingLegacyNodes } =
+            state.nodeMap;
+
+          return {
+            desktopNodeMap: remainingDesktopNodes,
+            nodeMap: remainingLegacyNodes, // Also update legacy field
+            // Clear selection if the deleted node was selected
+            selectedNodeId:
+              state.selectedNodeId === nodeToDelete.id
+                ? null
+                : state.selectedNodeId,
+          };
+        });
+      }
 
       return true;
     },

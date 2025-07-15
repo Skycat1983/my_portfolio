@@ -64,6 +64,9 @@ export const useNodeDrag = (): DragHandlers => {
         let isValid = true; // Default to true to avoid blocking
         if (shouldValidate) {
           isValid = validateMoveByID(draggedNodeId, targetNodeId);
+          console.log("MOVENODEDEBUG: isValid", isValid);
+          console.log("MOVENODEDEBUG: draggedNodeId", draggedNodeId);
+          console.log("MOVENODEDEBUG: targetNodeId", targetNodeId);
           lastValidationTime.current = now;
         } else {
           console.log(
@@ -136,13 +139,15 @@ export const useNodeDrag = (): DragHandlers => {
       // Get the dragged node ID
       const draggedNodeId = e.dataTransfer.getData("nodeId");
 
+      console.log("MOVENODEDEBUG: handleDrop", draggedNodeId, targetNodeId);
+
       if (!draggedNodeId) {
         return;
       }
 
       // Validate and execute the move
       const isValidMove = validateMoveByID(draggedNodeId, targetNodeId);
-
+      console.log("MOVENODEDEBUG: isValidMove", isValidMove);
       if (isValidMove) {
         const success = moveNodeByID(draggedNodeId, targetNodeId);
 
