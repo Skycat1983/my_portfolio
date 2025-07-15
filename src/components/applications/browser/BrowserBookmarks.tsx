@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BOOKMARKS, type BookmarkItem } from "./browserConstants";
 import type { WindowType } from "@/types/storeTypes";
-import { useNewStore } from "@/hooks/useStore";
+import { useDropdownZIndex } from "@/components/window/hooks/useNextWindowZIndex";
 
 interface BrowserBookmarksProps {
   windowId: WindowType["windowId"];
@@ -18,15 +18,16 @@ interface BrowserBookmarksProps {
 }
 
 export const BrowserBookmarks = ({
-  windowId,
+  // windowId,
   onBookmarkSelect,
   isMobile,
 }: BrowserBookmarksProps) => {
-  const nextZIndex = useNewStore((s) => s.nextZIndex);
-  const window = useNewStore((s) =>
-    s.findWindow((w) => w.windowId === windowId)
-  );
-  const menuZ = window?.zIndex ? window.zIndex + 1000 : nextZIndex + 1;
+  const nextZIndex = useDropdownZIndex();
+  // const nextZIndex = useNewStore((s) => s.nextZIndex);
+  // const window = useNewStore((s) =>
+  //   s.findWindow((w) => w.windowId === windowId)
+  // );
+  // const menuZ = window?.zIndex ? window.zIndex + 1000 : nextZIndex + 1;
 
   const handleBookmarkClick = (bookmark: BookmarkItem) => {
     console.log(
@@ -47,11 +48,14 @@ export const BrowserBookmarks = ({
     <DropdownMenu>
       <DropdownMenuTrigger
         className="p-2 hover:bg-neutral-400 rounded-md transition-colors cursor-pointer"
-        style={{ zIndex: menuZ }}
+        style={{ zIndex: nextZIndex }}
         tabIndex={0}
         aria-label="Open bookmarks menu"
         onClick={(e) => {
-          console.log("BROWSER_BOOKMARKS_DEBUG: Button clicked, menuZ:", menuZ);
+          console.log(
+            "BROWSER_BOOKMARKS_DEBUG: Button clicked, menuZ:",
+            nextZIndex
+          );
           e.stopPropagation();
         }}
       >
@@ -61,7 +65,7 @@ export const BrowserBookmarks = ({
       <DropdownMenuContent
         align="end"
         className="w-64 bg-neutral-900"
-        style={{ zIndex: menuZ }}
+        style={{ zIndex: nextZIndex }}
       >
         <DropdownMenuLabel>Bookmarks</DropdownMenuLabel>
         <DropdownMenuSeparator />
