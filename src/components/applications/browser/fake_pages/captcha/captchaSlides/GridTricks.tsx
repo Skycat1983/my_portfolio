@@ -136,9 +136,7 @@ export const GridTricks = ({
                 selected={selected.includes(idx)}
                 onToggle={onToggleSquare}
                 image={
-                  trickeryPhase === 1 && selected.includes(2) && idx === 2
-                    ? ME_BG_REMOVED
-                    : undefined
+                  trickeryPhase === 1 && idx === 2 ? ME_BG_REMOVED : undefined
                 }
               />
             ))}
