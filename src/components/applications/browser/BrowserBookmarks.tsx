@@ -14,26 +14,19 @@ import { useNewStore } from "@/hooks/useStore";
 interface BrowserBookmarksProps {
   windowId: WindowType["windowId"];
   onBookmarkSelect: (bookmark: BookmarkItem) => void;
+  isMobile: boolean;
 }
 
 export const BrowserBookmarks = ({
   windowId,
   onBookmarkSelect,
+  isMobile,
 }: BrowserBookmarksProps) => {
+  const nextZIndex = useNewStore((s) => s.nextZIndex);
   const window = useNewStore((s) =>
     s.findWindow((w) => w.windowId === windowId)
   );
-  console.log("BROWSER_BOOKMARKS_DEBUG: Window state:", window);
-  // When maximized, we need to account for the +1000 zIndex boost
-  const baseZIndex = window?.zIndex || 0;
-  const menuZ = window?.isMaximized ? baseZIndex + 1001 : baseZIndex + 1;
-
-  console.log("BROWSER_BOOKMARKS_DEBUG: Window state:", {
-    windowId,
-    isMaximized: window?.isMaximized,
-    baseZIndex: window?.zIndex,
-    calculatedMenuZ: menuZ,
-  });
+  const menuZ = window?.zIndex ? window.zIndex + 1000 : nextZIndex + 1;
 
   const handleBookmarkClick = (bookmark: BookmarkItem) => {
     console.log(
@@ -42,6 +35,13 @@ export const BrowserBookmarks = ({
     );
     onBookmarkSelect(bookmark);
   };
+
+  const bookMarks = BOOKMARKS.filter((bookmark) => {
+    if (isMobile) {
+      return bookmark.name !== "Portfolio-hub";
+    }
+    return true;
+  });
 
   return (
     <DropdownMenu>
@@ -66,7 +66,7 @@ export const BrowserBookmarks = ({
         <DropdownMenuLabel>Bookmarks</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        {BOOKMARKS.map((bookmark) => (
+        {bookMarks.map((bookmark) => (
           <DropdownMenuItem
             key={bookmark.url}
             onClick={() => handleBookmarkClick(bookmark)}

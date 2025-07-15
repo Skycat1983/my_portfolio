@@ -125,6 +125,7 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
         <BrowserBookmarks
           onBookmarkSelect={handleBookmarkSelect}
           windowId={typedWindowId}
+          isMobile={isMobile}
         />
         {!isMobile && <BrowserDownload />}
       </div>

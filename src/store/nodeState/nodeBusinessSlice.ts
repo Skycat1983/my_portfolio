@@ -86,25 +86,6 @@ export const createNodeBusinessSlice = (
       ? state.getDirectoryByID(node.parentId)
       : undefined;
 
-    console.log("🚀 MOVENODE_DEBUG: INITIAL STATE SNAPSHOT:");
-    console.log("🚀 MOVENODE_DEBUG: node:", {
-      id: node?.id,
-      parentId: node?.parentId,
-      label: node?.label,
-    });
-    console.log("🚀 MOVENODE_DEBUG: oldParentForValidation:", {
-      id: oldParentForValidation?.id,
-      children: oldParentForValidation?.children,
-    });
-    console.log("🚀 MOVENODE_DEBUG: newParentForValidation:", {
-      id: newParentForValidation?.id,
-      children: newParentForValidation?.children,
-    });
-    console.log(
-      "🚀 MOVENODE_DEBUG: current nodeMap keys:",
-      Object.keys(get().nodeMap)
-    );
-
     // Validation
     if (!node || !newParentForValidation) {
       console.warn("moveNodeByID: invalid node or parent");
@@ -127,14 +108,8 @@ export const createNodeBusinessSlice = (
 
     // Execute move using operations layer (atomic operations)
     // 1. Update the node's parentId
-    console.log("🚀 MOVENODE_DEBUG: === STEP 1: UPDATING NODE PARENT ===");
     const nodeUpdated = state.updateNodeByID(nodeId, { parentId: newParentId });
-    const updatedNode = get().nodeMap[nodeId];
-    console.log("🚀 MOVENODE_DEBUG: nodeUpdated success:", nodeUpdated);
-    console.log("🚀 MOVENODE_DEBUG: updatedNode after parent change:", {
-      id: updatedNode?.id,
-      parentId: updatedNode?.parentId,
-    });
+
     if (!nodeUpdated) {
       console.error("moveNodeByID: failed to update node");
       return false;
@@ -142,20 +117,8 @@ export const createNodeBusinessSlice = (
 
     // 2. Remove from old parent's children array - GET FRESH REFERENCE HERE!
     if (oldParentForValidation) {
-      console.log(
-        "🚀 MOVENODE_DEBUG: === STEP 2: REMOVING FROM OLD PARENT ==="
-      );
-
       // GET FRESH REFERENCE RIGHT BEFORE USING IT
       const freshOldParent = get().getDirectoryByID(oldParentForValidation.id);
-      console.log(
-        "🚀 MOVENODE_DEBUG: stale oldParent.children:",
-        oldParentForValidation.children
-      );
-      console.log(
-        "🚀 MOVENODE_DEBUG: fresh oldParent.children:",
-        freshOldParent?.children
-      );
 
       if (!freshOldParent) {
         console.error("moveNodeByID: fresh old parent not found");
@@ -166,22 +129,10 @@ export const createNodeBusinessSlice = (
         (childId: string) => childId !== nodeId
       );
 
-      console.log("🚀 MOVENODE_DEBUG: newChildren (from fresh):", newChildren);
-
       const oldParentUpdated = state.updateNodeByID(freshOldParent.id, {
         children: newChildren,
       });
-      const updatedOldParent = get().nodeMap[
-        freshOldParent.id
-      ] as DirectoryEntry;
-      console.log(
-        "🚀 MOVENODE_DEBUG: oldParentUpdated success:",
-        oldParentUpdated
-      );
-      console.log(
-        "🚀 MOVENODE_DEBUG: updatedOldParent.children:",
-        updatedOldParent?.children
-      );
+
       if (!oldParentUpdated) {
         console.error("moveNodeByID: failed to update old parent");
         // Rollback node update
@@ -191,18 +142,9 @@ export const createNodeBusinessSlice = (
     }
 
     // 3. Add to new parent's children array - GET FRESH REFERENCE HERE!
-    console.log("🚀 MOVENODE_DEBUG: === STEP 3: ADDING TO NEW PARENT ===");
 
     // GET FRESH REFERENCE RIGHT BEFORE USING IT
     const freshNewParent = get().getDirectoryByID(newParentId);
-    console.log(
-      "🚀 MOVENODE_DEBUG: stale newParent.children:",
-      newParentForValidation.children
-    );
-    console.log(
-      "🚀 MOVENODE_DEBUG: fresh newParent.children:",
-      freshNewParent?.children
-    );
 
     if (!freshNewParent) {
       console.error("moveNodeByID: fresh new parent not found");
@@ -211,21 +153,9 @@ export const createNodeBusinessSlice = (
 
     const newChildren = [...freshNewParent.children, nodeId];
 
-    console.log("🚀 MOVENODE_DEBUG: newChildren (from fresh):", newChildren);
-
     const newParentUpdated = state.updateNodeByID(newParentId, {
       children: newChildren,
     });
-
-    const finalNewParent = get().nodeMap[newParentId] as DirectoryEntry;
-    console.log(
-      "🚀 MOVENODE_DEBUG: newParentUpdated success:",
-      newParentUpdated
-    );
-    console.log(
-      "🚀 MOVENODE_DEBUG: finalNewParent.children:",
-      finalNewParent?.children
-    );
 
     if (!newParentUpdated) {
       console.error("moveNodeByID: failed to update new parent");
@@ -238,29 +168,6 @@ export const createNodeBusinessSlice = (
       }
       return false;
     }
-
-    console.log("🚀 MOVENODE_DEBUG: === MOVE COMPLETED SUCCESSFULLY ===");
-    console.log("🚀 MOVENODE_DEBUG: FINAL STATE VERIFICATION:");
-
-    // Verify final state
-    const finalNode = get().nodeMap[nodeId];
-    const finalOldParent = get().nodeMap[
-      oldParentForValidation?.id || ""
-    ] as DirectoryEntry;
-    const finalNewParentCheck = get().nodeMap[newParentId] as DirectoryEntry;
-
-    console.log("🚀 MOVENODE_DEBUG: finalNode:", {
-      id: finalNode?.id,
-      parentId: finalNode?.parentId,
-    });
-    console.log(
-      "🚀 MOVENODE_DEBUG: finalOldParent.children:",
-      finalOldParent?.children
-    );
-    console.log(
-      "🚀 MOVENODE_DEBUG: finalNewParent.children:",
-      finalNewParentCheck?.children
-    );
 
     return true;
   },

@@ -27,13 +27,6 @@ DirectoryLayoutProps) => {
             </div>
           ))}
         </div>
-        {/* <div className="grid grid-cols-[repeat(auto-fit,_minmax(80px,_1fr))] justify-items-center gap-6 w-full md:justify-items-start">
-          {nodes.map((node) => (
-            <div key={node.id} className="w-20 md:w-24">
-              <NodeSwitch node={node} windowId={windowId} view="icons" />
-            </div>
-          ))}
-        </div> */}
       </div>
 
       {/* Desktop: Use the working logic from commented code */}
@@ -51,19 +44,3 @@ DirectoryLayoutProps) => {
     </>
   );
 };
-
-// const isWindow = windowId !== desktopRootId;
-
-// Window directory layout
-// if (isWindow) {
-//   return (
-//     <div className="w-full h-full flex justify-start items-start gap-6 flex-wrap">
-//       {nodes.map((node) => (
-//         <div key={node.id} className="w-20 flex-shrink-0">
-//           <NodeSwitch node={node} windowId={windowId} view="icons" />
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-// Desktop/Mobile home page directory layout

@@ -116,12 +116,3 @@ export const AppLayout = () => {
     </div>
   );
 };
-
-// useEffect(() => {
-//   const browserNode = getNodeByID("browser-desktop");
-//   if (browserNode && browserNode.type === "application") {
-//     console.log("AppLayout.tsx: useEffect");
-
-//     openWindow(browserNode);
-//   }
-// }, [openWindow, getNodeByID]);
