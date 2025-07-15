@@ -52,9 +52,10 @@ export const WindowHeader: React.FC<WindowHeaderProps> = ({
     operatingSystem === "mac" ? "flex-row" : "flex-row-reverse";
 
   // Mobile-specific styling
-  const mobileHeaderClasses = screenDimensions.isMobile
-    ? "p-2 min-h-[44px]" // Reduced from p-3 and min-h-[56px]
-    : "p-2";
+  const mobileHeaderClasses = "p-2";
+  // const mobileHeaderClasses = screenDimensions.isMobile
+  //   ? "p-2 min-h-[44px]" // Reduced from p-3 and min-h-[56px]
+  //   : "p-2";
 
   const mobileTitleClasses = screenDimensions.isMobile
     ? "text-sm font-medium" // Reduced from text-base
