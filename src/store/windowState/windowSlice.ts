@@ -337,7 +337,7 @@ export const createWindowSlice = (
      * Open a window from any windowable node (applications, documents, directories)
      */
     openWindow: (node: WindowableNode): string | null => {
-      console.log("openWindowFromNode: opening window for node", node.id);
+      console.log("STARTPAGE_DEBUG : opening window for node", node.id);
 
       // Build context from node properties
       const context: WindowCreationContext = {
@@ -349,6 +349,8 @@ export const createWindowSlice = (
 
       const config = getApplicationConfig(node.applicationRegistryId);
       const windowId = generateWindowId(node.applicationRegistryId, context);
+
+      console.log("STARTPAGE_DEBUG : windowId", windowId);
 
       // Check if window already exists based on window scope
       const state = get();
@@ -389,6 +391,7 @@ export const createWindowSlice = (
       }
 
       if (existingWindow) {
+        console.log("STARTPAGE_DEBUG : existingWindow", existingWindow);
         // Use the focusWindow method from this slice
         slice.focusWindow(existingWindow.windowId);
         return existingWindow.windowId;
@@ -399,27 +402,35 @@ export const createWindowSlice = (
       const x = 100 * (windowCount + 1);
       const y = 100 * (windowCount + 1);
 
-      // Create new window with registry configuration
-      const newWindow: Window = {
-        windowId,
-        title: node.label, // Use node label as window title
-        nodeId: node.id,
-        applicationRegistryId: node.applicationRegistryId,
-        x,
-        y,
-        width: config.width,
-        height: config.height,
-        zIndex: state.nextZIndex,
-        fixed: config.fixedSize,
-        isMinimized: false,
-        isMaximized: config.defaultMaximized,
-      };
+      // Add the window to the state - calculate z-index within set callback
+      set((currentState) => {
+        const highestWindowZIndex =
+          currentState.windows.length > 0
+            ? Math.max(...currentState.windows.map((window) => window.zIndex))
+            : 0;
 
-      // Add the window to the state
-      set((state) => ({
-        windows: [...state.windows, newWindow],
-        nextZIndex: state.nextZIndex + 1,
-      }));
+        // Create new window with registry configuration
+        const newWindow: Window = {
+          windowId,
+          title: node.label, // Use node label as window title
+          nodeId: node.id,
+          applicationRegistryId: node.applicationRegistryId,
+          x,
+          y,
+          width: config.width,
+          height: config.height,
+          zIndex: highestWindowZIndex + 1,
+          fixed: config.fixedSize,
+          isMinimized: false,
+          isMaximized: config.defaultMaximized,
+        };
+
+        console.log("STARTPAGE_DEBUG : newWindow", newWindow);
+
+        return {
+          windows: [...currentState.windows, newWindow],
+        };
+      });
 
       console.log("openWindowFromNode: created window", windowId);
       return windowId;
@@ -441,13 +452,21 @@ export const createWindowSlice = (
         return false;
       }
 
-      // Update zIndex to bring window to front
-      set((state) => ({
-        windows: state.windows.map((w) =>
-          w.windowId === windowId ? { ...w, zIndex: state.nextZIndex } : w
-        ),
-        nextZIndex: state.nextZIndex + 1,
-      }));
+      // Update zIndex to bring window to front - calculate highest z-index within set callback
+      set((state) => {
+        const highestWindowZIndex =
+          state.windows.length > 0
+            ? Math.max(...state.windows.map((window) => window.zIndex))
+            : 0;
+
+        return {
+          windows: state.windows.map((w) =>
+            w.windowId === windowId
+              ? { ...w, zIndex: highestWindowZIndex + 1 }
+              : w
+          ),
+        };
+      });
 
       console.log("focusWindow: focused window", windowId);
       return true;

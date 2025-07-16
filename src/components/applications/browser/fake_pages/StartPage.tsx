@@ -123,10 +123,14 @@ export const StartPage = ({
         </div>
 
         <div
-          onClick={() => {
-            const downloadsFolder = getNodeByID("downloads");
-            if (downloadsFolder && downloadsFolder.type === "directory") {
-              openWindow(downloadsFolder);
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const downloadsNode = getNodeByID("downloads");
+            console.log("STARTPAGE_DEBUG downloadsNode", downloadsNode);
+            if (downloadsNode && downloadsNode.type === "directory") {
+              console.log("STARTPAGE_DEBUG opening window for downloadsNode");
+              openWindow(downloadsNode);
             }
           }}
           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
