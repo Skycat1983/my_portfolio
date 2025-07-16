@@ -27,24 +27,6 @@ export const AppLayout = () => {
   const getCurrentRootId = useNewStore((s) => s.getCurrentRootId);
   const updateLegacyFields = useNewStore((s) => s.updateLegacyFields);
   const deleteWindows = useNewStore((s) => s.deleteWindows);
-  const validateThankEmilyMessage = useNewStore(
-    (s) => s.validateThankEmilyMessage
-  );
-
-  useEffect(() => {
-    const test1 = "Thanks for helping debug my website."; // Missing period
-    const test2 = "Thank you emily for helping debug my website"; // Missing period, emily lowercase
-    const test3 = "Thankyou Emily for helping  debug my website"; // Thankyou, double spaces, no period
-    const test4 = "Thankyou emily for helping  debug my website"; // Multiple issues
-    const test5 = "Thank you Emily for helping debug my website."; // Missing comma
-    // const test6 = "Thank you, Emily for helping debug my website."; // Perfect message
-    const result = validateThankEmilyMessage(test1);
-    console.log("test result for ", test1, result);
-    // tests.forEach((test) => {
-    //   const validation = validateThankEmilyMessage(test);
-    //   console.log("test result for ", test, validation);
-    // });
-  }, [validateThankEmilyMessage]);
 
   const currentDesktopRootId = getCurrentRootId("main");
 

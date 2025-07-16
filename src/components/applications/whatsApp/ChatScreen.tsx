@@ -89,6 +89,35 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
     if (!inputText.trim() || !contact || contact.type !== "ai") return;
 
     const messageContent = inputText.trim();
+
+    // Validate Thank Emily message if sending to Emily and achievement not yet unlocked
+    const thankEmilyForHelpingMe =
+      useNewStore.getState().thankEmilyForHelpingMe;
+    const validateThankEmilyMessage =
+      useNewStore.getState().validateThankEmilyMessage;
+    const apologiseToEmily = useNewStore.getState().apologiseToEmily;
+    const unlockApologiseToEmilyAchievement =
+      useNewStore.getState().unlockApologiseToEmilyAchievement;
+
+    if (contact.id === "ai_emily" && !thankEmilyForHelpingMe) {
+      validateThankEmilyMessage(messageContent);
+    }
+
+    // Check for apology to Emily only after Thank Emily achievement is complete
+    if (
+      contact.id === "ai_emily" &&
+      thankEmilyForHelpingMe &&
+      apologiseToEmily === false
+    ) {
+      const hasApology =
+        /\b(sorry|apologize|apologise|apologies|forgive)\b/i.test(
+          messageContent
+        );
+      if (hasApology) {
+        unlockApologiseToEmilyAchievement();
+      }
+    }
+
     setInputText("");
 
     const deliveryStatus = wifiEnabled ? "delivered" : "pending";

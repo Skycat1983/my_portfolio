@@ -2,6 +2,7 @@ import { useNewStore } from "@/hooks/useStore";
 import { WEB_PAGE_REGISTRY } from "@/components/applications/browser/browserConstants";
 import type { ThankEmilyValidation } from "@/store/systemState/achievementsSlice";
 import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
+import { ClipboardIcon } from "lucide-react";
 
 interface Achievement {
   id: string;
@@ -46,6 +47,10 @@ export const AchievementContent = () => {
   const thankEmilyValidation = useNewStore(
     (state) => state.thankEmilyValidation
   );
+  const failedValidationAttempts = useNewStore(
+    (state) => state.failedValidationAttempts
+  );
+  const apologiseToEmily = useNewStore((state) => state.apologiseToEmily);
 
   const prospectiveEmployerProgress =
     cvCheckedOut && recommendationCheckedOut
@@ -53,6 +58,25 @@ export const AchievementContent = () => {
       : cvCheckedOut || recommendationCheckedOut
       ? 1
       : 0;
+
+  // Clipboard copy function for perfect message
+  const handleCopyPerfectMessage = async () => {
+    const perfectMessage =
+      "Thank you, Emily, for helping me debug this website.";
+
+    if (!navigator.clipboard) {
+      console.error("Clipboard API not supported");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(perfectMessage);
+      // Optional: Add toast or UI feedback here
+    } catch (err) {
+      console.error("Failed to copy text to clipboard:", err);
+      // Optional: UI feedback like "Manual copy required"
+    }
+  };
 
   // Define all achievements with their current status
   const achievements: Achievement[] = [
@@ -67,14 +91,26 @@ export const AchievementContent = () => {
       id: "thank-emily",
       title: "Thank Emily",
       description:
-        "Send Emily a message over Whatsapp to thank her for helping me debug this website",
+        "Send Emily a message over Whatsapp to thank her for helping to debug this website",
       icon: "💌",
       unlocked: thankEmilyForHelpingMe,
       progress: thankEmilyValidation.score,
       maxProgress: thankEmilyValidation.maxScore,
       validation: thankEmilyValidation,
     },
-
+    // Only show apologise achievement if it's not null
+    ...(apologiseToEmily !== null
+      ? [
+          {
+            id: "apologise-emily",
+            title: "Apologise to Emily",
+            description:
+              "Apologise to Emily for all those crappy, poorly-formatted messages you sent.",
+            icon: "😕",
+            unlocked: apologiseToEmily === true,
+          },
+        ]
+      : []),
     {
       id: "access-achievements",
       title: "Investigate the Red Notification",
@@ -243,38 +279,36 @@ export const AchievementContent = () => {
                             <span>•</span>
                             <span>{achievement.validation.errors[0]}</span>
                           </div>
-                          {achievement.validation.errors.length > 1 && (
+                          {/* {achievement.validation.errors.length > 1 && (
                             <div className="mt-1 text-red-500 italic">
                               (+{achievement.validation.errors.length - 1} more
                               issues)
                             </div>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     )}
 
-                    {/* {achievement.validation.suggestions.length > 0 && (
+                    {/* Clipboard functionality after 3 failed attempts */}
+                    {failedValidationAttempts >= 3 && !achievement.unlocked && (
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center justify-between mb-2">
                           <span className="text-blue-600 text-sm font-medium">
-                            💡 Suggestions:
+                            Seriously:
                           </span>
+                          <button
+                            onClick={handleCopyPerfectMessage}
+                            className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full transition-colors"
+                          >
+                            <ClipboardIcon className="w-4 h-4" />
+                          </button>
                         </div>
-                        <ul className="text-xs text-blue-700 space-y-1">
-                          {achievement.validation.suggestions.map(
-                            (suggestion, index) => (
-                              <li
-                                key={index}
-                                className="flex items-start gap-1"
-                              >
-                                <span>•</span>
-                                <span>{suggestion}</span>
-                              </li>
-                            )
-                          )}
-                        </ul>
+                        <div className="text-xs text-blue-700 italic">
+                          `"Thank you, Emily, for helping me debug this
+                          website."`
+                        </div>
                       </div>
-                    )} */}
+                    )}
                   </div>
                 )}
               </div>
@@ -284,7 +318,7 @@ export const AchievementContent = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      {/* <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-blue-600 text-lg">💡</span>
           <h3 className="font-semibold text-blue-800">Pro Tip</h3>
@@ -294,7 +328,7 @@ export const AchievementContent = () => {
           more achievements! Each achievement represents a different aspect of
           the portfolio experience.
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };

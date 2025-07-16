@@ -53,6 +53,8 @@ export const Toast = () => {
   const visitEveryWebsiteAchieved = useNewStore(
     (s) => s.visitEveryWebsiteAchieved
   );
+  const thankEmilyForHelpingMe = useNewStore((s) => s.thankEmilyForHelpingMe);
+  const apologiseToEmily = useNewStore((s) => s.apologiseToEmily);
 
   useEffect(() => {
     // Only show toast if we have more messages than we've previously notified about
@@ -129,6 +131,26 @@ export const Toast = () => {
       });
     }
   }, [operatingSystemSwitchedAchieved]);
+
+  useEffect(() => {
+    if (thankEmilyForHelpingMe) {
+      toast.success("Achievement Unlocked!", {
+        description: "You thanked Emily with perfect grammar! 💌",
+        duration: 4000,
+        icon: <TrophyIcon />,
+      });
+    }
+  }, [thankEmilyForHelpingMe]);
+
+  useEffect(() => {
+    if (apologiseToEmily === true) {
+      toast.success("Achievement Unlocked!", {
+        description: "You apologised to Emily! 😅",
+        duration: 4000,
+        icon: <TrophyIcon />,
+      });
+    }
+  }, [apologiseToEmily]);
 
   // Always render the Toaster component so it can show toasts
   return <Toaster />;
