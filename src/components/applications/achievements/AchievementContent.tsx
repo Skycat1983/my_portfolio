@@ -1,5 +1,6 @@
 import { useNewStore } from "@/hooks/useStore";
 import { WEB_PAGE_REGISTRY } from "@/components/applications/browser/browserConstants";
+import type { ThankEmilyValidation } from "@/store/systemState/achievementsSlice";
 import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
 
 interface Achievement {
@@ -10,6 +11,7 @@ interface Achievement {
   unlocked: boolean;
   progress?: number;
   maxProgress?: number;
+  validation?: ThankEmilyValidation;
 }
 
 export const AchievementContent = () => {
@@ -38,6 +40,12 @@ export const AchievementContent = () => {
     (state) => state.visitEveryWebsiteAchieved
   );
   const websitesVisited = useNewStore((state) => state.websitesVisited);
+  const thankEmilyForHelpingMe = useNewStore(
+    (state) => state.thankEmilyForHelpingMe
+  );
+  const thankEmilyValidation = useNewStore(
+    (state) => state.thankEmilyValidation
+  );
 
   const prospectiveEmployerProgress =
     cvCheckedOut && recommendationCheckedOut
@@ -55,6 +63,18 @@ export const AchievementContent = () => {
       icon: "👆",
       unlocked: clickOnSomethingAchieved,
     },
+    {
+      id: "thank-emily",
+      title: "Thank Emily",
+      description:
+        "Send Emily a message over Whatsapp to thank her for helping me debug this website",
+      icon: "💌",
+      unlocked: thankEmilyForHelpingMe,
+      progress: thankEmilyValidation.score,
+      maxProgress: thankEmilyValidation.maxScore,
+      validation: thankEmilyValidation,
+    },
+
     {
       id: "access-achievements",
       title: "Investigate the Red Notification",
@@ -205,6 +225,56 @@ export const AchievementContent = () => {
                         }}
                       />
                     </div>
+                  </div>
+                )}
+
+                {/* Validation Feedback for Thank Emily Achievement */}
+                {achievement.id === "thank-emily" && achievement.validation && (
+                  <div className="mt-3 space-y-2">
+                    {achievement.validation.errors.length > 0 && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-red-600 text-sm font-medium">
+                            ❌ Issue to fix:
+                          </span>
+                        </div>
+                        <div className="text-xs text-red-700">
+                          <div className="flex items-start gap-1">
+                            <span>•</span>
+                            <span>{achievement.validation.errors[0]}</span>
+                          </div>
+                          {achievement.validation.errors.length > 1 && (
+                            <div className="mt-1 text-red-500 italic">
+                              (+{achievement.validation.errors.length - 1} more
+                              issues)
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* {achievement.validation.suggestions.length > 0 && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-blue-600 text-sm font-medium">
+                            💡 Suggestions:
+                          </span>
+                        </div>
+                        <ul className="text-xs text-blue-700 space-y-1">
+                          {achievement.validation.suggestions.map(
+                            (suggestion, index) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-1"
+                              >
+                                <span>•</span>
+                                <span>{suggestion}</span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    )} */}
                   </div>
                 )}
               </div>
