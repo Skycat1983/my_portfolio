@@ -1,5 +1,6 @@
 // interface AchievementsState {}
 
+import { WEB_PAGE_REGISTRY } from "@/components/applications/browser/browserConstants";
 import type { SetState } from "@/types/storeTypes";
 
 interface AchievementState {
@@ -16,8 +17,8 @@ interface AchievementState {
   eggsDownloaded: number;
   downloadEggsAchieved: boolean;
 
-  // 5. visit a website
-  joinAQueueAchieved: boolean;
+  visitEveryWebsiteAchieved: boolean;
+  websitesVisited: (keyof typeof WEB_PAGE_REGISTRY)[];
 
   // 6. Portfolio destroyer
   portfolioDeletedAchieved: boolean;
@@ -52,13 +53,12 @@ interface AchievementAction {
   // 5. Portfolio destroyer
   unlockPortfolioDeletedAchievement: () => void;
 
+  addToWebsitesVisited: (website: keyof typeof WEB_PAGE_REGISTRY) => void;
+
   // 6. Prospective employer
   confirmCVCheckedOut: () => void;
   confirmRecommendationCheckedOut: () => void;
   unlockProspectiveEmployerAchievement: () => void;
-
-  // 7. visit a website
-  unlockJoinAQueueAchievement: () => void;
 
   // Mark achievements as seen (reset counter)
   markAchievementsAsSeen: () => void;
@@ -90,8 +90,10 @@ export const createAchievementSlice = (
   // 5. Portfolio destroyer
   portfolioDeletedAchieved: false,
 
-  // 6. visit a website
-  joinAQueueAchieved: false,
+  // 5. visit a website
+  visitEveryWebsiteAchieved: false,
+
+  websitesVisited: [],
 
   // 7. Prospective employer
   unseenAchievements: 0,
@@ -145,25 +147,29 @@ export const createAchievementSlice = (
     });
   },
 
+  addToWebsitesVisited: (website: keyof typeof WEB_PAGE_REGISTRY) => {
+    set((state) => {
+      const newWebsitesVisited = [...state.websitesVisited, website];
+      const allWebsitesVisited =
+        newWebsitesVisited.length === Object.keys(WEB_PAGE_REGISTRY).length;
+
+      return {
+        websitesVisited: newWebsitesVisited,
+        ...(allWebsitesVisited &&
+          !state.visitEveryWebsiteAchieved && {
+            visitEveryWebsiteAchieved: true,
+            unseenAchievements: state.unseenAchievements + 1,
+          }),
+      };
+    });
+  },
+
   unlockPortfolioDeletedAchievement: () => {
     set((state) => {
       // Only increment if not already achieved
       if (!state.portfolioDeletedAchieved) {
         return {
           portfolioDeletedAchieved: true,
-          unseenAchievements: state.unseenAchievements + 1,
-        };
-      }
-      return state; // No change if already unlocked
-    });
-  },
-
-  unlockJoinAQueueAchievement: () => {
-    set((state) => {
-      // Only increment if not already achieved
-      if (!state.joinAQueueAchieved) {
-        return {
-          joinAQueueAchieved: true,
           unseenAchievements: state.unseenAchievements + 1,
         };
       }
@@ -244,9 +250,6 @@ export const createAchievementSlice = (
 
       // 5. Portfolio destroyer
       portfolioDeletedAchieved: false,
-
-      // 6. visit a website
-      joinAQueueAchieved: false,
 
       // 7. Prospective employer
       unseenAchievements: 0,

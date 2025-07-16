@@ -77,7 +77,7 @@ export const rootNodes: DirectoryObject = {
         createNodeFromTemplate("document", {
           id: "private",
           documentConfigId: "private_document_config",
-          label: "Private",
+          label: "PRIVATE",
           protected: false,
         }),
       ],

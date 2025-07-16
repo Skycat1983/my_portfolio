@@ -1,4 +1,5 @@
 import { useNewStore } from "@/hooks/useStore";
+import { WEB_PAGE_REGISTRY } from "@/components/applications/browser/browserConstants";
 import ACHIEVEMENT from "@/assets/icons_m/achievement.png";
 
 interface Achievement {
@@ -23,7 +24,6 @@ export const AchievementContent = () => {
   const portfolioDeletedAchieved = useNewStore(
     (state) => state.portfolioDeletedAchieved
   );
-  const joinAQueueAchieved = useNewStore((state) => state.joinAQueueAchieved);
   const operatingSystemSwitchedAchieved = useNewStore(
     (state) => state.operatingSystemSwitchedAchieved
   );
@@ -34,6 +34,10 @@ export const AchievementContent = () => {
   const prospectiveEmployerAchieved = useNewStore(
     (state) => state.prospectiveEmployerAchieved
   );
+  const visitEveryWebsiteAchieved = useNewStore(
+    (state) => state.visitEveryWebsiteAchieved
+  );
+  const websitesVisited = useNewStore((state) => state.websitesVisited);
 
   const prospectiveEmployerProgress =
     cvCheckedOut && recommendationCheckedOut
@@ -91,11 +95,13 @@ export const AchievementContent = () => {
       unlocked: portfolioDeletedAchieved,
     },
     {
-      id: "queue-joiner",
-      title: "Surf the Net",
-      description: "Visit a website of your choice",
-      icon: "🌐",
-      unlocked: joinAQueueAchieved,
+      id: "website-explorer",
+      title: "Website Explorer",
+      description: "Visit all available websites in the browser",
+      icon: "🗺️",
+      unlocked: visitEveryWebsiteAchieved,
+      progress: websitesVisited.length,
+      maxProgress: Object.keys(WEB_PAGE_REGISTRY).length,
     },
     {
       id: "offer-job",

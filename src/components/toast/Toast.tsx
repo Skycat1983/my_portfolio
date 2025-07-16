@@ -47,22 +47,14 @@ export const Toast = () => {
   const deletedPortfolioAchieved = useNewStore(
     (s) => s.portfolioDeletedAchieved
   );
-  const joinAQueueAchieved = useNewStore((s) => s.joinAQueueAchieved);
   const operatingSystemSwitchedAchieved = useNewStore(
     (s) => s.operatingSystemSwitchedAchieved
   );
+  const visitEveryWebsiteAchieved = useNewStore(
+    (s) => s.visitEveryWebsiteAchieved
+  );
 
   useEffect(() => {
-    console.log("TOAST: whatsAppMessages", whatsAppMessages);
-    console.log("TOAST: whatsAppInitialized", whatsAppInitialized);
-    console.log("TOAST: deliveredMessagesReceived", deliveredMessagesReceived);
-    console.log("TOAST: nonUserMessageCount", nonUserMessageCount);
-    console.log("TOAST: wifiEnabled", wifiEnabled);
-    console.log(
-      "TOAST: lastNotifiedMessageCount",
-      lastNotifiedMessageCount.current
-    );
-
     // Only show toast if we have more messages than we've previously notified about
     if (
       whatsAppInitialized &&
@@ -119,14 +111,14 @@ export const Toast = () => {
   }, [deletedPortfolioAchieved]);
 
   useEffect(() => {
-    if (joinAQueueAchieved) {
+    if (visitEveryWebsiteAchieved) {
       toast.success("Achievement Unlocked!", {
         description: "You visited a website! 🔄",
         duration: 4000,
         icon: <TrophyIcon />,
       });
     }
-  }, [joinAQueueAchieved]);
+  }, [visitEveryWebsiteAchieved]);
 
   useEffect(() => {
     if (operatingSystemSwitchedAchieved) {

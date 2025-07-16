@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { Clock, Users, Server, Wifi, AlertTriangle } from "lucide-react";
-import { useNewStore } from "@/hooks/useStore";
 
 // Local constant - moved from global state
 const PREDEFINED_ADDRESS = "www.how-is-he-still-unemployed.com";
 
 export const QueuePage = () => {
-  const unlockJoinAQueueAchievement = useNewStore(
-    (s) => s.unlockJoinAQueueAchievement
-  );
   const [queuePosition] = useState("NaN.1.018e27");
   const [serverLoad, setServerLoad] = useState(99.7);
   const [dots, setDots] = useState("");
@@ -28,13 +24,11 @@ export const QueuePage = () => {
 
   // Animate loading dots
   useEffect(() => {
-    unlockJoinAQueueAchievement();
-
     const interval = setInterval(() => {
       setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
     }, 500);
     return () => clearInterval(interval);
-  }, [unlockJoinAQueueAchievement]);
+  }, []);
 
   // Countdown timer - decrements every minute (60 seconds)
   useEffect(() => {

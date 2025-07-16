@@ -65,6 +65,21 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
   // const precicate = (window: WindowType) => window.windowId === windowId;
   // const window = useNewStore((state) => state.findOneWindow(precicate))!;
   const addToHistory = useNewStore((state) => state.addToHistory);
+  const websitesVisited = useNewStore((state) => state.websitesVisited);
+  const addToWebsitesVisited = useNewStore(
+    (state) => state.addToWebsitesVisited
+  );
+
+  const handleWebsiteViewedAchievement = (addressViewed: string) => {
+    if (
+      !websitesVisited.includes(
+        addressViewed as keyof typeof WEB_PAGE_REGISTRY
+      ) &&
+      WEB_PAGE_REGISTRY[addressViewed as keyof typeof WEB_PAGE_REGISTRY]
+    ) {
+      addToWebsitesVisited(addressViewed as keyof typeof WEB_PAGE_REGISTRY);
+    }
+  };
 
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -77,14 +92,12 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
 
   // Callback functions for StartPage
   const handleFocusAddressBar = () => {
-    console.log("BROWSER_DEBUG handleFocusAddressBar called");
     if (addressBarRef.current) {
       addressBarRef.current.focus();
     }
   };
 
   const handleOpenBookmarks = () => {
-    console.log("BROWSER_DEBUG handleOpenBookmarks called");
     if (bookmarksRef.current) {
       bookmarksRef.current.openDropdown();
     }
@@ -110,8 +123,10 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setAddressViewed(e.currentTarget.value);
-      addToHistory(typedWindowId, e.currentTarget.value);
+      const newAddress = e.currentTarget.value;
+      setAddressViewed(newAddress);
+      addToHistory(typedWindowId, newAddress);
+      handleWebsiteViewedAchievement(newAddress);
     }
   };
 
@@ -121,19 +136,17 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
 
   const handleHistoryChange = (currentItem: unknown) => {
     if (typeof currentItem === "string") {
+      handleWebsiteViewedAchievement(currentItem);
       setAddressViewed(currentItem);
       setAddressBarUrl(currentItem);
     }
   };
 
   const handleBookmarkSelect = (bookmark: BookmarkItem) => {
-    console.log(
-      "BROWSER_DEBUG handleBookmarkSelect in BrowserContent.tsx: ",
-      bookmark
-    );
     setAddressBarUrl(bookmark.url);
     setAddressViewed(bookmark.url);
     addToHistory(typedWindowId, bookmark.url);
+    handleWebsiteViewedAchievement(bookmark.url);
   };
 
   const isMobile = screenSize.isXs || screenSize.isSm;
