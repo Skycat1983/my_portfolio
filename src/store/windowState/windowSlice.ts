@@ -8,6 +8,7 @@ import {
   generateWindowId,
   getApplicationConfig,
   requiresHistory,
+  type ApplicationRegistryId,
   type WindowId,
 } from "@/constants/applicationRegistry";
 import type { DocumentEntry } from "@/components/nodes/nodeTypes";
@@ -24,6 +25,9 @@ interface WindowActions {
 
   // Find operations (predicate-based)
   findWindow: (predicate: (window: Window) => boolean) => Window | undefined;
+  findWindowByApplicationId: (
+    applicationId: ApplicationRegistryId
+  ) => Window | undefined;
   findWindowById: (windowId: WindowId) => Window | undefined;
   findWindows: (predicate: (window: Window) => boolean) => Window[];
   windowExists: (predicate: (window: Window) => boolean) => boolean;
@@ -103,6 +107,13 @@ export const createWindowSlice = (
     findWindowById: (windowId: WindowId) => {
       const state = get();
       return state.windows.find((w) => w.windowId === windowId);
+    },
+
+    findWindowByApplicationId: (applicationId: ApplicationRegistryId) => {
+      const state = get();
+      return state.windows.find(
+        (w) => w.applicationRegistryId === applicationId
+      );
     },
 
     /**

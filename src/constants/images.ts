@@ -79,7 +79,8 @@ import FIREFOX from "../assets/icons_m/firefox.png";
 import SAFARI from "../assets/icons_m/safari.png";
 import TERMINAL from "../assets/icons_m/terminal.png";
 import WHATSAPP from "../assets/icons_m/whatsapp.png";
-export { EDGE, FIREFOX, SAFARI, TERMINAL, WHATSAPP };
+import MORTY from "../assets/icons_m/morty.png";
+export { EDGE, FIREFOX, SAFARI, TERMINAL, WHATSAPP, MORTY };
 
 // Captcha icons
 import GRAPES from "../assets/captcha/grapes.png";

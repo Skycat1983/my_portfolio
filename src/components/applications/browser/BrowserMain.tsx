@@ -5,7 +5,7 @@ import { IncompletePage } from "./fake_pages/IncompletePage";
 import { useNewStore } from "@/hooks/useStore";
 import { WindowHistoryNavigation } from "@/components/window/windowNavigation/WindowHistoryNavigation";
 import { BrowserAddressBar } from "./BrowserAddressBar";
-import { BrowserBookmarks } from "./BrowserBookmarks";
+import { BrowserBookmarks, type BrowserBookmarksRef } from "./BrowserBookmarks";
 import { BrowserDownload } from "./BrowserDownload";
 import {
   PREDEFINED_ADDRESS,
@@ -18,10 +18,20 @@ import type { WindowContentProps } from "@/types/storeTypes";
 
 // TODO: when we click on 'search' we should focus on the search bar
 
-const renderContent = (addressBarUrl: string) => {
+interface BrowserCallbacks {
+  focusAddressBar: () => void;
+  openBookmarks: () => void;
+}
+
+const renderContent = (addressBarUrl: string, callbacks?: BrowserCallbacks) => {
   console.log("BROWSER_DEBUG renderContent", addressBarUrl);
   if (addressBarUrl === "" || addressBarUrl === undefined) {
-    return <StartPage />;
+    return (
+      <StartPage
+        onFocusAddressBar={callbacks?.focusAddressBar}
+        onOpenBookmarks={callbacks?.openBookmarks}
+      />
+    );
   }
 
   const page = WEB_PAGE_REGISTRY[addressBarUrl];
@@ -44,6 +54,10 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
   // const [addressViewed, setAddressViewed] = useState("www.banking.com");
   const [addressViewed, setAddressViewed] = useState(initialUrl);
 
+  // Refs for browser components
+  const addressBarRef = useRef<HTMLInputElement>(null);
+  const bookmarksRef = useRef<BrowserBookmarksRef>(null);
+
   // const precicate = (window: WindowType) => window.windowId === windowId;
   // const window = useNewStore((state) => state.findOneWindow(precicate))!;
   const addToHistory = useNewStore((state) => state.addToHistory);
@@ -56,6 +70,26 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
       contentRef.current.scrollTop = 0;
     }
   }, [addressViewed]);
+
+  // Callback functions for StartPage
+  const handleFocusAddressBar = () => {
+    console.log("BROWSER_DEBUG handleFocusAddressBar called");
+    if (addressBarRef.current) {
+      addressBarRef.current.focus();
+    }
+  };
+
+  const handleOpenBookmarks = () => {
+    console.log("BROWSER_DEBUG handleOpenBookmarks called");
+    if (bookmarksRef.current) {
+      bookmarksRef.current.openDropdown();
+    }
+  };
+
+  const browserCallbacks: BrowserCallbacks = {
+    focusAddressBar: handleFocusAddressBar,
+    openBookmarks: handleOpenBookmarks,
+  };
 
   // Mobile: Navigation at bottom, Desktop: Navigation at top
 
@@ -117,12 +151,14 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
           onHistoryChange={handleHistoryChange}
         />
         <BrowserAddressBar
+          ref={addressBarRef}
           value={addressBarUrl}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onClick={handleClick}
         />
         <BrowserBookmarks
+          ref={bookmarksRef}
           onBookmarkSelect={handleBookmarkSelect}
           windowId={typedWindowId}
           isMobile={isMobile}
@@ -134,7 +170,7 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
         ref={contentRef}
         className="flex-1 overflow-auto flex flex-col items-start justify-start"
       >
-        {renderContent(addressViewed)}
+        {renderContent(addressViewed, browserCallbacks)}
       </div>
     </div>
   );

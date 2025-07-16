@@ -2,6 +2,7 @@ import { useNewStore } from "@/hooks/useStore";
 import { cn } from "@/lib/utils";
 import { Shield } from "lucide-react";
 import { urlInputStyle } from "./BrowserFrame.styles";
+import { forwardRef } from "react";
 
 interface BrowserAddressBarProps {
   value: string;
@@ -10,12 +11,10 @@ interface BrowserAddressBarProps {
   onClick: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
 
-export const BrowserAddressBar = ({
-  value,
-  onChange,
-  onKeyDown,
-  onClick,
-}: BrowserAddressBarProps) => {
+export const BrowserAddressBar = forwardRef<
+  HTMLInputElement,
+  BrowserAddressBarProps
+>(({ value, onChange, onKeyDown, onClick }, ref) => {
   const screenDimensions = useNewStore((state) => state.screenDimensions);
 
   // Mobile-friendly input styles
@@ -35,6 +34,7 @@ export const BrowserAddressBar = ({
         className="absolute left-3 text-green-500"
       />
       <input
+        ref={ref}
         type="text"
         value={value}
         onChange={onChange}
@@ -52,4 +52,6 @@ export const BrowserAddressBar = ({
       />
     </div>
   );
-};
+});
+
+BrowserAddressBar.displayName = "BrowserAddressBar";

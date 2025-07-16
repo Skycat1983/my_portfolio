@@ -1,8 +1,16 @@
-import { Search, Star, Download } from "lucide-react";
+import { Search, Download, Bookmark } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
 import { useEffect, useState } from "react";
 
-export const StartPage = () => {
+interface StartPageProps {
+  onFocusAddressBar?: () => void;
+  onOpenBookmarks?: () => void;
+}
+
+export const StartPage = ({
+  onFocusAddressBar,
+  onOpenBookmarks,
+}: StartPageProps) => {
   const [isDownloading, setIsDownloading] = useState(false);
   // const [downloadCount, setDownloadCount] = useState(0);
   const downloadEgg = useNewStore((s) => s.downloadEgg);
@@ -34,6 +42,20 @@ export const StartPage = () => {
     }
   };
 
+  const handleSearchClick = () => {
+    console.log("STARTPAGE_DEBUG handleSearchClick called");
+    if (onFocusAddressBar) {
+      onFocusAddressBar();
+    }
+  };
+
+  const handleFeaturedClick = () => {
+    console.log("STARTPAGE_DEBUG handleFeaturedClick called");
+    if (onOpenBookmarks) {
+      onOpenBookmarks();
+    }
+  };
+
   const buttonLabel = isDownloading ? "Downloading..." : `Download Egg`;
 
   return (
@@ -50,19 +72,43 @@ export const StartPage = () => {
 
       {/* Navigation cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 hover:shadow-md transition-shadow ">
+        <div
+          onClick={handleSearchClick}
+          className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 hover:shadow-md transition-shadow cursor-pointer"
+          tabIndex={0}
+          aria-label="Focus on search bar"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleSearchClick();
+            }
+          }}
+        >
           <Search className="w-8 h-8 text-blue-600 mb-3" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Search</h3>
           <p className="text-gray-600 text-sm">
-            Clicking here should focus on the search bar, but it doesn't.
+            Click here to focus on the search bar.
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200 hover:shadow-md transition-shadow ">
-          <Star className="w-8 h-8 text-green-600 mb-3" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Featured</h3>
+        <div
+          onClick={handleFeaturedClick}
+          className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200 hover:shadow-md transition-shadow cursor-pointer"
+          tabIndex={0}
+          aria-label="Open bookmarks"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleFeaturedClick();
+            }
+          }}
+        >
+          <Bookmark className="w-8 h-8 text-green-600 mb-3" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Bookmarks
+          </h3>
           <p className="text-gray-600 text-sm">
-            I haven't decided what to put here yet.
+            Click here to view your favourite sites.
           </p>
         </div>
 
