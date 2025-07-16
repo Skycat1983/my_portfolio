@@ -4,6 +4,7 @@ import { WEB_PAGE_REGISTRY } from "@/components/applications/browser/browserCons
 import type { SetState } from "@/types/storeTypes";
 
 interface AchievementState {
+  thankEmilyForHelpingMe: boolean;
   // 1. Click on something
   clickOnSomethingAchieved: boolean;
 
@@ -74,6 +75,7 @@ export type AchievementSlice = AchievementState & AchievementAction;
 export const createAchievementSlice = (
   set: SetState<AchievementSlice>
 ): AchievementSlice => ({
+  thankEmilyForHelpingMe: false,
   // 1. Click on something
   clickOnSomethingAchieved: false,
 
