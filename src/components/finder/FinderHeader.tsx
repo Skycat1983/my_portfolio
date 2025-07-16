@@ -30,9 +30,10 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
 }) => {
   const currentTheme = useNewStore((s) => s.theme);
   const bgColor = theme.colors[currentTheme].background.secondary;
+  const bgColourSecondary = theme.colors[currentTheme].background.tertiary;
   const borderColor = theme.colors[currentTheme].border.primary;
   console.log("HISTORY_DEBUG nodeId", nodeId);
-  // const textColor = theme.colors[currentTheme].text.primary;
+  const textColor = theme.colors[currentTheme].text.primary;
 
   return (
     <div
@@ -55,6 +56,11 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
 
       <Input
         placeholder="Search"
+        style={{
+          color: textColor,
+          // borderColor: borderColor,
+          backgroundColor: bgColourSecondary,
+        }}
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />

@@ -3,6 +3,7 @@ import { NodeSwitch } from "../nodes/NodeSwitch";
 import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import type { WindowId } from "@/constants/applicationRegistry";
+import theme from "@/styles/theme";
 
 interface IconsViewProps {
   nodes: NodeEntry[];
@@ -18,9 +19,16 @@ export const IconsView = ({
   nodeId,
 }: IconsViewProps) => {
   const operatingSystem = useNewStore((s) => s.operatingSystem);
-
+  const currentTheme = useNewStore((s) => s.theme);
+  const bgColourTertiary = theme.colors[currentTheme].background.tertiary;
   return (
-    <div className="w-full h-full p-6">
+    <div
+      className="w-full h-full p-6"
+      style={{
+        backgroundColor: bgColourTertiary,
+        // borderColor: borderColor,
+      }}
+    >
       <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
         {/* Mobile/Tablet: Use CSS Grid for better centering control */}
         <div className="block lg:hidden">

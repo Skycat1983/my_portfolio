@@ -11,6 +11,8 @@ import {
 import { Button } from "../ui/button";
 import { Columns3, Grid2x2, List, UnfoldVertical } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
+import theme from "@/styles/theme";
+import { useDropdownZIndex } from "../window/hooks/useNextWindowZIndex";
 
 export type FinderViewProps = {
   /** current view mode */
@@ -45,8 +47,14 @@ export const FinderViewControls: React.FC<FinderViewProps> = ({
   const window = useNewStore((s) =>
     s.findWindow((w) => w.windowId === windowId)
   );
+  const zIndex = useDropdownZIndex();
+  const menuZ = zIndex + 1;
+  const currentTheme = useNewStore((s) => s.theme);
+  const bgColourSecondary = theme.colors[currentTheme].background.tertiary;
+  const borderColor = theme.colors[currentTheme].border.primary;
+  const textColor = theme.colors[currentTheme].text.primary;
   // When maximized, we need to account for the +1000 zIndex boost
-  const menuZ = window!.zIndex + 1;
+  // const menuZ = window!.zIndex + 1;
 
   console.log("FINDER_VIEW_CONTROLS_01: Window state:", {
     windowId,
@@ -61,7 +69,12 @@ export const FinderViewControls: React.FC<FinderViewProps> = ({
         <Button
           variant="outline"
           className="flex items-center relative"
-          style={{ zIndex: menuZ }}
+          style={{
+            zIndex: menuZ,
+            backgroundColor: bgColourSecondary,
+            borderColor: borderColor,
+            color: textColor,
+          }}
           onClick={(e) => {
             console.log(
               "FINDER_VIEW_CONTROLS_02: Button clicked, menuZ:",

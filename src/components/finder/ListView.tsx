@@ -12,7 +12,7 @@ import { useNewStore } from "@/hooks/useStore";
 import clsx from "clsx";
 import { Separator } from "../ui/separator";
 import type { WindowId } from "@/constants/applicationRegistry";
-// import theme from "@/styles/theme";
+import theme from "@/styles/theme";
 
 interface ListViewProps {
   nodes: NodeEntry[];
@@ -23,6 +23,12 @@ const ROW_HEIGHT = 35; // px
 const ROW_PADDING = 4; // px
 
 export const ListView = ({ nodes, windowId }: ListViewProps) => {
+  const currentTheme = useNewStore((s) => s.theme);
+  const headingTextColor = theme.colors[currentTheme].text.primary;
+  const contentTextColor = theme.colors[currentTheme].text.secondary;
+  const bgColourTertiary = theme.colors[currentTheme].background.tertiary;
+  const bgColorSecondary = theme.colors[currentTheme].background.secondary;
+  const borderColor = theme.colors[currentTheme].border.primary;
   const themeMode = useNewStore((state) => state.theme);
   const [sortBy, setSortBy] = React.useState<
     "name" | "type" | "size" | "modified"
@@ -32,8 +38,6 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
   );
   const selectedNodeId = useNewStore((state) => state.selectedNodeId);
   const selectOneNode = useNewStore((state) => state.selectOneNode);
-  // const bgColor = theme.colors[themeMode].background.secondary;
-  // const borderColor = theme.colors[themeMode].border.primary;
 
   const handleSort = (column: "name" | "type" | "size" | "modified") => {
     if (sortBy === column) {
@@ -162,8 +166,6 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
     });
   }, [nodes, sortBy, sortDirection]);
 
-  const textColor = "text-white";
-
   const getBackgroundColor = (index: number) => {
     if (themeMode === "light") {
       return index % 2 === 0 ? "bg-gray-50" : "bg-white";
@@ -172,23 +174,29 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div
+      className="w-full h-full flex flex-col"
+      style={{
+        backgroundColor: bgColourTertiary,
+        color: contentTextColor,
+      }}
+    >
       {/* Table Header */}
       <div
-        className={clsx(
-          "px-4 border-b sticky top-0 z-10",
-          themeMode === "light"
-            ? "bg-gray-100 border-gray-200"
-            : "bg-gray-800 border-gray-700"
-        )}
+        className="px-4 border-b sticky top-0 z-10"
+        style={{
+          backgroundColor: bgColorSecondary,
+          borderColor: borderColor,
+        }}
       >
         <div className="flex items-center h-9">
           <button
             onClick={() => handleSort("name")}
             className={clsx(
-              "text-left hover:text-gray-900 transition-colors flex items-center whitespace-nowrap overflow-hidden flex-[2.5]",
+              "text-left hover:opacity-80 transition-colors flex items-center whitespace-nowrap overflow-hidden flex-[2.5]",
               sortBy === "name" && "font-bold"
             )}
+            style={{ color: headingTextColor }}
           >
             <span className="truncate">Name</span>
             <span className="ml-1 flex-shrink-0">
@@ -199,16 +207,18 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
           <div className="flex items-center h-full px-2">
             <Separator
               orientation="vertical"
-              className="h-[10px] bg-gray-200/10"
+              className="h-[10px]"
+              style={{ backgroundColor: borderColor }}
             />
           </div>
 
           <button
             onClick={() => handleSort("modified")}
             className={clsx(
-              "text-left hover:text-gray-900 transition-colors flex items-center whitespace-nowrap overflow-hidden flex-[2]",
+              "text-left hover:opacity-80 transition-colors flex items-center whitespace-nowrap overflow-hidden flex-[2]",
               sortBy === "modified" && "font-bold"
             )}
+            style={{ color: headingTextColor }}
           >
             <span className="truncate">Date Modified</span>
             <span className="ml-1 flex-shrink-0">
@@ -219,16 +229,18 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
           <div className="flex items-center h-full px-2">
             <Separator
               orientation="vertical"
-              className="h-[10px] bg-gray-200/10"
+              className="h-[10px]"
+              style={{ backgroundColor: borderColor }}
             />
           </div>
 
           <button
             onClick={() => handleSort("size")}
             className={clsx(
-              "text-right hover:text-gray-900 transition-colors flex items-center justify-end whitespace-nowrap overflow-hidden w-[100px]",
+              "text-right hover:opacity-80 transition-colors flex items-center justify-end whitespace-nowrap overflow-hidden w-[100px]",
               sortBy === "size" && "font-bold"
             )}
+            style={{ color: headingTextColor }}
           >
             <span className="truncate">Size</span>
             <span className="ml-1 flex-shrink-0">
@@ -239,16 +251,18 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
           <div className="flex items-center h-full px-2">
             <Separator
               orientation="vertical"
-              className="h-[10px] bg-gray-200/10"
+              className="h-[10px]"
+              style={{ backgroundColor: borderColor }}
             />
           </div>
 
           <button
             onClick={() => handleSort("type")}
             className={clsx(
-              "text-left hover:text-gray-900 transition-colors flex items-center whitespace-nowrap overflow-hidden w-[120px]",
+              "text-left hover:opacity-80 transition-colors flex items-center whitespace-nowrap overflow-hidden w-[120px]",
               sortBy === "type" && "font-bold"
             )}
+            style={{ color: headingTextColor }}
           >
             <span className="truncate">Kind</span>
             <span className="ml-1 flex-shrink-0">
@@ -285,26 +299,20 @@ export const ListView = ({ nodes, windowId }: ListViewProps) => {
               />
             </div>
             <div
-              className={clsx(
-                textColor,
-                "text-left truncate flex items-center min-w-0 text-sm"
-              )}
+              className="text-left truncate flex items-center min-w-0 text-sm"
+              style={{ color: contentTextColor }}
             >
               {formatDate(node.dateModified)}
             </div>
             <div
-              className={clsx(
-                textColor,
-                "text-right truncate flex items-center justify-end min-w-0 text-sm"
-              )}
+              className="text-right truncate flex items-center justify-end min-w-0 text-sm"
+              style={{ color: contentTextColor }}
             >
               {formatSize(node.size)}
             </div>
             <div
-              className={clsx(
-                textColor,
-                "text-left truncate flex items-center min-w-0 text-sm"
-              )}
+              className="text-left truncate flex items-center min-w-0 text-sm"
+              style={{ color: contentTextColor }}
             >
               {getKindDisplay(node)}
             </div>

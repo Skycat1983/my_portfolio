@@ -4,6 +4,7 @@ import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import { useEffect, useRef, useMemo } from "react";
 import type { WindowId } from "@/constants/applicationRegistry";
+import theme from "@/styles/theme";
 
 export const ColumnsView = ({
   windowId,
@@ -14,10 +15,16 @@ export const ColumnsView = ({
 }) => {
   const selectedNodeId = useNewStore((s) => s.selectedNodeId);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
+  const currentTheme = useNewStore((s) => s.theme);
   const history = useFinderHistory(windowId);
   const containerRef = useRef<HTMLDivElement>(null);
   const window = useNewStore((s) => s.findWindowById(windowId));
   const isMaximized = window?.isMaximized;
+
+  // Theme colors
+  const bgColorSecondary = theme.colors[currentTheme].background.secondary;
+  const contentTextColor = theme.colors[currentTheme].text.secondary;
+  const borderColor = theme.colors[currentTheme].border.primary;
 
   // Get column path using new helper method
   const columnPath = history.getColumnPath();
@@ -57,12 +64,18 @@ export const ColumnsView = ({
     <div
       ref={containerRef}
       className="w-full h-full flex flex-row p-4 overflow-x-auto scroll-smooth"
+      style={{ color: contentTextColor }}
     >
       {/* Active columns */}
       {columnPath.map((nodeId, depth) => (
         <div
           key={nodeId}
-          className="w-[250px] min-w-[250px] h-full flex flex-col items-start bg-neutral-900/50 rounded-lg p-2 mr-2"
+          className="w-[250px] min-w-[250px] h-full flex flex-col items-start rounded-lg p-2 mr-2"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+            border: `1px solid ${borderColor}`,
+          }}
         >
           <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
             {getChildrenByParentID(nodeId).map((node) => (
@@ -89,7 +102,13 @@ export const ColumnsView = ({
       }).map((_, index) => (
         <div
           key={`placeholder-${index}`}
-          className="w-[250px] min-w-[250px] h-full flex flex-col items-start bg-neutral-900/50 rounded-lg p-2 mr-2"
+          className="w-[250px] min-w-[250px] h-full flex flex-col items-start rounded-lg p-2 mr-2"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+            border: `1px solid ${borderColor}`,
+            opacity: 0.5,
+          }}
         />
       ))}
     </div>
