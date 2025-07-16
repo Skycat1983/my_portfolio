@@ -95,7 +95,7 @@ export const Toast = () => {
   useEffect(() => {
     if (downloadEggsAchieved) {
       toast.success("Achievement Unlocked!", {
-        description: "You downloaded some eggs! 🥚",
+        description: "You downloaded some eggs.",
         duration: 4000,
         icon: <TrophyIcon />,
       });
@@ -105,7 +105,7 @@ export const Toast = () => {
   useEffect(() => {
     if (deletedPortfolioAchieved) {
       toast.success("Achievement Unlocked!", {
-        description: "You deleted a portfolio! 🗑️",
+        description: "You deleted a portfolio.",
         duration: 4000,
         icon: <TrophyIcon />,
       });
@@ -115,7 +115,7 @@ export const Toast = () => {
   useEffect(() => {
     if (visitEveryWebsiteAchieved) {
       toast.success("Achievement Unlocked!", {
-        description: "You visited a website! 🔄",
+        description: "You visited all the websites!",
         duration: 4000,
         icon: <TrophyIcon />,
       });
@@ -125,7 +125,7 @@ export const Toast = () => {
   useEffect(() => {
     if (operatingSystemSwitchedAchieved) {
       toast.success("Achievement Unlocked!", {
-        description: "You switched operating systems! 💻",
+        description: "You switched operating systems.",
         duration: 4000,
         icon: <TrophyIcon />,
       });
@@ -135,7 +135,7 @@ export const Toast = () => {
   useEffect(() => {
     if (thankEmilyForHelpingMe) {
       toast.success("Achievement Unlocked!", {
-        description: "You thanked Emily with perfect grammar! 💌",
+        description: "You thanked Emily for her help.",
         duration: 4000,
         icon: <TrophyIcon />,
       });
@@ -145,7 +145,7 @@ export const Toast = () => {
   useEffect(() => {
     if (apologiseToEmily === true) {
       toast.success("Achievement Unlocked!", {
-        description: "You apologised to Emily! 😅",
+        description: "You apologised",
         duration: 4000,
         icon: <TrophyIcon />,
       });

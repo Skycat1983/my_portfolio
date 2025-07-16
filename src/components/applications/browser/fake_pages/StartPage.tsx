@@ -18,12 +18,12 @@ export const StartPage = ({
   const [isDownloading, setIsDownloading] = useState(false);
   // const [downloadCount, setDownloadCount] = useState(0);
   const downloadEgg = useNewStore((s) => s.downloadEgg);
-  const ensureDownloadsFolder = useNewStore((s) => s.ensureDownloadsFolder);
   // const focusWindow = useNewStore((s) => s.focusWindow);
   const openWindow = useNewStore((s) => s.openWindow);
   const incrementEggsDownloadedAchievement = useNewStore(
     (s) => s.incrementEggsDownloadedAchievement
   );
+  const getNodeByID = useNewStore((s) => s.getNodeByID);
   // const eggsDownloaded = useNewStore((s) => s.eggsDownloaded);
   // const { downloadEgg, ensureDownloadsFolder, openDirectory } = useNewStore();
 
@@ -124,8 +124,10 @@ export const StartPage = ({
 
         <div
           onClick={() => {
-            const downloadsFolder = ensureDownloadsFolder();
-            openWindow(downloadsFolder);
+            const downloadsFolder = getNodeByID("downloads");
+            if (downloadsFolder && downloadsFolder.type === "directory") {
+              openWindow(downloadsFolder);
+            }
           }}
           className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200 hover:shadow-md transition-shadow cursor-pointer"
         >

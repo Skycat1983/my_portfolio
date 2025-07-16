@@ -367,6 +367,11 @@ export const createNodeCrudSlice = (
       const currentNodeMap = slice.getCurrentNodeMap();
       const nodeToDelete = Object.values(currentNodeMap).find(predicate);
 
+      if (nodeToDelete?.protected) {
+        console.log("deleteOneNode: node is protected");
+        return false;
+      }
+
       if (!nodeToDelete) {
         console.log("deleteOneNodeByPredicate: no node matches predicate");
         return false;

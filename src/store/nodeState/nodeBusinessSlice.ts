@@ -1,9 +1,4 @@
-import {
-  EASTER_EGG1,
-  EASTER_EGG2,
-  FOLDER_MAC,
-  FOLDER_WINDOWS,
-} from "@/constants/images";
+import { EASTER_EGG1, EASTER_EGG2 } from "@/constants/images";
 import type {
   NodeEntry,
   DirectoryEntry,
@@ -12,7 +7,6 @@ import type {
 import type { SetState, GetState, ApplicationState } from "@/types/storeTypes";
 import type { NodeCrudSlice } from "./nodeCrudSlice";
 import type { NodeOperationsSlice } from "./nodeOperationsSlice";
-import { desktopRootId } from "@/constants/nodeHierarchy";
 
 interface NodeBusinessActions {
   // Complex node operations
@@ -29,7 +23,7 @@ interface NodeBusinessActions {
 
   // Business logic operations
   isNodeInTrash: (nodeId: NodeEntry["id"]) => boolean;
-  ensureDownloadsFolder: () => DirectoryEntry;
+  // ensureDownloadsFolder: () => DirectoryEntry;
   downloadEgg: () => void;
 
   // Parent-child relationship management
@@ -229,75 +223,6 @@ export const createNodeBusinessSlice = (
     return state.updateDirectoryByID(parentId, { children: newChildren });
   },
 
-  /**
-   * Ensure downloads folder exists (business logic)
-   */
-  ensureDownloadsFolder: (): DirectoryEntry => {
-    console.log("ensureDownloadsFolder: checking for downloads folder");
-
-    const state = get();
-
-    // Check if downloads folder already exists
-    const existingDownloads = state.findOneNode(
-      (node: NodeEntry) =>
-        node.label === "Downloads" && node.parentId === desktopRootId
-    );
-
-    if (existingDownloads) {
-      console.log(
-        "ensureDownloadsFolder: downloads folder already exists",
-        existingDownloads.id
-      );
-      return existingDownloads as DirectoryEntry;
-    }
-
-    // Create downloads folder
-    const downloadsId = "downloads";
-    const downloadsFolder: DirectoryEntry = {
-      id: downloadsId,
-      children: [],
-      type: "directory",
-      label: "Downloads",
-      parentId: desktopRootId,
-      image: FOLDER_MAC,
-      alternativeImage: FOLDER_WINDOWS,
-      macExtension: null,
-      windowsExtension: null,
-      dateModified: new Date().toISOString(),
-      applicationRegistryId: "finder",
-      size: 0,
-    };
-
-    const created = state.createOneNode(downloadsFolder);
-    if (created) {
-      // Add to root's children - get root and update it directly
-      const root = state.getDirectoryByID(desktopRootId);
-      if (root) {
-        const newRootChildren = [...root.children, downloadsId];
-        const rootUpdated = state.updateDirectoryByID(desktopRootId, {
-          children: newRootChildren,
-        });
-        if (rootUpdated) {
-          console.log(
-            "ensureDownloadsFolder: created downloads folder with ID",
-            downloadsId
-          );
-          return downloadsFolder;
-        } else {
-          // Rollback creation
-          state.deleteNodeByID(downloadsId);
-          throw new Error("Failed to add downloads folder to root");
-        }
-      } else {
-        // Rollback creation
-        state.deleteNodeByID(downloadsId);
-        throw new Error("Root directory not found");
-      }
-    } else {
-      throw new Error("Failed to create downloads folder");
-    }
-  },
-
   isNodeInTrash: (nodeId: NodeEntry["id"]): boolean => {
     const state = get();
     const node = state.getNodeByID(nodeId);
@@ -342,6 +267,7 @@ export const createNodeBusinessSlice = (
       windowsExtension: ".egg",
       dateModified: new Date().toISOString(),
       size: 42000,
+      protected: false,
     };
 
     const created = state.createOneNode(newEgg);
@@ -361,22 +287,28 @@ export const createNodeBusinessSlice = (
     console.log("downloadEgg: starting egg download process");
     const state = get();
 
-    // Ensure downloads folder exists
-    const downloadsFolder = state.ensureDownloadsFolder();
+    const downloadsFolder = state.getDirectoryByID("downloads");
     if (!downloadsFolder) {
-      console.error("downloadEgg: failed to ensure downloads folder");
+      console.error("downloadEgg: downloads folder not found");
       return;
     }
 
+    // Ensure downloads folder exists
+    // const downloadsFolder = state.ensureDownloadsFolder();
+    // if (!downloadsFolder) {
+    //   console.error("downloadEgg: failed to ensure downloads folder");
+    //   return;
+    // }
+
     // Create new egg
-    const newEgg = state.createEgg(downloadsFolder.id);
+    const newEgg = state.createEgg("downloads");
     if (!newEgg) {
       console.error("downloadEgg: failed to create egg");
       return;
     }
 
     // Update downloads folder children
-    const updated = state.updateDirectoryByID(downloadsFolder.id, {
+    const updated = state.updateDirectoryByID("downloads", {
       children: [...downloadsFolder.children, newEgg.id],
     });
 
