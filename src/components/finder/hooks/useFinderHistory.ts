@@ -77,25 +77,11 @@ export const useFinderHistory = (
   const canGoBack = canGoBackInHistory(windowId);
   const canGoForward = canGoForwardInHistory(windowId);
 
-  console.log("useFinderHistory: canGoBack", canGoBack);
-  console.log("useFinderHistory: canGoForward", canGoForward);
-  console.log("useFinderHistory: currentNodeId", currentNodeId);
-  console.log("useFinderHistory: historyLength", historyLength);
-  console.log("useFinderHistory: historyItems", historyItems);
-  console.log("useFinderHistory: currentIndex", currentIndex);
-
   /**
    * Navigate to a specific node and update both history and window
    */
   const navigateToNode = useCallback(
     (nodeId: string): boolean => {
-      console.log(
-        "useFinderHistory: navigateToNode",
-        nodeId,
-        "in window",
-        windowId
-      );
-
       if (!window) {
         console.log("useFinderHistory: no window found for", windowId);
         return false;
@@ -119,11 +105,9 @@ export const useFinderHistory = (
       });
 
       if (!windowSuccess) {
-        console.log("useFinderHistory: failed to update window", windowId);
         return false;
       }
 
-      console.log("useFinderHistory: successfully navigated to", nodeId);
       return true;
     },
     [windowId, addToHistory, getNodeByID, updateWindowById]
@@ -133,24 +117,19 @@ export const useFinderHistory = (
    * Navigate back in history
    */
   const goBack = useCallback((): boolean => {
-    console.log("useFinderHistory: goBack in", windowId);
-
     if (!canGoBack) {
-      console.log("useFinderHistory: cannot go back");
       return false;
     }
 
     // Navigate back in history
     const historySuccess = goBackInHistory(windowId);
     if (!historySuccess) {
-      console.log("useFinderHistory: failed to go back in history");
       return false;
     }
 
     // Get the new current item after going back
     const newNodeId = getCurrentItem(windowId) as string;
     if (!newNodeId) {
-      console.log("useFinderHistory: no current item after going back");
       return false;
     }
 
@@ -169,7 +148,6 @@ export const useFinderHistory = (
       return false;
     }
 
-    console.log("useFinderHistory: successfully went back to", newNodeId);
     return true;
   }, [
     windowId,
@@ -184,24 +162,19 @@ export const useFinderHistory = (
    * Navigate forward in history
    */
   const goForward = useCallback((): boolean => {
-    console.log("useFinderHistory: goForward in", windowId);
-
     if (!canGoForward) {
-      console.log("useFinderHistory: cannot go forward");
       return false;
     }
 
     // Navigate forward in history
     const historySuccess = goForwardInHistory(windowId);
     if (!historySuccess) {
-      console.log("useFinderHistory: failed to go forward in history");
       return false;
     }
 
     // Get the new current item after going forward
     const newNodeId = getCurrentItem(windowId) as string;
     if (!newNodeId) {
-      console.log("useFinderHistory: no current item after going forward");
       return false;
     }
 
@@ -222,7 +195,6 @@ export const useFinderHistory = (
       return false;
     }
 
-    console.log("useFinderHistory: successfully went forward to", newNodeId);
     return true;
   }, [
     windowId,
@@ -238,24 +210,19 @@ export const useFinderHistory = (
    */
   const goToIndex = useCallback(
     (index: number): boolean => {
-      console.log("useFinderHistory: goToIndex", index, "in", windowId);
-
       if (index < 0 || index >= historyLength) {
-        console.log("useFinderHistory: index out of bounds", index);
         return false;
       }
 
       // Navigate to specific index in history
       const historySuccess = goToIndexInHistory(windowId, index);
       if (!historySuccess) {
-        console.log("useFinderHistory: failed to go to index in history");
         return false;
       }
 
       // Get the current item at the new index
       const newNodeId = getCurrentItem(windowId) as string;
       if (!newNodeId) {
-        console.log("useFinderHistory: no current item at index", index);
         return false;
       }
 
@@ -270,18 +237,9 @@ export const useFinderHistory = (
       });
 
       if (!windowSuccess) {
-        console.log(
-          "useFinderHistory: failed to update window after going to index"
-        );
         return false;
       }
 
-      console.log(
-        "useFinderHistory: successfully went to index",
-        index,
-        "nodeId:",
-        newNodeId
-      );
       return true;
     },
     [
@@ -301,13 +259,6 @@ export const useFinderHistory = (
    */
   const handleColumnClick = useCallback(
     (depth: number, nodeId: string) => {
-      console.log(
-        "useFinderHistory: handleColumnClick at depth",
-        depth,
-        "nodeId:",
-        nodeId
-      );
-
       // If clicking at a previous depth, truncate history
       if (depth <= currentIndex) {
         goToIndex(depth);

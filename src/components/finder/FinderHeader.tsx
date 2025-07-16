@@ -6,6 +6,7 @@ import theme from "@/styles/theme";
 import { WindowHistoryNavigation } from "../window/windowNavigation/WindowHistoryNavigation";
 import { EmptyTrashButton } from "./EmptyTrashButton";
 import type { WindowId } from "@/constants/applicationRegistry";
+import type { NodeId } from "../nodes/nodeTypes";
 
 type FinderHeaderProps = {
   zIndex: number;
@@ -14,7 +15,7 @@ type FinderHeaderProps = {
   input: string;
   setInput: (v: string) => void;
   windowId: WindowId;
-  nodeId: string;
+  nodeId: NodeId;
   onHistoryChange: (currentItem: unknown) => void;
 };
 
@@ -53,17 +54,18 @@ export const FinderHeader: React.FC<FinderHeaderProps> = ({
         />
         <EmptyTrashButton windowId={windowId} />
       </div>
-
-      <Input
-        placeholder="Search"
-        style={{
-          color: textColor,
-          // borderColor: borderColor,
-          backgroundColor: bgColourSecondary,
-        }}
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
+      {nodeId !== "trash" && (
+        <Input
+          placeholder="Search"
+          style={{
+            color: textColor,
+            // borderColor: borderColor,
+            backgroundColor: bgColourSecondary,
+          }}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+      )}
 
       <FinderViewControls
         view={view}

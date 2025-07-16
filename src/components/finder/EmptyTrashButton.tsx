@@ -13,7 +13,7 @@ export const EmptyTrashButton: React.FC<EmptyTrashButtonProps> = ({
   const window = useNewStore((s) => s.findWindowById(windowId));
   const screenDimensions = useNewStore((s) => s.screenDimensions);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
-  const deleteManyNodes = useNewStore((s) => s.deleteManyNodes);
+  const deleteOneNode = useNewStore((s) => s.deleteOneNode);
   const nodeId = window?.nodeId;
   const isTrashWindow = nodeId === "trash";
 
@@ -24,8 +24,22 @@ export const EmptyTrashButton: React.FC<EmptyTrashButtonProps> = ({
     if (nodeId === "trash") {
       const trashChildren = getChildrenByParentID("trash");
       if (trashChildren.length > 0) {
-        // Delete all nodes in trash
-        deleteManyNodes((node) => node.parentId === "trash");
+        console.log(
+          "EmptyTrash: deleting",
+          trashChildren.length,
+          "nodes from trash"
+        );
+
+        // Delete each node individually using deleteOneNode
+        trashChildren.forEach((childNode) => {
+          const success = deleteOneNode((node) => node.id === childNode.id);
+          console.log(
+            "EmptyTrash: deleted node",
+            childNode.id,
+            "success:",
+            success
+          );
+        });
       }
     }
   };

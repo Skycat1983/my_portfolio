@@ -8,11 +8,7 @@ import {
   mobileDockRootId,
   type RootDirectoryId,
 } from "@/constants/nodeHierarchy";
-import type {
-  NodeEntry,
-  NodeMap,
-  DirectoryEntry,
-} from "@/components/nodes/nodeTypes";
+import type { NodeEntry, NodeMap } from "@/components/nodes/nodeTypes";
 import type { ApplicationState, SetState, GetState } from "@/types/storeTypes";
 
 export type DeviceContext = "desktop" | "mobile";
@@ -242,27 +238,6 @@ export const createNodeCrudSlice = (
       const currentNodeMap = slice.getCurrentNodeMap();
       const nodeToUpdate = Object.values(currentNodeMap).find(predicate);
 
-      // 🚨 CRITICAL DEBUG: Track directory "a" updates specifically
-      if (nodeToUpdate?.id === "a") {
-        console.log("🔍 CRUD_DEBUG: Directory A being updated!", {
-          nodeId: nodeToUpdate.id,
-          currentChildren:
-            nodeToUpdate.type === "directory"
-              ? nodeToUpdate.children
-              : "not-directory",
-          newChildren:
-            "children" in updates
-              ? (updates as Partial<DirectoryEntry>).children
-              : "no-children-update",
-          updateKeys: Object.keys(updates),
-          timestamp: Date.now(),
-          stackTrace: new Error().stack?.split("\n").slice(0, 5),
-          usingNodeMap: currentState.screenDimensions.isMobile
-            ? "mobileNodeMap"
-            : "desktopNodeMap",
-        });
-      }
-
       // console.log(
       //   "MOVENODEDEBUG: moveNodeByID updateOneNode: nodeToUpdate",
       //   nodeToUpdate
@@ -304,21 +279,6 @@ export const createNodeCrudSlice = (
             [nodeToUpdate.id]: updatedNode,
           },
         }));
-      }
-
-      // 🚨 CRITICAL DEBUG: Verify directory "a" after update
-      if (nodeToUpdate?.id === "a") {
-        const updatedCurrentNodeMap = slice.getCurrentNodeMap();
-        const updatedDirectoryA = updatedCurrentNodeMap["a"];
-        console.log("🔍 CRUD_DEBUG: Directory A after update:", {
-          nodeId: updatedDirectoryA?.id,
-          children:
-            updatedDirectoryA?.type === "directory"
-              ? updatedDirectoryA.children
-              : "not-directory",
-          timestamp: Date.now(),
-          verifiedFromCorrectMap: true,
-        });
       }
 
       return true;
@@ -426,10 +386,9 @@ export const createNodeCrudSlice = (
     deleteManyNodes: (predicate: (node: NodeEntry) => boolean): number => {
       console.log("deleteManyNodes in nodeCrudSlice");
 
-      const currentState = get();
-      const nodesToDelete = Object.values(currentState.nodeMap).filter(
-        predicate
-      );
+      const currentNodeMap = slice.getCurrentNodeMap();
+
+      const nodesToDelete = Object.values(currentNodeMap).filter(predicate);
 
       if (nodesToDelete.length === 0) {
         console.log("deleteManyNodes: no nodes match predicate");

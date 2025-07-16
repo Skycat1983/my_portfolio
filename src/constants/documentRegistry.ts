@@ -54,31 +54,29 @@ export const DEFAULT_DOCUMENT_CONFIG: DocumentConfig = {
 };
 
 // Sample document configuration for demonstration
-export const SAMPLE_DOCUMENT_CONFIG: DocumentConfig = {
-  id: "sample_document_config",
+export const ABOUT_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "about_document_config",
   mutable: true,
   content: `Welcome to My Portfolio Hub
 
 You can find my CV and letter of recommendation in the PDFs folder. If you're a prospective employer, please feel free to contact me.
 
-I have tried to recreate the behaviour of of a typical desktop/mobile environment. Try adjusting the window size to see how the application behaves.
+I have tried to recreate the behaviour of of a typical desktop/mobile environment. Try adjusting the your browser window size to see how the application behaves.
 
-There are lots of applications to use, and quite a few easter eggs to find.
+There are lots of applications to use, and plenty of easter eggs to find.
 
-This is a sample document that demonstrates the document management system in this portfolio application. 
+Some features:
 
-Key Features:
-• Document type nodes that open in the Pages application
-• Persistent document storage using the document registry
-• Application focus logic that works across dock and desktop instances
-• Proper cleanup when documents are deleted
+• Moveable windows with resizeable borders
+• Saveable documents
+• Playable games
+• Drag and drop functionality, allowing you to move files and folders around
+• A simulated WhatsApp chat interface, with contacts who respond to your messages and attempted phone calls. 
+• A fake browser which allows you to visit any website of your [my] choosing [out of about 5].
+• A working terminal. 
+• And lots more...
 
-Technical Architecture:
-This document represents a new node type called "document" which links to both:
-1. An application (Pages) via applicationId
-2. A saved document configuration via documentConfigId
-
-You can edit this document using the toolbar above. Changes are saved to the document registry if you click the 'save' button.
+I've gone a bit overboard with small details which many people won't even notice, but play around a bit and see what you can find.
 
 Best regards,
 Heron`,
@@ -104,37 +102,37 @@ Heron`,
 };
 
 // Personal introduction document config
-export const PERSONAL_DOCUMENT_CONFIG: DocumentConfig = {
-  id: "personal_document_config",
+export const EMPLOYMENT_HISTORY_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "employment_history_document_config",
   mutable: true,
-  content: `Personal Introduction
+  content: `Employment History
 
-Hello! I'm Heron Laoutaris, a passionate software developer with expertise in modern web technologies.
+Code Academy Berlin - Web Development Mentor
+Responsibilities:
+• Led Cohort Training: Took primary responsibility for training each assigned cohort in a
+comprehensive 6-month web development program, ensuring student engagement
+and progress.
+• Curriculum Development: Collaborated in designing and updating course content and
+syllabus to stay current with evolving industry trends and best practices.
+• Instructional Sessions: Planned and conducted regular teaching sessions covering
+HTML, CSS, JavaScript, React, TypeScript, Express, MongoDB, Tailwind CSS, Node.js,
+and Next.js, facilitating understanding of both foundational and advanced topics.
+• Agile Methodologies: Implemented Agile practices, including sprint planning and
+execution, to simulate real-world development environments and enhance team
+collaboration.
+• Collaborative Learning Environment: Fostered a collaborative atmosphere by
+incorporating industry-standard practices such as code reviews, pair programming,
+project presentations, version control, and sprint retrospectives.
+• Project Guidance: Assisted students in planning and executing project objectives,
+addressing technical challenges as they arose, and promoting a culture of
+perseverance and continuous learning.
+UI/UX Focus: Imparted a keen eye for user interface (UI) and user experience (UX)
+design principles, guiding students in making informed design decisions to enhance
+the usability and aesthetic of their projects.
 
-Professional Background:
-• Frontend Development (React, TypeScript, Next.js)
-• UI/UX Design with modern frameworks
-• Full-stack application development
-• Progressive Web Applications
+I'm currently unemployed and looking for new challenges.
 
-This Portfolio Hub:
-This interactive portfolio showcases my technical skills through a fully functional desktop environment built with React and TypeScript. You can:
-• Browse my applications and games
-• View my CV and recommendations in the PDFs folder
-• Explore various interactive demos
-• Test responsive design across different screen sizes
-
-Technical Features:
-• Advanced drag and drop functionality
-• Multi-window management system
-• Progressive Web App capabilities
-• Cross-platform compatibility
-• Modern UI/UX principles
-
-Contact Information:
-Feel free to reach out through LinkedIn or GitHub links available throughout the portfolio.
-
-Thank you for exploring my work!`,
+Feel free to reach out through LinkedIn or GitHub links available throughout the portfolio.`,
   textStyle: {
     fontFamily: "Inter",
     fontSize: 16,
@@ -148,7 +146,7 @@ Thank you for exploring my work!`,
     backgroundColor: "#ffffff",
   },
   metadata: {
-    title: "Personal Introduction",
+    title: "Employment History",
     createdAt: new Date("2024-03-20T09:00:00Z"),
     modifiedAt: new Date("2024-03-20T09:00:00Z"),
     wordCount: 142,
@@ -244,14 +242,12 @@ All of you achievements have been reset.
 
 // Document Config Registry for type safety (similar to WINDOW_COMPONENT_REGISTRY)
 export const DOCUMENT_CONFIG_REGISTRY = {
-  sample_document_config: SAMPLE_DOCUMENT_CONFIG,
+  about_document_config: ABOUT_DOCUMENT_CONFIG,
   default_document_config: DEFAULT_DOCUMENT_CONFIG,
-  personal_document_config: PERSONAL_DOCUMENT_CONFIG,
+  employment_history_document_config: EMPLOYMENT_HISTORY_DOCUMENT_CONFIG,
   my_stack_document_config: MY_STACK_DOCUMENT_CONFIG,
   private_document_config: PRIVATE_DOCUMENT_CONFIG,
 } as const;
-
-export const SAMPLE_DOCUMENT_ID = "sample_document_config";
 
 export const getDocumentConfig = (id: string) => {
   return DOCUMENT_CONFIG_REGISTRY[id as keyof typeof DOCUMENT_CONFIG_REGISTRY];

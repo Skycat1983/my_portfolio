@@ -63,8 +63,8 @@ export const rootNodes: DirectoryObject = {
       protected: true,
       children: [
         createNodeFromTemplate("document", {
-          id: "personal-intro",
-          documentConfigId: "personal_document_config",
+          id: "about",
+          documentConfigId: "about_document_config",
           label: "Personal Introduction",
           protected: false,
         }),
@@ -506,7 +506,7 @@ export const rootNodes: DirectoryObject = {
           alternativeImage: WORD,
           applicationRegistryId: "documentEditor",
           applicationId: "documentEditor",
-          documentConfigId: "sample_document_config",
+          documentConfigId: "about_document_config",
           macExtension: ".txt",
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified

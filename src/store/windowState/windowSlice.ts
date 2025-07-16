@@ -65,6 +65,7 @@ interface WindowActions {
   focusWindow: (windowId: WindowId) => boolean; // Returns true if window was found and focused
   closeWindow: (windowId: WindowId) => boolean; // Returns true if window was found and closed
   moveWindow: (windowId: WindowId, x: number, y: number) => boolean; // Returns true if window was found and moved
+  openApplication: (applicationId: ApplicationRegistryId) => string | null; // Returns windowId or null if failed
   resizeWindow: (
     windowId: Window["windowId"],
     width: number,
@@ -433,6 +434,90 @@ export const createWindowSlice = (
       });
 
       console.log("openWindowFromNode: created window", windowId);
+      return windowId;
+    },
+
+    /**
+     * Open an application window directly by applicationId
+     */
+    openApplication: (applicationId: ApplicationRegistryId): string | null => {
+      console.log("openApplication: opening application", applicationId);
+
+      const config = getApplicationConfig(applicationId);
+      const windowId = generateWindowId(applicationId, {});
+
+      // Check if window already exists based on window scope
+      const state = get();
+      const { windowScope } = config;
+
+      let existingWindow: Window | undefined;
+
+      switch (windowScope) {
+        case "per-application":
+          // Only one window per application type
+          existingWindow = state.windows.find(
+            (w) => w.applicationRegistryId === applicationId
+          );
+          break;
+
+        case "per-nodeId":
+        case "per-document":
+          // These scopes require specific context, so we can't open them directly
+          console.warn(
+            `Cannot open ${applicationId} directly - requires node context`
+          );
+          return null;
+
+        default:
+          console.warn(`Unknown window scope: ${windowScope}`);
+          break;
+      }
+
+      if (existingWindow) {
+        console.log(
+          "openApplication: focusing existing window",
+          existingWindow.windowId
+        );
+        slice.focusWindow(existingWindow.windowId);
+        return existingWindow.windowId;
+      }
+
+      // Calculate position (offset for multiple windows)
+      const windowCount = state.windows.length;
+      const x = 100 * (windowCount + 1);
+      const y = 100 * (windowCount + 1);
+
+      // Add the window to the state - calculate z-index within set callback
+      set((currentState) => {
+        const highestWindowZIndex =
+          currentState.windows.length > 0
+            ? Math.max(...currentState.windows.map((window) => window.zIndex))
+            : 0;
+
+        // Create new window with registry configuration
+        const newWindow: Window = {
+          windowId,
+          title: applicationId, // Use applicationId as window title
+          nodeId: `${applicationId}-app`, // Generate a synthetic nodeId
+          applicationRegistryId: applicationId,
+          x,
+          y,
+          width: config.width,
+          height: config.height,
+          zIndex: highestWindowZIndex + 1,
+          fixed: config.fixedSize,
+          isMinimized: false,
+          isMaximized: config.defaultMaximized,
+        };
+
+        console.log("openApplication: created window", newWindow);
+
+        return {
+          windows: [...currentState.windows, newWindow],
+        };
+      });
+
+      console.log("openApplication: created window", windowId);
       return windowId;
     },
 

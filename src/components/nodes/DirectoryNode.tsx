@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import { useNodeEvents } from "./hooks/useNodeEvents";
-// import { useFinderHistory } from "@/components/finder/hooks/useFinderHistory";
 import type { DirectoryEntry } from "@/components/nodes/nodeTypes";
 import {
   getTileWrapper,

@@ -19,9 +19,44 @@ const WhatsAppIcon = () => (
   </div>
 );
 
+interface ClickableToastProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick: () => void;
+  id: string | number;
+}
+
+const ClickableToast = ({
+  icon,
+  title,
+  description,
+  onClick,
+  id,
+}: ClickableToastProps) => {
+  return (
+    <div
+      onClick={() => {
+        onClick();
+        toast.dismiss(id);
+      }}
+      className="cursor-pointer flex items-center gap-3 bg-white dark:bg-zinc-900 text-black dark:text-white p-4 rounded-lg shadow-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border border-gray-200 dark:border-zinc-700"
+    >
+      {icon}
+      <div>
+        <div className="font-semibold">{title}</div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          {description}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const Toast = () => {
   const whatsApp = useNewStore((s) => s.whatsApp);
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
+  const openApplication = useNewStore((s) => s.openApplication);
 
   // Track the last message count we've notified about
   const lastNotifiedMessageCount = useRef(NON_USER_MESSAGE_COUNT);
@@ -63,11 +98,15 @@ export const Toast = () => {
       wifiEnabled &&
       deliveredMessagesReceived.length > lastNotifiedMessageCount.current
     ) {
-      toast.success("WhatsApp", {
-        description: "You have a new message",
-        duration: 4000,
-        icon: <WhatsAppIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<WhatsAppIcon />}
+          title="WhatsApp"
+          description="You have a new message"
+          onClick={() => openApplication("whatsApp")}
+          id={id}
+        />
+      ));
 
       // Update the ref to the current message count
       lastNotifiedMessageCount.current = deliveredMessagesReceived.length;
@@ -78,79 +117,108 @@ export const Toast = () => {
     nonUserMessageCount,
     deliveredMessagesReceived,
     wifiEnabled,
+    openApplication,
   ]);
 
   useEffect(() => {
     if (clickOnSomethingAchieved) {
       console.log("clickOnSomethingAchieved");
-      toast.success("Achievement Unlocked!", {
-        description: "You clicked on something!",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You clicked on something!"
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [clickOnSomethingAchieved]);
+  }, [clickOnSomethingAchieved, openApplication]);
 
   // Trigger toasts when achievements are unlocked
   useEffect(() => {
     if (downloadEggsAchieved) {
-      toast.success("Achievement Unlocked!", {
-        description: "You downloaded some eggs.",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You downloaded some eggs."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [downloadEggsAchieved]);
+  }, [downloadEggsAchieved, openApplication]);
 
   useEffect(() => {
     if (deletedPortfolioAchieved) {
-      toast.success("Achievement Unlocked!", {
-        description: "You deleted a portfolio.",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You deleted a portfolio."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [deletedPortfolioAchieved]);
+  }, [deletedPortfolioAchieved, openApplication]);
 
   useEffect(() => {
     if (visitEveryWebsiteAchieved) {
-      toast.success("Achievement Unlocked!", {
-        description: "You visited all the websites!",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You visited all the websites!"
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [visitEveryWebsiteAchieved]);
+  }, [visitEveryWebsiteAchieved, openApplication]);
 
   useEffect(() => {
     if (operatingSystemSwitchedAchieved) {
-      toast.success("Achievement Unlocked!", {
-        description: "You switched operating systems.",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You switched operating systems."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [operatingSystemSwitchedAchieved]);
+  }, [operatingSystemSwitchedAchieved, openApplication]);
 
   useEffect(() => {
     if (thankEmilyForHelpingMe) {
-      toast.success("Achievement Unlocked!", {
-        description: "You thanked Emily for her help.",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You thanked Emily for her help."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [thankEmilyForHelpingMe]);
+  }, [thankEmilyForHelpingMe, openApplication]);
 
   useEffect(() => {
     if (apologiseToEmily === true) {
-      toast.success("Achievement Unlocked!", {
-        description: "You apologised",
-        duration: 4000,
-        icon: <TrophyIcon />,
-      });
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You apologised"
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
     }
-  }, [apologiseToEmily]);
+  }, [apologiseToEmily, openApplication]);
 
   // Always render the Toaster component so it can show toasts
   return <Toaster />;
