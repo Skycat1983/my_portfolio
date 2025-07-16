@@ -76,6 +76,11 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const getDocumentConfig = useNewStore((s) => s.getDocumentConfig);
   const setDocumentConfig = useNewStore((s) => s.setDocumentConfig);
 
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // SYSTEM STATE
+  // ═══════════════════════════════════════════════════════════════════════════════
+  const resetAchievements = useNewStore((s) => s.resetAchievements);
+
   // Initialize document state from window configuration if available
   useEffect(() => {
     const node = getNodeByID(nodeId);
@@ -89,6 +94,9 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
         "DocumentEditorDebug:  useEffect: documentConfig",
         documentConfig
       );
+      if (documentConfig.id === "private_document_config") {
+        resetAchievements();
+      }
       const isWritable = documentConfig?.mutable;
 
       const docLabel = isWritable ? node.label : documentConfig.metadata.title;
@@ -98,7 +106,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
       setDocumentLabel(docLabel);
       setIsModified(false); // Document is saved, so not modified initially
     }
-  }, [nodeId, getNodeByID, getDocumentConfig]);
+  }, [nodeId, getNodeByID, getDocumentConfig, resetAchievements]);
 
   if (!window) {
     return null;
@@ -215,6 +223,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
           windowsExtension: ".txt",
           dateModified: now.toISOString(),
           size: charCount,
+          protected: false,
         };
         createOneNode(newNode);
         updateWindowById(window.windowId, {

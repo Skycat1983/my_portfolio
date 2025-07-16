@@ -123,6 +123,7 @@ export const convertObjectsToMap = (
           image: nodeObj.image,
           alternativeImage: nodeObj.alternativeImage ?? null,
           applicationId: nodeObj.applicationId,
+          documentConfigId: nodeObj.documentConfigId,
           applicationRegistryId: nodeObj.applicationRegistryId,
           macExtension: nodeObj.macExtension,
           windowsExtension: nodeObj.windowsExtension,

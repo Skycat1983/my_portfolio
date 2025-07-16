@@ -1,6 +1,9 @@
 import type { SetState, GetState } from "@/types/storeTypes";
 import {
   DEFAULT_DOCUMENT_CONFIG,
+  MY_STACK_DOCUMENT_CONFIG,
+  PERSONAL_DOCUMENT_CONFIG,
+  PRIVATE_DOCUMENT_CONFIG,
   SAMPLE_DOCUMENT_CONFIG,
   type DocumentConfig,
 } from "@/constants/documentRegistry";
@@ -37,6 +40,9 @@ export const createDocumentRegistrySlice = (
   const initialConfigs = new Map<string, DocumentConfig>();
   initialConfigs.set(SAMPLE_DOCUMENT_CONFIG.id, SAMPLE_DOCUMENT_CONFIG);
   initialConfigs.set(DEFAULT_DOCUMENT_CONFIG.id, DEFAULT_DOCUMENT_CONFIG);
+  initialConfigs.set(PERSONAL_DOCUMENT_CONFIG.id, PERSONAL_DOCUMENT_CONFIG);
+  initialConfigs.set(MY_STACK_DOCUMENT_CONFIG.id, MY_STACK_DOCUMENT_CONFIG);
+  initialConfigs.set(PRIVATE_DOCUMENT_CONFIG.id, PRIVATE_DOCUMENT_CONFIG);
 
   return {
     // State

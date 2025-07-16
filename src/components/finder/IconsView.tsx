@@ -43,7 +43,7 @@ export const IconsView = ({
 
         {/* Desktop: Use OS-specific layout direction */}
         <div
-          className={`hidden lg:flex flex-row w-full gap-6 h-full content-start ${
+          className={`hidden lg:flex flex-row w-full gap-6 space-y-6 h-full content-start ${
             operatingSystem === "windows" ? "flex-wrap" : "flex-wrap"
           }`}
         >

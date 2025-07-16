@@ -63,6 +63,8 @@ interface AchievementAction {
   // Mark achievements as seen (reset counter)
   markAchievementsAsSeen: () => void;
 
+  resetAchievements: () => void;
+
   //   sendEmail: () => void;
   //   downloadCV: () => void;
 }
@@ -223,6 +225,36 @@ export const createAchievementSlice = (
   markAchievementsAsSeen: () => {
     set(() => ({
       unseenAchievements: 0,
+    }));
+  },
+
+  resetAchievements: () => {
+    set(() => ({
+      clickOnSomethingAchieved: false,
+
+      // 2. Access achievements
+      accessAchievements: false,
+
+      // 3. Operating system switcher
+      operatingSystemSwitchedAchieved: false,
+
+      // 4. Egg collector
+      eggsDownloaded: 0,
+      downloadEggsAchieved: false,
+
+      // 5. Portfolio destroyer
+      portfolioDeletedAchieved: false,
+
+      // 6. visit a website
+      joinAQueueAchieved: false,
+
+      // 7. Prospective employer
+      unseenAchievements: 0,
+
+      // 8. Checkout my CV and letter of recommendation
+      cvCheckedOut: false,
+      recommendationCheckedOut: false,
+      prospectiveEmployerAchieved: false,
     }));
   },
 });

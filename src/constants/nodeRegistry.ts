@@ -60,6 +60,7 @@ interface DocumentTemplate extends BaseNodeTemplate {
   type: "document";
   applicationRegistryId: ApplicationRegistryId;
   applicationId: string;
+  documentConfigId: string;
   macExtension: MacDocumentExtensions;
   windowsExtension: WindowsDocumentExtensions;
 }
@@ -239,10 +240,11 @@ export const NODE_TEMPLATES = {
   } satisfies DirectoryTemplate,
 
   // ─────────── Document Templates ───────────
-  portfolioDocument: {
+  document: {
     type: "document",
     applicationRegistryId: "documentEditor",
     applicationId: "documentEditor",
+    documentConfigId: "default_document_config",
     label: "Portfolio Document",
     image: PAGES,
     alternativeImage: WORD,

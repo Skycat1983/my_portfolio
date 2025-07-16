@@ -59,6 +59,12 @@ export const SAMPLE_DOCUMENT_CONFIG: DocumentConfig = {
   mutable: true,
   content: `Welcome to My Portfolio Hub
 
+You can find my CV and letter of recommendation in the PDFs folder. If you're a prospective employer, please feel free to contact me.
+
+I have tried to recreate the behaviour of of a typical desktop/mobile environment. Try adjusting the window size to see how the application behaves.
+
+There are lots of applications to use, and quite a few easter eggs to find.
+
 This is a sample document that demonstrates the document management system in this portfolio application. 
 
 Key Features:
@@ -97,10 +103,152 @@ Heron`,
   },
 };
 
+// Personal introduction document config
+export const PERSONAL_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "personal_document_config",
+  mutable: true,
+  content: `Personal Introduction
+
+Hello! I'm Heron Laoutaris, a passionate software developer with expertise in modern web technologies.
+
+Professional Background:
+• Frontend Development (React, TypeScript, Next.js)
+• UI/UX Design with modern frameworks
+• Full-stack application development
+• Progressive Web Applications
+
+This Portfolio Hub:
+This interactive portfolio showcases my technical skills through a fully functional desktop environment built with React and TypeScript. You can:
+• Browse my applications and games
+• View my CV and recommendations in the PDFs folder
+• Explore various interactive demos
+• Test responsive design across different screen sizes
+
+Technical Features:
+• Advanced drag and drop functionality
+• Multi-window management system
+• Progressive Web App capabilities
+• Cross-platform compatibility
+• Modern UI/UX principles
+
+Contact Information:
+Feel free to reach out through LinkedIn or GitHub links available throughout the portfolio.
+
+Thank you for exploring my work!`,
+  textStyle: {
+    fontFamily: "Inter",
+    fontSize: 16,
+    isBold: false,
+    isItalic: false,
+    isUnderlined: false,
+    color: "#1f2937",
+    textAlign: "left" as const,
+  },
+  pageSettings: {
+    backgroundColor: "#ffffff",
+  },
+  metadata: {
+    title: "Personal Introduction",
+    createdAt: new Date("2024-03-20T09:00:00Z"),
+    modifiedAt: new Date("2024-03-20T09:00:00Z"),
+    wordCount: 142,
+    charCount: 1056,
+  },
+};
+
+export const MY_STACK_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "my_stack_document_config",
+  mutable: true,
+  content: `
+Core Languages & Fundamentals:
+
+HTML
+CSS
+JavaScript
+TypeScript
+
+Frontend Frameworks & Libraries:
+
+React
+Next.js
+Zustand
+Tailwind CSS
+Bootstrap
+
+Backend & APIs:
+
+Node.js
+Express
+RESTful APIs
+
+Databases & Storage:
+
+MongoDB
+Firebase
+
+Testing & Dev Tools:
+
+Jest
+Git
+
+Design & Prototyping
+
+Figma  `,
+  textStyle: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    isBold: false,
+    isItalic: false,
+    isUnderlined: false,
+    color: "#000000",
+    textAlign: "left" as const,
+  },
+  pageSettings: {
+    backgroundColor: "#ffffff",
+  },
+  metadata: {
+    title: "My Stack",
+    createdAt: new Date("2024-03-20T09:00:00Z"),
+    modifiedAt: new Date("2024-03-20T09:00:00Z"),
+    wordCount: 142,
+    charCount: 1056,
+  },
+};
+
+export const PRIVATE_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "private_document_config",
+  mutable: true,
+  content: `
+All of you achievements have been reset.
+  `,
+  textStyle: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    isBold: false,
+    isItalic: false,
+    isUnderlined: false,
+    color: "#000000",
+    textAlign: "left" as const,
+  },
+  pageSettings: {
+    backgroundColor: "#ffffff",
+  },
+  metadata: {
+    title: "Private",
+    createdAt: new Date("2024-03-20T09:00:00Z"),
+    modifiedAt: new Date("2024-03-20T09:00:00Z"),
+    wordCount: 142,
+    charCount: 1056,
+  },
+};
+
 // Document Config Registry for type safety (similar to WINDOW_COMPONENT_REGISTRY)
 export const DOCUMENT_CONFIG_REGISTRY = {
   sample_document_config: SAMPLE_DOCUMENT_CONFIG,
   default_document_config: DEFAULT_DOCUMENT_CONFIG,
+  personal_document_config: PERSONAL_DOCUMENT_CONFIG,
+  my_stack_document_config: MY_STACK_DOCUMENT_CONFIG,
+  private_document_config: PRIVATE_DOCUMENT_CONFIG,
 } as const;
 
 export const SAMPLE_DOCUMENT_ID = "sample_document_config";
