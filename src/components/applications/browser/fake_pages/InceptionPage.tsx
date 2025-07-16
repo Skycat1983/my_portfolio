@@ -8,8 +8,6 @@ import { useScreenMonitor } from "@/hooks/useScreenSize";
 import Dock from "@/components/dock/Dock";
 import { MenubarLayout } from "@/components/menubar/MenubarLayout";
 import { Widgets } from "@/components/widgets/WidgetsLayout";
-// Context-aware root IDs are now obtained from store methods
-import { useStaggeredMessageDelivery } from "@/components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
 import { NodeSwitch } from "@/components/nodes/NodeSwitch";
 
 export const InceptionPage = () => {
@@ -20,18 +18,11 @@ export const InceptionPage = () => {
 
   const currentDesktopRootId = getCurrentRootId("main");
   const nodes = getChildrenByParentID(currentDesktopRootId);
-  const wifiEnabled = useNewStore((s) => s.wifiEnabled);
+  // const wifiEnabled = useNewStore((s) => s.wifiEnabled);
   const applicationId = "browser";
   const window = useNewStore((s) => s.findWindowByApplicationId(applicationId));
 
   console.log("inception window", window);
-
-  // Handle staggered message delivery when wifi comes back online
-  useStaggeredMessageDelivery(wifiEnabled);
-
-  // Temp debug state
-  // const getNodeByID = useNewStore((s) => s.getNodeByID);
-  // const openWindow = useNewStore((s) => s.openWindow);
 
   // Monitor screen dimensions and update store
   const screenInfo = useScreenMonitor();

@@ -19,7 +19,7 @@ export const CaptchaHeader = ({ task, text }: CaptchaHeaderProps) => {
         p-8
       "
     >
-      <div className="text-left">
+      <div className="text-left text-white">
         <p className="text-lg md:text-xl font-medium">{task}</p>
         <h2 className="text-2xl md:text-4xl font-bold">{text}</h2>
       </div>

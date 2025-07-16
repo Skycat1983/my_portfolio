@@ -1,6 +1,7 @@
 import { Search, Download, Bookmark } from "lucide-react";
 import { useNewStore } from "@/hooks/useStore";
 import { useEffect, useState } from "react";
+import { theme } from "@/styles/theme";
 
 interface StartPageProps {
   onFocusAddressBar?: () => void;
@@ -11,6 +12,9 @@ export const StartPage = ({
   onFocusAddressBar,
   onOpenBookmarks,
 }: StartPageProps) => {
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const bgColor = theme.colors[themeMode].background.primary;
   const [isDownloading, setIsDownloading] = useState(false);
   // const [downloadCount, setDownloadCount] = useState(0);
   const downloadEgg = useNewStore((s) => s.downloadEgg);
@@ -59,7 +63,13 @@ export const StartPage = ({
   const buttonLabel = isDownloading ? "Downloading..." : `Download Egg`;
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <div
+      className="max-w-4xl mx-auto p-8"
+      style={{
+        color: textColor,
+        backgroundColor: bgColor,
+      }}
+    >
       {/* Header */}
       <header className="mb-8 text-center">
         <div className="flex items-center justify-center gap-3 mb-4">

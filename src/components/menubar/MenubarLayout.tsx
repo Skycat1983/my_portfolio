@@ -1,9 +1,7 @@
 import { DisplayDate } from "./DisplayDate";
 import { MenubarOptions } from "./MenubarOptions";
-import { Social } from "./Social";
 import { Logo } from "../icons/LogoIcon";
 import { useNewStore } from "@/hooks/useStore";
-import { GITHUB_SMALL, LINKEDIN_SMALL } from "@/constants/images";
 import { WifiIcon } from "../icons/WifiIcon";
 import ThemeToggle from "./ThemeToggle";
 import { theme } from "@/styles/theme";
@@ -29,23 +27,19 @@ export const MenubarLayout = () => {
       }}
     >
       <div
-        className="w-full h-11 bg-background text-foreground flex flex-row justify-between px-4 items-center overflow-hidden px-8"
+        className="w-full h-11 bg-background text-foreground flex flex-row justify-between gap-4 items-center overflow-hidden px-8"
         style={{
           color: textColor,
         }}
       >
-        <div className="flex flex-row gap-4 items-center">
+        <div className="flex flex-row gap-8 items-center">
           <Logo />
           <MenubarOptions />
         </div>
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center gap-4">
           <ThemeToggle />
           <WifiIcon />
-          <Social
-            imgPath={LINKEDIN_SMALL}
-            link="https://www.linkedin.com/in/heron-laoutaris/"
-          />
-          <Social imgPath={GITHUB_SMALL} link="https://github.com/skycat1983" />
+
           <DisplayDate />
         </div>
       </div>

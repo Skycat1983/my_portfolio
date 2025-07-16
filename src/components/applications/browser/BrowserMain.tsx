@@ -15,6 +15,7 @@ import {
 import { useScreenMonitor } from "@/hooks/useScreenSize";
 import type { WindowId } from "@/constants/applicationRegistry";
 import type { WindowContentProps } from "@/types/storeTypes";
+import { theme } from "@/styles/theme";
 
 // TODO: when we click on 'search' we should focus on the search bar
 
@@ -44,6 +45,9 @@ const renderContent = (addressBarUrl: string, callbacks?: BrowserCallbacks) => {
 };
 
 export const BrowserContent = ({ windowId }: WindowContentProps) => {
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const bgColor = theme.colors[themeMode].background.secondary;
   // Type-safe cast for internal use - we know this is a browser window
   const typedWindowId = windowId as WindowId<"browser">;
 
@@ -140,6 +144,10 @@ export const BrowserContent = ({ windowId }: WindowContentProps) => {
       className={`h-full flex flex-col ${
         isMobile ? "flex-col-reverse" : "flex-col"
       }`}
+      style={{
+        color: textColor,
+        backgroundColor: bgColor,
+      }}
     >
       <div className="flex-none sticky top-0 bg-neutral-300 z-10 flex items-center gap-4 py-4 px-2">
         {/* <h1 className="text-2xl font-bold text-black">TEMP</h1> */}

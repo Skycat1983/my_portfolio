@@ -1,7 +1,14 @@
-import { LOGO_MAC, LOGO_MS } from "@/constants/images";
+import {
+  APPLE_BLACK,
+  // APPLE_WHITE,
+  LOGO_MAC,
+  LOGO_MS,
+} from "@/constants/images";
 import { useNewStore } from "@/hooks/useStore";
 
 export const Logo = () => {
+  const theme = useNewStore((s) => s.theme);
+  const APPLE_LOGO = theme === "dark" ? LOGO_MAC : APPLE_BLACK;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const toggleOS = useNewStore((s) => s.toggleOS);
   const unlockOperatingSystemAchievement = useNewStore(
@@ -25,7 +32,7 @@ export const Logo = () => {
       tabIndex={0}
     >
       <img
-        src={operatingSystem === "mac" ? LOGO_MAC : LOGO_MS}
+        src={operatingSystem === "mac" ? APPLE_LOGO : LOGO_MS}
         alt="logo"
         className="w-6 h-6"
       />

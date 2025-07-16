@@ -117,4 +117,8 @@ export { JOSEPH_LAOUTARIS, JL1, JL2, ROBOCROP, SKYNOT };
 // Company logos
 import LOGO_MAC from "../assets/icons_m/logo_mac.png";
 import LOGO_MS from "../assets/icons_m/logo_ms.png";
-export { LOGO_MAC, LOGO_MS };
+const APPLE_BLACK =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1752655682/portfolio_hub/apple_black_s99nds.png";
+const APPLE_WHITE =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1752655693/portfolio_hub/apple_white_ei09fe.png";
+export { LOGO_MAC, LOGO_MS, APPLE_BLACK, APPLE_WHITE };
