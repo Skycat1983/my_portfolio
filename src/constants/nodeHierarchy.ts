@@ -20,6 +20,8 @@ import {
   WORD,
   PORTFOLIO,
   PHONE,
+  WHATSAPP,
+  SAFARI,
 } from "./images";
 
 const { RESUME, RECOMMENDATIONS, REVIEW } = DOCUMENTS;
@@ -47,7 +49,132 @@ export const rootNodes: DirectoryObject = {
   dateModified: "2024-03-20T10:00:00Z",
   size: null,
   applicationRegistryId: "finder",
+  protected: true,
   children: [
+    {
+      id: "downloads",
+      label: "Downloads",
+      type: "directory",
+      image: FOLDER_MAC,
+      alternativeImage: null,
+      applicationRegistryId: "finder",
+      macExtension: null,
+      windowsExtension: null,
+      dateModified: "2024-03-20T10:00:00Z",
+      size: null,
+      protected: true,
+      children: [],
+    },
+    {
+      id: "applications",
+      label: "Applications",
+      type: "directory",
+      image: FOLDER_MAC,
+      alternativeImage: null,
+      applicationRegistryId: "finder",
+      macExtension: null,
+      windowsExtension: null,
+      dateModified: "2024-03-20T10:00:00Z",
+      size: null,
+      protected: true,
+      children: [
+        {
+          id: "gta-vi-application",
+          label: "GTA VI",
+          type: "application",
+          image: GITHUB,
+          alternativeImage: null,
+          applicationRegistryId: "gtaVi",
+          applicationId: "gtaVi",
+          macExtension: ".app",
+          windowsExtension: ".exe",
+          dateModified: "2024-03-20T10:00:00Z",
+          size: null,
+          protected: false,
+        },
+
+        {
+          id: "geo-application",
+          label: "Geo",
+          type: "application",
+          image: GITHUB,
+          alternativeImage: null,
+          applicationRegistryId: "geo",
+          applicationId: "geo",
+          macExtension: ".app",
+          windowsExtension: ".exe",
+          dateModified: "2024-03-20T10:00:00Z",
+          size: null,
+          protected: false,
+        },
+        {
+          id: "pages-application",
+          label: "Pages",
+          type: "document",
+          image: PAGES,
+          alternativeImage: WORD,
+          applicationRegistryId: "documentEditor",
+          applicationId: "documentEditor",
+          documentConfigId: "default_document_config",
+          macExtension: ".txt",
+          windowsExtension: ".txt",
+          dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
+          size: 512, // TODO: add size
+          protected: false,
+        },
+        {
+          id: "whatsapp-application",
+          label: "WhatsApp",
+          type: "application",
+          image: WHATSAPP,
+          alternativeImage: null,
+          applicationRegistryId: "whatsApp",
+          applicationId: "whatsApp",
+          macExtension: ".app",
+          windowsExtension: ".exe",
+          dateModified: "2024-03-20T10:00:00Z",
+          size: null,
+          protected: false,
+        },
+        {
+          id: "browser-application",
+          label: "Browser",
+          type: "application",
+          image: SAFARI,
+          alternativeImage: null,
+          applicationRegistryId: "browser",
+          applicationId: "browser",
+          macExtension: ".app",
+          windowsExtension: ".exe",
+          dateModified: "2024-03-20T10:00:00Z",
+          size: null,
+          protected: false,
+        },
+        createNodeFromTemplate("browserApp", {
+          id: "browser-applications",
+          location: "applications",
+          protected: false,
+        }),
+        createNodeFromTemplate("terminalApp", {
+          id: "terminal-applications",
+          location: "applications",
+          protected: false,
+        }),
+        // {
+        //   id: "gta-vi-application",
+        //   label: "GTA VI",
+        //   type: "application",
+        //   image: GITHUB,
+        //   alternativeImage: null,
+        //   applicationRegistryId: "gtaVi",
+        //   applicationId: "gtaVi",
+        //   macExtension: ".app",
+        //   windowsExtension: ".exe",
+        //   dateModified: "2024-03-20T10:00:00Z",
+        //   size: null,
+        // },
+      ],
+    },
     {
       id: "desktop-root",
       type: "directory",
@@ -59,6 +186,7 @@ export const rootNodes: DirectoryObject = {
       dateModified: "2024-03-20T10:00:00Z",
       applicationRegistryId: "finder",
       size: null,
+      protected: true,
       children: [
         // ! for debugging
         // {
@@ -72,6 +200,7 @@ export const rootNodes: DirectoryObject = {
         //   windowsExtension: null,
         //   dateModified: "2024-03-20T10:00:00Z",
         //   size: null,
+        //   protected: false,
         //   children: [],
         // },
         // {
@@ -85,6 +214,7 @@ export const rootNodes: DirectoryObject = {
         //   windowsExtension: null,
         //   dateModified: "2024-03-20T10:00:00Z",
         //   size: null,
+        //   protected: false,
         //   children: [],
         // },
         // {
@@ -98,19 +228,23 @@ export const rootNodes: DirectoryObject = {
         //   windowsExtension: null,
         //   dateModified: "2024-03-20T10:00:00Z",
         //   size: null,
+        //   protected: false,
         //   children: [],
         // },
         createNodeFromTemplate("whatsAppApp", {
           id: "whatsapp-desktop",
           location: "desktop",
+          protected: false,
         }),
 
         createNodeFromTemplate("browserApp", {
           id: "browser-desktop",
           location: "desktop",
+          protected: false,
         }),
         createNodeFromTemplate("terminalApp", {
           id: "terminal",
+          protected: false,
         }),
 
         {
@@ -124,6 +258,7 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T09:15:00Z",
           size: null,
+          protected: true,
           children: [],
         },
         {
@@ -137,6 +272,7 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T11:30:00Z",
           size: null,
+          protected: false,
           children: [
             {
               id: "laoutaris",
@@ -149,6 +285,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "laoutaris_code",
@@ -161,6 +298,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-17T16:45:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
                 {
                   id: "laoutaris_website",
@@ -173,6 +311,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-16T15:30:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -187,6 +326,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "roboCrop_code",
@@ -199,6 +339,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-15T11:20:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
                 {
                   id: "roboCrop_download",
@@ -211,6 +352,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-14T09:45:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -225,6 +367,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "SkyNot_code",
@@ -237,6 +380,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-13T14:15:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
                 {
                   id: "SkyNot_download",
@@ -249,6 +393,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-12T16:30:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -263,6 +408,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "Dashboard_code",
@@ -275,6 +421,7 @@ export const rootNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-11T10:45:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -283,7 +430,7 @@ export const rootNodes: DirectoryObject = {
 
         {
           id: "documents",
-          label: "Documents",
+          label: "PDFs",
           type: "directory",
           image: FOLDER_MAC,
           alternativeImage: FOLDER_WINDOWS,
@@ -292,6 +439,7 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T12:00:00Z",
           size: null,
+          protected: false,
           children: [
             {
               id: "resume",
@@ -304,6 +452,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: ".pdf",
               dateModified: "2024-03-19T09:30:00Z",
               size: 2500000, // 2.5MB for PDF
+              protected: false,
             },
             {
               id: "recommendation",
@@ -316,6 +465,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: ".pdf",
               dateModified: "2024-03-18T10:45:00Z",
               size: 1800000, // 1.8MB for PDF
+              protected: false,
             },
             {
               id: "review",
@@ -328,6 +478,7 @@ export const rootNodes: DirectoryObject = {
               windowsExtension: ".png",
               dateModified: "2024-03-10T15:20:00Z",
               size: 3500000, // 3.5MB for PNG image
+              protected: false,
             },
           ],
         },
@@ -342,17 +493,21 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T13:15:00Z",
           size: null,
+          protected: false,
           children: [
             createNodeFromTemplate("gtaViApp", {
               id: "gtaiv",
+              protected: false,
             }),
             createNodeFromTemplate("geoGameApp", {
               id: "geo",
+              protected: false,
             }),
           ],
         },
         createNodeFromTemplate("achievementsApp", {
           id: "achievements",
+          protected: false,
         }),
         // createNodeFromTemplate("portfolioDocument", {
         //   id: "sample-document",
@@ -370,6 +525,7 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
           size: 512, // TODO: add size
+          protected: false,
         },
         // {
         //   id: "downloads",
@@ -397,9 +553,11 @@ export const rootNodes: DirectoryObject = {
       windowsExtension: null,
       dateModified: "2024-03-20T10:00:00Z",
       size: null,
+      protected: true,
       children: [
         createNodeFromTemplate("finderApp", {
           id: "finder",
+          protected: false,
         }),
         {
           id: "mail",
@@ -412,17 +570,21 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z",
           size: 512, // 512 bytes for function
+          protected: false,
         },
         createNodeFromTemplate("mapsApp", {
           id: "maps",
+          protected: false,
         }),
         createNodeFromTemplate("calculatorApp", {
           id: "calculator-dock",
           location: "dock",
+          protected: false,
         }),
         createNodeFromTemplate("settingsApp", {
           id: "settings-dock",
           location: "dock",
+          protected: false,
         }),
         {
           id: "pages-dock",
@@ -437,6 +599,7 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
           size: 512, // TODO: add size
+          protected: false,
         },
         {
           id: "github-dock",
@@ -449,6 +612,7 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: ".url",
           dateModified: "2024-03-15T14:30:00Z",
           size: 1024, // 1KB for link file
+          protected: false,
         },
         {
           id: "linkedin-dock",
@@ -461,13 +625,14 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: ".url",
           dateModified: "2024-03-14T09:15:00Z",
           size: 1024, // 1KB for link file
+          protected: false,
         },
         // createNodeFromTemplate("pagesApp", {
         //   id: "pages-dock",
         //   location: "dock",
         // }),
         {
-          id: "github-dock",
+          id: "github-dock-2",
           label: "GitHub",
           type: "link",
           image: GITHUB,
@@ -477,35 +642,40 @@ export const rootNodes: DirectoryObject = {
           windowsExtension: ".url",
           dateModified: "2024-03-15T14:30:00Z",
           size: 1024, // 1KB for link file
+          protected: false,
         },
         {
-          id: "linkedin-dock",
+          id: "linkedin-dock-2",
           label: "LinkedIn",
           type: "link",
           image: LINKEDIN,
           alternativeImage: null,
           url: "https://www.linkedin.com/in/heron-laoutaris/",
-
           macExtension: ".webloc",
           windowsExtension: ".url",
           dateModified: "2024-03-14T09:15:00Z",
           size: 1024, // 1KB for link file
+          protected: false,
         },
         createNodeFromTemplate("whatsAppApp", {
           id: "whatsapp-dock",
           location: "dock",
+          protected: false,
         }),
         createNodeFromTemplate("achievementsApp", {
           id: "achievements-dock",
           location: "dock",
+          protected: false,
         }),
         createNodeFromTemplate("terminalApp", {
           id: "terminal-dock",
           location: "dock",
+          protected: false,
         }),
         createNodeFromTemplate("browserApp", {
           id: "browser-dock",
           location: "dock",
+          protected: false,
         }),
       ],
     },
@@ -524,6 +694,7 @@ export const mobileNodes: DirectoryObject = {
   dateModified: "2024-03-20T10:00:00Z",
   size: null,
   applicationRegistryId: "finder",
+  protected: true,
   children: [
     {
       id: "mobile-home-root",
@@ -536,18 +707,22 @@ export const mobileNodes: DirectoryObject = {
       dateModified: "2024-03-20T10:00:00Z",
       applicationRegistryId: "finder",
       size: null,
+      protected: true,
       children: [
         createNodeFromTemplate("mapsApp", {
           id: "maps",
+          protected: false,
         }),
 
         createNodeFromTemplate("calculatorApp", {
           id: "calculator-desktop",
           location: "desktop",
+          protected: false,
         }),
 
         createNodeFromTemplate("terminalApp", {
           id: "terminal",
+          protected: false,
         }),
         {
           id: "github-dock",
@@ -560,6 +735,7 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: ".url",
           dateModified: "2024-03-15T14:30:00Z",
           size: 1024, // 1KB for link file
+          protected: false,
         },
         {
           id: "linkedin-dock",
@@ -572,6 +748,7 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: ".url",
           dateModified: "2024-03-14T09:15:00Z",
           size: 1024, // 1KB for link file
+          protected: false,
         },
 
         {
@@ -585,6 +762,7 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T11:30:00Z",
           size: null,
+          protected: false,
           children: [
             {
               id: "laoutaris",
@@ -597,6 +775,7 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "laoutaris_code",
@@ -609,6 +788,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-17T16:45:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
                 {
                   id: "laoutaris_website",
@@ -621,6 +801,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-16T15:30:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -635,6 +816,7 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "roboCrop_code",
@@ -647,6 +829,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-15T11:20:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
                 {
                   id: "roboCrop_download",
@@ -659,6 +842,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-14T09:45:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -673,6 +857,7 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "SkyNot_code",
@@ -685,6 +870,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-13T14:15:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
                 {
                   id: "SkyNot_download",
@@ -697,6 +883,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-12T16:30:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -711,6 +898,7 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: null,
               dateModified: "2024-03-20T11:30:00Z",
               size: null,
+              protected: false,
               children: [
                 {
                   id: "Dashboard_code",
@@ -723,6 +911,7 @@ export const mobileNodes: DirectoryObject = {
                   windowsExtension: ".url",
                   dateModified: "2024-03-11T10:45:00Z",
                   size: 1024, // 1KB for link file
+                  protected: false,
                 },
               ],
             },
@@ -740,6 +929,7 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T12:00:00Z",
           size: null,
+          protected: false,
           children: [
             {
               id: "resume",
@@ -752,6 +942,7 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: ".pdf",
               dateModified: "2024-03-19T09:30:00Z",
               size: 2500000, // 2.5MB for PDF
+              protected: false,
             },
             {
               id: "recommendation",
@@ -764,6 +955,7 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: ".pdf",
               dateModified: "2024-03-18T10:45:00Z",
               size: 1800000, // 1.8MB for PDF
+              protected: false,
             },
             {
               id: "review",
@@ -776,17 +968,21 @@ export const mobileNodes: DirectoryObject = {
               windowsExtension: ".png",
               dateModified: "2024-03-10T15:20:00Z",
               size: 3500000, // 3.5MB for PNG image
+              protected: false,
             },
           ],
         },
         createNodeFromTemplate("gtaViApp", {
           id: "gtaiv",
+          protected: false,
         }),
         createNodeFromTemplate("geoGameApp", {
           id: "geo",
+          protected: false,
         }),
         createNodeFromTemplate("achievementsApp", {
           id: "achievements",
+          protected: false,
         }),
         {
           id: "pages-desktop",
@@ -801,11 +997,13 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
           size: 512, // TODO: add size
+          protected: false,
         },
 
         createNodeFromTemplate("settingsApp", {
           id: "settings-dock",
           location: "dock",
+          protected: false,
         }),
         {
           id: "trash",
@@ -818,6 +1016,7 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: null,
           dateModified: "2024-03-20T09:15:00Z",
           size: null,
+          protected: true,
           children: [],
         },
       ],
@@ -833,6 +1032,7 @@ export const mobileNodes: DirectoryObject = {
       windowsExtension: null,
       dateModified: "2024-03-20T10:00:00Z",
       size: null,
+      protected: true,
       children: [
         {
           id: "phone",
@@ -846,11 +1046,13 @@ export const mobileNodes: DirectoryObject = {
           windowsExtension: ".txt",
           dateModified: "2024-03-19T16:30:00Z",
           size: 512, // 512 bytes for function
+          protected: false,
         },
 
         createNodeFromTemplate("whatsAppApp", {
           id: "whatsapp-dock",
           location: "dock",
+          protected: false,
         }),
         // createNodeFromTemplate("achievementsApp", {
         //   id: "achievements-dock",
@@ -859,6 +1061,7 @@ export const mobileNodes: DirectoryObject = {
         createNodeFromTemplate("browserApp", {
           id: "browser-dock",
           location: "dock",
+          protected: false,
         }),
       ],
     },
@@ -889,7 +1092,10 @@ export type MobileDockRootId = "mobile-dock-root";
 
 export type MobileRoot = MobileRootId | MobileDockRootId;
 
+export type SystemRootId = "system-root";
+
 // Legacy support - desktop root ID for components that expect it
+export const systemRootId = "system-root";
 export const desktopRootId: DesktopRootId = "desktop-root";
 export const dockRootId: DockRootId = "dock-root";
 export const mobileRootId: MobileRootId = "mobile-home-root";

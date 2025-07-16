@@ -19,6 +19,7 @@ export interface BaseNodeObject {
   alternativeImage: string | null; // For state-dependent icon switching (null = no alternative)
   dateModified: string; // ISO date string
   size: number | null; // File size in bytes, null for directories
+  protected: boolean; // Whether the node is protected from deletion
 }
 
 export type MacDirectoryExtensions = null;

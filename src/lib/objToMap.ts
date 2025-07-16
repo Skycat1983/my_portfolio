@@ -35,6 +35,7 @@ export const convertObjectsToMap = (
           children: [], // Will be populated below
           dateModified: nodeObj.dateModified,
           size: null, // Always null for directories
+          protected: nodeObj.protected,
         } as DirectoryEntry;
 
         // Process children for directories
@@ -58,6 +59,7 @@ export const convertObjectsToMap = (
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,
           size: nodeObj.size,
+          protected: nodeObj.protected,
         } as ApplicationEntry;
         break;
 
@@ -74,6 +76,7 @@ export const convertObjectsToMap = (
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,
           size: nodeObj.size,
+          protected: nodeObj.protected,
         } as LinkEntry;
         break;
 
@@ -90,6 +93,7 @@ export const convertObjectsToMap = (
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,
           size: nodeObj.size,
+          protected: nodeObj.protected,
         } as EasterEggEntry;
         break;
 
@@ -106,6 +110,7 @@ export const convertObjectsToMap = (
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,
           size: nodeObj.size,
+          protected: nodeObj.protected,
         } as FunctionEntry;
         break;
 
@@ -123,6 +128,7 @@ export const convertObjectsToMap = (
           windowsExtension: nodeObj.windowsExtension,
           dateModified: nodeObj.dateModified,
           size: nodeObj.size,
+          protected: nodeObj.protected,
         } as DocumentEntry;
         break;
 

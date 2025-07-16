@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Columns3, Grid2x2, List } from "lucide-react";
 import type { WindowId } from "@/constants/applicationRegistry";
+import theme from "@/styles/theme";
 
 // List of major cities with their timezones
 const CITIES = [
@@ -55,7 +56,7 @@ export const Settings = ({ windowId }: SettingsProps) => {
   // Split store access into smaller pieces
   const timeFormat = useNewStore((state) => state.timeFormat);
   const setTimeFormat = useNewStore((state) => state.setTimeFormat);
-  const theme = useNewStore((state) => state.theme);
+  const currentTheme = useNewStore((state) => state.theme);
   const toggleTheme = useNewStore((state) => state.toggleTheme);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const toggleWifi = useNewStore((state) => state.toggleWifi);
@@ -70,6 +71,14 @@ export const Settings = ({ windowId }: SettingsProps) => {
   const setDefaultFinderView = useNewStore(
     (state) => state.setDefaultFinderView
   );
+
+  // Theme colors
+  const bgColorPrimary = theme.colors[currentTheme].background.primary;
+  const bgColorSecondary = theme.colors[currentTheme].background.secondary;
+  const bgColorTertiary = theme.colors[currentTheme].background.tertiary;
+  const textColorPrimary = theme.colors[currentTheme].text.primary;
+  const borderColor = theme.colors[currentTheme].border.primary;
+  const surfaceColor = theme.colors[currentTheme].surface.primary;
 
   // Memoize handlers
   const handleCityChange = useCallback(
@@ -102,71 +111,107 @@ export const Settings = ({ windowId }: SettingsProps) => {
     setCustomWallpaper(null);
   }, [setCustomWallpaper]);
 
-  const isDark = theme === "dark";
-  const bgColor = isDark ? "bg-neutral-900" : "bg-white";
-  const textColor = isDark ? "text-white" : "text-black";
-  const sectionBgColor = isDark ? "bg-neutral-800" : "bg-neutral-100";
-  const borderColor = isDark ? "border-neutral-700" : "border-neutral-200";
+  const getButtonStyles = (isActive: boolean) => ({
+    backgroundColor: isActive
+      ? theme.colors.status.info[currentTheme]
+      : bgColorSecondary,
+    color: isActive ? "#ffffff" : textColorPrimary,
+    borderColor: borderColor,
+  });
 
   return (
-    <div className={`h-auto w-full ${bgColor} ${textColor}`}>
+    <div
+      className="h-auto w-full"
+      style={{
+        backgroundColor: bgColorPrimary,
+        color: textColorPrimary,
+      }}
+    >
       <div className="p-8 space-y-6 max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">System Settings</h1>
+        <h1
+          className="text-3xl font-bold mb-8"
+          style={{ color: textColorPrimary }}
+        >
+          System Settings
+        </h1>
 
         {/* Time & Location Settings Section */}
         <div
-          className={`p-6 rounded-lg ${sectionBgColor} ${borderColor} border space-y-4`}
+          className="p-6 rounded-lg border space-y-4"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+          }}
         >
-          <h2 className="text-2xl font-semibold mb-4">
+          <h2
+            className="text-2xl font-semibold mb-4"
+            style={{ color: textColorPrimary }}
+          >
             Time & Location Settings
           </h2>
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Time Format</Label>
+              <Label style={{ color: textColorPrimary }}>Time Format</Label>
               <Select
                 value={timeFormat}
                 onValueChange={(value: "12h" | "24h") => setTimeFormat(value)}
               >
                 <SelectTrigger
-                  className={`${
-                    isDark
-                      ? "bg-neutral-700 border-neutral-600"
-                      : "bg-white border-neutral-300"
-                  }`}
-                  style={{ zIndex: zIndex + 1 }}
+                  style={{
+                    backgroundColor: surfaceColor,
+                    borderColor: borderColor,
+                    color: textColorPrimary,
+                    zIndex: zIndex + 1,
+                  }}
                 >
                   <SelectValue placeholder="Select time format" />
                 </SelectTrigger>
                 <SelectContent
-                  style={{ zIndex: zIndex + 1 }}
-                  className={isDark ? "bg-neutral-700" : "bg-white"}
+                  style={{
+                    zIndex: zIndex + 1,
+                    backgroundColor: surfaceColor,
+                    borderColor: borderColor,
+                    color: textColorPrimary,
+                  }}
                 >
-                  <SelectItem value="12h">12-hour</SelectItem>
-                  <SelectItem value="24h">24-hour</SelectItem>
+                  <SelectItem value="12h" style={{ color: textColorPrimary }}>
+                    12-hour
+                  </SelectItem>
+                  <SelectItem value="24h" style={{ color: textColorPrimary }}>
+                    24-hour
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label>City</Label>
+              <Label style={{ color: textColorPrimary }}>City</Label>
               <Select value={selectedCity} onValueChange={handleCityChange}>
                 <SelectTrigger
-                  className={`${
-                    isDark
-                      ? "bg-neutral-700 border-neutral-600"
-                      : "bg-white border-neutral-300"
-                  }`}
-                  style={{ zIndex: zIndex + 1 }}
+                  style={{
+                    backgroundColor: surfaceColor,
+                    borderColor: borderColor,
+                    color: textColorPrimary,
+                    zIndex: zIndex + 1,
+                  }}
                 >
                   <SelectValue placeholder="Select city" />
                 </SelectTrigger>
                 <SelectContent
-                  style={{ zIndex: zIndex + 1 }}
-                  className={isDark ? "bg-neutral-700" : "bg-white"}
+                  style={{
+                    zIndex: zIndex + 1,
+                    backgroundColor: surfaceColor,
+                    borderColor: borderColor,
+                    color: textColorPrimary,
+                  }}
                 >
                   {CITIES.map((city) => (
-                    <SelectItem key={city.name} value={city.name}>
+                    <SelectItem
+                      key={city.name}
+                      value={city.name}
+                      style={{ color: textColorPrimary }}
+                    >
                       {city.name}
                     </SelectItem>
                   ))}
@@ -178,27 +223,29 @@ export const Settings = ({ windowId }: SettingsProps) => {
 
         {/* Finder Settings Section */}
         <div
-          className={`p-6 rounded-lg ${sectionBgColor} ${borderColor} border space-y-4`}
+          className="p-6 rounded-lg border space-y-4"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+          }}
         >
-          <h2 className="text-2xl font-semibold mb-4">Finder Settings</h2>
+          <h2
+            className="text-2xl font-semibold mb-4"
+            style={{ color: textColorPrimary }}
+          >
+            Finder Settings
+          </h2>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Default Finder View</Label>
+              <Label style={{ color: textColorPrimary }}>
+                Default Finder View
+              </Label>
               <div className="flex gap-3">
                 <Button
-                  variant={
-                    defaultFinderView === "icons" ? "default" : "outline"
-                  }
+                  variant="outline"
                   size="lg"
-                  className={`flex flex-col items-center justify-center h-20 w-20 ${
-                    defaultFinderView === "icons"
-                      ? isDark
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-blue-600 hover:bg-blue-700"
-                      : isDark
-                      ? "bg-neutral-700 hover:bg-neutral-600 border-neutral-600"
-                      : "bg-white hover:bg-neutral-50 border-neutral-300"
-                  }`}
+                  className="flex flex-col items-center justify-center h-20 w-20 border"
+                  style={getButtonStyles(defaultFinderView === "icons")}
                   onClick={() => setDefaultFinderView("icons")}
                 >
                   <Grid2x2 className="size-5 mb-1" />
@@ -206,17 +253,10 @@ export const Settings = ({ windowId }: SettingsProps) => {
                 </Button>
 
                 <Button
-                  variant={defaultFinderView === "list" ? "default" : "outline"}
+                  variant="outline"
                   size="lg"
-                  className={`flex flex-col items-center justify-center h-20 w-20 ${
-                    defaultFinderView === "list"
-                      ? isDark
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-blue-600 hover:bg-blue-700"
-                      : isDark
-                      ? "bg-neutral-700 hover:bg-neutral-600 border-neutral-600"
-                      : "bg-white hover:bg-neutral-50 border-neutral-300"
-                  }`}
+                  className="flex flex-col items-center justify-center h-20 w-20 border"
+                  style={getButtonStyles(defaultFinderView === "list")}
                   onClick={() => setDefaultFinderView("list")}
                 >
                   <List className="size-5 mb-1" />
@@ -224,19 +264,10 @@ export const Settings = ({ windowId }: SettingsProps) => {
                 </Button>
 
                 <Button
-                  variant={
-                    defaultFinderView === "columns" ? "default" : "outline"
-                  }
+                  variant="outline"
                   size="lg"
-                  className={`flex flex-col items-center justify-center h-20 w-20 ${
-                    defaultFinderView === "columns"
-                      ? isDark
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-blue-600 hover:bg-blue-700"
-                      : isDark
-                      ? "bg-neutral-700 hover:bg-neutral-600 border-neutral-600"
-                      : "bg-white hover:bg-neutral-50 border-neutral-300"
-                  }`}
+                  className="flex flex-col items-center justify-center h-20 w-20 border"
+                  style={getButtonStyles(defaultFinderView === "columns")}
                   onClick={() => setDefaultFinderView("columns")}
                 >
                   <Columns3 className="size-5 mb-1" />
@@ -249,58 +280,100 @@ export const Settings = ({ windowId }: SettingsProps) => {
 
         {/* Theme Settings Section */}
         <div
-          className={`p-6 rounded-lg ${sectionBgColor} ${borderColor} border space-y-4`}
+          className="p-6 rounded-lg border space-y-4"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+          }}
         >
-          <h2 className="text-2xl font-semibold mb-4">Theme Settings</h2>
+          <h2
+            className="text-2xl font-semibold mb-4"
+            style={{ color: textColorPrimary }}
+          >
+            Theme Settings
+          </h2>
           <div className="flex items-center justify-between py-2">
-            <Label className="text-base">Dark Mode</Label>
+            <Label className="text-base" style={{ color: textColorPrimary }}>
+              Dark Mode
+            </Label>
             <Switch
-              checked={theme === "dark"}
+              checked={currentTheme === "dark"}
               onCheckedChange={toggleTheme}
-              className={`${
-                isDark ? "bg-neutral-600" : "bg-neutral-300"
-              } data-[state=checked]:bg-blue-600`}
+              style={{
+                backgroundColor: bgColorTertiary,
+              }}
+              className="data-[state=checked]:bg-blue-600"
             />
           </div>
         </div>
 
         {/* Network Settings Section */}
         <div
-          className={`p-6 rounded-lg ${sectionBgColor} ${borderColor} border space-y-4`}
+          className="p-6 rounded-lg border space-y-4"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+          }}
         >
-          <h2 className="text-2xl font-semibold mb-4">Network Settings</h2>
+          <h2
+            className="text-2xl font-semibold mb-4"
+            style={{ color: textColorPrimary }}
+          >
+            Network Settings
+          </h2>
           <div className="flex items-center justify-between py-2">
-            <Label className="text-base">WiFi</Label>
+            <Label className="text-base" style={{ color: textColorPrimary }}>
+              WiFi
+            </Label>
             <Switch
               checked={wifiEnabled}
               onCheckedChange={toggleWifi}
-              className={`${
-                isDark ? "bg-neutral-600" : "bg-neutral-300"
-              } data-[state=checked]:bg-blue-600`}
+              style={{
+                backgroundColor: bgColorTertiary,
+              }}
+              className="data-[state=checked]:bg-blue-600"
             />
           </div>
         </div>
 
         {/* Wallpaper Settings Section */}
         <div
-          className={`p-6 rounded-lg ${sectionBgColor} ${borderColor} border space-y-4`}
+          className="p-6 rounded-lg border space-y-4"
+          style={{
+            backgroundColor: bgColorSecondary,
+            borderColor: borderColor,
+          }}
         >
-          <h2 className="text-2xl font-semibold mb-4">Wallpaper Settings</h2>
+          <h2
+            className="text-2xl font-semibold mb-4"
+            style={{ color: textColorPrimary }}
+          >
+            Wallpaper Settings
+          </h2>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Custom Wallpaper</Label>
+              <Label style={{ color: textColorPrimary }}>
+                Custom Wallpaper
+              </Label>
               <div className="flex items-center gap-4">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleWallpaperUpload}
-                  className={`flex-1 p-2 rounded-md ${
-                    isDark ? "bg-neutral-700 text-white" : "bg-white text-black"
-                  } ${borderColor} border`}
+                  className="flex-1 p-2 rounded-md border"
+                  style={{
+                    backgroundColor: surfaceColor,
+                    color: textColorPrimary,
+                    borderColor: borderColor,
+                  }}
                 />
                 <Button
                   onClick={handleRemoveWallpaper}
-                  variant={isDark ? "destructive" : "secondary"}
+                  variant="destructive"
+                  style={{
+                    backgroundColor: theme.colors.status.error[currentTheme],
+                    color: "#ffffff",
+                  }}
                 >
                   Remove
                 </Button>

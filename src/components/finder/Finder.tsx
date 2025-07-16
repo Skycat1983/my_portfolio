@@ -5,6 +5,7 @@ import { useNewStore } from "@/hooks/useStore";
 import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import { theme } from "@/styles/theme";
 import type { WindowId } from "@/constants/applicationRegistry";
+import { systemRootId } from "@/constants/nodeHierarchy";
 
 export const Finder = ({
   windowId,
@@ -25,8 +26,11 @@ export const Finder = ({
   );
   const zIndex = window?.zIndex ?? 0;
 
+  const nodeIdToFind = nodeId === "finder" ? systemRootId : nodeId;
+  console.log("finder nodeIdToFind", nodeIdToFind);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
-  const children = getChildrenByParentID(nodeId);
+  const children = getChildrenByParentID(nodeIdToFind);
+  console.log("finder children", children);
 
   // Handle history changes from WindowHistoryNavigation
   const handleHistoryChange = React.useCallback(
@@ -66,7 +70,7 @@ export const Finder = ({
         nodeId={nodeId}
         onHistoryChange={handleHistoryChange}
       />
-      <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
+      <NodeDropZoneWrapper nodeId={nodeIdToFind} shrinkToFit={false}>
         <FinderBody
           nodes={filteredNodes}
           view={view}

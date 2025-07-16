@@ -37,6 +37,7 @@ interface BaseNodeTemplate {
   alternativeImage: string | null;
   dateModified: string;
   size: number | null;
+  protected: boolean;
 }
 
 interface ApplicationTemplate extends BaseNodeTemplate {
@@ -80,6 +81,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-17T08:45:00Z",
     size: 65000000, // 65MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   whatsAppApp: {
@@ -93,6 +95,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-13T15:45:00Z",
     size: 145000000, // 145MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   terminalApp: {
@@ -106,6 +109,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-18T14:20:00Z",
     size: 85000000, // 85MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   browserApp: {
@@ -119,6 +123,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-19T15:30:00Z",
     size: 245000000, // 245MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   achievementsApp: {
@@ -132,6 +137,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-12T10:30:00Z",
     size: 95000000, // 95MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   gtaViApp: {
@@ -145,6 +151,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-15T11:20:00Z",
     size: 185000000, // 185MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   geoGameApp: {
@@ -158,6 +165,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-14T14:30:00Z",
     size: 125000000, // 125MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   finderApp: {
@@ -171,6 +179,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-20T10:00:00Z",
     size: null,
+    protected: false,
   } satisfies ApplicationTemplate,
 
   mapsApp: {
@@ -184,6 +193,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-18T13:45:00Z",
     size: 155000000, // 155MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   settingsApp: {
@@ -197,6 +207,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-12T10:30:00Z",
     size: 95000000, // 95MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   pagesApp: {
@@ -210,6 +221,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-16T11:20:00Z",
     size: 175000000, // 175MB
+    protected: false,
   } satisfies ApplicationTemplate,
 
   // ─────────── Directory Templates ───────────
@@ -223,6 +235,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: null,
     dateModified: "2024-03-20T11:30:00Z",
     size: null,
+    protected: false,
   } satisfies DirectoryTemplate,
 
   // ─────────── Document Templates ───────────
@@ -237,6 +250,7 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".txt",
     dateModified: "2024-03-20T09:00:00Z",
     size: 25000, // 25KB
+    protected: false,
   } satisfies DocumentTemplate,
 } as const;
 
@@ -289,6 +303,7 @@ export const createNodeFromTemplate = <T extends NodeTemplateId>(
     id?: string;
     location?: LocationContext;
     idSuffix?: string;
+    protected?: boolean;
   }
 ): (typeof NODE_TEMPLATES)[T] & { id: string } => {
   const template = NODE_TEMPLATES[templateId];

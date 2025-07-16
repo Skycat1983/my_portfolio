@@ -43,8 +43,8 @@ export const IconsView = ({
 
         {/* Desktop: Use OS-specific layout direction */}
         <div
-          className={`hidden lg:flex flex-col w-full gap-6 h-full content-start ${
-            operatingSystem === "windows" ? "flex-wrap" : "flex-wrap-reverse"
+          className={`hidden lg:flex flex-row w-full gap-6 h-full content-start ${
+            operatingSystem === "windows" ? "flex-wrap" : "flex-wrap"
           }`}
         >
           {nodes.map((node) => (
