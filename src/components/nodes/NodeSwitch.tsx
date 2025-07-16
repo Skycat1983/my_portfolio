@@ -26,7 +26,12 @@ export const NodeSwitch = ({ node, windowId, view }: NodeSwitchProps) => {
   switch (node.type) {
     case "easter-egg":
       return (
-        <EasterEggNode key={node.id} egg={node as EasterEggEntry} view={view} />
+        <EasterEggNode
+          key={node.id}
+          egg={node as EasterEggEntry}
+          view={view}
+          windowId={windowId}
+        />
       );
 
     case "directory":
@@ -41,7 +46,14 @@ export const NodeSwitch = ({ node, windowId, view }: NodeSwitchProps) => {
       );
 
     case "link":
-      return <LinkNode key={node.id} link={node as LinkEntry} view={view} />;
+      return (
+        <LinkNode
+          key={node.id}
+          link={node as LinkEntry}
+          view={view}
+          windowId={windowId}
+        />
+      );
 
     case "application":
       return (
@@ -49,17 +61,28 @@ export const NodeSwitch = ({ node, windowId, view }: NodeSwitchProps) => {
           key={node.id}
           node={node as ApplicationEntry}
           view={view}
+          windowId={windowId}
         />
       );
 
     case "function":
       return (
-        <FunctionNode key={node.id} node={node as FunctionEntry} view={view} />
+        <FunctionNode
+          key={node.id}
+          node={node as FunctionEntry}
+          view={view}
+          windowId={windowId}
+        />
       );
 
     case "document":
       return (
-        <DocumentNode key={node.id} node={node as DocumentEntry} view={view} />
+        <DocumentNode
+          key={node.id}
+          node={node as DocumentEntry}
+          view={view}
+          windowId={windowId}
+        />
       );
 
     default:

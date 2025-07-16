@@ -10,10 +10,31 @@ import {
   getTitleBase,
 } from "./node.styles";
 import { useNewStore } from "@/hooks/useStore";
+import type { WindowId } from "@/constants/applicationRegistry";
+import {
+  desktopRootId,
+  dockRootId,
+  mobileDockRootId,
+  mobileRootId,
+  type RootDirectoryId,
+} from "@/constants/nodeHierarchy";
+import theme from "@/styles/theme";
 
-type Props = { link: LinkEntry; view: "icons" | "list" | "columns" };
+type Props = {
+  link: LinkEntry;
+  view: "icons" | "list" | "columns";
+  windowId: WindowId | RootDirectoryId;
+};
 
-export const LinkNode = ({ link, view }: Props) => {
+export const LinkNode = ({ link, view, windowId }: Props) => {
+  const isFinder =
+    windowId !== desktopRootId &&
+    windowId !== dockRootId &&
+    windowId !== mobileRootId &&
+    windowId !== mobileDockRootId;
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const textStyle = isFinder ? textColor : "white";
   const confirmCVCheckedOut = useNewStore((s) => s.confirmCVCheckedOut);
   const confirmRecommendationCheckedOut = useNewStore(
     (s) => s.confirmRecommendationCheckedOut
@@ -84,6 +105,9 @@ export const LinkNode = ({ link, view }: Props) => {
               view,
               nodeBehavior.isSelected
             )}`}
+            style={{
+              color: textStyle,
+            }}
           >
             {link.label}
           </h2>

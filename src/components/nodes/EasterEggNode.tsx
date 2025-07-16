@@ -1,6 +1,12 @@
 import { useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
-import { EGG_BROKEN } from "@/constants/nodeHierarchy";
+import {
+  desktopRootId,
+  dockRootId,
+  EGG_BROKEN,
+  mobileDockRootId,
+  mobileRootId,
+} from "@/constants/nodeHierarchy";
 import { useNodeEvents } from "./hooks/useNodeEvents";
 import type { EasterEggEntry } from "@/components/nodes/nodeTypes";
 import {
@@ -11,10 +17,25 @@ import {
   getLabelClasses,
   getTitleBase,
 } from "./node.styles";
+import type { WindowId } from "@/constants/applicationRegistry";
+import type { RootDirectoryId } from "@/constants/nodeHierarchy";
+import theme from "@/styles/theme";
 
-type Props = { egg: EasterEggEntry; view: "icons" | "list" | "columns" };
+type Props = {
+  egg: EasterEggEntry;
+  view: "icons" | "list" | "columns";
+  windowId: WindowId | RootDirectoryId;
+};
 
-export const EasterEggNode = ({ egg, view }: Props) => {
+export const EasterEggNode = ({ egg, view, windowId }: Props) => {
+  const isFinder =
+    windowId !== desktopRootId &&
+    windowId !== dockRootId &&
+    windowId !== mobileRootId &&
+    windowId !== mobileDockRootId;
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const textStyle = isFinder ? textColor : "white";
   // ─────────── node-specific store actions ───────────
   const updateNodeByID = useNewStore((s) => s.updateNodeByID);
   const selectOneNode = useNewStore((s) => s.selectOneNode);
@@ -85,6 +106,9 @@ export const EasterEggNode = ({ egg, view }: Props) => {
           view,
           nodeBehavior.isSelected
         )}`}
+        style={{
+          color: textStyle,
+        }}
       >
         {egg.label}
       </h2>

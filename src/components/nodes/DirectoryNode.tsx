@@ -20,6 +20,7 @@ import {
   mobileRootId,
   type RootDirectoryId,
 } from "@/constants/nodeHierarchy";
+import theme from "@/styles/theme";
 
 type Props = {
   nodeEntry: DirectoryEntry;
@@ -28,11 +29,14 @@ type Props = {
 };
 
 export const DirectoryNode = ({ nodeEntry, windowId, view }: Props) => {
-  console.log("DIR_NODE_01: DirectoryNode rendering", {
-    nodeId: nodeEntry.id,
-    windowId,
-    nodeLabel: nodeEntry.label,
-  });
+  const isFinder =
+    windowId !== desktopRootId &&
+    windowId !== dockRootId &&
+    windowId !== mobileRootId &&
+    windowId !== mobileDockRootId;
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const textStyle = isFinder ? textColor : "white";
 
   // ─────────── node-specific store actions ───────────
   const operatingSystem = useNewStore((s) => s.operatingSystem);
@@ -118,6 +122,9 @@ export const DirectoryNode = ({ nodeEntry, windowId, view }: Props) => {
             nodeBehavior.isSelected
             // isInPath
           )}`}
+          style={{
+            color: textStyle,
+          }}
         >
           {nodeEntry.label}
         </h2>

@@ -10,10 +10,31 @@ import {
   getTitleBase,
   getTitleFrame,
 } from "./node.styles";
+import type { WindowId } from "@/constants/applicationRegistry";
+import {
+  desktopRootId,
+  dockRootId,
+  mobileDockRootId,
+  mobileRootId,
+  type RootDirectoryId,
+} from "@/constants/nodeHierarchy";
+import theme from "@/styles/theme";
 
-type Props = { node: DocumentEntry; view: "icons" | "list" | "columns" };
+type Props = {
+  node: DocumentEntry;
+  view: "icons" | "list" | "columns";
+  windowId: WindowId | RootDirectoryId;
+};
 
-export const DocumentNode = ({ node, view }: Props) => {
+export const DocumentNode = ({ node, view, windowId }: Props) => {
+  const isFinder =
+    windowId !== desktopRootId &&
+    windowId !== dockRootId &&
+    windowId !== mobileRootId &&
+    windowId !== mobileDockRootId;
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const textStyle = isFinder ? textColor : "white";
   const { id, applicationId, documentConfigId } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   console.log(
@@ -88,6 +109,9 @@ export const DocumentNode = ({ node, view }: Props) => {
             view,
             nodeBehavior.isSelected
           )}`}
+          style={{
+            color: textStyle,
+          }}
         >
           {node.label}
         </h2>

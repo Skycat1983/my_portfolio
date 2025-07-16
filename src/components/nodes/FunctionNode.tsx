@@ -12,10 +12,31 @@ import {
 } from "./node.styles";
 import type { FunctionEntry } from "@/components/nodes/nodeTypes";
 import { getNodeFunction } from "@/constants/functionNodeRegistry";
+import type { WindowId } from "@/constants/applicationRegistry";
+import {
+  desktopRootId,
+  dockRootId,
+  mobileDockRootId,
+  mobileRootId,
+  type RootDirectoryId,
+} from "@/constants/nodeHierarchy";
+import theme from "@/styles/theme";
 
-type Props = { node: FunctionEntry; view: "icons" | "list" | "columns" };
+type Props = {
+  node: FunctionEntry;
+  view: "icons" | "list" | "columns";
+  windowId: WindowId | RootDirectoryId;
+};
 
-export const FunctionNode = ({ node, view }: Props) => {
+export const FunctionNode = ({ node, view, windowId }: Props) => {
+  const isFinder =
+    windowId !== desktopRootId &&
+    windowId !== dockRootId &&
+    windowId !== mobileRootId &&
+    windowId !== mobileDockRootId;
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const textStyle = isFinder ? textColor : "white";
   const { functionKey } = node;
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   // ─────────── node-specific store actions ───────────
@@ -78,6 +99,9 @@ export const FunctionNode = ({ node, view }: Props) => {
             view,
             nodeBehavior.isSelected
           )}`}
+          style={{
+            color: textStyle,
+          }}
         >
           {node.label}
         </h2>

@@ -11,13 +11,31 @@ import {
 } from "./node.styles";
 import type { ApplicationEntry } from "@/components/nodes/nodeTypes";
 import { getTitleFrame } from "./node.styles";
+import type { WindowId } from "@/constants/applicationRegistry";
+import {
+  desktopRootId,
+  dockRootId,
+  mobileDockRootId,
+  mobileRootId,
+  type RootDirectoryId,
+} from "@/constants/nodeHierarchy";
+import theme from "@/styles/theme";
 
 type Props = {
   node: ApplicationEntry;
   view: "icons" | "list" | "columns";
+  windowId: WindowId | RootDirectoryId;
 };
 
-export const ApplicationNode = ({ node, view }: Props) => {
+export const ApplicationNode = ({ node, view, windowId }: Props) => {
+  const isFinder =
+    windowId !== desktopRootId &&
+    windowId !== dockRootId &&
+    windowId !== mobileRootId &&
+    windowId !== mobileDockRootId;
+  const themeMode = useNewStore((s) => s.theme);
+  const textColor = theme.colors[themeMode].text.primary;
+  const textStyle = isFinder ? textColor : "white";
   console.log("node", node);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindow = useNewStore((s) => s.openWindow);
@@ -75,6 +93,9 @@ export const ApplicationNode = ({ node, view }: Props) => {
             view,
             nodeBehavior.isSelected
           )}`}
+          style={{
+            color: textStyle,
+          }}
         >
           {node.label}
         </h2>
@@ -82,39 +103,3 @@ export const ApplicationNode = ({ node, view }: Props) => {
     </div>
   );
 };
-// const handleActivate = useCallback(() => {
-//   openWindow(node);
-//   // Use applicationId for focus logic to handle dock/desktop instances
-//   // const windowAlreadyOpen = getWindowByApplicationId(node.applicationId);
-//   // console.log("APP_NODE_02: windowAlreadyOpen", windowAlreadyOpen);
-//   // console.log("APP_NODE_02: windowAlreadyOpen", node);
-
-//   // if (windowAlreadyOpen) {
-//   //   console.log(
-//   //     "APP_NODE_04: focusing existing window",
-//   //     windowAlreadyOpen.windowId
-//   //   );
-//   //   focusWindow(windowAlreadyOpen.windowId);
-//   //   return;
-//   // }
-
-//   // console.log("APP_NODE_05: opening new window for", node.id);
-//   // openWindowWithComponentKey(node, componentKey, node.applicationId);
-// }, [
-//   node,
-//   openWindow
-//   // getWindowByApplicationId,
-//   // openWindowWithComponentKey,
-//   // focusWindow,
-//   // componentKey,
-// ]);
-// console.log("APP_NODE_01: app", id, componentKey, node);
-// ─────────── node-specific store actions ───────────
-// const openTerminal = useNewStore((s) => s.openTerminal);
-// const openWindowWithComponentKey = useNewStore(
-//   (s) => s.openWindowWithComponentKey
-// );
-// const getWindowByApplicationId = useNewStore(
-//   (s) => s.getWindowByApplicationId
-// );
-// const focusWindow = useNewStore((s) => s.focusWindow);
