@@ -44,6 +44,7 @@ export const ApplicationNode = ({ node, view, windowId }: Props) => {
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
+    // this is a necessary hack to open the finder window without the finder nodes itself behaving like a directory (drag and drop etc)
     if (node.applicationRegistryId === "finder") {
       const rootDirectoryNode = findOneNode((n) => n.id === systemRootId);
       if (rootDirectoryNode && rootDirectoryNode.type === "directory") {
