@@ -15,8 +15,11 @@ export const Finder = ({
   windowId: WindowId;
   nodeId: NodeId;
 }) => {
-  console.log("HISTORY_DEBUG Finder rendering", { windowId, nodeId });
-  // const nodeMap = useNewStore((s) => s.nodeMap);
+  console.log("DEBUG_FINDER_01: Finder component render start", {
+    windowId,
+    nodeId,
+  });
+
   const defaultFinderView = useNewStore((s) => s.defaultFinderView);
   const currentTheme = useNewStore((s) => s.theme);
   const window = useNewStore((s) => s.findWindowById(windowId));
@@ -28,10 +31,18 @@ export const Finder = ({
   const zIndex = window?.zIndex ?? 0;
 
   const nodeIdToFind = nodeId === "finder" ? systemRootId : nodeId;
-  console.log("COLUMNS_VIEW_00: nodeIdToFind", nodeIdToFind);
+  console.log("DEBUG_FINDER_02: nodeIdToFind conversion", {
+    originalNodeId: nodeId,
+    nodeIdToFind,
+  });
+
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const children = getChildrenByParentID(nodeIdToFind);
-  console.log("COLUMNS_VIEW_01: children", children);
+  console.log("DEBUG_FINDER_03: children found", {
+    nodeIdToFind,
+    childrenCount: children.length,
+    children,
+  });
 
   // Handle history changes from WindowHistoryNavigation
   const handleHistoryChange = React.useCallback(
@@ -47,10 +58,14 @@ export const Finder = ({
     node.label.toLowerCase().includes(input.toLowerCase())
   );
 
-  console.log("COLUMNS_VIEW_02: filteredNodes", filteredNodes);
+  console.log("DEBUG_FINDER_04: filteredNodes after search", {
+    searchInput: input,
+    filteredCount: filteredNodes.length,
+    filteredNodes,
+  });
+
   const bgColor = theme.colors[currentTheme].background.primary;
   const borderColor = theme.colors[currentTheme].border.primary;
-  // const textColor = theme.colors[currentTheme].text.primary;
 
   return (
     <div

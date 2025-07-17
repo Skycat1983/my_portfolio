@@ -34,6 +34,11 @@ export const useFinderHistory = (
   windowId: WindowId,
   nodeId: NodeId
 ): UseFinderHistoryReturn => {
+  console.log("DEBUG_HISTORY_01: useFinderHistory hook called", {
+    windowId,
+    nodeId,
+  });
+
   // Get current window
   const findWindow = useNewStore((state) => state.findWindow);
 
@@ -55,21 +60,39 @@ export const useFinderHistory = (
   const updateWindowById = useNewStore((state) => state.updateWindowById);
   const getNodeByID = useNewStore((state) => state.getNodeByID);
 
-  console.log("useFinderHistory: useFinderHistory", windowId);
+  const hasHistory = historyExists(windowId);
+  console.log("DEBUG_HISTORY_02: history status check", {
+    windowId,
+    hasHistory,
+  });
 
   // Initialize history instance when hook is first used
   useEffect(() => {
+    console.log("DEBUG_HISTORY_03: useEffect initialization running", {
+      windowId,
+      nodeId,
+    });
+
     const window = findWindow((w) => w.windowId === windowId);
+    console.log("DEBUG_HISTORY_04: window found", {
+      window: !!window,
+      windowId,
+    });
 
     if (!historyExists(windowId) && window) {
       const nodeIdToUse = nodeId === "finder" ? systemRootId : nodeId;
-      console.log(
-        "useFinderHistory: initializing history for",
+      console.log("DEBUG_HISTORY_05: creating new history", {
         windowId,
-        "with nodeId:",
-        nodeIdToUse
-      );
+        nodeId,
+        nodeIdToUse,
+      });
       createHistory(windowId, nodeIdToUse);
+      console.log("DEBUG_HISTORY_06: history created");
+    } else {
+      console.log("DEBUG_HISTORY_07: skipping history creation", {
+        historyExists: historyExists(windowId),
+        hasWindow: !!window,
+      });
     }
   }, [windowId, findWindow, historyExists, createHistory, nodeId]);
 
@@ -80,6 +103,16 @@ export const useFinderHistory = (
   const historyLength = getHistoryLength(windowId);
   const canGoBack = canGoBackInHistory(windowId);
   const canGoForward = canGoForwardInHistory(windowId);
+
+  console.log("DEBUG_HISTORY_08: current history state", {
+    windowId,
+    currentNodeId,
+    currentIndex,
+    historyItems,
+    historyLength,
+    canGoBack,
+    canGoForward,
+  });
 
   /**
    * Navigate to a specific node and update both history and window
@@ -278,8 +311,17 @@ export const useFinderHistory = (
    * Get the current column path (all items up to current index)
    */
   const getColumnPath = useCallback(() => {
-    return historyItems.slice(0, currentIndex + 1);
-  }, [historyItems, currentIndex]);
+    const result = historyItems.slice(0, currentIndex + 1);
+    console.log("DEBUG_HISTORY_09: getColumnPath called", {
+      windowId,
+      historyItems,
+      currentIndex,
+      sliceStart: 0,
+      sliceEnd: currentIndex + 1,
+      result,
+    });
+    return result;
+  }, [historyItems, currentIndex, windowId]);
 
   return {
     // Navigation methods

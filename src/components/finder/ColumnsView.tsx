@@ -6,7 +6,6 @@ import { useEffect, useRef, useMemo } from "react";
 import type { WindowId } from "@/constants/applicationRegistry";
 import theme from "@/styles/theme";
 import type { NodeId } from "@/components/nodes/nodeTypes";
-import { desktopRootId, systemRootId } from "@/constants/nodeHierarchy";
 
 export const ColumnsView = ({
   windowId,
@@ -17,6 +16,12 @@ export const ColumnsView = ({
   view: "icons" | "list" | "columns";
   nodeId: NodeId;
 }) => {
+  console.log("DEBUG_COLUMNS_01: ColumnsView render start", {
+    windowId,
+    view,
+    nodeId,
+  });
+
   const selectedNodeId = useNewStore((s) => s.selectedNodeId);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const currentTheme = useNewStore((s) => s.theme);
@@ -25,9 +30,6 @@ export const ColumnsView = ({
   const window = useNewStore((s) => s.findWindowById(windowId));
   const isMaximized = window?.isMaximized;
 
-  console.log("COLUMNS_VIEW_03  : windowId", windowId);
-  console.log("COLUMNS_VIEW_04: nodeId", nodeId);
-
   // Theme colors
   const bgColorSecondary = theme.colors[currentTheme].background.secondary;
   const contentTextColor = theme.colors[currentTheme].text.secondary;
@@ -35,6 +37,12 @@ export const ColumnsView = ({
 
   // Get column path using new helper method
   const columnPath = history.getColumnPath();
+  console.log("DEBUG_COLUMNS_02: columnPath from history", {
+    columnPath,
+    columnPathLength: columnPath.length,
+    historyItems: history.historyItems,
+    currentIndex: history.currentIndex,
+  });
 
   // Calculate total available width and number of columns that can fit
   const totalColumns = useMemo(() => {
@@ -62,10 +70,12 @@ export const ColumnsView = ({
     }
   }, [columnPath.length]);
 
-  console.log("COLUMNS_VIEW_05: selectedNodeId", selectedNodeId);
-  console.log("COLUMNS_VIEW_06: columnPath", columnPath);
-  console.log("COLUMNS_VIEW_07: window maximized state:", window?.isMaximized);
-  console.log("COLUMNS_VIEW_08: total columns:", totalColumns);
+  console.log("DEBUG_COLUMNS_03: rendering state", {
+    selectedNodeId,
+    columnPathLength: columnPath.length,
+    totalColumns,
+    isMaximized: window?.isMaximized,
+  });
 
   return (
     <div
@@ -74,34 +84,41 @@ export const ColumnsView = ({
       style={{ color: contentTextColor }}
     >
       {/* Active columns */}
-      {columnPath.map((nodeId, depth) => (
-        <div
-          key={nodeId}
-          className="w-[250px] min-w-[250px] h-full flex flex-col items-start rounded-lg p-2 mr-2"
-          style={{
-            backgroundColor: bgColorSecondary,
-            borderColor: borderColor,
-            border: `1px solid ${borderColor}`,
-          }}
-        >
-          <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
-            {getChildrenByParentID(nodeId).map((node) => (
-              <div
-                key={node.id}
-                className="w-full"
-                onClick={() => history.handleColumnClick(depth, node.id)}
-              >
-                <NodeSwitch
+      {columnPath.map((nodeId, depth) => {
+        console.log("DEBUG_COLUMNS_04: rendering column", {
+          nodeId,
+          depth,
+          childrenCount: getChildrenByParentID(nodeId).length,
+        });
+        return (
+          <div
+            key={nodeId}
+            className="w-[250px] min-w-[250px] h-full flex flex-col items-start rounded-lg p-2 mr-2"
+            style={{
+              backgroundColor: bgColorSecondary,
+              borderColor: borderColor,
+              border: `1px solid ${borderColor}`,
+            }}
+          >
+            <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
+              {getChildrenByParentID(nodeId).map((node) => (
+                <div
                   key={node.id}
-                  node={node}
-                  windowId={windowId}
-                  view={view}
-                />
-              </div>
-            ))}
-          </NodeDropZoneWrapper>
-        </div>
-      ))}
+                  className="w-full"
+                  onClick={() => history.handleColumnClick(depth, node.id)}
+                >
+                  <NodeSwitch
+                    key={node.id}
+                    node={node}
+                    windowId={windowId}
+                    view={view}
+                  />
+                </div>
+              ))}
+            </NodeDropZoneWrapper>
+          </div>
+        );
+      })}
 
       {/* Placeholder columns - only render enough to fill available space */}
       {Array.from({

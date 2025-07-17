@@ -17,6 +17,7 @@ import {
   dockRootId,
   mobileDockRootId,
   mobileRootId,
+  systemRootId,
   type RootDirectoryId,
 } from "@/constants/nodeHierarchy";
 import theme from "@/styles/theme";
@@ -36,14 +37,22 @@ export const ApplicationNode = ({ node, view, windowId }: Props) => {
   const themeMode = useNewStore((s) => s.theme);
   const textColor = theme.colors[themeMode].text.primary;
   const textStyle = isFinder ? textColor : "white";
-  console.log("node", node);
+  console.log("debug_columns", node);
   const operatingSystem = useNewStore((s) => s.operatingSystem);
   const openWindow = useNewStore((s) => s.openWindow);
+  const findOneNode = useNewStore((s) => s.findOneNode);
 
   // ─────────── node-specific activation ───────────
   const handleActivate = useCallback(() => {
+    if (node.applicationRegistryId === "finder") {
+      const rootDirectoryNode = findOneNode((n) => n.id === systemRootId);
+      if (rootDirectoryNode && rootDirectoryNode.type === "directory") {
+        openWindow(rootDirectoryNode);
+      }
+      return;
+    }
     openWindow(node);
-  }, [node, openWindow]);
+  }, [node, openWindow, findOneNode]);
 
   // ─────────── shared node behavior ───────────
   const nodeBehavior = useNodeEvents({
