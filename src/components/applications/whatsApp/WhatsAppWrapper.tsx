@@ -13,7 +13,6 @@ export const WhatsAppWrapper: React.FC<WindowContentProps> = ({ windowId }) => {
   // Initialize store with initial state if not already initialized
   useEffect(() => {
     if (!isInitialized) {
-      console.log("whatsAppState not initialized, creating initial state...");
       const initialState = createInitialState();
       initialiseWhatsApp(initialState);
     } else {

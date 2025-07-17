@@ -61,7 +61,6 @@ export const GridTricks = ({
         }
         const arr3 = [0, 1, 2];
         if (arraysMatch(selected, arr3)) {
-          console.log("arr3 matches");
           setTrickeryPhase(1);
         }
       };
@@ -98,7 +97,6 @@ export const GridTricks = ({
     const arr3 = [0, 1, 2];
     // const arr4 = [0, 1];
     if (arraysMatch(selected, arr3)) {
-      console.log("arr3 matches");
       setTrickeryPhase(1);
     }
   };
@@ -108,10 +106,7 @@ export const GridTricks = ({
     // onGridClassChange("grid grid-cols-3 grid-rows-4 w-full h-full");
   };
   const divsCount = newGridClassName ? 15 : divsToRender;
-  console.log("initialised", initialised);
-  console.log("divsCount", divsCount);
-  console.log("selected", selected);
-  console.log("trickeryPhase", trickeryPhase);
+
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       {/* Image container with consistent width */}

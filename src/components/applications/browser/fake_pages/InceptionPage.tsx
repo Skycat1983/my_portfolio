@@ -22,8 +22,6 @@ export const InceptionPage = () => {
   const applicationId = "browser";
   const window = useNewStore((s) => s.findWindowByApplicationId(applicationId));
 
-  console.log("inception window", window);
-
   // Monitor screen dimensions and update store
   const screenInfo = useScreenMonitor();
   const { isMobile } = screenInfo;
@@ -41,8 +39,6 @@ export const InceptionPage = () => {
   } else {
     screen = "mobile";
   }
-
-  console.log("inception screen", screen);
 
   const background =
     customWallpaper ||

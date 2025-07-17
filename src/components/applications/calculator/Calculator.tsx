@@ -156,8 +156,6 @@ const Calculator = () => {
   // Handle button clicks
   const handleButtonClick = useCallback(
     (value: string) => {
-      console.log(`Calculator button clicked in Calculator.tsx: ${value}`);
-
       if (/\d/.test(value)) {
         // Number input
         inputDigit(value);

@@ -12,7 +12,6 @@ const BankingPage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCaptcha(true);
-      console.log("showCaptcha in BankingPage timer: ", true);
     }, 3000); // 3 second delay
 
     return () => clearTimeout(timer);

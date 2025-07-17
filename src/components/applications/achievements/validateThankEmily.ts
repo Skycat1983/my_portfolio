@@ -139,11 +139,6 @@ export const validateThankEmilyMessage = (
   // Achievement only unlocks with perfect score AND no errors
   const isComplete = score === 100 && errors.length === 0;
 
-  console.log("test result score", score);
-  console.log("test result errors", errors);
-  console.log("test result suggestions", suggestions);
-  console.log("test result isComplete", isComplete);
-
   return {
     score,
     maxScore,

@@ -25,7 +25,6 @@ interface BrowserCallbacks {
 }
 
 const renderContent = (addressBarUrl: string, callbacks?: BrowserCallbacks) => {
-  console.log("BROWSER_DEBUG renderContent", addressBarUrl);
   if (addressBarUrl === "" || addressBarUrl === undefined) {
     return (
       <StartPage

@@ -12,8 +12,6 @@ const WORD_LIMIT = 50;
 export async function whatsApp(input: GeminiInput): Promise<string> {
   try {
     // Log the enhanced system instruction for debugging
-    console.log("Enhanced system instruction:", input.systemInstruction);
-    console.log("Contents:", input);
     console.log(
       "whatsApp function: API key is",
       apiKey ? "defined" : "undefined"
@@ -39,7 +37,6 @@ export async function whatsApp(input: GeminiInput): Promise<string> {
           `\n\nThe response should be no more than ${WORD_LIMIT} words.`,
       },
     });
-    console.log("AI response in whatsApp function:", response.text);
     return response.text || "I'm having trouble responding right now.";
   } catch (error) {
     console.error("Error in whatsApp function:", error);

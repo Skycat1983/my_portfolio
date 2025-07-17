@@ -41,14 +41,11 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
   onPhoneCall,
 }) => {
   const whatsApp = useNewStore((state) => state.whatsApp);
-  console.log("WhatsApp: ChatScreen whatsApp", whatsApp);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const historyId = windowId;
   const whatsAppView = useNewStore((state) =>
     state.getCurrentItem(historyId)
   ) as ViewState | undefined;
-
-  console.log("WhatsApp: ChatScreen whatsAppView", whatsAppView);
 
   const isViewingChat = whatsAppView?.view === "chat";
   const isViewingThisConversation =
@@ -62,10 +59,7 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
 
   // ! in use - Get conversation data using new visible message selectors
   const messages = selectVisibleConversationMessages(whatsApp, conversationId);
-  console.log(
-    "WhatsApp: ChatScreen selectVisibleConversationMessages",
-    messages
-  );
+
   const contact = selectConversationParticipant(whatsApp, conversationId);
   const contactId = contact?.id;
   const isTyping = selectIsTyping(whatsApp, conversationId);
@@ -152,7 +146,6 @@ export const ChatScreen: React.FC<ChatScreenProps> = ({
       // Always call AI regardless of wifi status
       const response = await processAIResponse(userInput, enhancedInstruction);
 
-      console.log("WhatsApp: ChatScreen handleAIResponse response", response);
       setTyping(conversationId, false);
 
       // Create AI message with wifi-aware delivery status

@@ -57,7 +57,6 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   const addMessage = useNewStore((state) => state.addMessage);
   const wifiEnabled = useNewStore((state) => state.wifiEnabled);
   const setTyping = useNewStore((state) => state.setTyping);
-  console.log("WhatsAppMain: whatsApp", whatsApp);
 
   // Animation variants with improved synchronization
   const slideVariants = {
@@ -106,7 +105,6 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   // Handle cleanup when window closes
   useEffect(() => {
     return () => {
-      console.log("WhatsAppMain: cleaning up");
       cleanup();
     };
   }, [cleanup]);
@@ -114,11 +112,6 @@ export const WhatsAppMain: React.FC<WhatsAppMainProps> = ({ windowId }) => {
   const handlePhoneCallAIResponse = async (
     phoneCallConversationId: ConversationId
   ) => {
-    console.log(
-      "WhatsApp: WhatsAppMain handlePhoneCallAIResponse",
-      phoneCallConversationId
-    );
-
     // Get the contact for this conversation
     const contact = selectConversationParticipant(
       whatsApp,
@@ -155,11 +148,6 @@ IMPORTANT: The user just tried to call you but you couldn't answer the phone. Re
       const response = await processAIResponse(
         "User attempted to call but call could not be completed",
         enhancedInstruction
-      );
-
-      console.log(
-        "WhatsApp: WhatsAppMain handlePhoneCallAIResponse response",
-        response
       );
 
       // Determine delivery status based on wifi and viewing state

@@ -82,7 +82,6 @@ const GTAVI = ({ windowId }: { windowId: WindowId }) => {
     if (gamePhase !== "running") return;
 
     const crashTimer = setTimeout(() => {
-      console.log("gamePhase transitioning to crashed in GTA6 component");
       setGamePhase("crashed");
 
       setTimeout(() => {

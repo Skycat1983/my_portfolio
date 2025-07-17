@@ -65,7 +65,6 @@ export const RickAndMorty = () => {
   useEffect(() => {
     // Fetch data based on active tab and filters
     const fetchData = async () => {
-      console.log("fetchData in RickAndMorty: fetching data for", activeTab);
       setLoading(true);
       setError(null);
 
@@ -124,7 +123,6 @@ export const RickAndMorty = () => {
           url += `?${queryParams.join("&")}`;
         }
 
-        console.log("fetchData in RickAndMorty: fetching from URL", url);
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -156,7 +154,6 @@ export const RickAndMorty = () => {
 
   // Reset filters when tab changes
   const handleTabChange = (tab: ContentType) => {
-    console.log("handleTabChange in RickAndMorty: switching to", tab);
     setActiveTab(tab);
     if (tab === "characters") {
       setCharacterFilters({

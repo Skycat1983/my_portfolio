@@ -82,12 +82,12 @@ export const ChatList: React.FC<ChatListProps> = (props) => {
           const isCurrentlyTyping = typing[preview.id] ?? false;
           const previewIsTyping = preview.isTyping;
 
-          console.log(`WhatsApp: ChatListScreen Conversation ${preview.id}:`, {
-            isCurrentlyTyping,
-            previewIsTyping,
-            lastMessage: preview.lastMessage,
-            displayText: isCurrentlyTyping ? "Typing..." : preview.lastMessage,
-          });
+          // console.log(`WhatsApp: ChatListScreen Conversation ${preview.id}:`, {
+          //   isCurrentlyTyping,
+          //   previewIsTyping,
+          //   lastMessage: preview.lastMessage,
+          //   displayText: isCurrentlyTyping ? "Typing..." : preview.lastMessage,
+          // });
 
           return (
             <>

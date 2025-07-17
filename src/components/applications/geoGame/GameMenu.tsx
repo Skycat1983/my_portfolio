@@ -8,12 +8,10 @@ export const GameMenu = () => {
     useNewStore();
 
   const handleStartCountryGame = () => {
-    console.log("handleStartCountryGame in GameMenu: starting country game");
     startGame("country");
   };
 
   const handleStartCapitalGame = () => {
-    console.log("handleStartCapitalGame in GameMenu: starting capital game");
     startGame("capital");
   };
 

@@ -18,16 +18,12 @@ export const GameInterface = () => {
   } = useNewStore();
 
   const handleOptionClick = (option: string) => {
-    console.log("handleOptionClick in GameInterface: selected option", option);
     if (gameStatus === "playing") {
       submitAnswer(option);
     }
   };
 
   const handleContinueClick = () => {
-    console.log(
-      "handleContinueClick in GameInterface: continuing after answer"
-    );
     if (gameStatus === "answered") {
       if (currentQuestion?.isCorrect) {
         nextQuestion();

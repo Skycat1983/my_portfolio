@@ -85,8 +85,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   // Handle save from dialog with selected location and label
   const handleDialogSave = useCallback(
     (location: string, finalLabel: string) => {
-      console.log("DocumentEditor: handleDialogSave", { location, finalLabel });
-
       const now = new Date();
       const wordCount = content
         .split(/\s+/)
@@ -117,7 +115,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
         newDocumentConfigId,
         newDocumentConfig
       );
-      console.log("DocumentEditorDebug: 4 newConfig", newConfig);
 
       // Generate unique node ID
       const baseNodeId = node.id;
@@ -143,7 +140,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
         protected: false,
       };
 
-      console.log("DocumentEditorDebug: 6 createOneNode", newNode);
       // Execute save operations
       createOneNode(newNode);
       addChildToDirectory(location, newNode.id);
@@ -160,8 +156,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
       setDocumentLabel(finalLabel);
       setIsModified(false);
       setShowSaveDialog(false); // Close dialog
-
-      console.log("DocumentEditor: document saved successfully via dialog");
     },
     [
       content,
@@ -185,13 +179,8 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
     if (node && node.type === "document") {
       const documentConfig = getDocumentConfig(node.documentConfigId);
       if (!documentConfig) {
-        console.log("DocumentEditorDebug: document config not found");
         return;
       }
-      console.log(
-        "DocumentEditorDebug:  useEffect: documentConfig",
-        documentConfig
-      );
       if (documentConfig.id === "private_document_config") {
         resetAchievements();
       }
@@ -249,7 +238,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const effectiveFontSize = textStyle.fontSize * zoom;
 
   const handleSave = () => {
-    console.log("DocumentEditorDebug: 1 handleSave");
     const now = new Date();
     const wordCount = content
       .split(/\s+/)
@@ -258,7 +246,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
 
     // get the node
     const node = getNodeByID(nodeId);
-    console.log("DocumentEditorDebug: 2 node", node);
 
     // type check the node
     if (node) {
@@ -270,7 +257,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
         node.type === "document"
           ? getDocumentConfig(node.documentConfigId)
           : defaultDocumentConfig;
-      console.log("DocumentEditorDebug: documentConfig", documentConfig);
 
       // check if the document config is mutable
       const isWritable = documentConfig?.mutable;
@@ -278,14 +264,10 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
       // Check if we can overwrite the document config
       if (!isWritable) {
         // Open dialog instead of immediate save
-        console.log(
-          "DocumentEditorDebug: 3 opening save dialog for non-writable document"
-        );
         setShowSaveDialog(true);
         return; // Exit early, let dialog handle the save
       } else {
         // Create new document configuration for first-time save
-        console.log("DocumentEditorDebug: 9 isWritable", isWritable);
         const newConfig = {
           id: documentConfig.id,
           mutable: true,
@@ -303,12 +285,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
           },
         };
 
-        console.log(
-          "DocumentEditorDebug: 10 creating new document config",
-          documentConfig.id
-        );
         const updatedConfig = setDocumentConfig(documentConfig.id, newConfig);
-        console.log("DocumentEditorDebug: 11 updated config", updatedConfig);
 
         updateNodeByID(node.id, {
           documentConfigId: updatedConfig.id,
@@ -322,7 +299,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
       }
 
       setIsModified(false);
-      console.log("DocumentEditor: document saved successfully");
     }
   };
 

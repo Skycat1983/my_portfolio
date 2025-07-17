@@ -46,8 +46,6 @@ export const selectChatlistPreviews = (
   state: WhatsAppState,
   archived: boolean
 ) => {
-  console.log("WhatsAppRework: ChatList state", state);
-
   // 1. select conversations
   const conversations = archived
     ? selectArchivedConversations(state)

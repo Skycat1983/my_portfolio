@@ -21,7 +21,6 @@ export const GrapesCaptcha = ({
   >({});
 
   const handleDivide = (id: number) => {
-    console.log("dividedSquares in handleDivide: ", id);
     setDividedSquares((prev) => new Set(prev).add(id));
     // Initialize sub-square selections for this divided square
     if (!subSquareSelections[id]) {
@@ -33,10 +32,6 @@ export const GrapesCaptcha = ({
   };
 
   const handleSubSquareToggle = (mainId: number, subId: number) => {
-    console.log("subSquareSelection in handleSubSquareToggle: ", {
-      mainId,
-      subId,
-    });
     setSubSquareSelections((prev) => ({
       ...prev,
       [mainId]: prev[mainId]?.map((selected, idx) =>

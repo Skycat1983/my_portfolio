@@ -64,7 +64,6 @@ export const CaptchaMain = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (isCorrect) {
-      console.log("Verified");
       const nextIndex = currentIndex + 1;
       if (nextIndex < captchaData.length) {
         setCurrentIndex(nextIndex);

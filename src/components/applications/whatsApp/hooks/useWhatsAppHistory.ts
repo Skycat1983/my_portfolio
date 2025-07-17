@@ -56,8 +56,7 @@ export const useWhatsAppHistory = (
   const getHistoryLength = useNewStore((state) => state.getHistoryLength);
   const deleteHistory = useNewStore((state) => state.deleteHistory);
   const findWindow = useNewStore((state) => state.findWindow);
-  const window = findWindow((w) => w.windowId === windowId);
-  console.log("WhatsApp: useWhatsAppHistory window", window);
+  // const window = findWindow((w) => w.windowId === windowId);
 
   // WhatsApp actions
   // const setView = useNewStore((state) => state.setView);
@@ -67,26 +66,13 @@ export const useWhatsAppHistory = (
 
   // Initialize history instance when hook is first used
   useEffect(() => {
-    console.log(
-      "WhatsApp: useWhatsAppHistory useEffect, historyExists",
-      historyExists(historyId)
-    );
     if (!historyExists(historyId)) {
-      console.log(
-        "useWhatsAppHistory: initializing history for window",
-        windowId
-      );
       const window = findWindow((w) => w.windowId === windowId);
-      // console.log("WhatsApp: useWhatsAppHistory window", window);
       const initialView =
         window?.nodeId === "phone"
           ? { view: "recentCalls" as const }
           : { view: "chatList" as const };
       createHistory(historyId, initialView);
-      console.log(
-        "WhatsApp: useWhatsAppHistory useEffect, historyExists2",
-        historyExists(historyId)
-      );
 
       const currentViewItem = getCurrentItem(historyId) as
         | ViewState
@@ -114,8 +100,6 @@ export const useWhatsAppHistory = (
    */
   const navigateToView = useCallback(
     (view: WhatsAppView, params?: ViewState["params"]): boolean => {
-      console.log("useWhatsAppHistory: navigateToView", view, params);
-
       // we don't want the phone call screen to be added to the history
       // ! potential_issue: unsure if this hack will cause issues with the back button or history
       // if (view !== "phoneCall") {
@@ -135,7 +119,6 @@ export const useWhatsAppHistory = (
         setCurrentConversation(null);
       }
 
-      console.log("useWhatsAppHistory: successfully navigated to", view);
       return true;
     },
     [historyId, addToHistory, setCurrentConversation]
@@ -145,24 +128,19 @@ export const useWhatsAppHistory = (
    * Navigate back in history
    */
   const goBack = useCallback((): boolean => {
-    console.log("useWhatsAppHistory: goBack");
-
     if (!canGoBack) {
-      console.log("useWhatsAppHistory: cannot go back");
       return false;
     }
 
     // Navigate back in history
     const historySuccess = goBackInHistory(historyId);
     if (!historySuccess) {
-      console.log("useWhatsAppHistory: failed to go back in history");
       return false;
     }
 
     // Get the new current view after going back
     const newView = getCurrentItem(historyId) as ViewState;
     if (!newView) {
-      console.log("useWhatsAppHistory: no view after going back");
       return false;
     }
 
@@ -174,7 +152,6 @@ export const useWhatsAppHistory = (
       setCurrentConversation(null);
     }
 
-    console.log("useWhatsAppHistory: successfully went back to", newView.view);
     return true;
   }, [
     historyId,
@@ -189,24 +166,19 @@ export const useWhatsAppHistory = (
    * Navigate forward in history
    */
   const goForward = useCallback((): boolean => {
-    console.log("useWhatsAppHistory: goForward");
-
     if (!canGoForward) {
-      console.log("useWhatsAppHistory: cannot go forward");
       return false;
     }
 
     // Navigate forward in history
     const historySuccess = goForwardInHistory(historyId);
     if (!historySuccess) {
-      console.log("useWhatsAppHistory: failed to go forward in history");
       return false;
     }
 
     // Get the new current view after going forward
     const newView = getCurrentItem(historyId) as ViewState;
     if (!newView) {
-      console.log("useWhatsAppHistory: no view after going forward");
       return false;
     }
 
@@ -218,10 +190,6 @@ export const useWhatsAppHistory = (
       setCurrentConversation(null);
     }
 
-    console.log(
-      "useWhatsAppHistory: successfully went forward to",
-      newView.view
-    );
     return true;
   }, [
     historyId,

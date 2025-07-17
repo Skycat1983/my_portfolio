@@ -59,10 +59,6 @@ export const CaptchaSquare = ({
     const emergence = 90 - normalizedDistance * 60; // Range from 90% (hidden) to 30% (emerged)
 
     setEmergenceValue(emergence);
-    console.log("distance and emergence in CaptchaSquare: ", {
-      distance: distance.toFixed(0),
-      emergence: emergence.toFixed(0),
-    });
   }, [mousePosition, image]);
 
   const style = image

@@ -22,7 +22,6 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
   highlightSearchText,
 }) => {
   const deliveryStatus = message.deliveryStatus;
-  console.log("WhatsApp: MessageComponent deliveryStatus", deliveryStatus);
   const isUser = message.sender === "user_self";
 
   // Use highlight function if provided, otherwise show plain text

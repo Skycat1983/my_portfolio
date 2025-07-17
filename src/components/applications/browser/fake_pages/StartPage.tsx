@@ -47,14 +47,12 @@ export const StartPage = ({
   };
 
   const handleSearchClick = () => {
-    console.log("STARTPAGE_DEBUG handleSearchClick called");
     if (onFocusAddressBar) {
       onFocusAddressBar();
     }
   };
 
   const handleFeaturedClick = () => {
-    console.log("STARTPAGE_DEBUG handleFeaturedClick called");
     if (onOpenBookmarks) {
       onOpenBookmarks();
     }
@@ -127,9 +125,7 @@ export const StartPage = ({
             e.preventDefault();
             e.stopPropagation();
             const downloadsNode = getNodeByID("downloads");
-            console.log("STARTPAGE_DEBUG downloadsNode", downloadsNode);
             if (downloadsNode && downloadsNode.type === "directory") {
-              console.log("STARTPAGE_DEBUG opening window for downloadsNode");
               openWindow(downloadsNode);
             }
           }}

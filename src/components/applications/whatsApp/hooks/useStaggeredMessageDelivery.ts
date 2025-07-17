@@ -39,24 +39,12 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
       processingRef.current = true;
 
       try {
-        console.log(
-          "WhatsApp: useStaggeredMessageDelivery Starting staggered delivery processing..."
-        );
-        console.log(
-          "WhatsApp: useStaggeredMessageDelivery wifiEnabled",
-          wifiEnabled
-        );
-
         // Step 1: Instantly deliver all pending user messages
         markUserMessagesAsDelivered();
 
         // Step 2: Get current state of conversations with sent AI messages
         const conversationsWithSentAI =
           selectConversationsWithSentAIMessages(whatsApp);
-        console.log(
-          "WhatsApp: useStaggeredMessageDelivery Conversations with sent AI messages:",
-          conversationsWithSentAI
-        );
 
         if (conversationsWithSentAI.length === 0) {
           console.log("No sent AI messages to process");
@@ -69,16 +57,10 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
 
         for (const conversationId of conversationsWithSentAI) {
           const sentMessages = sentAIMessagesByConv[conversationId] || [];
-          console.log(
-            `WhatsApp: useStaggeredMessageDelivery Processing ${sentMessages.length} sent messages for conversation ${conversationId}`
-          );
 
           for (const message of sentMessages) {
             // Start typing indicator
             setTyping(conversationId, true);
-            console.log(
-              `whatsApp: useStaggeredMessageDelivery Set typing true for conversation ${conversationId}`
-            );
 
             // Wait 2-3 seconds to simulate AI thinking
             await new Promise((resolve) =>
@@ -88,9 +70,6 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
             // Deliver the message and stop typing
             markAIMessageAsDelivered(message.id);
             setTyping(conversationId, false);
-            console.log(
-              `whatsApp: useStaggeredMessageDelivery Delivered message ${message.id} and set typing false`
-            );
 
             // Brief pause between messages in same conversation
             await new Promise((resolve) => setTimeout(resolve, 500));
@@ -99,8 +78,6 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
           // Longer pause between different conversations
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
-
-        console.log("Staggered delivery processing completed");
       } catch (error) {
         console.error("Error in staggered delivery processing:", error);
       } finally {
@@ -110,8 +87,6 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
 
     // Handle offline → online transition (existing logic)
     if (!prevWifiEnabled && wifiEnabled) {
-      console.log("WiFi came back online - starting staggered delivery");
-
       // Use setTimeout to ensure state updates have been processed
       setTimeout(() => {
         processStaggeredDelivery();
@@ -120,7 +95,6 @@ export const useStaggeredMessageDelivery = (wifiEnabled: boolean) => {
 
     // Handle online → offline transition (new logic)
     if (prevWifiEnabled && !wifiEnabled) {
-      console.log("WiFi went offline - updating lastSeen timestamp");
       updateLastSeenTimestamp();
     }
 

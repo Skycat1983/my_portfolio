@@ -22,9 +22,6 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(contact?.name || "");
 
-  console.log("ContactScreen: contactId", contactId);
-  console.log("ContactScreen: contact", contact);
-
   if (!contact) {
     return (
       <div className="h-full flex items-center justify-center bg-gray-900 text-white">

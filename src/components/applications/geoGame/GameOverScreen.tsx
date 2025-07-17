@@ -17,12 +17,10 @@ export const GameOverScreen = () => {
   const rank = highScores.indexOf(currentScore) + 1;
 
   const handlePlayAgain = () => {
-    console.log("handlePlayAgain in GameOverScreen: restarting game");
     startGame(questionType);
   };
 
   const handleBackToMenu = () => {
-    console.log("handleBackToMenu in GameOverScreen: returning to menu");
     returnToMenu();
   };
 

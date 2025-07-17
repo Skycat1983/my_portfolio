@@ -40,18 +40,11 @@ export const BrowserBookmarks = forwardRef<
     // Expose the openDropdown function to parent components
     useImperativeHandle(ref, () => ({
       openDropdown: () => {
-        console.log(
-          "BROWSER_BOOKMARKS_DEBUG: openDropdown called, setting isOpen to true"
-        );
         setIsOpen(true);
       },
     }));
 
     const handleBookmarkClick = (bookmark: BookmarkItem) => {
-      console.log(
-        "BROWSER_DEBUG handleBookmarkClick in BrowserBookmarks.tsx: ",
-        bookmark
-      );
       onBookmarkSelect(bookmark);
       setIsOpen(false); // Close dropdown after selection
     };
@@ -71,10 +64,6 @@ export const BrowserBookmarks = forwardRef<
           tabIndex={0}
           aria-label="Open bookmarks menu"
           onClick={(e) => {
-            console.log(
-              "BROWSER_BOOKMARKS_DEBUG: Button clicked, menuZ:",
-              nextZIndex
-            );
             e.stopPropagation();
           }}
         >

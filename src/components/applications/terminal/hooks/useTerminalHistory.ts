@@ -41,15 +41,9 @@ export const useTerminalHistory = (
   const getHistoryItems = useNewStore((state) => state.getHistoryItems);
   const getHistoryLength = useNewStore((state) => state.getHistoryLength);
 
-  console.log("useTerminalHistory: initializing for windowId", windowId);
-
   // Initialize history instance when hook is first used
   useEffect(() => {
     if (!historyExists(historyId)) {
-      console.log(
-        "useTerminalHistory: creating new history instance",
-        historyId
-      );
       createHistory(historyId);
     }
   }, [historyId, historyExists, createHistory]);
@@ -66,24 +60,12 @@ export const useTerminalHistory = (
   // This starts at -1 (no history selected) and counts backwards from the end
   const [historyNavigationIndex, setHistoryNavigationIndex] = useState(-1);
 
-  console.log("useTerminalHistory: currentCommand", currentCommand);
-  console.log("useTerminalHistory: historyLength", historyLength);
-  console.log("useTerminalHistory: historyItems", historyItems);
-
   /**
    * Add a command to history
    */
   const addCommand = useCallback(
     (command: string): boolean => {
-      console.log(
-        "useTerminalHistory: adding command",
-        command,
-        "to",
-        historyId
-      );
-
       if (!command.trim()) {
-        console.log("useTerminalHistory: skipping empty command");
         return false;
       }
 
@@ -93,7 +75,6 @@ export const useTerminalHistory = (
       if (success) {
         // Reset navigation index when new command is added
         setHistoryNavigationIndex(-1);
-        console.log("useTerminalHistory: successfully added command");
       }
 
       return success;
@@ -110,10 +91,7 @@ export const useTerminalHistory = (
    */
   const navigateHistory = useCallback(
     (direction: "up" | "down"): string => {
-      console.log("useTerminalHistory: navigating", direction, "in", historyId);
-
       if (historyItems.length === 0) {
-        console.log("useTerminalHistory: no history to navigate");
         return "";
       }
 
@@ -143,19 +121,13 @@ export const useTerminalHistory = (
           // Get command from the end of the array (most recent first)
           const commandIndex = historyItems.length - 1 - newNavigationIndex;
           const command = historyItems[commandIndex] || "";
-          console.log(
-            "useTerminalHistory: returning command",
-            command,
-            "at index",
-            commandIndex
-          );
           return command;
         }
       }
 
       return "";
     },
-    [historyId, historyItems, historyNavigationIndex, setHistoryNavigationIndex]
+    [historyItems, historyNavigationIndex, setHistoryNavigationIndex]
   );
 
   /**
