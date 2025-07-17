@@ -6,13 +6,14 @@ import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import { theme } from "@/styles/theme";
 import type { WindowId } from "@/constants/applicationRegistry";
 import { systemRootId } from "@/constants/nodeHierarchy";
+import type { NodeId } from "@/components/nodes/nodeTypes";
 
 export const Finder = ({
   windowId,
   nodeId,
 }: {
   windowId: WindowId;
-  nodeId: string;
+  nodeId: NodeId;
 }) => {
   console.log("HISTORY_DEBUG Finder rendering", { windowId, nodeId });
   // const nodeMap = useNewStore((s) => s.nodeMap);
@@ -27,10 +28,10 @@ export const Finder = ({
   const zIndex = window?.zIndex ?? 0;
 
   const nodeIdToFind = nodeId === "finder" ? systemRootId : nodeId;
-  console.log("finder nodeIdToFind", nodeIdToFind);
+  console.log("COLUMNS_VIEW_00: nodeIdToFind", nodeIdToFind);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const children = getChildrenByParentID(nodeIdToFind);
-  console.log("finder children", children);
+  console.log("COLUMNS_VIEW_01: children", children);
 
   // Handle history changes from WindowHistoryNavigation
   const handleHistoryChange = React.useCallback(
@@ -46,8 +47,7 @@ export const Finder = ({
     node.label.toLowerCase().includes(input.toLowerCase())
   );
 
-  console.log("HISTORY_DEBUG window", window);
-
+  console.log("COLUMNS_VIEW_02: filteredNodes", filteredNodes);
   const bgColor = theme.colors[currentTheme].background.primary;
   const borderColor = theme.colors[currentTheme].border.primary;
   // const textColor = theme.colors[currentTheme].text.primary;
@@ -70,7 +70,7 @@ export const Finder = ({
         nodeId={nodeId}
         onHistoryChange={handleHistoryChange}
       />
-      <NodeDropZoneWrapper nodeId={nodeIdToFind} shrinkToFit={false}>
+      <NodeDropZoneWrapper nodeId={nodeId} shrinkToFit={false}>
         <FinderBody
           nodes={filteredNodes}
           view={view}

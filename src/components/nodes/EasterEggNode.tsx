@@ -77,6 +77,8 @@ export const EasterEggNode = ({ egg, view, windowId }: Props) => {
     });
   }, [egg, updateNodeByID, nodeBehavior, selectOneNode]);
 
+  const showLabel = isFinder || windowId === desktopRootId;
+
   // ─────────── render ───────────
   return (
     <div
@@ -101,17 +103,19 @@ export const EasterEggNode = ({ egg, view, windowId }: Props) => {
         <img src={egg.image} alt={egg.label} className={getImageSize(view)} />
       </div>
 
-      <h2
-        className={`${getTitleBase(view)} ${getLabelClasses(
-          view,
-          nodeBehavior.isSelected
-        )}`}
-        style={{
-          color: textStyle,
-        }}
-      >
-        {egg.label}
-      </h2>
+      {showLabel && (
+        <h2
+          className={`${getTitleBase(view)} ${getLabelClasses(
+            view,
+            nodeBehavior.isSelected
+          )}`}
+          style={{
+            color: textStyle,
+          }}
+        >
+          {egg.label}
+        </h2>
+      )}
     </div>
   );
 };

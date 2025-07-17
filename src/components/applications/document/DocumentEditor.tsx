@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import { PAGES, WORD } from "@/constants/images";
 
@@ -6,6 +6,7 @@ import { PAGES, WORD } from "@/constants/images";
 import { DocumentHeader } from "./DocumentHeader";
 import { DocumentContent } from "./DocumentContent";
 import { DocumentFooter } from "./DocumentFooter";
+import { SaveLocationDialog } from "@/components/dialogs/SaveLocationDialog";
 import type { DocumentEntry, NodeId } from "@/components/nodes/nodeTypes";
 import type { WindowId } from "@/constants/applicationRegistry";
 import { type DocumentConfig } from "@/constants/documentRegistry";
@@ -47,6 +48,8 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const [textStyle, setTextStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE);
   const [zoom, setZoom] = useState(1.0); // 100% zoom by default
   const [documentLabel, setDocumentLabel] = useState("Untitled");
+  const [saveLocation] = useState(desktopRootId);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   // ═══════════════════════════════════════════════════════════════════════════════
   // WINDOW STORE
@@ -65,9 +68,6 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const createOneNode = useNewStore((s) => s.createOneNode);
   const getNodeByID = useNewStore((s) => s.getNodeByID);
   const updateNodeByID = useNewStore((s) => s.updateNodeByID);
-  const isUniqueNodePropertyValue = useNewStore(
-    (s) => s.isUniqueNodePropertyValue
-  );
   const addChildToDirectory = useNewStore((s) => s.addChildToDirectory);
 
   // ═══════════════════════════════════════════════════════════════════════════════
@@ -81,6 +81,103 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   // SYSTEM STATE
   // ═══════════════════════════════════════════════════════════════════════════════
   const resetAchievements = useNewStore((s) => s.resetAchievements);
+
+  // Handle save from dialog with selected location and label
+  const handleDialogSave = useCallback(
+    (location: string, finalLabel: string) => {
+      console.log("DocumentEditor: handleDialogSave", { location, finalLabel });
+
+      const now = new Date();
+      const wordCount = content
+        .split(/\s+/)
+        .filter((word) => word.length > 0).length;
+      const charCount = content.length;
+      const node = getNodeByID(nodeId);
+
+      if (!node) return;
+
+      // Create new document config
+      const newDocumentConfigId = generateConfigId();
+      const newDocumentConfig: DocumentConfig = {
+        id: newDocumentConfigId,
+        mutable: true,
+        content,
+        textStyle,
+        pageSettings: { backgroundColor: pageBackgroundColor },
+        metadata: {
+          title: finalLabel,
+          createdAt: now,
+          modifiedAt: now,
+          wordCount,
+          charCount,
+        },
+      };
+
+      const newConfig = setDocumentConfig(
+        newDocumentConfigId,
+        newDocumentConfig
+      );
+      console.log("DocumentEditorDebug: 4 newConfig", newConfig);
+
+      // Generate unique node ID
+      const baseNodeId = node.id;
+      const uniqueNodeId = generateUniqueNodePropertyValue(baseNodeId, "id", {
+        separator: "parentheses",
+      });
+
+      // Create new node with selected location and final label
+      const newNode: DocumentEntry = {
+        id: uniqueNodeId,
+        parentId: location, // Use selected location
+        type: "document",
+        label: finalLabel, // Use final label from dialog
+        image: PAGES,
+        alternativeImage: WORD,
+        applicationId: "documentEditor",
+        documentConfigId: newConfig.id,
+        applicationRegistryId: "documentEditor",
+        macExtension: ".txt",
+        windowsExtension: ".txt",
+        dateModified: now.toISOString(),
+        size: charCount,
+        protected: false,
+      };
+
+      console.log("DocumentEditorDebug: 6 createOneNode", newNode);
+      // Execute save operations
+      createOneNode(newNode);
+      addChildToDirectory(location, newNode.id);
+
+      if (window) {
+        updateWindowById(window.windowId, {
+          nodeId: newNode.id,
+          title: newNode.label,
+          documentConfig: newConfig,
+        });
+      }
+
+      // Update local state
+      setDocumentLabel(finalLabel);
+      setIsModified(false);
+      setShowSaveDialog(false); // Close dialog
+
+      console.log("DocumentEditor: document saved successfully via dialog");
+    },
+    [
+      content,
+      textStyle,
+      pageBackgroundColor,
+      nodeId,
+      window,
+      generateConfigId,
+      setDocumentConfig,
+      generateUniqueNodePropertyValue,
+      createOneNode,
+      addChildToDirectory,
+      updateWindowById,
+      getNodeByID,
+    ]
+  );
 
   // Initialize document state from window configuration if available
   useEffect(() => {
@@ -180,73 +277,12 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
 
       // Check if we can overwrite the document config
       if (!isWritable) {
-        const location = desktopRootId;
-        console.log("DocumentEditorDebug: 3 isWritable", isWritable);
-        // ! creating a new node + document config
-
-        const newDocumentConfigId = generateConfigId();
-        const newDocumentConfig: DocumentConfig = {
-          id: newDocumentConfigId,
-          mutable: true,
-          content,
-          textStyle,
-          pageSettings: {
-            backgroundColor: pageBackgroundColor,
-          },
-          metadata: {
-            title: documentLabel,
-            createdAt: now,
-            modifiedAt: now,
-            wordCount,
-            charCount,
-          },
-        };
-        const newConfig = setDocumentConfig(
-          newDocumentConfigId,
-          newDocumentConfig
+        // Open dialog instead of immediate save
+        console.log(
+          "DocumentEditorDebug: 3 opening save dialog for non-writable document"
         );
-        console.log("DocumentEditorDebug: 4 newConfig", newConfig);
-        const baseNodeId = node.id;
-        const uniqueNodeId = generateUniqueNodePropertyValue(baseNodeId, "id", {
-          separator: "parentheses",
-        });
-        const isUniqueLabel = isUniqueNodePropertyValue(documentLabel, "label");
-        console.warn("DocumentEditorDebug: isUniqueLabel", isUniqueLabel);
-        const uniqueNodeLabel = isUniqueLabel
-          ? documentLabel
-          : generateUniqueNodePropertyValue(documentLabel, "label", {
-              separator: "parentheses",
-            });
-        console.warn("DocumentEditorDebug: uniqueNodeLabel", uniqueNodeLabel);
-
-        console.log("DocumentEditorDebug: 5 uniqueNodeId", uniqueNodeId);
-
-        const newNode: DocumentEntry = {
-          id: uniqueNodeId,
-          parentId: location,
-          type: "document",
-          label: uniqueNodeLabel,
-          image: PAGES,
-          alternativeImage: WORD,
-          applicationId: "documentEditor",
-          documentConfigId: newConfig.id,
-          applicationRegistryId: "documentEditor",
-          macExtension: ".txt",
-          windowsExtension: ".txt",
-          dateModified: now.toISOString(),
-          size: charCount,
-          protected: false,
-        };
-        console.log("DocumentEditorDebug: 6 createOneNode", newNode);
-        createOneNode(newNode);
-        addChildToDirectory(location, newNode.id);
-        console.log("DocumentEditorDebug: 7 updateWindowById", window.windowId);
-        updateWindowById(window.windowId, {
-          nodeId: newNode.id,
-          title: newNode.label,
-          documentConfig: newConfig,
-        });
-        console.log("DocumentEditorDebug: 8 updateWindowById", window.windowId);
+        setShowSaveDialog(true);
+        return; // Exit early, let dialog handle the save
       } else {
         // Create new document configuration for first-time save
         console.log("DocumentEditorDebug: 9 isWritable", isWritable);
@@ -321,6 +357,15 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
 
       {/* Footer */}
       <DocumentFooter content={content} />
+
+      {/* Save Location Dialog */}
+      <SaveLocationDialog
+        open={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        initialLocation={saveLocation}
+        initialLabel={documentLabel}
+        onSave={handleDialogSave}
+      />
     </div>
   );
 };

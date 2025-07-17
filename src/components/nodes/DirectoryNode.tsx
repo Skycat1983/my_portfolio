@@ -84,7 +84,7 @@ export const DirectoryNode = ({ nodeEntry, windowId, view }: Props) => {
   if (nodeEntry.id === "finder") {
     folderImage = FINDER;
   }
-  const showLabel = nodeEntry.parentId !== "dock-root";
+  const showLabel = isFinder || windowId === desktopRootId;
 
   // ─────────── render ───────────
   return (

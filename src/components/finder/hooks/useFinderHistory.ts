@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import type { WindowId } from "@/constants/applicationRegistry";
+import type { NodeId } from "@/components/nodes/nodeTypes";
+import { systemRootId } from "@/constants/nodeHierarchy";
 
 interface UseFinderHistoryReturn {
   // Navigation methods
@@ -29,7 +31,8 @@ interface UseFinderHistoryReturn {
  * Coordinates between the generic history slice and window state
  */
 export const useFinderHistory = (
-  windowId: WindowId
+  windowId: WindowId,
+  nodeId: NodeId
 ): UseFinderHistoryReturn => {
   // Get current window
   const findWindow = useNewStore((state) => state.findWindow);
@@ -59,15 +62,16 @@ export const useFinderHistory = (
     const window = findWindow((w) => w.windowId === windowId);
 
     if (!historyExists(windowId) && window) {
+      const nodeIdToUse = nodeId === "finder" ? systemRootId : nodeId;
       console.log(
         "useFinderHistory: initializing history for",
         windowId,
         "with nodeId:",
-        window.nodeId
+        nodeIdToUse
       );
-      createHistory(windowId, window.nodeId);
+      createHistory(windowId, nodeIdToUse);
     }
-  }, [windowId, findWindow, historyExists, createHistory]);
+  }, [windowId, findWindow, historyExists, createHistory, nodeId]);
 
   // Get current history state
   const currentNodeId = getCurrentItem(windowId) as string | undefined;

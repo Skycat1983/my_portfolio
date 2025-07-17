@@ -54,8 +54,8 @@ export const ApplicationNode = ({ node, view, windowId }: Props) => {
     parentId: node.parentId,
   });
 
-  const showLabel =
-    node.parentId !== "dock-root" && node.parentId !== "mobile-dock-root";
+  const showLabel = isFinder || windowId === desktopRootId;
+  // node.parentId !== "dock-root" && node.parentId !== "mobile-dock-root";
   const image =
     operatingSystem === "mac"
       ? node.image

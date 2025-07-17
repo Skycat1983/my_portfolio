@@ -69,7 +69,7 @@ export const LinkNode = ({ link, view, windowId }: Props) => {
     onActivate: handleActivate,
   });
 
-  const showLabel = link.parentId !== "dock-root";
+  const showLabel = isFinder || windowId === desktopRootId;
 
   // ─────────── render ───────────
   return (

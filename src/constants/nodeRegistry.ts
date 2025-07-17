@@ -159,7 +159,7 @@ export const NODE_TEMPLATES = {
     type: "application",
     applicationRegistryId: "geoGame",
     applicationId: "geoGame",
-    label: "Flag Quest",
+    label: "GeoQuest",
     image: PLANET,
     alternativeImage: null,
     macExtension: ".app",

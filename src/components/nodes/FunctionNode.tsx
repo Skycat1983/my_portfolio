@@ -61,7 +61,7 @@ export const FunctionNode = ({ node, view, windowId }: Props) => {
     parentId: node.parentId,
   });
 
-  const showLabel = node.parentId !== "dock-root";
+  const showLabel = isFinder || windowId === desktopRootId;
   const image =
     operatingSystem === "mac"
       ? node.image

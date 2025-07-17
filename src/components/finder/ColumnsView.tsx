@@ -5,21 +5,28 @@ import { NodeDropZoneWrapper } from "./NodeDropZoneWrapper";
 import { useEffect, useRef, useMemo } from "react";
 import type { WindowId } from "@/constants/applicationRegistry";
 import theme from "@/styles/theme";
+import type { NodeId } from "@/components/nodes/nodeTypes";
+import { desktopRootId, systemRootId } from "@/constants/nodeHierarchy";
 
 export const ColumnsView = ({
   windowId,
   view,
+  nodeId,
 }: {
   windowId: WindowId;
   view: "icons" | "list" | "columns";
+  nodeId: NodeId;
 }) => {
   const selectedNodeId = useNewStore((s) => s.selectedNodeId);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const currentTheme = useNewStore((s) => s.theme);
-  const history = useFinderHistory(windowId);
+  const history = useFinderHistory(windowId, nodeId);
   const containerRef = useRef<HTMLDivElement>(null);
   const window = useNewStore((s) => s.findWindowById(windowId));
   const isMaximized = window?.isMaximized;
+
+  console.log("COLUMNS_VIEW_03  : windowId", windowId);
+  console.log("COLUMNS_VIEW_04: nodeId", nodeId);
 
   // Theme colors
   const bgColorSecondary = theme.colors[currentTheme].background.secondary;
@@ -55,10 +62,10 @@ export const ColumnsView = ({
     }
   }, [columnPath.length]);
 
-  console.log("COLUMNS_VIEW_01: selectedNodeId", selectedNodeId);
-  console.log("COLUMNS_VIEW_02: columnPath", columnPath);
-  console.log("COLUMNS_VIEW_03: window maximized state:", window?.isMaximized);
-  console.log("COLUMNS_VIEW_04: total columns:", totalColumns);
+  console.log("COLUMNS_VIEW_05: selectedNodeId", selectedNodeId);
+  console.log("COLUMNS_VIEW_06: columnPath", columnPath);
+  console.log("COLUMNS_VIEW_07: window maximized state:", window?.isMaximized);
+  console.log("COLUMNS_VIEW_08: total columns:", totalColumns);
 
   return (
     <div
