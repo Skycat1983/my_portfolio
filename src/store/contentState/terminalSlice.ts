@@ -33,10 +33,6 @@ export const createTerminalSlice = (
   currentWorkingDirectory: "", // Will be set to root directory on init
 
   setCurrentWorkingDirectory: (directory: string) => {
-    console.log(
-      "setCurrentWorkingDirectory in terminalSlice: setting to",
-      directory
-    );
     set((state: ApplicationState) => ({
       ...state,
       currentWorkingDirectory: directory,
@@ -45,13 +41,6 @@ export const createTerminalSlice = (
 
   // Terminal filesystem commands
   resolvePath: (path: string, currentDir: string): string | null => {
-    console.log(
-      "resolvePath in terminalSlice: resolving",
-      path,
-      "from",
-      currentDir
-    );
-
     const currentState = get();
 
     // Handle absolute paths (starting with /)
@@ -102,13 +91,6 @@ export const createTerminalSlice = (
   },
 
   terminalLs: (path: string | undefined, currentDir: string) => {
-    console.log(
-      "terminalLs in terminalSlice: listing",
-      path,
-      "from",
-      currentDir
-    );
-
     const currentState = get();
 
     // Resolve path inline since we can't call our own methods
@@ -200,13 +182,6 @@ export const createTerminalSlice = (
   },
 
   terminalCd: (path: string, currentDir: string) => {
-    console.log(
-      "terminalCd in terminalSlice: changing to",
-      path,
-      "from",
-      currentDir
-    );
-
     if (!path || path.trim() === "") {
       return { success: false, output: "cd: missing argument" };
     }
@@ -321,8 +296,6 @@ export const createTerminalSlice = (
   },
 
   terminalPwd: (currentDir: string) => {
-    console.log("terminalPwd in terminalSlice: getting path for", currentDir);
-
     const currentState = get();
     const current = currentState.nodeMap[currentDir];
 
@@ -347,13 +320,6 @@ export const createTerminalSlice = (
   },
 
   terminalCat: (filename: string, currentDir: string) => {
-    console.log(
-      "terminalCat in terminalSlice: reading",
-      filename,
-      "from",
-      currentDir
-    );
-
     if (!filename || filename.trim() === "") {
       return { success: false, output: "cat: missing file operand" };
     }

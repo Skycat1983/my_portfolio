@@ -56,17 +56,10 @@ export const createHistorySlice = (
     id: HistoryInstance["id"],
     initialItem: unknown
   ): boolean => {
-    console.log(
-      "BROWSER_DEBUG initializeHistory in historySlice:",
-      id,
-      initialItem
-    );
-
     const state = get();
 
     // If history already exists, don't reinitialize
     if (state.histories[id]) {
-      console.log("initializeHistory: history already exists", id);
       return false;
     }
 
@@ -97,16 +90,10 @@ export const createHistorySlice = (
     //   "with initialItem:",
     //   initialItem
     // );
-    console.log(
-      "BROWSER_DEBUG createHistory in historySlice:",
-      id,
-      initialItem
-    );
 
     const state = get();
 
     if (state.histories[id]) {
-      console.log("createHistory: history already exists", id);
       return false;
     }
 
@@ -130,12 +117,9 @@ export const createHistorySlice = (
    * Delete a history instance
    */
   deleteHistory: (id: HistoryInstance["id"]): boolean => {
-    console.log("deleteHistory in historySlice: deleting history", id);
-
     const state = get();
 
     if (!state.histories[id]) {
-      console.log("deleteHistory: history does not exist", id);
       return false;
     }
 
@@ -154,12 +138,9 @@ export const createHistorySlice = (
    * Clear all items from a history instance but keep the instance
    */
   clearHistory: (id: HistoryInstance["id"]): boolean => {
-    console.log("clearHistory in historySlice: clearing history", id);
-
     const state = get();
 
     if (!state.histories[id]) {
-      console.log("clearHistory: history does not exist", id);
       return false;
     }
 
@@ -191,18 +172,10 @@ export const createHistorySlice = (
    * Removes any forward history if adding from middle
    */
   addToHistory: (id: HistoryInstance["id"], item: unknown): boolean => {
-    console.log(
-      "addToHistory in historySlice: adding to history",
-      id,
-      "item:",
-      item
-    );
-
     const state = get();
     const history = state.histories[id];
 
     if (!history) {
-      console.log("addToHistory: history does not exist", id);
       return false;
     }
 
@@ -231,18 +204,14 @@ export const createHistorySlice = (
    * Navigate back in history
    */
   goBack: (id: HistoryInstance["id"]): boolean => {
-    console.log("goBack in historySlice: going back in history", id);
-
     const state = get();
     const history = state.histories[id];
 
     if (!history) {
-      console.log("goBack: history does not exist", id);
       return false;
     }
 
     if (history.currentIndex <= 0) {
-      console.log("goBack: cannot go back, already at beginning", id);
       return false;
     }
 
@@ -265,18 +234,14 @@ export const createHistorySlice = (
    * Navigate forward in history
    */
   goForward: (id: HistoryInstance["id"]): boolean => {
-    console.log("goForward in historySlice: going forward in history", id);
-
     const state = get();
     const history = state.histories[id];
 
     if (!history) {
-      console.log("goForward: history does not exist", id);
       return false;
     }
 
     if (history.currentIndex >= history.items.length - 1) {
-      console.log("goForward: cannot go forward, already at end", id);
       return false;
     }
 
@@ -299,23 +264,14 @@ export const createHistorySlice = (
    * Navigate to specific index in history
    */
   goToIndex: (id: HistoryInstance["id"], index: number): boolean => {
-    console.log(
-      "goToIndex in historySlice: going to index",
-      index,
-      "in history",
-      id
-    );
-
     const state = get();
     const history = state.histories[id];
 
     if (!history) {
-      console.log("goToIndex: history does not exist", id);
       return false;
     }
 
     if (index < 0 || index >= history.items.length) {
-      console.log("goToIndex: index out of bounds", index, "for history", id);
       return false;
     }
 

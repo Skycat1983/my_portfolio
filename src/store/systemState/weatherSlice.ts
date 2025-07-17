@@ -81,17 +81,8 @@ export const createWeatherSlice = (
   error: null,
 
   fetchWeather: async (location: string) => {
-    console.log("fetchWeather in weatherSlice: fetching weather for", location);
-    console.log(
-      "fetchWeather in weatherSlice: API key is",
-      apiKey ? "defined" : "undefined"
-    );
-
     // Check if API key exists
     if (!apiKey || apiKey === "undefined") {
-      console.log(
-        "fetchWeather in weatherSlice: API key not found or undefined"
-      );
       set((state) => ({
         ...state,
         weather: {
@@ -124,7 +115,6 @@ export const createWeatherSlice = (
       }
 
       const data: WeatherResponse = await response.json();
-      console.log("fetchWeather in weatherSlice: weather data fetched", data);
 
       set((state) => ({
         ...state,
@@ -138,7 +128,6 @@ export const createWeatherSlice = (
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to fetch weather data";
-      console.log("fetchWeather in weatherSlice: error", errorMessage);
 
       set((state) => ({
         ...state,
@@ -153,7 +142,6 @@ export const createWeatherSlice = (
   },
 
   clearWeatherError: () => {
-    console.log("clearWeatherError in weatherSlice: clearing error");
     set((state) => ({
       ...state,
       weather: {

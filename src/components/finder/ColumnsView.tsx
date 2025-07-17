@@ -16,13 +16,6 @@ export const ColumnsView = ({
   view: "icons" | "list" | "columns";
   nodeId: NodeId;
 }) => {
-  console.log("DEBUG_COLUMNS_01: ColumnsView render start", {
-    windowId,
-    view,
-    nodeId,
-  });
-
-  const selectedNodeId = useNewStore((s) => s.selectedNodeId);
   const getChildrenByParentID = useNewStore((s) => s.getChildrenByParentID);
   const currentTheme = useNewStore((s) => s.theme);
   const history = useFinderHistory(windowId, nodeId);
@@ -37,12 +30,6 @@ export const ColumnsView = ({
 
   // Get column path using new helper method
   const columnPath = history.getColumnPath();
-  console.log("DEBUG_COLUMNS_02: columnPath from history", {
-    columnPath,
-    columnPathLength: columnPath.length,
-    historyItems: history.historyItems,
-    currentIndex: history.currentIndex,
-  });
 
   // Calculate total available width and number of columns that can fit
   const totalColumns = useMemo(() => {
@@ -70,13 +57,6 @@ export const ColumnsView = ({
     }
   }, [columnPath.length]);
 
-  console.log("DEBUG_COLUMNS_03: rendering state", {
-    selectedNodeId,
-    columnPathLength: columnPath.length,
-    totalColumns,
-    isMaximized: window?.isMaximized,
-  });
-
   return (
     <div
       ref={containerRef}
@@ -85,11 +65,6 @@ export const ColumnsView = ({
     >
       {/* Active columns */}
       {columnPath.map((nodeId, depth) => {
-        console.log("DEBUG_COLUMNS_04: rendering column", {
-          nodeId,
-          depth,
-          childrenCount: getChildrenByParentID(nodeId).length,
-        });
         return (
           <div
             key={nodeId}

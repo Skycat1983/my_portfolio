@@ -73,23 +73,8 @@ export const useWhatsAppHistory = (
           ? { view: "recentCalls" as const }
           : { view: "chatList" as const };
       createHistory(historyId, initialView);
-
-      const currentViewItem = getCurrentItem(historyId) as
-        | ViewState
-        | undefined;
-      console.log(
-        "WhatsApp: useWhatsAppHistory useEffect, currentView",
-        currentViewItem
-      );
     }
-  }, [
-    historyId,
-    historyExists,
-    createHistory,
-    windowId,
-    getCurrentItem,
-    findWindow,
-  ]);
+  }, [historyId, historyExists, createHistory, windowId, findWindow]);
 
   const historyLength = getHistoryLength(historyId);
   const canGoBack = canGoBackInHistory(historyId);
@@ -106,7 +91,6 @@ export const useWhatsAppHistory = (
       // Add to history first
       const historySuccess = addToHistory(historyId, { view, params });
       if (!historySuccess) {
-        console.log("useWhatsAppHistory: failed to add to history");
         return false;
       }
       // }
@@ -204,11 +188,10 @@ export const useWhatsAppHistory = (
    * Cleanup history when component unmounts
    */
   const cleanup = useCallback(() => {
-    console.log("useWhatsAppHistory: cleaning up history for window", windowId);
     if (historyExists(historyId)) {
       deleteHistory(historyId);
     }
-  }, [historyId, historyExists, deleteHistory, windowId]);
+  }, [historyId, historyExists, deleteHistory]);
 
   return {
     // Navigation methods

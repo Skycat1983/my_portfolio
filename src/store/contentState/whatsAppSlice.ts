@@ -380,27 +380,13 @@ export const createWhatsAppSlice = (
           state.whatsApp.messages.byConversation[conversationId] || [];
         if (messageIds.length === 0) return {};
 
-        console.log(
-          "WhatsApp: markConversationMessagesAsRead",
-          conversationId,
-          messageIds
-        );
-
         const updatedById = { ...state.whatsApp.messages.byId };
         let hasChanges = false;
 
         // Update all delivered messages in this conversation to read status
         messageIds.forEach((messageId) => {
           const message = updatedById[messageId];
-          console.log(
-            "WhatsApp: markConversationMessagesAsRead message",
-            message
-          );
           if (message && message.deliveryStatus === "delivered") {
-            console.log(
-              "WhatsApp: markConversationMessagesAsRead message is delivered",
-              message
-            );
             updatedById[messageId] = {
               ...message,
               deliveryStatus: "read",
@@ -613,21 +599,10 @@ export const createWhatsAppSlice = (
 
     setTyping: (conversationId: ConversationId, isTyping: boolean) =>
       set((state: ApplicationState) => {
-        console.log(
-          `WhatsApp: setTyping called for ${conversationId}:`,
-          isTyping
-        );
-        console.log(
-          "WhatsApp: setTyping current typing state:",
-          state.whatsApp.ui.typing
-        );
-
         const newTypingState = {
           ...state.whatsApp.ui.typing,
           [conversationId]: isTyping,
         };
-
-        console.log("WhatsApp: setTyping new typing state:", newTypingState);
 
         return {
           whatsApp: {
@@ -656,13 +631,9 @@ export const createWhatsAppSlice = (
       set((state: ApplicationState) => {
         // Only initialize if not already initialized
         if (state.whatsApp.isInitialized) {
-          console.log(
-            "whatsAppState already initialized, skipping initialization"
-          );
           return {};
         }
 
-        console.log("Initializing whatsAppState with state:", initialState);
         return {
           whatsApp: {
             ...initialState,

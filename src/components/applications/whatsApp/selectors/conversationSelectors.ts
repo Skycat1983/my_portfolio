@@ -41,14 +41,7 @@ export const selectConversationPreview = (
 
   const lastMessage = selectVisibleLastMessage(state, conversationId);
   const unreadCount = selectUnreadMessageCount(state, conversationId);
-  console.log("WhatsApp: selectConversationPreview unreadCount", unreadCount);
   const isTyping = selectIsTyping(state, conversationId);
-
-  console.log(`WhatsApp: selectConversationPreview for ${conversationId}:`, {
-    isTyping,
-    typingState: state.ui.typing,
-    conversationTyping: state.ui.typing[conversationId],
-  });
 
   // Find the AI contact in the conversation
   const aiContactId = conversation.participants.find((id: ContactId) => {

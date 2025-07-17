@@ -64,8 +64,6 @@ export const SaveLocationDialog = ({
       .filter((node) => node.type === "directory")
       .sort((a, b) => a.label.localeCompare(b.label));
 
-    console.log("SaveLocationDialog: found directories", directories.length);
-
     // Helper to get full path for a directory
     const getDirectoryPath = (nodeId: string): string => {
       const node = nodeMap[nodeId];
@@ -146,7 +144,7 @@ export const SaveLocationDialog = ({
     };
 
     const options = buildGroupedHierarchy();
-    console.log("SaveLocationDialog: built grouped options", options);
+
     return options;
   }, [getCurrentNodeMap]);
 

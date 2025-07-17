@@ -137,13 +137,10 @@ export const createWindowSlice = (
      * Create a single window
      */
     createWindow: (window: Window): boolean => {
-      console.log("createWindow: creating window", window.windowId);
-
       const currentState = get();
 
       // Check if window already exists
       if (currentState.windows.find((w) => w.windowId === window.windowId)) {
-        console.log("createWindow: window already exists", window.windowId);
         return false;
       }
 
@@ -159,24 +156,17 @@ export const createWindowSlice = (
      * Create multiple windows
      */
     createWindows: (windows: Window[]): boolean => {
-      console.log("createWindows: creating", windows.length, "windows");
-
       const currentState = get();
 
       // Filter out windows that already exist
       const validWindows = windows.filter((window) => {
         if (currentState.windows.find((w) => w.windowId === window.windowId)) {
-          console.log(
-            "createWindows: skipping existing window",
-            window.windowId
-          );
           return false;
         }
         return true;
       });
 
       if (validWindows.length === 0) {
-        console.log("createWindows: no valid windows to create");
         return false;
       }
 
@@ -197,13 +187,10 @@ export const createWindowSlice = (
       predicate: (window: Window) => boolean,
       updates: Partial<Window>
     ): boolean => {
-      console.log("updateWindow: updating window with predicate");
-
       const currentState = get();
       const windowToUpdate = currentState.windows.find(predicate);
 
       if (!windowToUpdate) {
-        console.log("updateWindow: no window matches predicate");
         return false;
       }
 
@@ -230,7 +217,6 @@ export const createWindowSlice = (
       windowId: Window["windowId"],
       updates: Partial<Window>
     ): boolean => {
-      console.log("updateWindowById: updating window by ID", windowId);
       return slice.updateWindow(
         (window) => window.windowId === windowId,
         updates
@@ -244,13 +230,10 @@ export const createWindowSlice = (
       predicate: (window: Window) => boolean,
       updates: Partial<Window>
     ): number => {
-      console.log("updateWindows: updating windows with predicate");
-
       const currentState = get();
       const windowsToUpdate = currentState.windows.filter(predicate);
 
       if (windowsToUpdate.length === 0) {
-        console.log("updateWindows: no windows match predicate");
         return 0;
       }
 
@@ -280,13 +263,10 @@ export const createWindowSlice = (
      * Delete single window by predicate
      */
     deleteWindow: (predicate: (window: Window) => boolean): boolean => {
-      console.log("deleteWindow: deleting window with predicate");
-
       const currentState = get();
       const windowToDelete = currentState.windows.find(predicate);
 
       if (!windowToDelete) {
-        console.log("deleteWindow: no window matches predicate");
         return false;
       }
 
@@ -303,17 +283,12 @@ export const createWindowSlice = (
      * Delete multiple windows by predicate
      */
     deleteWindows: (predicate: (window: Window) => boolean): number => {
-      console.log("deleteWindows: deleting windows with predicate");
-
       const currentState = get();
       const windowsToDelete = currentState.windows.filter(predicate);
 
       if (windowsToDelete.length === 0) {
-        console.log("deleteWindows: no windows match predicate");
         return 0;
       }
-
-      console.log("deleteWindows: deleting", windowsToDelete.length, "windows");
 
       set((state) => ({
         windows: state.windows.filter((window) => !predicate(window)),
@@ -338,8 +313,6 @@ export const createWindowSlice = (
      * Open a window from any windowable node (applications, documents, directories)
      */
     openWindow: (node: WindowableNode): string | null => {
-      console.log("STARTPAGE_DEBUG : opening window for node", node.id);
-
       // Build context from node properties
       const context: WindowCreationContext = {
         nodeId: node.id,
@@ -350,8 +323,6 @@ export const createWindowSlice = (
 
       const config = getApplicationConfig(node.applicationRegistryId);
       const windowId = generateWindowId(node.applicationRegistryId, context);
-
-      console.log("STARTPAGE_DEBUG : windowId", windowId);
 
       // Check if window already exists based on window scope
       const state = get();
@@ -392,7 +363,6 @@ export const createWindowSlice = (
       }
 
       if (existingWindow) {
-        console.log("STARTPAGE_DEBUG : existingWindow", existingWindow);
         // Use the focusWindow method from this slice
         slice.focusWindow(existingWindow.windowId);
         return existingWindow.windowId;
@@ -426,14 +396,11 @@ export const createWindowSlice = (
           isMaximized: config.defaultMaximized,
         };
 
-        console.log("STARTPAGE_DEBUG : newWindow", newWindow);
-
         return {
           windows: [...currentState.windows, newWindow],
         };
       });
 
-      console.log("openWindowFromNode: created window", windowId);
       return windowId;
     },
 
@@ -441,8 +408,6 @@ export const createWindowSlice = (
      * Open an application window directly by applicationId
      */
     openApplication: (applicationId: ApplicationRegistryId): string | null => {
-      console.log("openApplication: opening application", applicationId);
-
       const config = getApplicationConfig(applicationId);
       const windowId = generateWindowId(applicationId, {});
 
@@ -474,10 +439,6 @@ export const createWindowSlice = (
       }
 
       if (existingWindow) {
-        console.log(
-          "openApplication: focusing existing window",
-          existingWindow.windowId
-        );
         slice.focusWindow(existingWindow.windowId);
         return existingWindow.windowId;
       }
@@ -510,14 +471,11 @@ export const createWindowSlice = (
           isMaximized: config.defaultMaximized,
         };
 
-        console.log("openApplication: created window", newWindow);
-
         return {
           windows: [...currentState.windows, newWindow],
         };
       });
 
-      console.log("openApplication: created window", windowId);
       return windowId;
     },
 
@@ -525,15 +483,12 @@ export const createWindowSlice = (
      * Focus a window by its ID
      */
     focusWindow: (windowId: WindowableNode["id"]): boolean => {
-      console.log("focusWindow: focusing window", windowId);
-
       const currentState = get();
       const windowToFocus = currentState.windows.find(
         (w) => w.windowId === windowId
       );
 
       if (!windowToFocus) {
-        console.log("focusWindow: no window found with ID", windowId);
         return false;
       }
 
@@ -553,7 +508,6 @@ export const createWindowSlice = (
         };
       });
 
-      console.log("focusWindow: focused window", windowId);
       return true;
     },
 
@@ -561,15 +515,12 @@ export const createWindowSlice = (
      * Close a window by its ID and delete its history if required
      */
     closeWindow: (windowId: string): boolean => {
-      console.log("closeWindow: closing window", windowId);
-
       const currentState = get();
       const windowToClose = currentState.windows.find(
         (w) => w.windowId === windowId
       );
 
       if (!windowToClose) {
-        console.log("closeWindow: no window found with ID", windowId);
         return false;
       }
 
@@ -599,7 +550,6 @@ export const createWindowSlice = (
       x: number,
       y: number
     ): boolean => {
-      console.log("moveWindow: moving window", windowId, "to", x, ",", y);
       return slice.updateWindow(
         (window: Window) => window.windowId === windowId,
         {
@@ -617,15 +567,6 @@ export const createWindowSlice = (
       width: number,
       height: number
     ): boolean => {
-      console.log(
-        "resizeWindow: resizing window",
-        windowId,
-        "to",
-        width,
-        "x",
-        height
-      );
-
       return slice.updateWindow(
         (window: Window) => window.windowId === windowId,
         {
@@ -642,12 +583,6 @@ export const createWindowSlice = (
       windowId: Window["windowId"],
       bounds: { x: number; y: number; width: number; height: number }
     ): boolean => {
-      console.log(
-        "setWindowBounds: setting bounds for window",
-        windowId,
-        bounds
-      );
-
       return slice.updateWindow(
         (window: Window) => window.windowId === windowId,
         bounds
@@ -655,13 +590,10 @@ export const createWindowSlice = (
     },
 
     toggleMaximizeWindow: (windowId: Window["windowId"]): boolean => {
-      console.log("maximizeWindow: maximizing window", windowId);
-
       const predicate = (window: Window) => window.windowId === windowId;
       const window = slice.findWindow(predicate);
 
       if (!window) {
-        console.log("toggleMaximizeWindow: no window found with ID", windowId);
         return false;
       }
       return slice.updateWindow(predicate, {

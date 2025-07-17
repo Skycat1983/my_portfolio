@@ -36,7 +36,6 @@ export const selectActiveContacts = (state: WhatsAppState): Contact[] => {
   const nonArchivedIds = state.contacts.allIds.filter(
     (id: ContactId) => !state.contacts.archived.has(id)
   );
-  console.log("WhatsApp selectActiveContacts nonArchivedIds", nonArchivedIds);
   return nonArchivedIds
     .map((id: ContactId) => state.contacts.byId[id])
     .filter((contact: Contact | undefined): contact is Contact =>

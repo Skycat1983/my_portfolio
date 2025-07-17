@@ -129,7 +129,6 @@ export const createGameSlice = (
 
   // Actions
   loadCountries: async () => {
-    console.log("loadCountries in gameSlice: starting to load countries");
     set((state) => ({
       ...state,
       isLoadingCountries: true,
@@ -150,12 +149,6 @@ export const createGameSlice = (
         .map(transformApiCountry)
         .filter((country: Country) => country.capital !== "No capital"); // Filter out countries without capitals
 
-      console.log(
-        "loadCountries in gameSlice: loaded",
-        transformedCountries.length,
-        "countries"
-      );
-
       set((state) => ({
         ...state,
         countries: transformedCountries,
@@ -174,7 +167,6 @@ export const createGameSlice = (
   },
 
   startGame: (questionType: "country" | "capital") => {
-    console.log("startGame in gameSlice: starting game with", questionType);
     const currentState = get() as Store;
 
     set((state) => ({

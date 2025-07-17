@@ -34,11 +34,6 @@ export const useFinderHistory = (
   windowId: WindowId,
   nodeId: NodeId
 ): UseFinderHistoryReturn => {
-  console.log("DEBUG_HISTORY_01: useFinderHistory hook called", {
-    windowId,
-    nodeId,
-  });
-
   // Get current window
   const findWindow = useNewStore((state) => state.findWindow);
 
@@ -60,39 +55,13 @@ export const useFinderHistory = (
   const updateWindowById = useNewStore((state) => state.updateWindowById);
   const getNodeByID = useNewStore((state) => state.getNodeByID);
 
-  const hasHistory = historyExists(windowId);
-  console.log("DEBUG_HISTORY_02: history status check", {
-    windowId,
-    hasHistory,
-  });
-
   // Initialize history instance when hook is first used
   useEffect(() => {
-    console.log("DEBUG_HISTORY_03: useEffect initialization running", {
-      windowId,
-      nodeId,
-    });
-
     const window = findWindow((w) => w.windowId === windowId);
-    console.log("DEBUG_HISTORY_04: window found", {
-      window: !!window,
-      windowId,
-    });
 
     if (!historyExists(windowId) && window) {
       const nodeIdToUse = nodeId === "finder" ? systemRootId : nodeId;
-      console.log("DEBUG_HISTORY_05: creating new history", {
-        windowId,
-        nodeId,
-        nodeIdToUse,
-      });
       createHistory(windowId, nodeIdToUse);
-      console.log("DEBUG_HISTORY_06: history created");
-    } else {
-      console.log("DEBUG_HISTORY_07: skipping history creation", {
-        historyExists: historyExists(windowId),
-        hasWindow: !!window,
-      });
     }
   }, [windowId, findWindow, historyExists, createHistory, nodeId]);
 
@@ -104,30 +73,18 @@ export const useFinderHistory = (
   const canGoBack = canGoBackInHistory(windowId);
   const canGoForward = canGoForwardInHistory(windowId);
 
-  console.log("DEBUG_HISTORY_08: current history state", {
-    windowId,
-    currentNodeId,
-    currentIndex,
-    historyItems,
-    historyLength,
-    canGoBack,
-    canGoForward,
-  });
-
   /**
    * Navigate to a specific node and update both history and window
    */
   const navigateToNode = useCallback(
     (nodeId: string): boolean => {
       if (!window) {
-        console.log("useFinderHistory: no window found for", windowId);
         return false;
       }
 
       // Add to history first
       const historySuccess = addToHistory(windowId, nodeId);
       if (!historySuccess) {
-        console.log("useFinderHistory: failed to add to history", windowId);
         return false;
       }
 
@@ -181,7 +138,6 @@ export const useFinderHistory = (
     });
 
     if (!windowSuccess) {
-      console.log("useFinderHistory: failed to update window after going back");
       return false;
     }
 
@@ -226,9 +182,6 @@ export const useFinderHistory = (
     });
 
     if (!windowSuccess) {
-      console.log(
-        "useFinderHistory: failed to update window after going forward"
-      );
       return false;
     }
 
@@ -312,16 +265,9 @@ export const useFinderHistory = (
    */
   const getColumnPath = useCallback(() => {
     const result = historyItems.slice(0, currentIndex + 1);
-    console.log("DEBUG_HISTORY_09: getColumnPath called", {
-      windowId,
-      historyItems,
-      currentIndex,
-      sliceStart: 0,
-      sliceEnd: currentIndex + 1,
-      result,
-    });
+
     return result;
-  }, [historyItems, currentIndex, windowId]);
+  }, [historyItems, currentIndex]);
 
   return {
     // Navigation methods

@@ -136,18 +136,11 @@ export const createNodeCrudSlice = (
 
     // Create operations (pure - no business logic)
     createOneNode: (node: NodeEntry): boolean => {
-      // console.log("createOneNode in nodeCrudSlice: creating node", node.id);
-      console.log(
-        "DocumentEditor: createOneNode in nodeCrudSlice: creating node",
-        node
-      );
-
       const currentState = get();
 
       // Check if node already exists in the correct nodeMap
       const currentNodeMap = slice.getCurrentNodeMap();
       if (currentNodeMap[node.id]) {
-        console.log("createOneNode: node already exists", node.id);
         return false;
       }
 
@@ -184,25 +177,17 @@ export const createNodeCrudSlice = (
     },
 
     createManyNodes: (nodes: NodeEntry[]): boolean => {
-      console.log(
-        "createManyNodes in nodeCrudSlice: creating",
-        nodes.length,
-        "nodes"
-      );
-
       const currentState = get();
 
       // Filter out nodes that already exist
       const validNodes = nodes.filter((node) => {
         if (currentState.nodeMap[node.id]) {
-          console.log("createManyNodes: skipping existing node", node.id);
           return false;
         }
         return true;
       });
 
       if (validNodes.length === 0) {
-        console.log("createManyNodes: no valid nodes to create");
         return false;
       }
 
@@ -226,24 +211,13 @@ export const createNodeCrudSlice = (
       predicate: (node: NodeEntry) => boolean,
       updates: Partial<NodeEntry>
     ): boolean => {
-      // console.log(
-      //   "MOVENODEDEBUG: moveNodeByID updateOneNode in nodeCrudSlice",
-      //   predicate,
-      //   updates
-      // );
-
       const currentState = get();
 
       // 🚨 FIX: Use the same nodeMap for both read and write
       const currentNodeMap = slice.getCurrentNodeMap();
       const nodeToUpdate = Object.values(currentNodeMap).find(predicate);
 
-      // console.log(
-      //   "MOVENODEDEBUG: moveNodeByID updateOneNode: nodeToUpdate",
-      //   nodeToUpdate
-      // );
       if (!nodeToUpdate) {
-        console.log("updateOneNodeByPredicate: no node matches predicate");
         return false;
       }
 
@@ -288,15 +262,12 @@ export const createNodeCrudSlice = (
       predicate: (node: NodeEntry) => boolean,
       updates: Partial<NodeEntry>
     ): number => {
-      console.log("updateManyNodes in nodeCrudSlice");
-
       const currentState = get();
       const nodesToUpdate = Object.values(currentState.nodeMap).filter(
         predicate
       );
 
       if (nodesToUpdate.length === 0) {
-        console.log("updateManyNodes: no nodes match predicate");
         return 0;
       }
 
@@ -321,19 +292,15 @@ export const createNodeCrudSlice = (
 
     // Delete operations (all predicate-based)
     deleteOneNode: (predicate: (node: NodeEntry) => boolean): boolean => {
-      console.log("deleteOneNode in nodeCrudSlice");
-
       const currentState = get();
       const currentNodeMap = slice.getCurrentNodeMap();
       const nodeToDelete = Object.values(currentNodeMap).find(predicate);
 
       if (nodeToDelete?.protected) {
-        console.log("deleteOneNode: node is protected");
         return false;
       }
 
       if (!nodeToDelete) {
-        console.log("deleteOneNodeByPredicate: no node matches predicate");
         return false;
       }
 
@@ -384,18 +351,13 @@ export const createNodeCrudSlice = (
     },
 
     deleteManyNodes: (predicate: (node: NodeEntry) => boolean): number => {
-      console.log("deleteManyNodes in nodeCrudSlice");
-
       const currentNodeMap = slice.getCurrentNodeMap();
 
       const nodesToDelete = Object.values(currentNodeMap).filter(predicate);
 
       if (nodesToDelete.length === 0) {
-        console.log("deleteManyNodes: no nodes match predicate");
         return 0;
       }
-
-      console.log("deleteManyNodes: deleting", nodesToDelete.length, "nodes");
 
       set((state) => {
         let newNodeMap = { ...state.nodeMap };
@@ -442,13 +404,6 @@ export const createNodeCrudSlice = (
         separator?: "parentheses" | "underscore";
       }
     ) => {
-      console.log(
-        "generateUniquePropertyValue: checking for unique value",
-        baseValue,
-        "for property",
-        propertyKey
-      );
-
       // const state = get();
       const { predicate, separator = "underscore" } = options || {};
 
@@ -464,10 +419,6 @@ export const createNodeCrudSlice = (
       );
 
       if (!baseValueExists) {
-        console.log(
-          "generateUniquePropertyValue: base value is unique",
-          baseValue
-        );
         return baseValue;
       }
 
@@ -501,10 +452,6 @@ export const createNodeCrudSlice = (
           ? `${baseValue} (${counter})`
           : `${baseValue}_${counter}`;
 
-      console.log(
-        "generateUniquePropertyValue: generated unique value",
-        uniqueValue
-      );
       return uniqueValue;
     },
 
@@ -528,21 +475,6 @@ export const createNodeCrudSlice = (
         (node) => node[propertyKey] === baseValue
       );
 
-      console.log(
-        "DocumentEditorDebug isUniqueNodePropertyValue: isUnique",
-        isUnique
-      );
-
-      const matches = nodesToCheck.filter(
-        (node) => node[propertyKey] === baseValue
-      );
-
-      console.log(
-        "DocumentEditorDebug isUniqueNodePropertyValue: matches",
-        matches,
-        "DocumentEditorDebug isUniqueNodePropertyValue: matches length",
-        matches.length
-      );
       return isUnique;
     },
   };

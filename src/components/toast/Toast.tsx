@@ -61,10 +61,8 @@ export const Toast = () => {
   // Track the last message count we've notified about
   const lastNotifiedMessageCount = useRef(NON_USER_MESSAGE_COUNT);
 
-  console.log("whatsApp", whatsApp);
   // const messagesFromAI = selectVisibleConversationMessages(whatsApp, "ai_work");
   const nonUserMessageCount = NON_USER_MESSAGE_COUNT;
-  console.log("nonUserMessageCount", nonUserMessageCount);
   const whatsAppMessages = useNewStore((s) => s.whatsApp.messages.allIds);
   const deliveredMessagesReceived = whatsAppMessages.filter(
     (message) =>
@@ -72,9 +70,7 @@ export const Toast = () => {
       (whatsApp.messages.byId[message].deliveryStatus === "delivered" ||
         whatsApp.messages.byId[message].deliveryStatus === "read")
   );
-  console.log("deliveredMessages", deliveredMessagesReceived);
   const whatsAppInitialized = useNewStore((s) => s.whatsApp.isInitialized);
-  console.log("whatsAppMessages", whatsAppMessages);
   const clickOnSomethingAchieved = useNewStore(
     (s) => s.clickOnSomethingAchieved
   );
@@ -122,7 +118,6 @@ export const Toast = () => {
 
   useEffect(() => {
     if (clickOnSomethingAchieved) {
-      console.log("clickOnSomethingAchieved");
       toast.custom((id) => (
         <ClickableToast
           icon={<TrophyIcon />}

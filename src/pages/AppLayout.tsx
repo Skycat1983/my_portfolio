@@ -17,7 +17,6 @@ import { desktopRootId, mobileRootId } from "@/constants/nodeHierarchy";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
-  const desktopNodeMap = useNewStore((s) => s.desktopNodeMap);
   const unlockClickOnSomethingAchievement = useNewStore(
     (s) => s.unlockClickOnSomethingAchievement
   );
@@ -46,16 +45,11 @@ export const AppLayout = () => {
     const baseNode = nodeMap[baseId];
     if (!baseNode || baseNode.type !== "directory") return [];
 
-    console.log("DocumentEditorDebug: 13 desktopNodeMap", desktopNodeMap);
-    console.log("DocumentEditorDebug: 14 nodeMap", nodeMap);
-
     return baseNode.children.map((childId) => nodeMap[childId]);
-  }, [nodeMap, baseId, desktopNodeMap]);
+  }, [nodeMap, baseId]);
 
   // Handle context switching when screen size changes
   useEffect(() => {
-    console.log("AppLayout: isMobile changed to", isMobile);
-
     // Update node legacy fields for new context
     updateLegacyFields();
 

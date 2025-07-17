@@ -51,8 +51,6 @@ export const selectChatlistPreviews = (
     ? selectArchivedConversations(state)
     : selectActiveConversations(state);
 
-  console.log("WhatsAppRework: ChatList conversations", conversations);
-
   // 2. Build preview data for each conversation
   const previews = conversations.map((convId) => {
     // all messages in the conversation
@@ -89,8 +87,6 @@ export const selectChatlistPreviews = (
       isTyping: selectIsTyping(state, convId),
     };
   });
-
-  console.log("WhatsAppRework: ChatList previews", previews);
 
   const sortedPreviews = sortConversationPreviewsByTime(previews);
 

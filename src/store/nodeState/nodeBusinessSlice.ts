@@ -61,14 +61,6 @@ export const createNodeBusinessSlice = (
     nodeId: NodeEntry["id"],
     newParentId: DirectoryEntry["id"]
   ): boolean => {
-    console.log("🚀 MOVENODE_DEBUG: === STARTING MOVE OPERATION ===");
-    console.log(
-      "🚀 MOVENODE_DEBUG: nodeId:",
-      nodeId,
-      "newParentId:",
-      newParentId
-    );
-
     const state = get();
 
     // Get nodes using operations layer - only get node for validation
@@ -82,11 +74,9 @@ export const createNodeBusinessSlice = (
 
     // Validation
     if (!node || !newParentForValidation) {
-      console.warn("moveNodeByID: invalid node or parent");
       return false;
     }
     if (node.parentId === newParentId) {
-      console.info("moveNodeByID: already in target parent");
       return false;
     }
     if (node.type === "directory") {
@@ -173,8 +163,6 @@ export const createNodeBusinessSlice = (
     parentId: DirectoryEntry["id"],
     childId: NodeEntry["id"]
   ): boolean => {
-    console.log("addChildToDirectory: adding", childId, "to", parentId);
-
     const state = get();
     const parent = state.getDirectoryByID(parentId);
 
@@ -199,13 +187,6 @@ export const createNodeBusinessSlice = (
     parentId: DirectoryEntry["id"],
     childId: NodeEntry["id"]
   ): boolean => {
-    console.log(
-      "removeChildFromDirectory: removing",
-      childId,
-      "from",
-      parentId
-    );
-
     const state = get();
     const parent = state.getDirectoryByID(parentId);
 
@@ -233,7 +214,6 @@ export const createNodeBusinessSlice = (
    * Generate a unique node ID based on a base ID
    */
   generateUniqueNodeId: (baseId: string): string => {
-    console.log("generateUniqueNodeId: generating ID from base", baseId);
     const state = get();
     let counter = 1;
     let newId = baseId;
@@ -243,7 +223,6 @@ export const createNodeBusinessSlice = (
       counter++;
     }
 
-    console.log("generateUniqueNodeId: generated unique ID", newId);
     return newId;
   },
 
@@ -251,7 +230,6 @@ export const createNodeBusinessSlice = (
    * Create a new easter egg node
    */
   createEgg: (parentId: string): EasterEggEntry | null => {
-    console.log("createEgg: creating new egg in parent", parentId);
     const state = get();
     const newId = state.generateUniqueNodeId("egg");
 
@@ -276,7 +254,6 @@ export const createNodeBusinessSlice = (
       return null;
     }
 
-    console.log("createEgg: created egg with ID", newId);
     return newEgg;
   },
 
@@ -284,7 +261,6 @@ export const createNodeBusinessSlice = (
    * Download an egg to the downloads folder
    */
   downloadEgg: (): void => {
-    console.log("downloadEgg: starting egg download process");
     const state = get();
 
     const downloadsFolder = state.getDirectoryByID("downloads");
@@ -329,13 +305,6 @@ export const createNodeBusinessSlice = (
     nodeId: NodeEntry["id"],
     newParentId: DirectoryEntry["id"]
   ): boolean => {
-    console.log(
-      "validateMoveByID: validating move from",
-      nodeId,
-      "to",
-      newParentId
-    );
-
     const state = get();
 
     // Get nodes using operations layer
@@ -362,7 +331,6 @@ export const createNodeBusinessSlice = (
       }
     }
 
-    console.log("validateMoveByID: move operation is valid");
     return true;
   },
 });

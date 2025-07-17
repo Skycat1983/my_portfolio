@@ -55,7 +55,6 @@ export const createDocumentRegistrySlice = (
      * Get a document configuration by ID
      */
     getDocumentConfig: (id: string): DocumentConfig | undefined => {
-      console.log("getDocumentConfig: retrieving config for ID", id);
       return get().configs.get(id);
     },
 
@@ -63,7 +62,6 @@ export const createDocumentRegistrySlice = (
      * Store a document configuration with the given ID
      */
     setDocumentConfig: (id: string, config: DocumentConfig): DocumentConfig => {
-      console.log("DocumentEditorDebug: storing config for ID", id, config);
       set((state: DocumentRegistrySlice) => {
         const newConfigs = new Map(state.configs);
         newConfigs.set(id, config);
@@ -76,15 +74,12 @@ export const createDocumentRegistrySlice = (
      * Delete a document configuration by ID
      */
     deleteDocumentConfig: (id: string): boolean => {
-      console.log("deleteDocumentConfig: removing config for ID", id);
       const state = get();
       const isDeleteable = state.configs.get(id)?.mutable;
       if (!isDeleteable) {
-        console.log("deleteDocumentConfig: config is not mutable");
         return false;
       }
       if (!state.configs.has(id)) {
-        console.log("deleteDocumentConfig: config not found for ID", id);
         return false;
       }
 
@@ -104,7 +99,6 @@ export const createDocumentRegistrySlice = (
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 15);
       const configId = `doc_${timestamp}_${random}`;
-      console.log("generateConfigId: generated new ID", configId);
       return configId;
     },
 
@@ -113,7 +107,6 @@ export const createDocumentRegistrySlice = (
      */
     hasDocumentConfig: (id: string): boolean => {
       const exists = get().configs.has(id);
-      console.log("hasDocumentConfig: checking ID", id, "exists:", exists);
       return exists;
     },
 
@@ -122,11 +115,7 @@ export const createDocumentRegistrySlice = (
      */
     getAllDocumentConfigs: (): DocumentConfig[] => {
       const configs = Array.from(get().configs.values());
-      console.log(
-        "getAllDocumentConfigs: returning",
-        configs.length,
-        "configs"
-      );
+
       return configs;
     },
 
@@ -134,7 +123,6 @@ export const createDocumentRegistrySlice = (
      * Clear all document configurations (for development/testing)
      */
     clearDocumentRegistry: (): void => {
-      console.log("clearDocumentRegistry: clearing all document configs");
       set({ configs: new Map<string, DocumentConfig>() });
     },
 
@@ -143,7 +131,6 @@ export const createDocumentRegistrySlice = (
      */
     getRegistrySize: (): number => {
       const size = get().configs.size;
-      console.log("getRegistrySize: registry contains", size, "configs");
       return size;
     },
   };

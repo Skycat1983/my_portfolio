@@ -74,12 +74,6 @@ export const createNodeOperationsSlice = (
     nodeId: NodeEntry["id"],
     updates: Partial<NodeEntry>
   ): boolean => {
-    console.log(
-      "MOVENODEDEBUG: moveNodeByID: updateNodeByID: updating node:",
-      nodeId,
-      "with",
-      updates
-    );
     return get().updateOneNode(
       (node: NodeEntry) => node.id === nodeId,
       updates
@@ -91,8 +85,6 @@ export const createNodeOperationsSlice = (
    * Also handles cleanup of document registry entries for document nodes
    */
   deleteNodeByID: (nodeId: NodeEntry["id"]): boolean => {
-    console.log("deleteNodeByID: deleting node", nodeId);
-
     const state = get();
     const node = state.findOneNode((n: NodeEntry) => n.id === nodeId);
 
@@ -100,10 +92,7 @@ export const createNodeOperationsSlice = (
     if (node?.type === "document") {
       const documentNode =
         node as import("@/components/nodes/nodeTypes").DocumentEntry;
-      console.log(
-        "deleteNodeByID: cleaning up document config",
-        documentNode.documentConfigId
-      );
+
       state.deleteDocumentConfig(documentNode.documentConfigId);
     }
 
@@ -125,12 +114,6 @@ export const createNodeOperationsSlice = (
     directoryId: DirectoryEntry["id"],
     updates: Partial<DirectoryEntry>
   ): boolean => {
-    console.log(
-      "MOVENODEDEBUG: updateDirectoryByID: 3 updating directory",
-      directoryId,
-      "with",
-      updates
-    );
     return get().updateOneNode(
       (node: NodeEntry) => node.id === directoryId && node.type === "directory",
       updates
@@ -180,13 +163,6 @@ export const createNodeOperationsSlice = (
    * Scalable for any parent directory and node type
    */
   generateUniqueLabel: (baseLabel: string, parentId: string): string => {
-    console.log(
-      "generateUniqueLabel: checking for duplicates of",
-      baseLabel,
-      "in",
-      parentId
-    );
-
     const state = get();
 
     // Find all nodes in the parent directory with labels that match our pattern
@@ -204,7 +180,6 @@ export const createNodeOperationsSlice = (
     });
 
     if (existingNodes.length === 0) {
-      console.log("generateUniqueLabel: no duplicates found, using", baseLabel);
       return baseLabel;
     }
 
@@ -228,10 +203,6 @@ export const createNodeOperationsSlice = (
 
     // If there's no exact match, we can use the base label
     if (!hasExactMatch) {
-      console.log(
-        "generateUniqueLabel: no exact match found, using",
-        baseLabel
-      );
       return baseLabel;
     }
 
@@ -242,7 +213,6 @@ export const createNodeOperationsSlice = (
     }
 
     const uniqueLabel = `${baseLabel} (${counter})`;
-    console.log("generateUniqueLabel: generated unique label", uniqueLabel);
     return uniqueLabel;
   },
 });

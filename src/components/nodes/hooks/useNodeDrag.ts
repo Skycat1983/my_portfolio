@@ -24,8 +24,6 @@ export const useNodeDrag = (): DragHandlers => {
   const moveNodeByID = useNewStore((s) => s.moveNodeByID);
   const validateMoveByID = useNewStore((s) => s.validateMoveByID);
 
-  console.log("NODE_DRAG_HOOK: nodeMap");
-
   // Throttle validation to prevent excessive console logging
   const lastValidationTime = useRef<number>(0);
 
@@ -64,9 +62,7 @@ export const useNodeDrag = (): DragHandlers => {
         let isValid = true; // Default to true to avoid blocking
         if (shouldValidate) {
           isValid = validateMoveByID(draggedNodeId, targetNodeId);
-          console.log("MOVENODEDEBUG: isValid", isValid);
-          console.log("MOVENODEDEBUG: draggedNodeId", draggedNodeId);
-          console.log("MOVENODEDEBUG: targetNodeId", targetNodeId);
+
           lastValidationTime.current = now;
         } else {
           console.log(
@@ -99,12 +95,9 @@ export const useNodeDrag = (): DragHandlers => {
   // Called when dragging enters a potential drop target
   const handleDragEnter = useCallback(
     (e: React.DragEvent, targetNodeId: string) => {
-      console.log("DRAG_ENTER_01: entering target", targetNodeId);
-
       e.preventDefault();
       e.stopPropagation(); // Prevent event from bubbling up
 
-      console.log("DRAG_ENTER_02: setting currentDropTarget to", targetNodeId);
       setCurrentDropTarget(targetNodeId);
     },
     []
@@ -147,7 +140,6 @@ export const useNodeDrag = (): DragHandlers => {
 
       // Validate and execute the move
       const isValidMove = validateMoveByID(draggedNodeId, targetNodeId);
-      console.log("MOVENODEDEBUG: isValidMove", isValidMove);
       if (isValidMove) {
         const success = moveNodeByID(draggedNodeId, targetNodeId);
 
