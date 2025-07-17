@@ -449,13 +449,14 @@ export const createNodeCrudSlice = (
         propertyKey
       );
 
-      const state = get();
+      // const state = get();
       const { predicate, separator = "underscore" } = options || {};
 
+      const currentNodeMap = slice.getCurrentNodeMap();
       // Filter nodes based on predicate (default to all nodes)
       const nodesToCheck = predicate
-        ? Object.values(state.nodeMap).filter(predicate)
-        : Object.values(state.nodeMap);
+        ? Object.values(currentNodeMap).filter(predicate)
+        : Object.values(currentNodeMap);
 
       // Check if base value is available
       const baseValueExists = nodesToCheck.some(
@@ -514,14 +515,35 @@ export const createNodeCrudSlice = (
         predicate?: (node: NodeEntry) => boolean;
       }
     ) => {
-      const state = get();
+      // const state = get();
       const { predicate } = options || {};
 
-      const nodesToCheck = predicate
-        ? Object.values(state.nodeMap).filter(predicate)
-        : Object.values(state.nodeMap);
+      const currentNodeMap = slice.getCurrentNodeMap();
 
-      return nodesToCheck.some((node) => node[propertyKey] === baseValue);
+      const nodesToCheck = predicate
+        ? Object.values(currentNodeMap).filter(predicate)
+        : Object.values(currentNodeMap);
+
+      const isUnique = !nodesToCheck.some(
+        (node) => node[propertyKey] === baseValue
+      );
+
+      console.log(
+        "DocumentEditorDebug isUniqueNodePropertyValue: isUnique",
+        isUnique
+      );
+
+      const matches = nodesToCheck.filter(
+        (node) => node[propertyKey] === baseValue
+      );
+
+      console.log(
+        "DocumentEditorDebug isUniqueNodePropertyValue: matches",
+        matches,
+        "DocumentEditorDebug isUniqueNodePropertyValue: matches length",
+        matches.length
+      );
+      return isUnique;
     },
   };
 

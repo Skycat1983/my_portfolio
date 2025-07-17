@@ -245,7 +245,7 @@ export const NODE_TEMPLATES = {
     applicationRegistryId: "documentEditor",
     applicationId: "documentEditor",
     documentConfigId: "default_document_config",
-    label: "Portfolio Document",
+    label: "Untitled",
     image: PAGES,
     alternativeImage: WORD,
     macExtension: ".txt",

@@ -128,6 +128,7 @@ export const rootNodes: DirectoryObject = {
           id: "pages",
           location: "applications",
           protected: false,
+          // documentConfigId: "default_document_config",
         }),
         createNodeFromTemplate("browserApp", {
           id: "browser-applications",
@@ -572,21 +573,27 @@ export const rootNodes: DirectoryObject = {
           location: "dock",
           protected: false,
         }),
-        {
+        createNodeFromTemplate("pagesApp", {
           id: "pages-dock",
           label: "Pages",
-          type: "document",
-          image: PAGES,
-          alternativeImage: WORD,
-          applicationRegistryId: "documentEditor",
-          applicationId: "documentEditor",
-          documentConfigId: "default_document_config",
-          macExtension: ".txt",
-          windowsExtension: ".txt",
-          dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
-          size: 512, // TODO: add size
+          location: "dock",
           protected: false,
-        },
+        }),
+        // {
+        //   id: "pages-dock",
+        //   label: "Pages",
+        //   type: "document",
+        //   image: PAGES,
+        //   alternativeImage: WORD,
+        //   applicationRegistryId: "documentEditor",
+        //   applicationId: "documentEditor",
+        //   documentConfigId: "default_document_config",
+        //   macExtension: ".txt",
+        //   windowsExtension: ".txt",
+        //   dateModified: "2024-03-19T16:30:00Z", // TODO: add date modified
+        //   size: 512, // TODO: add size
+        //   protected: false,
+        // },
         {
           id: "github-dock",
           label: "GitHub",

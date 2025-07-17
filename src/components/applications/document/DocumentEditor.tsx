@@ -68,6 +68,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const isUniqueNodePropertyValue = useNewStore(
     (s) => s.isUniqueNodePropertyValue
   );
+  const addChildToDirectory = useNewStore((s) => s.addChildToDirectory);
 
   // ═══════════════════════════════════════════════════════════════════════════════
   // DOCUMENT STORE
@@ -151,7 +152,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
   const effectiveFontSize = textStyle.fontSize * zoom;
 
   const handleSave = () => {
-    console.log("DocumentEditorDebug: handleSave");
+    console.log("DocumentEditorDebug: 1 handleSave");
     const now = new Date();
     const wordCount = content
       .split(/\s+/)
@@ -160,12 +161,18 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
 
     // get the node
     const node = getNodeByID(nodeId);
-    console.log("DocumentEditorDebug: node", node);
+    console.log("DocumentEditorDebug: 2 node", node);
 
     // type check the node
-    if (node && node.type === "document") {
+    if (node) {
       // get the document config
-      const documentConfig = getDocumentConfig(node.documentConfigId);
+      const defaultDocumentConfig = getDocumentConfig(
+        "default_document_config"
+      );
+      const documentConfig =
+        node.type === "document"
+          ? getDocumentConfig(node.documentConfigId)
+          : defaultDocumentConfig;
       console.log("DocumentEditorDebug: documentConfig", documentConfig);
 
       // check if the document config is mutable
@@ -173,6 +180,8 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
 
       // Check if we can overwrite the document config
       if (!isWritable) {
+        const location = desktopRootId;
+        console.log("DocumentEditorDebug: 3 isWritable", isWritable);
         // ! creating a new node + document config
 
         const newDocumentConfigId = generateConfigId();
@@ -196,22 +205,25 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
           newDocumentConfigId,
           newDocumentConfig
         );
-        console.log("DocumentEditorDebug: newConfig", newConfig);
+        console.log("DocumentEditorDebug: 4 newConfig", newConfig);
         const baseNodeId = node.id;
         const uniqueNodeId = generateUniqueNodePropertyValue(baseNodeId, "id", {
           separator: "parentheses",
         });
-        console.log("DocumentEditorDebug: document config is not writable");
         const isUniqueLabel = isUniqueNodePropertyValue(documentLabel, "label");
+        console.warn("DocumentEditorDebug: isUniqueLabel", isUniqueLabel);
         const uniqueNodeLabel = isUniqueLabel
           ? documentLabel
           : generateUniqueNodePropertyValue(documentLabel, "label", {
               separator: "parentheses",
             });
+        console.warn("DocumentEditorDebug: uniqueNodeLabel", uniqueNodeLabel);
+
+        console.log("DocumentEditorDebug: 5 uniqueNodeId", uniqueNodeId);
 
         const newNode: DocumentEntry = {
           id: uniqueNodeId,
-          parentId: desktopRootId,
+          parentId: location,
           type: "document",
           label: uniqueNodeLabel,
           image: PAGES,
@@ -225,22 +237,21 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
           size: charCount,
           protected: false,
         };
+        console.log("DocumentEditorDebug: 6 createOneNode", newNode);
         createOneNode(newNode);
+        addChildToDirectory(location, newNode.id);
+        console.log("DocumentEditorDebug: 7 updateWindowById", window.windowId);
         updateWindowById(window.windowId, {
           nodeId: newNode.id,
           title: newNode.label,
           documentConfig: newConfig,
         });
+        console.log("DocumentEditorDebug: 8 updateWindowById", window.windowId);
       } else {
         // Create new document configuration for first-time save
-        const config = getDocumentConfig(node.documentConfigId);
-        if (!config) {
-          console.log("DocumentEditorDebug: config not found");
-          return;
-        }
-        console.log("DocumentEditorDebug: config is writable", config);
+        console.log("DocumentEditorDebug: 9 isWritable", isWritable);
         const newConfig = {
-          id: config.id,
+          id: documentConfig.id,
           mutable: true,
           content,
           textStyle,
@@ -257,11 +268,11 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
         };
 
         console.log(
-          "DocumentEditorDebug: creating new document config",
-          config.id
+          "DocumentEditorDebug: 10 creating new document config",
+          documentConfig.id
         );
-        const updatedConfig = setDocumentConfig(config.id, newConfig);
-        console.log("DocumentEditorDebug: updated config", updatedConfig);
+        const updatedConfig = setDocumentConfig(documentConfig.id, newConfig);
+        console.log("DocumentEditorDebug: 11 updated config", updatedConfig);
 
         updateNodeByID(node.id, {
           documentConfigId: updatedConfig.id,
