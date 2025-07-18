@@ -12,7 +12,7 @@ import { Widgets } from "../components/widgets/WidgetsLayout";
 import { useStaggeredMessageDelivery } from "../components/applications/whatsApp/hooks/useStaggeredMessageDelivery";
 import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
 import { DesktopLayout } from "@/pages/DesktopLayout";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { desktopRootId, mobileRootId } from "@/constants/nodeHierarchy";
 
 export const AppLayout = () => {
@@ -27,6 +27,7 @@ export const AppLayout = () => {
   const getCurrentRootId = useNewStore((s) => s.getCurrentRootId);
   const updateLegacyFields = useNewStore((s) => s.updateLegacyFields);
   const deleteWindows = useNewStore((s) => s.deleteWindows);
+  const closeWindow = useNewStore((s) => s.closeWindow);
 
   const currentDesktopRootId = getCurrentRootId("main");
 
@@ -52,6 +53,20 @@ export const AppLayout = () => {
     return baseNode.children.map((childId) => nodeMap[childId]);
   }, [nodeMap, baseId]);
 
+  // Memoized function to close specific windows without depending on windows array
+  const closeSpecificWindows = useCallback(() => {
+    const currentWindows = useNewStore.getState().windows;
+    const windowsToClose = currentWindows.filter(
+      (window) =>
+        window.applicationRegistryId === "finder" ||
+        window.applicationRegistryId === "documentEditor"
+    );
+
+    windowsToClose.forEach((window) => {
+      closeWindow(window.windowId);
+    });
+  }, [closeWindow]);
+
   // Handle context switching when screen size changes
   useEffect(() => {
     // Update node legacy fields for new context
@@ -69,12 +84,9 @@ export const AppLayout = () => {
   useEffect(() => {
     // Update node legacy fields for new context
 
-    // Close finder windows since hierarchy changed
-    deleteWindows((window) => window.applicationRegistryId === "finder");
-    deleteWindows(
-      (window) => window.applicationRegistryId === "documentEditor"
-    );
-  }, [isMobile]);
+    // Close all windows since hierarchy changed and automatically clean up their histories
+    closeSpecificWindows();
+  }, [isMobile, closeSpecificWindows]); // Only run when isMobile changes
   // Wifi state for staggered message delivery
 
   const background =

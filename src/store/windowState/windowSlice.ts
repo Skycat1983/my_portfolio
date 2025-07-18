@@ -12,6 +12,7 @@ import {
   type WindowId,
 } from "@/constants/applicationRegistry";
 import type { DocumentEntry } from "@/components/nodes/nodeTypes";
+import type { Store } from "@/hooks/useStore";
 
 interface WindowState {
   windows: Window[];
@@ -529,13 +530,15 @@ export const createWindowSlice = (
         windows: state.windows.filter((w) => w.windowId !== windowId),
       }));
 
-      // Note: For applications that require history, the history entry
-      // should be deleted externally using the history slice's deleteHistory action
-      // with windowId as the historyId (they are the same for apps that require history)
+      // Automatically handle history cleanup for applications that require history
       if (requiresHistory(windowToClose.applicationRegistryId)) {
-        console.log(
-          "closeWindow: window requires history - history should be deleted externally"
-        );
+        const historyId = windowId; // windowId and historyId are the same
+        const state = get() as Store; // Cast to access history methods
+
+        if (state.historyExists && state.historyExists(historyId)) {
+          state.deleteHistory(historyId);
+          console.log("closeWindow: deleted history for window", windowId);
+        }
       }
 
       console.log("closeWindow: closed window", windowId);
