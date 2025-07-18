@@ -261,6 +261,12 @@ export const rootNodes: DirectoryObject = {
           size: null,
           protected: false,
           children: [
+            createNodeFromTemplate("document", {
+              id: "portfolio-overview",
+              documentConfigId: "portfolio_overview_document_config",
+              label: "Overview",
+              protected: false,
+            }),
             {
               id: "laoutaris",
               label: "Laoutaris",

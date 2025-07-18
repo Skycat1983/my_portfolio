@@ -4,6 +4,7 @@ import {
   DEFAULT_DOCUMENT_CONFIG,
   EMPLOYMENT_HISTORY_DOCUMENT_CONFIG,
   MY_STACK_DOCUMENT_CONFIG,
+  PORTFOLIO_OVERVIEW_DOCUMENT_CONFIG,
   PRIVATE_DOCUMENT_CONFIG,
   type DocumentConfig,
 } from "@/constants/documentRegistry";
@@ -46,6 +47,10 @@ export const createDocumentRegistrySlice = (
   );
   initialConfigs.set(MY_STACK_DOCUMENT_CONFIG.id, MY_STACK_DOCUMENT_CONFIG);
   initialConfigs.set(PRIVATE_DOCUMENT_CONFIG.id, PRIVATE_DOCUMENT_CONFIG);
+  initialConfigs.set(
+    PORTFOLIO_OVERVIEW_DOCUMENT_CONFIG.id,
+    PORTFOLIO_OVERVIEW_DOCUMENT_CONFIG
+  );
 
   return {
     // State

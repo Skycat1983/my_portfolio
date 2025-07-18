@@ -32,6 +32,10 @@ export const AppLayout = () => {
 
   const wifiEnabled = useNewStore((s) => s.wifiEnabled);
 
+  const histories = useNewStore((s) => s.histories);
+
+  console.warn("HISTORIES", histories);
+
   // Handle staggered message delivery when wifi comes back online
   useStaggeredMessageDelivery(wifiEnabled);
 
@@ -58,10 +62,19 @@ export const AppLayout = () => {
       if (operatingSystem !== "mac") {
         toggleOS();
         // we delete the windows because the directory layouts vary for mobile and desktop
-        deleteWindows((window) => window.applicationRegistryId === "finder");
       }
     }
   }, [isMobile, updateLegacyFields, deleteWindows, operatingSystem, toggleOS]);
+
+  useEffect(() => {
+    // Update node legacy fields for new context
+
+    // Close finder windows since hierarchy changed
+    deleteWindows((window) => window.applicationRegistryId === "finder");
+    deleteWindows(
+      (window) => window.applicationRegistryId === "documentEditor"
+    );
+  }, [isMobile]);
   // Wifi state for staggered message delivery
 
   const background =

@@ -63,20 +63,18 @@ You can find my CV and letter of recommendation in the PDFs folder. If you're a 
 
 I have tried to recreate the behaviour of of a typical desktop/mobile environment. Try adjusting the your browser window size to see how the application behaves.
 
-There are lots of applications to use, and plenty of easter eggs to find.
+There are lots of applications to use, and plenty of easter eggs to find. Play around a bit and see what you can find.
 
 Some features:
 
+• A simulated WhatsApp chat interface working in tandem with GeminiAPI, with contacts who respond to your messages and attempted phone calls. 
 • Moveable windows with resizeable borders
 • Saveable documents
 • Playable games
 • Drag and drop functionality, allowing you to move files and folders around
-• A simulated WhatsApp chat interface, with contacts who respond to your messages and attempted phone calls. 
 • A fake browser which allows you to visit any website of your [my] choosing [out of about 5].
 • A working terminal. 
 • And lots more...
-
-I've gone a bit overboard with small details which many people won't even notice, but play around a bit and see what you can find.
 
 Best regards,
 Heron`,
@@ -240,6 +238,52 @@ All of you achievements have been reset.
   },
 };
 
+export const PORTFOLIO_OVERVIEW_DOCUMENT_CONFIG: DocumentConfig = {
+  id: "portfolio_overview_document_config",
+  mutable: true,
+  content: `
+ LAOUTARIS:
+
+ A portfolio website showcasing the artwork of my late grandafther. Built with Next.js, MongoDB,Tailwind CSS, and TypeScript. 
+ It features multiple collections (users, collections, artworks, blog entries etc), an admin dashboard to perform crud operations on all data types, responsive design, and a bold and striking aesthetic inspired by those of the leading London Galleries.
+ 
+
+ SKYNOT:
+
+ A Firefox extension which intercepts and blocks Google's annoying AI overview from appearing, replacing it with a random, choice quote from the Terminator. Activated with a single click from the toolbar icon.
+
+
+ ROBOCROP:
+
+ Another Firefox extension. When activated, RoboCrop scans the page for the invisible unicode characters often added to AI generated content, highlighting them with one click, and removing them with another.
+
+ 
+ DASHBOARD:
+
+ A small project I built for an assignment, allowing the user to display various metrics with deduced aggregates and projections using a simple but intuitive interface.
+
+  `,
+  textStyle: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    isBold: false,
+    isItalic: false,
+    isUnderlined: false,
+    color: "#000000",
+    textAlign: "left" as const,
+  },
+  pageSettings: {
+    backgroundColor: "#ffffff",
+  },
+  metadata: {
+    title: "Portfolio Overview",
+    createdAt: new Date("2024-03-20T09:00:00Z"),
+    modifiedAt: new Date("2024-03-20T09:00:00Z"),
+    wordCount: 142,
+    charCount: 1056,
+  },
+};
+
 // Document Config Registry for type safety (similar to WINDOW_COMPONENT_REGISTRY)
 export const DOCUMENT_CONFIG_REGISTRY = {
   about_document_config: ABOUT_DOCUMENT_CONFIG,
@@ -247,6 +291,7 @@ export const DOCUMENT_CONFIG_REGISTRY = {
   employment_history_document_config: EMPLOYMENT_HISTORY_DOCUMENT_CONFIG,
   my_stack_document_config: MY_STACK_DOCUMENT_CONFIG,
   private_document_config: PRIVATE_DOCUMENT_CONFIG,
+  portfolio_overview_document_config: PORTFOLIO_OVERVIEW_DOCUMENT_CONFIG,
 } as const;
 
 export const getDocumentConfig = (id: string) => {

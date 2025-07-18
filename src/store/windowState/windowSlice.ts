@@ -514,7 +514,7 @@ export const createWindowSlice = (
     /**
      * Close a window by its ID and delete its history if required
      */
-    closeWindow: (windowId: string): boolean => {
+    closeWindow: (windowId: WindowId): boolean => {
       const currentState = get();
       const windowToClose = currentState.windows.find(
         (w) => w.windowId === windowId
