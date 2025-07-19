@@ -14,6 +14,7 @@ import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
 import { DesktopLayout } from "@/pages/DesktopLayout";
 import { useEffect, useMemo, useCallback } from "react";
 import { desktopRootId, mobileRootId } from "@/constants/nodeHierarchy";
+import MarketStatusExample from "@/components/MarketStatusExample";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);
@@ -111,7 +112,7 @@ export const AppLayout = () => {
       }}
     >
       <MenubarLayout />
-
+      <MarketStatusExample />
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
       <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
         <Widgets />
