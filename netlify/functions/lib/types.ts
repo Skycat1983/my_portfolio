@@ -1,3 +1,5 @@
+import admin from "firebase-admin";
+
 // Types for Alpha Vantage API responses
 export interface AlphaVantageDataPoint {
   date: string; // "2025-06-01"
@@ -16,7 +18,7 @@ export interface CommodityData {
   name: string;
   unit: string;
   interval: "monthly" | "daily";
-  lastUpdated: FirebaseFirestore.Timestamp;
+  lastUpdated: admin.firestore.Timestamp;
   dataSource: "alpha_vantage";
   dataCount: number; // Number of data points stored
   data: AlphaVantageDataPoint[];

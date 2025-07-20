@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import CommoditySelector from "./CommoditySelector";
 import CommodityResults from "./CommodityResults";
+import Chart from "./chart/Chart";
+import CommodityChartSelector from "./chart/CommodityChartSelector";
 import type {
   FetchState,
   CommodityValue,
@@ -16,6 +18,10 @@ const StocksMain = () => {
     error: null,
     data: null,
   });
+
+  const [selectedChartCommodity, setSelectedChartCommodity] = useState<
+    string | undefined
+  >();
 
   // Theme system
   const currentTheme = useNewStore((state) => state.theme);
@@ -101,6 +107,37 @@ const StocksMain = () => {
 
         {/* Results */}
         <CommodityResults data={fetchState.data} error={fetchState.error} />
+
+        {/* Chart Visualization */}
+        {fetchState.data && (
+          <div className="space-y-4">
+            <h2
+              className="text-2xl font-semibold"
+              style={{ color: textColorPrimary }}
+            >
+              Price Chart
+            </h2>
+            <div
+              className="rounded-lg border p-4"
+              style={{
+                backgroundColor:
+                  theme.colors[currentTheme].background.secondary,
+                borderColor: theme.colors[currentTheme].border.primary,
+              }}
+            >
+              <CommodityChartSelector
+                data={fetchState.data}
+                selectedCommodity={selectedChartCommodity}
+                onCommodityChange={setSelectedChartCommodity}
+              />
+              <Chart
+                data={fetchState.data}
+                error={fetchState.error}
+                selectedCommodity={selectedChartCommodity}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

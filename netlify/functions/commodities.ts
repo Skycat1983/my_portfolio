@@ -3,24 +3,57 @@ import type { CommodityType, AlphaVantageDataPoint } from "./lib/types";
 import { COMMODITY_CONFIGS } from "./lib/types";
 import { processCommodityRequest } from "./lib/commodityService";
 
-/*
-endpoint to use later, maybe...
-const topGainersAndLosers =
-  "https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo";
-const exchangeRates =
-  "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=demo";
-const exchangeRateIntraDay =
-  "https://www.alphavantage.co/query?function=FX_INTRADAY&from_symbol=EUR&to_symbol=USD&interval=5min&apikey=demo";
-const echangeRateDaily =
-  "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo";
-const newsSentiment =
-  "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=AAPL&apikey=demo";
-*/
-
 // Netlify function event type
 interface NetlifyEvent {
   queryStringParameters?: Record<string, string> | null;
 }
+
+/*
+COMMODITY DATA FLOW - CHAIN OF EVENTS:
+
+1. REQUEST PARSING (commodities.ts)
+   - Parse query params: ?type=BRENT or ?all=true
+   - Default to WTI if no type specified
+   - Check API key (production vs demo)
+
+2. ROUTING LOGIC (commodities.ts)
+   - Single commodity: Call processCommodityRequest() once
+   - All commodities: Loop through all 10 types with rate limiting
+
+3. COMMODITY PROCESSING (commodityService.ts)
+   - Read existing data from Firestore (firebase.ts)
+   - Check if data is fresh using time-based logic (dataProcessor.ts)
+   - If fresh (< 7 days old): Return cached data with source="cache"
+   - If stale/missing: Proceed to fetch fresh data
+
+4. FRESH DATA ACQUISITION (alphaVantageClient.ts)
+   - Build Alpha Vantage API URL with commodity type & API key
+   - Fetch data from Alpha Vantage API
+   - Validate response structure
+
+5. DATA PROCESSING (dataProcessor.ts)
+   - Trim data to 60 months retention limit (newest first)
+   - Format for Firestore storage with metadata
+   - Add current timestamp for future freshness checks
+
+6. PERSISTENCE (firebase.ts)
+   - Store processed data in Firestore: /commodities/{COMMODITY}_monthly
+   - Include timestamp, data count, and trimmed price data
+
+7. RESPONSE FORMATTING (commodityService.ts)
+   - Return standardized response with source="fresh"
+   - Include metadata: commodity type, data count, timestamp
+
+8. ERROR HANDLING (All modules)
+   - API failures, Firestore errors, invalid data
+   - Graceful degradation with descriptive error messages
+
+KEY DESIGN DECISIONS:
+- Time-based caching (7 days) vs month-based (accounts for Alpha Vantage data lag)
+- Stateless functions with Firestore as persistent memory
+- Modular architecture for testability and maintainability
+- Rate limiting for "all commodities" to respect API limits
+*/
 
 // Union type for results array
 type CommodityResult =
@@ -107,32 +140,51 @@ export const handler = async (event: NetlifyEvent) => {
     const { commodity, all } = parseQueryParams(event);
 
     if (all) {
-      // Process all commodities (be careful with API limits!)
+      // Process all commodities in parallel (much faster for cache hits!)
       console.log(
-        "🚀 Processing ALL commodities - this will use multiple API calls"
+        "🚀 Processing ALL commodities in parallel - cache hits will be fast"
       );
 
-      const results: CommodityResult[] = [];
       const commodityTypes = Object.keys(COMMODITY_CONFIGS) as CommodityType[];
 
-      for (const commodityType of commodityTypes) {
-        try {
-          const result = await processCommodityRequest(commodityType, apiKey);
-          results.push(result);
+      // Use Promise.allSettled to handle mix of success/failure
+      const settlementResults = await Promise.allSettled(
+        commodityTypes.map((commodityType) =>
+          processCommodityRequest(commodityType, apiKey)
+        )
+      );
 
-          // Add delay between requests to avoid rate limiting
-          if (commodityType !== commodityTypes[commodityTypes.length - 1]) {
-            console.log("⏳ Waiting 1 second before next API call...");
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Process results and separate successful from failed
+      const results: CommodityResult[] = settlementResults.map(
+        (settlement, index) => {
+          const commodityType = commodityTypes[index];
+
+          if (settlement.status === "fulfilled") {
+            return settlement.value;
+          } else {
+            console.error(
+              `❌ Failed to process ${commodityType}:`,
+              settlement.reason
+            );
+            return {
+              commodity: commodityType,
+              error:
+                settlement.reason instanceof Error
+                  ? settlement.reason.message
+                  : "Unknown error",
+            };
           }
-        } catch (error) {
-          console.error(`❌ Failed to process ${commodityType}:`, error);
-          results.push({
-            commodity: commodityType,
-            error: error instanceof Error ? error.message : "Unknown error",
-          });
         }
-      }
+      );
+
+      const successCount = results.filter((r) => "source" in r).length;
+      const cacheHits = results.filter(
+        (r) => "source" in r && r.source === "cache"
+      ).length;
+
+      console.log(
+        `✅ Completed all commodities: ${successCount}/${results.length} successful, ${cacheHits} cache hits`
+      );
 
       return {
         statusCode: 200,
@@ -143,6 +195,8 @@ export const handler = async (event: NetlifyEvent) => {
         body: JSON.stringify({
           type: "all",
           totalCommodities: results.length,
+          successfulFetches: successCount,
+          cacheHits: cacheHits,
           results,
         }),
       };
