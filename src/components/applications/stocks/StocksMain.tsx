@@ -78,8 +78,17 @@ const StocksMain = () => {
   // Auto-fetch all commodities on component mount
   useEffect(() => {
     console.log("StocksMain mounted - auto-fetching all commodities");
-    handleFetch({ all: true });
+    handleFetch({ all: false, type: "WTI" });
   }, [handleFetch]); // Include handleFetch in dependencies
+
+  console.log("fetchState.data", fetchState.data);
+
+  // Helper function to check if data is a SingleCommodityResponse
+  const isSingleCommodityResponse = (
+    data: SingleCommodityResponse | AllCommoditiesResponse
+  ): data is SingleCommodityResponse => {
+    return "commodity" in data;
+  };
 
   return (
     <div
@@ -129,7 +138,11 @@ const StocksMain = () => {
               <Chart
                 data={fetchState.data}
                 error={fetchState.error}
-                // selectedCommodity={fetchState.data.commodity}
+                selectedCommodity={
+                  isSingleCommodityResponse(fetchState.data)
+                    ? fetchState.data.commodity
+                    : undefined
+                }
               />
             </div>
           </div>

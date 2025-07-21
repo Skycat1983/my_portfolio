@@ -41,7 +41,7 @@ const CommodityIconSelector = ({
   loading,
 }: CommodityIconSelectorProps) => {
   const [selectedCommodity, setSelectedCommodity] =
-    useState<CommodityValue>("ALL_COMMODITIES");
+    useState<CommodityValue>("WTI");
 
   // Theme system
   const currentTheme = useNewStore((state) => state.theme);
