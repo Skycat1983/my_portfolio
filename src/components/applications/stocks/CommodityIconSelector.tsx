@@ -25,7 +25,6 @@ interface CommodityIconSelectorProps {
   // New multi-commodity props (optional for backward compatibility)
   onToggleCommodity?: (commodity: CommodityValue) => Promise<void>;
   onAddCommodity?: (commodity: CommodityValue) => Promise<void>;
-  onRemoveCommodity?: (commodity: CommodityValue) => void;
   selectedCommodities?: CommodityValue[];
   activeFetches?: Set<CommodityValue>;
 }
@@ -49,7 +48,6 @@ const CommodityIconSelector = ({
   loading,
   onToggleCommodity,
   onAddCommodity,
-  onRemoveCommodity,
   selectedCommodities = [],
   activeFetches = new Set(),
 }: CommodityIconSelectorProps) => {
@@ -107,27 +105,23 @@ const CommodityIconSelector = ({
     const selected = isSelected(commodity);
     const commodityLoading = isLoading(commodity);
 
+    // Get commodity-specific color from theme
+    const commodityColor =
+      theme.colors.commodities[
+        commodity as keyof typeof theme.colors.commodities
+      ]?.[currentTheme] || theme.colors.status.success[currentTheme];
+
     return {
-      backgroundColor: selected
-        ? theme.colors.status.info[currentTheme]
-        : "transparent",
-      borderColor: selected
-        ? theme.colors.status.info[currentTheme]
-        : borderColor,
+      backgroundColor: selected ? commodityColor : "transparent",
+      borderColor: selected ? commodityColor : borderColor,
       opacity: commodityLoading ? 0.6 : 1,
       transform: commodityLoading ? "scale(0.95)" : "scale(1)",
       transition: "all 0.2s ease",
     };
   };
 
-  // Clear all selections (multi-mode only)
-  const handleClearAll = () => {
-    if (isMultiMode && onRemoveCommodity) {
-      effectiveSelectedCommodities.forEach((commodity) => {
-        onRemoveCommodity(commodity);
-      });
-    }
-  };
+  // Clear all selections (multi-mode only) - REMOVED: Always keep at least 1 selected
+  // const handleClearAll = () => { ... }
 
   // Select all commodities (multi-mode only)
   const handleSelectAll = async () => {
@@ -162,20 +156,12 @@ const CommodityIconSelector = ({
           {isMultiMode && (
             <div className="flex gap-2">
               <Button
-                onClick={handleClearAll}
-                disabled={effectiveSelectedCommodities.length === 0}
-                variant="outline"
-                size="sm"
-                style={{
-                  borderColor: borderColor,
-                  color: textColorSecondary,
-                }}
-              >
-                Clear All
-              </Button>
-              <Button
                 onClick={handleSelectAll}
-                disabled={loading}
+                disabled={
+                  loading ||
+                  effectiveSelectedCommodities.length ===
+                    COMMODITY_OPTIONS.length - 1
+                } // -1 to exclude ALL_COMMODITIES
                 variant="outline"
                 size="sm"
                 style={{
@@ -191,7 +177,7 @@ const CommodityIconSelector = ({
 
         <p className="text-sm" style={{ color: textColorSecondary }}>
           {isMultiMode
-            ? `Select multiple commodities to compare (${effectiveSelectedCommodities.length} selected)`
+            ? `Select multiple commodities to compare (${effectiveSelectedCommodities.length} selected) • At least 1 required`
             : "Select a commodity to view its price chart and data"}
         </p>
 
@@ -252,7 +238,11 @@ const CommodityIconSelector = ({
                       <div
                         className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
                         style={{
-                          color: theme.colors.status.info[currentTheme],
+                          color:
+                            theme.colors.commodities[
+                              commodity.value as keyof typeof theme.colors.commodities
+                            ]?.[currentTheme] ||
+                            theme.colors.status.info[currentTheme],
                         }}
                       />
                     </div>

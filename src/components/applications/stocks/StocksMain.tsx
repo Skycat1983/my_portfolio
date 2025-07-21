@@ -232,26 +232,37 @@ const StocksMain = () => {
   );
 
   // Remove commodity from selection (keep data cached)
-  const handleRemoveCommodity = useCallback((commodity: CommodityValue) => {
-    console.log(`Removing commodity: ${commodity}`);
+  const handleRemoveCommodity = useCallback(
+    (commodity: CommodityValue) => {
+      console.log(`Attempting to remove commodity: ${commodity}`);
 
-    setSelectedCommodities((prev) => prev.filter((c) => c !== commodity));
-
-    // Update selection status but keep data
-    setMultiCommodityState((prev) => {
-      const existing = prev[commodity];
-      if (existing) {
-        return {
-          ...prev,
-          [commodity]: {
-            ...existing,
-            selected: false,
-          },
-        };
+      // Prevent removing the last selected commodity
+      if (selectedCommodities.length <= 1) {
+        console.log(
+          "Cannot remove last commodity - at least one must remain selected"
+        );
+        return;
       }
-      return prev;
-    });
-  }, []);
+
+      setSelectedCommodities((prev) => prev.filter((c) => c !== commodity));
+
+      // Update selection status but keep data
+      setMultiCommodityState((prev) => {
+        const existing = prev[commodity];
+        if (existing) {
+          return {
+            ...prev,
+            [commodity]: {
+              ...existing,
+              selected: false,
+            },
+          };
+        }
+        return prev;
+      });
+    },
+    [selectedCommodities]
+  );
 
   // Toggle commodity selection
   const handleToggleCommodity = useCallback(
@@ -259,7 +270,14 @@ const StocksMain = () => {
       const isSelected = selectedCommodities.includes(commodity);
 
       if (isSelected) {
-        handleRemoveCommodity(commodity);
+        // Only allow removal if more than 1 commodity is selected
+        if (selectedCommodities.length > 1) {
+          handleRemoveCommodity(commodity);
+        } else {
+          console.log(
+            "Cannot deselect last commodity - at least one must remain selected"
+          );
+        }
       } else {
         await handleAddCommodity(commodity);
       }
@@ -317,7 +335,6 @@ const StocksMain = () => {
           onFetch={handleFetch} // Legacy compatibility
           onToggleCommodity={handleToggleCommodity} // New multi-select handler
           onAddCommodity={handleAddCommodity}
-          onRemoveCommodity={handleRemoveCommodity}
           selectedCommodities={selectedCommodities}
           activeFetches={activeFetches}
           loading={isLoading}

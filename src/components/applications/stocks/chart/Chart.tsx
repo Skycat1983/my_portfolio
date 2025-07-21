@@ -3,6 +3,7 @@ import type {
   SingleCommodityResponse,
   MultiCommodityState,
   CommodityValue,
+  MultiTimeUnit,
 } from "../types";
 import { useMemo } from "react";
 import AnalysisToolbar from "./AnalysisToolbar";
@@ -24,6 +25,17 @@ import {
   useMultiCommodityData,
 } from "./hooks/useCommodityData";
 import { COMMODITY_OPTIONS } from "../types";
+
+// Type definitions for chart data
+interface SingleCommodityDataPoint {
+  name: string;
+  value: number;
+}
+
+interface MultiCommodityDataPoint extends MultiTimeUnit {
+  name: string;
+  date: string;
+}
 
 interface CommodityResultsProps {
   // Legacy props (for backward compatibility)
@@ -233,17 +245,71 @@ const Chart = ({
     );
   }, [isMultiMode, multiCommodityChartData, graphRange]);
 
-  const visibleData = useMemo(() => {
-    return isMultiMode
-      ? multiChartData
-      : mainData.slice(graphRange[0], graphRange[1] + 1);
-  }, [isMultiMode, multiChartData, mainData, graphRange]);
+  // Multi-commodity average calculation
+  const multiCommodityAverageData = useMemo(() => {
+    if (!isMultiMode || !showAverage || selectedCommodities.length === 0)
+      return null;
 
-  console.log("GRAPH_CHART visibleData", visibleData);
+    return multiChartData.map((dataPoint) => {
+      // Calculate average across all selected commodities for this time point
+      const values: number[] = [];
+      selectedCommodities.forEach((commodity) => {
+        const value = dataPoint[`value_${commodity}`];
+        if (value !== null && value !== undefined) {
+          values.push(Number(value));
+        }
+      });
+
+      const average =
+        values.length > 0
+          ? values.reduce((sum, val) => sum + val, 0) / values.length
+          : 0;
+
+      return {
+        name: dataPoint.name,
+        average: average,
+      };
+    });
+  }, [isMultiMode, multiChartData, selectedCommodities, showAverage]);
 
   const visibleAverageData = useMemo(() => {
     return averageData?.slice(graphRange[0], graphRange[1] + 1);
   }, [averageData, graphRange]);
+
+  const visibleData = useMemo(() => {
+    const baseData = isMultiMode
+      ? multiChartData
+      : mainData.slice(graphRange[0], graphRange[1] + 1);
+
+    // If showing average, merge average data into the main data
+    if (showAverage) {
+      if (isMultiMode && multiCommodityAverageData) {
+        // Merge multi-commodity average data
+        return baseData.map((dataPoint, index) => ({
+          ...dataPoint,
+          average: multiCommodityAverageData[index]?.average || 0,
+        }));
+      } else if (!isMultiMode && visibleAverageData) {
+        // Merge single commodity average data
+        return baseData.map((dataPoint, index) => ({
+          ...dataPoint,
+          average: visibleAverageData[index]?.average || 0,
+        }));
+      }
+    }
+
+    return baseData;
+  }, [
+    isMultiMode,
+    multiChartData,
+    mainData,
+    graphRange,
+    showAverage,
+    multiCommodityAverageData,
+    visibleAverageData,
+  ]);
+
+  console.log("GRAPH_CHART visibleData", visibleData);
 
   // Function to calculate a "nice" upper bound for the y-axis
   const getNiceUpperBound = (maxValue: number): number => {
@@ -293,14 +359,18 @@ const Chart = ({
       // Multi-commodity mode: calculate range across all selected commodities
       const allValues: number[] = [];
 
-      visibleData.forEach((dataPoint: any) => {
-        selectedCommodities.forEach((commodity) => {
-          const value = dataPoint[`value_${commodity}`];
-          if (value !== null && value !== undefined) {
-            allValues.push(Number(value));
-          }
-        });
-      });
+      visibleData.forEach(
+        (dataPoint: MultiCommodityDataPoint | SingleCommodityDataPoint) => {
+          selectedCommodities.forEach((commodity) => {
+            const value = (dataPoint as MultiCommodityDataPoint)[
+              `value_${commodity}`
+            ];
+            if (value !== null && value !== undefined) {
+              allValues.push(Number(value));
+            }
+          });
+        }
+      );
 
       if (allValues.length === 0) return [0, 100];
 
@@ -310,7 +380,10 @@ const Chart = ({
     } else {
       // Single commodity mode
       const values = visibleData
-        .map((d: any) => d.value)
+        .map(
+          (d: SingleCommodityDataPoint | MultiCommodityDataPoint) =>
+            (d as SingleCommodityDataPoint).value
+        )
         .filter((v) => v !== undefined);
       if (values.length === 0) return [0, 100];
 
@@ -329,14 +402,18 @@ const Chart = ({
       // Multi-commodity range calculation
       const allValues: number[] = [];
 
-      visibleData.forEach((dataPoint: any) => {
-        selectedCommodities.forEach((commodity) => {
-          const value = dataPoint[`value_${commodity}`];
-          if (value !== null && value !== undefined) {
-            allValues.push(Number(value));
-          }
-        });
-      });
+      visibleData.forEach(
+        (dataPoint: MultiCommodityDataPoint | SingleCommodityDataPoint) => {
+          selectedCommodities.forEach((commodity) => {
+            const value = (dataPoint as MultiCommodityDataPoint)[
+              `value_${commodity}`
+            ];
+            if (value !== null && value !== undefined) {
+              allValues.push(Number(value));
+            }
+          });
+        }
+      );
 
       if (allValues.length === 0) return null;
 
@@ -347,7 +424,10 @@ const Chart = ({
     } else {
       // Single commodity range
       const values = visibleData
-        .map((d: any) => d.value)
+        .map(
+          (d: SingleCommodityDataPoint | MultiCommodityDataPoint) =>
+            (d as SingleCommodityDataPoint).value
+        )
         .filter((v) => v !== undefined);
       if (values.length === 0) return null;
 
@@ -507,7 +587,7 @@ const Chart = ({
 
             {/* Multi-commodity rendering */}
             {isMultiMode &&
-              selectedCommodities.map((commodity, index) => {
+              selectedCommodities.map((commodity) => {
                 const commodityColor =
                   multiCommodityChartData.commodityColors[commodity] ||
                   theme.colors.status.success[currentTheme];
@@ -556,18 +636,33 @@ const Chart = ({
                     stroke={currentColor}
                   />
                 )}
-
-                {showAverage && visibleAverageData && (
-                  <Line
-                    type="monotone"
-                    data={visibleAverageData}
-                    dataKey="average"
-                    stroke="#f97316"
-                    name="Average"
-                    strokeWidth={2}
-                  />
-                )}
               </>
+            )}
+
+            {/* Average lines - rendered on top as overlays */}
+            {/* Single commodity average */}
+            {!isMultiMode && showAverage && visibleAverageData && (
+              <Line
+                type="monotone"
+                dataKey="average"
+                stroke="#f97316"
+                name="Average"
+                strokeWidth={2}
+                dot={false}
+              />
+            )}
+
+            {/* Multi-commodity average line - rendered on top */}
+            {isMultiMode && showAverage && multiCommodityAverageData && (
+              <Line
+                type="monotone"
+                dataKey="average"
+                stroke="#f97316"
+                name="Multi-Commodity Average"
+                strokeWidth={3}
+                strokeDasharray="5 5"
+                dot={false}
+              />
             )}
           </ComposedChart>
         </ResponsiveContainer>
