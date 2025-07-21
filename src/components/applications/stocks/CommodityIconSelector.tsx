@@ -175,7 +175,7 @@ const CommodityIconSelector = ({
 
       {/* Status Info */}
       <div className="text-sm space-y-1" style={{ color: textColorSecondary }}>
-        <p>
+        {/* <p>
           <strong>Status:</strong>{" "}
           {loading
             ? "Fetching data..."
@@ -185,7 +185,7 @@ const CommodityIconSelector = ({
                 COMMODITY_OPTIONS.find((c) => c.value === selectedCommodity)
                   ?.label
               } selected`}
-        </p>
+        </p> */}
         <p>
           <strong>Cache:</strong> Data cached for 7 days |{" "}
           <strong>Source:</strong> Alpha Vantage API
