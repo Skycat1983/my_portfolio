@@ -1,5 +1,4 @@
 export { default as Chart } from "./Chart";
-export { default as CommodityChartSelector } from "./CommodityChartSelector";
 export {
   useCommodityData,
   useMultipleCommodityData,
