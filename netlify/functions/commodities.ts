@@ -71,10 +71,58 @@ type CommodityResult =
 
 // Firebase Admin initialization - only initialize if not already done
 if (!admin.apps.length) {
-  console.log("Initializing Firebase Admin in commodities function");
+  console.log("🔧 Initializing Firebase Admin in commodities function");
+
+  // Debug environment variables (without exposing secrets)
+  console.log("🔍 Environment check:");
+  console.log(
+    "- FIREBASE_PROJECT_ID:",
+    process.env.FIREBASE_PROJECT_ID ? "✅ Present" : "❌ Missing"
+  );
+  console.log(
+    "- FIREBASE_CLIENT_EMAIL:",
+    process.env.FIREBASE_CLIENT_EMAIL ? "✅ Present" : "❌ Missing"
+  );
+  console.log(
+    "- FIREBASE_PRIVATE_KEY:",
+    process.env.FIREBASE_PRIVATE_KEY
+      ? `✅ Present (${process.env.FIREBASE_PRIVATE_KEY.length} chars)`
+      : "❌ Missing"
+  );
+
+  // Check for required environment variables
+  if (
+    !process.env.FIREBASE_PROJECT_ID ||
+    !process.env.FIREBASE_CLIENT_EMAIL ||
+    !process.env.FIREBASE_PRIVATE_KEY
+  ) {
+    const missing: string[] = [];
+    if (!process.env.FIREBASE_PROJECT_ID) missing.push("FIREBASE_PROJECT_ID");
+    if (!process.env.FIREBASE_CLIENT_EMAIL)
+      missing.push("FIREBASE_CLIENT_EMAIL");
+    if (!process.env.FIREBASE_PRIVATE_KEY) missing.push("FIREBASE_PRIVATE_KEY");
+
+    throw new Error(
+      `❌ Missing required Firebase environment variables: ${missing.join(
+        ", "
+      )}`
+    );
+  }
 
   try {
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n");
+
+    // Validate private key format
+    if (
+      !privateKey.includes("BEGIN PRIVATE KEY") ||
+      !privateKey.includes("END PRIVATE KEY")
+    ) {
+      throw new Error(
+        "❌ FIREBASE_PRIVATE_KEY does not appear to be a valid private key format"
+      );
+    }
+
+    console.log("🔑 Private key format appears valid");
 
     admin.initializeApp({
       credential: admin.credential.cert({
@@ -84,18 +132,21 @@ if (!admin.apps.length) {
       }),
       projectId: process.env.FIREBASE_PROJECT_ID,
     });
+
     console.log(
       "✅ Firebase Admin initialized successfully in commodities function"
     );
   } catch (error) {
-    console.error(
-      "❌ Firebase Admin initialization failed in commodities function: ",
-      error
-    );
-    throw error;
+    console.error("❌ Firebase Admin initialization failed:", error);
+    console.error("🔍 Error details:", {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+    });
+    throw new Error(`Firebase initialization failed: ${error.message}`);
   }
 } else {
-  console.log("Firebase Admin already initialized in commodities function");
+  console.log("♻️ Firebase Admin already initialized in commodities function");
 }
 
 /**
