@@ -24,6 +24,7 @@ import {
   SETTINGS,
   PAGES,
   WORD,
+  STOCKS,
 } from "@/constants/images";
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -110,6 +111,20 @@ export const NODE_TEMPLATES = {
     windowsExtension: ".exe",
     dateModified: "2024-03-18T14:20:00Z",
     size: 85000000, // 85MB
+    protected: false,
+  } satisfies ApplicationTemplate,
+
+  stocksApp: {
+    type: "application",
+    applicationRegistryId: "stocks",
+    applicationId: "stocks",
+    label: "Stocks",
+    image: STOCKS,
+    alternativeImage: null,
+    macExtension: ".app",
+    windowsExtension: ".exe",
+    dateModified: "2024-03-19T15:30:00Z",
+    size: 245000000, // 245MB
     protected: false,
   } satisfies ApplicationTemplate,
 

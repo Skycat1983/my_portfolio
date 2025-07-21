@@ -11,6 +11,7 @@ import { Map } from "../components/applications/map/Map";
 import Calculator from "../components/applications/calculator/Calculator";
 import { Settings } from "../components/applications/settings/Settings";
 import { WhatsAppWrapper } from "../components/applications/whatsApp/WhatsAppWrapper";
+import { StocksMain } from "@/components/applications/stocks";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // APPLICATION REGISTRY - CONSOLIDATED CONFIGURATION
@@ -139,6 +140,17 @@ export const APPLICATION_REGISTRY: Record<string, ApplicationConfig> = {
     fixedSize: false,
     requiresHistory: false,
     defaultMaximized: true, // Games should start maximized
+  },
+
+  stocks: {
+    component: StocksMain,
+    allowMultipleWindows: false,
+    windowScope: "per-application" as const,
+    width: 1200,
+    height: 800,
+    fixedSize: false,
+    requiresHistory: false,
+    defaultMaximized: false,
   },
 
   // ─────────── Utility Applications ───────────

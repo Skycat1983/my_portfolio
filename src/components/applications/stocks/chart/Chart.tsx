@@ -1,4 +1,3 @@
-import React from "react";
 import type { AllCommoditiesResponse, SingleCommodityResponse } from "../types";
 import { useMemo } from "react";
 import AnalysisToolbar from "./AnalysisToolbar";

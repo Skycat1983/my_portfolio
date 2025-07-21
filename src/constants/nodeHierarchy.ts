@@ -626,6 +626,11 @@ export const rootNodes: DirectoryObject = {
           size: 1024, // 1KB for link file
           protected: false,
         },
+        createNodeFromTemplate("stocksApp", {
+          id: "stocks-dock",
+          location: "dock",
+          protected: false,
+        }),
 
         createNodeFromTemplate("whatsAppApp", {
           id: "whatsapp-dock",

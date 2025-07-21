@@ -105,9 +105,6 @@ const StocksMain = () => {
         {/* Selector */}
         <CommoditySelector onFetch={handleFetch} loading={fetchState.loading} />
 
-        {/* Results */}
-        <CommodityResults data={fetchState.data} error={fetchState.error} />
-
         {/* Chart Visualization */}
         {fetchState.data && (
           <div className="space-y-4">
@@ -138,6 +135,9 @@ const StocksMain = () => {
             </div>
           </div>
         )}
+
+        {/* Results */}
+        <CommodityResults data={fetchState.data} error={fetchState.error} />
       </div>
     </div>
   );

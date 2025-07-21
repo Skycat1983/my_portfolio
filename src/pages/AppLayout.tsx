@@ -112,7 +112,7 @@ export const AppLayout = () => {
       }}
     >
       <MenubarLayout />
-      <StocksMain />
+      {/* <StocksMain /> */}
       {/* MAIN CONTENT  mobile = col, tablet = row , desktop = row*/}
       <div className="flex flex-col md:flex-row h-full w-full gap-10 p-10">
         <Widgets />

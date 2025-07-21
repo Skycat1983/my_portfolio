@@ -122,3 +122,41 @@ const APPLE_BLACK =
 const APPLE_WHITE =
   "https://res.cloudinary.com/dzncmfirr/image/upload/v1752655693/portfolio_hub/apple_white_ei09fe.png";
 export { LOGO_MAC, LOGO_MS, APPLE_BLACK, APPLE_WHITE };
+
+//  stocks app
+const CORN =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086882/portfolio_hub/corn_oqjr7f.png";
+const WHEAT =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086885/portfolio_hub/wheat_o0ekgr.png";
+const SUGAR =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753087431/portfolio_hub/icons8-zucker-60_zwbqdk.png";
+const OIL_DROP =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086884/portfolio_hub/oil-drop_r5xdfj.png";
+const PUMPJACK =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086885/portfolio_hub/pumpjack_urxepb.png";
+const COFFEE =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753087540/portfolio_hub/icons8-coffee-bean-96_x1p0mv.png";
+const GAS =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086885/portfolio_hub/pumpjack_urxepb.png";
+const COPPER =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086882/portfolio_hub/copper_xklxtt.png";
+const ALUMINIUM =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086882/portfolio_hub/aluminium_qarqye.png";
+const GRAPH =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086883/portfolio_hub/growth_qvcwuj.png";
+const STOCKS =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086882/portfolio_hub/economics_t5bvkw.png";
+
+export {
+  CORN,
+  WHEAT,
+  SUGAR,
+  OIL_DROP,
+  PUMPJACK,
+  COFFEE,
+  GAS,
+  COPPER,
+  ALUMINIUM,
+  GRAPH,
+  STOCKS,
+};
