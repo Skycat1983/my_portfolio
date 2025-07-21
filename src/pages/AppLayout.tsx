@@ -14,7 +14,6 @@ import { NodeDropZoneWrapper } from "@/components/finder/NodeDropZoneWrapper";
 import { DesktopLayout } from "@/pages/DesktopLayout";
 import { useEffect, useMemo, useCallback } from "react";
 import { desktopRootId, mobileRootId } from "@/constants/nodeHierarchy";
-import StocksMain from "@/components/applications/stocks/StocksMain";
 
 export const AppLayout = () => {
   const nodeMap = useNewStore((s) => s.nodeMap);

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNewStore } from "@/hooks/useStore";
-import CommoditySelector from "./CommoditySelector";
+import CommodityIconSelector from "./CommodityIconSelector";
 import CommodityResults from "./CommodityResults";
 import Chart from "./chart/Chart";
 import CommodityChartSelector from "./chart/CommodityChartSelector";
@@ -29,56 +29,62 @@ const StocksMain = () => {
   const textColorPrimary = theme.colors[currentTheme].text.primary;
   const textColorSecondary = theme.colors[currentTheme].text.secondary;
 
-  const handleFetch = async (params: {
-    type?: CommodityValue;
-    all?: boolean;
-  }) => {
-    try {
-      setFetchState((prev) => ({ ...prev, loading: true, error: null }));
+  const handleFetch = useCallback(
+    async (params: { type?: CommodityValue; all?: boolean }) => {
+      try {
+        setFetchState((prev) => ({ ...prev, loading: true, error: null }));
 
-      // Build query string
-      const searchParams = new URLSearchParams();
-      if (params.all) {
-        searchParams.set("all", "true");
-      } else if (params.type) {
-        searchParams.set("type", params.type);
+        // Build query string
+        const searchParams = new URLSearchParams();
+        if (params.all) {
+          searchParams.set("all", "true");
+        } else if (params.type) {
+          searchParams.set("type", params.type);
+        }
+
+        const url = `/api/commodities${
+          searchParams.toString() ? `?${searchParams.toString()}` : ""
+        }`;
+
+        console.log(`Fetching commodity data from: ${url}`);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch: ${response.status} ${response.statusText}`
+          );
+        }
+
+        const data: SingleCommodityResponse | AllCommoditiesResponse =
+          await response.json();
+
+        console.log("Commodity data fetched successfully:", data);
+
+        setFetchState({
+          loading: false,
+          error: null,
+          data,
+        });
+      } catch (error) {
+        console.error("Error fetching commodity data:", error);
+
+        setFetchState({
+          loading: false,
+          error:
+            error instanceof Error ? error.message : "Unknown error occurred",
+          data: null,
+        });
       }
+    },
+    []
+  ); // No dependencies needed since it only uses setFetchState
 
-      const url = `/api/commodities${
-        searchParams.toString() ? `?${searchParams.toString()}` : ""
-      }`;
-
-      console.log(`Fetching commodity data from: ${url}`);
-
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch: ${response.status} ${response.statusText}`
-        );
-      }
-
-      const data: SingleCommodityResponse | AllCommoditiesResponse =
-        await response.json();
-
-      console.log("Commodity data fetched successfully:", data);
-
-      setFetchState({
-        loading: false,
-        error: null,
-        data,
-      });
-    } catch (error) {
-      console.error("Error fetching commodity data:", error);
-
-      setFetchState({
-        loading: false,
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-        data: null,
-      });
-    }
-  };
+  // Auto-fetch all commodities on component mount
+  useEffect(() => {
+    console.log("StocksMain mounted - auto-fetching all commodities");
+    handleFetch({ all: true });
+  }, [handleFetch]); // Include handleFetch in dependencies
 
   return (
     <div
@@ -91,19 +97,22 @@ const StocksMain = () => {
       <div className="p-6 max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="space-y-2">
-          <h1
+          <h2
             className="text-3xl font-bold"
             style={{ color: textColorPrimary }}
           >
             Commodity Data Center
-          </h1>
+          </h2>
           <p className="text-lg" style={{ color: textColorSecondary }}>
             Real-time commodity prices from Alpha Vantage API
           </p>
         </div>
 
         {/* Selector */}
-        <CommoditySelector onFetch={handleFetch} loading={fetchState.loading} />
+        <CommodityIconSelector
+          onFetch={handleFetch}
+          loading={fetchState.loading}
+        />
 
         {/* Chart Visualization */}
         {fetchState.data && (

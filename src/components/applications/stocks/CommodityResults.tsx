@@ -180,7 +180,7 @@ const CommodityResults = ({ data, error }: CommodityResultsProps) => {
   return (
     <div className="space-y-4">
       {/* Summary */}
-      <div
+      {/* <div
         className="p-6 rounded-lg border"
         style={{
           backgroundColor: bgColorSecondary,
@@ -222,7 +222,7 @@ const CommodityResults = ({ data, error }: CommodityResultsProps) => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Error Results */}
       {errorResults.length > 0 && (
