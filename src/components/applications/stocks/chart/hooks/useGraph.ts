@@ -27,7 +27,7 @@ export const useGraph = ({ contactsData }: UseGraphProps) => {
   const [valueType, setValueType] = useState<"accumulated" | "growth">(
     "accumulated"
   );
-  const [graphType, setGraphType] = useState<"area" | "bar">("bar");
+  const [graphType, setGraphType] = useState<"area" | "bar">("area");
   const [graphRange, setGraphRange] = useState<number[]>([
     0,
     timeUnits.length - 1,

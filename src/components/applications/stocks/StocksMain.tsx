@@ -289,7 +289,7 @@ const StocksMain = () => {
   useEffect(() => {
     console.log("StocksMain mounted - auto-fetching WTI");
     handleCommodityFetch("WTI");
-  }, []); // Empty dependency array for mount-only effect
+  }, [handleCommodityFetch]); // Empty dependency array for mount-only effect
 
   console.log("multiCommodityState", multiCommodityState);
   console.log("selectedCommodities", selectedCommodities);
