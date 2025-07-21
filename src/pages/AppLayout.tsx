@@ -56,13 +56,8 @@ export const AppLayout = () => {
   // Memoized function to close specific windows without depending on windows array
   const closeSpecificWindows = useCallback(() => {
     const currentWindows = useNewStore.getState().windows;
-    const windowsToClose = currentWindows.filter(
-      (window) =>
-        window.applicationRegistryId === "finder" ||
-        window.applicationRegistryId === "documentEditor"
-    );
 
-    windowsToClose.forEach((window) => {
+    currentWindows.forEach((window) => {
       closeWindow(window.windowId);
     });
   }, [closeWindow]);

@@ -119,6 +119,11 @@ export const rootNodes: DirectoryObject = {
           location: "applications",
           protected: false,
         }),
+        createNodeFromTemplate("stocksApp", {
+          id: "stocks-app",
+          location: "applications",
+          protected: false,
+        }),
         createNodeFromTemplate("achievementsApp", {
           id: "achievements-app",
           location: "applications",
@@ -697,6 +702,11 @@ export const mobileNodes: DirectoryObject = {
 
         createNodeFromTemplate("terminalApp", {
           id: "terminal",
+          protected: false,
+        }),
+        createNodeFromTemplate("stocksApp", {
+          id: "stocks-desktop",
+          location: "desktop",
           protected: false,
         }),
         {
