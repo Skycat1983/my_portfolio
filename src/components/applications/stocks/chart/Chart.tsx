@@ -1,4 +1,9 @@
-import type { AllCommoditiesResponse, SingleCommodityResponse } from "../types";
+import type {
+  AllCommoditiesResponse,
+  SingleCommodityResponse,
+  MultiCommodityState,
+  CommodityValue,
+} from "../types";
 import { useMemo } from "react";
 import AnalysisToolbar from "./AnalysisToolbar";
 import { useNewStore } from "@/hooks/useStore";
@@ -16,12 +21,19 @@ import { useGraph } from "./hooks/useGraph";
 import {
   useCommodityData,
   useMultipleCommodityData,
+  useMultiCommodityData,
 } from "./hooks/useCommodityData";
+import { COMMODITY_OPTIONS } from "../types";
 
 interface CommodityResultsProps {
+  // Legacy props (for backward compatibility)
   data: SingleCommodityResponse | AllCommoditiesResponse | null;
   error: string | null;
   selectedCommodity?: string; // For selecting specific commodity from multi-commodity response
+
+  // New multi-commodity props (optional for backward compatibility)
+  multiCommodityData?: MultiCommodityState;
+  selectedCommodities?: CommodityValue[];
 }
 
 /**
@@ -35,10 +47,26 @@ interface CommodityResultsProps {
  * - Interactive chart controls (zoom, pan, toggle views)
  */
 
-const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
+const Chart = ({
+  data,
+  selectedCommodity,
+  multiCommodityData,
+  selectedCommodities = [],
+}: CommodityResultsProps) => {
   const currentTheme = useNewStore((state) => state.theme);
 
-  // Get current commodity color using theme-aware colors
+  // Check if we're in multi-commodity mode
+  const isMultiMode = Boolean(
+    multiCommodityData && selectedCommodities.length > 1
+  );
+
+  console.log(
+    "Chart render mode:",
+    isMultiMode ? "Multi-commodity" : "Single commodity"
+  );
+  console.log("Selected commodities:", selectedCommodities);
+
+  // Get current commodity color using theme-aware colors (for single commodity mode)
   const getCurrentCommodityColor = () => {
     const commodityColors = theme.colors.commodities;
 
@@ -75,8 +103,29 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
     data && "type" in data ? data : null
   );
 
-  // Select the appropriate data based on response type and selected commodity
+  // New multi-commodity data processing
+  const multiCommodityChartData = useMultiCommodityData(
+    multiCommodityData || {},
+    selectedCommodities
+  );
+
+  // Select the appropriate data based on mode and response type
   const commodityData = useMemo(() => {
+    if (isMultiMode) {
+      // Multi-commodity mode: use new multi-commodity data
+      console.log("Using multi-commodity data:", multiCommodityChartData);
+      return {
+        timeUnits: multiCommodityChartData.timeUnits.map((unit) => ({
+          name: unit.name,
+          dates: [unit.date, unit.date] as [string, string],
+          accumulated: 0, // Not used in multi-mode
+          growth: 0, // Not used in multi-mode
+          unit: "month" as const,
+        })),
+      };
+    }
+
+    // Legacy single commodity mode
     if (!data) return { timeUnits: [] };
 
     if ("data" in data) {
@@ -128,7 +177,14 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
     }
 
     return multipleCommodityData;
-  }, [data, singleCommodityData, multipleCommodityData, selectedCommodity]);
+  }, [
+    data,
+    singleCommodityData,
+    multipleCommodityData,
+    selectedCommodity,
+    isMultiMode,
+    multiCommodityChartData,
+  ]);
 
   const {
     graphData,
@@ -167,9 +223,21 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
     return graphRange[1] < mainData.length - 1;
   }, [graphRange, mainData]);
 
+  // Multi-commodity chart data preparation
+  const multiChartData = useMemo(() => {
+    if (!isMultiMode) return [];
+
+    return multiCommodityChartData.timeUnits.slice(
+      graphRange[0],
+      graphRange[1] + 1
+    );
+  }, [isMultiMode, multiCommodityChartData, graphRange]);
+
   const visibleData = useMemo(() => {
-    return mainData.slice(graphRange[0], graphRange[1] + 1);
-  }, [mainData, graphRange]);
+    return isMultiMode
+      ? multiChartData
+      : mainData.slice(graphRange[0], graphRange[1] + 1);
+  }, [isMultiMode, multiChartData, mainData, graphRange]);
 
   console.log("GRAPH_CHART visibleData", visibleData);
 
@@ -203,6 +271,7 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
     return niceUpperBound;
   };
 
+  // Enhanced Y-axis domain calculation for multi-commodity support
   const yDomain = useMemo(() => {
     // Helper function to calculate nice axis bounds
     const calculateNiceAxisBounds = (min: number, max: number) => {
@@ -217,31 +286,123 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
       const niceMax = getNiceUpperBound(max);
       return [0, niceMax];
     };
+
     if (visibleData.length === 0) return [0, 100];
 
-    const values = visibleData.map((d) => d.value);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
+    if (isMultiMode && selectedCommodities.length > 0) {
+      // Multi-commodity mode: calculate range across all selected commodities
+      const allValues: number[] = [];
 
-    return calculateNiceAxisBounds(min, max);
-  }, [visibleData, valueType]);
+      visibleData.forEach((dataPoint: any) => {
+        selectedCommodities.forEach((commodity) => {
+          const value = dataPoint[`value_${commodity}`];
+          if (value !== null && value !== undefined) {
+            allValues.push(Number(value));
+          }
+        });
+      });
+
+      if (allValues.length === 0) return [0, 100];
+
+      const min = Math.min(...allValues);
+      const max = Math.max(...allValues);
+      return calculateNiceAxisBounds(min, max);
+    } else {
+      // Single commodity mode
+      const values = visibleData
+        .map((d: any) => d.value)
+        .filter((v) => v !== undefined);
+      if (values.length === 0) return [0, 100];
+
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      return calculateNiceAxisBounds(min, max);
+    }
+  }, [visibleData, valueType, isMultiMode, selectedCommodities]);
 
   console.log("GRAPH_CHART yDomain", yDomain);
-  console.log(
-    "GRAPH_CHART max value:",
-    visibleData.length > 0 ? Math.max(...visibleData.map((d) => d.value)) : 0
-  );
 
   const visibleRangeData = useMemo(() => {
     if (!rangeData || !showRange) return null;
-    const rangeValues = {
-      min: Math.min(...visibleData.map((d) => d.value)),
-      max: Math.max(...visibleData.map((d) => d.value)),
-    };
-    return rangeValues;
-  }, [visibleData, rangeData, showRange]);
+
+    if (isMultiMode && selectedCommodities.length > 0) {
+      // Multi-commodity range calculation
+      const allValues: number[] = [];
+
+      visibleData.forEach((dataPoint: any) => {
+        selectedCommodities.forEach((commodity) => {
+          const value = dataPoint[`value_${commodity}`];
+          if (value !== null && value !== undefined) {
+            allValues.push(Number(value));
+          }
+        });
+      });
+
+      if (allValues.length === 0) return null;
+
+      return {
+        min: Math.min(...allValues),
+        max: Math.max(...allValues),
+      };
+    } else {
+      // Single commodity range
+      const values = visibleData
+        .map((d: any) => d.value)
+        .filter((v) => v !== undefined);
+      if (values.length === 0) return null;
+
+      return {
+        min: Math.min(...values),
+        max: Math.max(...values),
+      };
+    }
+  }, [visibleData, rangeData, showRange, isMultiMode, selectedCommodities]);
 
   console.log("GRAPH_CHART visibleRangeData", visibleRangeData);
+
+  // Multi-commodity tooltip formatter
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{
+      value: number | null;
+      dataKey?: string;
+      color?: string;
+    }>;
+    label?: string;
+  }) => {
+    if (!active || !payload || !payload.length) return null;
+
+    return (
+      <div
+        className="p-3 border rounded-lg shadow-lg"
+        style={{
+          backgroundColor: theme.colors[currentTheme].background.secondary,
+          borderColor: theme.colors[currentTheme].border.primary,
+          color: theme.colors[currentTheme].text.primary,
+        }}
+      >
+        <p className="font-semibold mb-2">{label}</p>
+        {payload.map((entry, index) => {
+          if (entry.value === null || entry.value === undefined) return null;
+
+          const commodity = entry.dataKey?.replace("value_", "");
+          const commodityLabel =
+            COMMODITY_OPTIONS.find((opt) => opt.value === commodity)?.label ||
+            commodity;
+
+          return (
+            <p key={index} style={{ color: entry.color }}>
+              {commodityLabel}: ${Number(entry.value).toFixed(2)}
+            </p>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <div className="w-full h-full">
@@ -270,16 +431,54 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={visibleData}>
             <defs>
-              <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={currentColor} stopOpacity={0.4} />
-                <stop offset="95%" stopColor={currentColor} stopOpacity={0.1} />
-              </linearGradient>
+              {/* Create gradients for each commodity */}
+              {isMultiMode &&
+                selectedCommodities.map((commodity) => (
+                  <linearGradient
+                    key={`gradient-${commodity}`}
+                    id={`colorGradient-${commodity}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="5%"
+                      stopColor={
+                        multiCommodityChartData.commodityColors[commodity]
+                      }
+                      stopOpacity={0.4}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor={
+                        multiCommodityChartData.commodityColors[commodity]
+                      }
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                ))}
+              {!isMultiMode && (
+                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor={currentColor}
+                    stopOpacity={0.4}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={currentColor}
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+              )}
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis domain={yDomain} />
-            <Tooltip />
+            <Tooltip content={isMultiMode ? <CustomTooltip /> : undefined} />
 
+            {/* Range reference lines */}
             <ReferenceLine
               y={visibleRangeData?.max}
               stroke="#22c55e"
@@ -306,27 +505,69 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
               }}
             />
 
-            {graphType === "area" ? (
-              <Area
-                type="monotone"
-                dataKey="value"
-                strokeWidth={2}
-                fill="url(#colorGradient)"
-                stroke={colours[0]}
-              />
-            ) : (
-              <Bar dataKey="value" fill={currentColor} stroke={currentColor} />
-            )}
+            {/* Multi-commodity rendering */}
+            {isMultiMode &&
+              selectedCommodities.map((commodity, index) => {
+                const commodityColor =
+                  multiCommodityChartData.commodityColors[commodity] ||
+                  theme.colors.status.success[currentTheme];
 
-            {showAverage && visibleAverageData && (
-              <Line
-                type="monotone"
-                data={visibleAverageData}
-                dataKey="average"
-                stroke="#f97316"
-                name="Average"
-                strokeWidth={2}
-              />
+                if (graphType === "area") {
+                  return (
+                    <Area
+                      key={commodity}
+                      type="monotone"
+                      dataKey={`value_${commodity}`}
+                      strokeWidth={2}
+                      fill={`url(#colorGradient-${commodity})`}
+                      stroke={commodityColor}
+                      connectNulls={false}
+                    />
+                  );
+                } else {
+                  return (
+                    <Bar
+                      key={commodity}
+                      dataKey={`value_${commodity}`}
+                      fill={commodityColor}
+                      stroke={commodityColor}
+                      opacity={0.8}
+                      stackId={graphType === "bar" ? "stack" : undefined}
+                    />
+                  );
+                }
+              })}
+
+            {/* Single commodity rendering (legacy) */}
+            {!isMultiMode && (
+              <>
+                {graphType === "area" ? (
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    strokeWidth={2}
+                    fill="url(#colorGradient)"
+                    stroke={colours[0]}
+                  />
+                ) : (
+                  <Bar
+                    dataKey="value"
+                    fill={currentColor}
+                    stroke={currentColor}
+                  />
+                )}
+
+                {showAverage && visibleAverageData && (
+                  <Line
+                    type="monotone"
+                    data={visibleAverageData}
+                    dataKey="average"
+                    stroke="#f97316"
+                    name="Average"
+                    strokeWidth={2}
+                  />
+                )}
+              </>
             )}
           </ComposedChart>
         </ResponsiveContainer>

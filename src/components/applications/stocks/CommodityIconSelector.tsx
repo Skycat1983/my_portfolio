@@ -18,8 +18,16 @@ import {
 } from "@/constants/images";
 
 interface CommodityIconSelectorProps {
+  // Legacy props (for backward compatibility)
   onFetch: (params: { type?: CommodityValue; all?: boolean }) => void;
   loading: boolean;
+
+  // New multi-commodity props (optional for backward compatibility)
+  onToggleCommodity?: (commodity: CommodityValue) => Promise<void>;
+  onAddCommodity?: (commodity: CommodityValue) => Promise<void>;
+  onRemoveCommodity?: (commodity: CommodityValue) => void;
+  selectedCommodities?: CommodityValue[];
+  activeFetches?: Set<CommodityValue>;
 }
 
 // Map commodities to their respective icons
@@ -39,9 +47,25 @@ const COMMODITY_ICON_MAP: Record<CommodityValue, string> = {
 const CommodityIconSelector = ({
   onFetch,
   loading,
+  onToggleCommodity,
+  onAddCommodity,
+  onRemoveCommodity,
+  selectedCommodities = [],
+  activeFetches = new Set(),
 }: CommodityIconSelectorProps) => {
+  // Legacy single selection state (for backward compatibility)
   const [selectedCommodity, setSelectedCommodity] =
     useState<CommodityValue>("WTI");
+
+  // Check if we're in multi-commodity mode
+  const isMultiMode = Boolean(
+    onToggleCommodity && selectedCommodities.length >= 0
+  );
+
+  // Get effective selected commodities (multi-mode or legacy single selection)
+  const effectiveSelectedCommodities = isMultiMode
+    ? selectedCommodities
+    : [selectedCommodity];
 
   // Theme system
   const currentTheme = useNewStore((state) => state.theme);
@@ -50,26 +74,39 @@ const CommodityIconSelector = ({
   const textColorSecondary = theme.colors[currentTheme].text.secondary;
   const borderColor = theme.colors[currentTheme].border.primary;
 
-  const handleSelectCommodity = (commodity: CommodityValue) => {
-    setSelectedCommodity(commodity);
-
-    if (commodity === "ALL_COMMODITIES") {
-      onFetch({ all: true });
+  const handleSelectCommodity = async (commodity: CommodityValue) => {
+    if (isMultiMode && onToggleCommodity) {
+      // Multi-commodity mode: toggle selection
+      await onToggleCommodity(commodity);
     } else {
-      onFetch({ type: commodity });
+      // Legacy single-commodity mode
+      setSelectedCommodity(commodity);
+
+      if (commodity === "ALL_COMMODITIES") {
+        onFetch({ all: true });
+      } else {
+        onFetch({ type: commodity });
+      }
     }
   };
 
   const isSelected = (commodity: CommodityValue) => {
-    return selectedCommodity === commodity;
+    return effectiveSelectedCommodities.includes(commodity);
+  };
+
+  const isLoading = (commodity: CommodityValue) => {
+    return isMultiMode ? activeFetches.has(commodity) : loading;
   };
 
   const getIconOpacity = (commodity: CommodityValue) => {
+    if (isLoading(commodity)) return 0.5;
     return isSelected(commodity) ? 1 : 0.4;
   };
 
   const getButtonStyle = (commodity: CommodityValue) => {
     const selected = isSelected(commodity);
+    const commodityLoading = isLoading(commodity);
+
     return {
       backgroundColor: selected
         ? theme.colors.status.info[currentTheme]
@@ -77,12 +114,34 @@ const CommodityIconSelector = ({
       borderColor: selected
         ? theme.colors.status.info[currentTheme]
         : borderColor,
-      opacity: loading ? 0.6 : 1,
+      opacity: commodityLoading ? 0.6 : 1,
+      transform: commodityLoading ? "scale(0.95)" : "scale(1)",
+      transition: "all 0.2s ease",
     };
   };
 
-  // Get grid size based on number of commodities
-  //   const gridCols = Math.min(5, COMMODITY_OPTIONS.length);
+  // Clear all selections (multi-mode only)
+  const handleClearAll = () => {
+    if (isMultiMode && onRemoveCommodity) {
+      effectiveSelectedCommodities.forEach((commodity) => {
+        onRemoveCommodity(commodity);
+      });
+    }
+  };
+
+  // Select all commodities (multi-mode only)
+  const handleSelectAll = async () => {
+    if (isMultiMode && onAddCommodity) {
+      const allCommodities = COMMODITY_OPTIONS.filter(
+        (opt) => opt.value !== "ALL_COMMODITIES"
+      );
+      for (const commodity of allCommodities) {
+        if (!effectiveSelectedCommodities.includes(commodity.value)) {
+          await onAddCommodity(commodity.value);
+        }
+      }
+    }
+  };
 
   return (
     <div
@@ -93,101 +152,144 @@ const CommodityIconSelector = ({
       }}
     >
       <div className="space-y-2">
-        <h2
-          className="text-xl font-semibold"
-          style={{ color: textColorPrimary }}
-        >
-          Commodity Selection
-        </h2>
-        <p className="text-sm" style={{ color: textColorSecondary }}>
-          Select a commodity to view its price chart and data
-        </p>
-        <div
-          className="text-xs p-2 rounded"
-          style={{
-            backgroundColor: theme.colors[currentTheme].background.tertiary,
-            color: textColorSecondary,
-          }}
-        >
-          <strong>Note:</strong> "All" currently fetches individual data for all
-          commodities. A true "All Commodities Index" aggregated metric is
-          planned for future implementation.
+        <div className="flex justify-between items-center">
+          <h2
+            className="text-xl font-semibold"
+            style={{ color: textColorPrimary }}
+          >
+            Commodity Selection
+          </h2>
+          {isMultiMode && (
+            <div className="flex gap-2">
+              <Button
+                onClick={handleClearAll}
+                disabled={effectiveSelectedCommodities.length === 0}
+                variant="outline"
+                size="sm"
+                style={{
+                  borderColor: borderColor,
+                  color: textColorSecondary,
+                }}
+              >
+                Clear All
+              </Button>
+              <Button
+                onClick={handleSelectAll}
+                disabled={loading}
+                variant="outline"
+                size="sm"
+                style={{
+                  borderColor: borderColor,
+                  color: textColorSecondary,
+                }}
+              >
+                Select All
+              </Button>
+            </div>
+          )}
         </div>
+
+        <p className="text-sm" style={{ color: textColorSecondary }}>
+          {isMultiMode
+            ? `Select multiple commodities to compare (${effectiveSelectedCommodities.length} selected)`
+            : "Select a commodity to view its price chart and data"}
+        </p>
+
+        {!isMultiMode && (
+          <div
+            className="text-xs p-2 rounded"
+            style={{
+              backgroundColor: theme.colors[currentTheme].background.tertiary,
+              color: textColorSecondary,
+            }}
+          >
+            <strong>Note:</strong> "All" currently fetches individual data for
+            all commodities. A true "All Commodities Index" aggregated metric is
+            planned for future implementation.
+          </div>
+        )}
       </div>
 
       {/* Commodity Icons Grid */}
       <div className="space-y-3">
         <Label style={{ color: textColorPrimary }}>Available Commodities</Label>
-        <div
-          className={`flex gap-4 w-full justify-start items-center`}
+        <div className="flex gap-4 w-full justify-start items-center flex-wrap">
+          {COMMODITY_OPTIONS.map((commodity) => {
+            // Skip ALL_COMMODITIES in multi-mode
+            if (isMultiMode && commodity.value === "ALL_COMMODITIES") {
+              return null;
+            }
 
-          //   className={`grid grid-cols-${gridCols} gap-4 justify-items-center`}
-        >
-          {COMMODITY_OPTIONS.map((commodity) => (
-            <div
-              key={commodity.value}
-              className="flex flex-col items-center space-y-2"
-            >
-              <Button
-                onClick={() => handleSelectCommodity(commodity.value)}
-                disabled={loading}
-                variant="outline"
-                className={`p-3 border-2 transition-all duration-200 ${
-                  commodity.value === "ALL_COMMODITIES"
-                    ? "h-20 w-20"
-                    : "h-16 w-16"
-                }`}
-                style={getButtonStyle(commodity.value)}
-                title={commodity.label}
+            return (
+              <div
+                key={commodity.value}
+                className="flex flex-col items-center space-y-2"
               >
-                <img
-                  src={COMMODITY_ICON_MAP[commodity.value]}
-                  alt={commodity.label}
-                  className={`object-contain bg-white ${
+                <Button
+                  onClick={() => handleSelectCommodity(commodity.value)}
+                  disabled={isLoading(commodity.value)}
+                  variant="outline"
+                  className={`p-3 border-2 transition-all duration-200 ${
                     commodity.value === "ALL_COMMODITIES"
-                      ? "w-12 h-12"
-                      : "w-10 h-10"
+                      ? "h-20 w-20"
+                      : "h-16 w-16"
                   }`}
-                  style={{ opacity: getIconOpacity(commodity.value) }}
-                />
-              </Button>
-              <span
-                className="text-xs text-center leading-tight max-w-20"
-                style={{
-                  color: isSelected(commodity.value)
-                    ? textColorPrimary
-                    : textColorSecondary,
-                  fontWeight: isSelected(commodity.value) ? "bold" : "normal",
-                }}
-              >
-                {(() => {
-                  if (commodity.value === "ALL_COMMODITIES") return "All";
-                  if (commodity.value === "WTI") return "WTI";
-                  if (commodity.value === "BRENT") return "Brent";
-                  if (commodity.value === "NATURAL_GAS") return "Natural Gas";
-                  return commodity.label.split(" ").slice(0, 2).join(" ");
-                })()}
-              </span>
-            </div>
-          ))}
+                  style={getButtonStyle(commodity.value)}
+                  title={commodity.label}
+                >
+                  <img
+                    src={COMMODITY_ICON_MAP[commodity.value]}
+                    alt={commodity.label}
+                    className={`object-contain bg-white ${
+                      commodity.value === "ALL_COMMODITIES"
+                        ? "w-12 h-12"
+                        : "w-10 h-10"
+                    }`}
+                    style={{ opacity: getIconOpacity(commodity.value) }}
+                  />
+                  {isLoading(commodity.value) && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div
+                        className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+                        style={{
+                          color: theme.colors.status.info[currentTheme],
+                        }}
+                      />
+                    </div>
+                  )}
+                </Button>
+                <span
+                  className="text-xs text-center leading-tight max-w-20"
+                  style={{
+                    color: isSelected(commodity.value)
+                      ? textColorPrimary
+                      : textColorSecondary,
+                    fontWeight: isSelected(commodity.value) ? "bold" : "normal",
+                  }}
+                >
+                  {(() => {
+                    if (commodity.value === "ALL_COMMODITIES") return "All";
+                    if (commodity.value === "WTI") return "WTI";
+                    if (commodity.value === "BRENT") return "Brent";
+                    if (commodity.value === "NATURAL_GAS") return "Natural Gas";
+                    return commodity.label.split(" ").slice(0, 2).join(" ");
+                  })()}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Status Info */}
       <div className="text-sm space-y-1" style={{ color: textColorSecondary }}>
-        {/* <p>
-          <strong>Status:</strong>{" "}
-          {loading
-            ? "Fetching data..."
-            : selectedCommodity === "ALL_COMMODITIES"
-            ? "Fetching all individual commodities (10 API calls)"
-            : `${
-                COMMODITY_OPTIONS.find((c) => c.value === selectedCommodity)
-                  ?.label
-              } selected`}
-        </p> */}
+        {isMultiMode && activeFetches.size > 0 && (
+          <p>
+            <strong>Fetching:</strong> {Array.from(activeFetches).join(", ")}
+          </p>
+        )}
         <p>
-          <strong>Cache:</strong> Data cached for 7 days |{" "}
+          <strong>Cache:</strong> Data cached for 1 hour |{" "}
           <strong>Source:</strong> Alpha Vantage API
         </p>
       </div>
