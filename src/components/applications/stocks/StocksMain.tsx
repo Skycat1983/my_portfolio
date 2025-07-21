@@ -3,7 +3,6 @@ import { useNewStore } from "@/hooks/useStore";
 import CommodityIconSelector from "./CommodityIconSelector";
 import CommodityResults from "./CommodityResults";
 import Chart from "./chart/Chart";
-import CommodityChartSelector from "./chart/CommodityChartSelector";
 import type {
   FetchState,
   CommodityValue,
@@ -18,10 +17,6 @@ const StocksMain = () => {
     error: null,
     data: null,
   });
-
-  const [selectedChartCommodity, setSelectedChartCommodity] = useState<
-    string | undefined
-  >();
 
   // Theme system
   const currentTheme = useNewStore((state) => state.theme);
@@ -131,15 +126,10 @@ const StocksMain = () => {
                 borderColor: theme.colors[currentTheme].border.primary,
               }}
             >
-              <CommodityChartSelector
-                data={fetchState.data}
-                selectedCommodity={selectedChartCommodity}
-                onCommodityChange={setSelectedChartCommodity}
-              />
               <Chart
                 data={fetchState.data}
                 error={fetchState.error}
-                selectedCommodity={selectedChartCommodity}
+                // selectedCommodity={fetchState.data.commodity}
               />
             </div>
           </div>

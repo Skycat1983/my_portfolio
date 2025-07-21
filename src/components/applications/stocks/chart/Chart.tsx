@@ -24,11 +24,47 @@ interface CommodityResultsProps {
   selectedCommodity?: string; // For selecting specific commodity from multi-commodity response
 }
 
+/**
+ * Commodity Chart Component
+ *
+ * Features:
+ * - Theme-aware commodity-specific colors (darker in light mode, lighter in dark mode)
+ * - Smart Y-axis domain calculation for nice round axis labels
+ * - Support for both single commodity and multi-commodity data
+ * - Dynamic theming integration with unique colors for each commodity
+ * - Interactive chart controls (zoom, pan, toggle views)
+ */
+
 const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
   const currentTheme = useNewStore((state) => state.theme);
 
-  // Define colors for consistent theming
-  const colours = [theme.colors.status.success[currentTheme]];
+  // Get current commodity color using theme-aware colors
+  const getCurrentCommodityColor = () => {
+    const commodityColors = theme.colors.commodities;
+
+    if (data && "data" in data) {
+      // Single commodity
+      const commodity = data.commodity as keyof typeof commodityColors;
+      return (
+        commodityColors[commodity]?.[currentTheme] ||
+        theme.colors.status.success[currentTheme]
+      );
+    } else if (selectedCommodity) {
+      // Selected from multiple commodities
+      const commodity = selectedCommodity as keyof typeof commodityColors;
+      return (
+        commodityColors[commodity]?.[currentTheme] ||
+        theme.colors.status.success[currentTheme]
+      );
+    }
+    // Default for all commodities index
+    return commodityColors.ALL_COMMODITIES[currentTheme];
+  };
+
+  const currentColor = getCurrentCommodityColor();
+
+  // Legacy color array (kept for backward compatibility with existing chart components)
+  const colours = [currentColor];
 
   // Transform commodity data to chart format (hooks at top level)
   const singleCommodityData = useCommodityData(
@@ -135,22 +171,66 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
     return mainData.slice(graphRange[0], graphRange[1] + 1);
   }, [mainData, graphRange]);
 
+  console.log("GRAPH_CHART visibleData", visibleData);
+
   const visibleAverageData = useMemo(() => {
     return averageData?.slice(graphRange[0], graphRange[1] + 1);
   }, [averageData, graphRange]);
 
+  // Function to calculate a "nice" upper bound for the y-axis
+  const getNiceUpperBound = (maxValue: number): number => {
+    if (maxValue <= 0) return 0;
+
+    // Calculate the order of magnitude
+    const magnitude = Math.floor(Math.log10(maxValue));
+    const powerOf10 = Math.pow(10, magnitude);
+
+    // Normalize the max value to be between 1 and 10
+    const normalizedMax = maxValue / powerOf10;
+
+    // Determine nice step based on normalized value
+    let niceStep: number;
+    if (normalizedMax <= 1) niceStep = 1;
+    else if (normalizedMax <= 2) niceStep = 2;
+    else if (normalizedMax <= 2.5) niceStep = 2.5;
+    else if (normalizedMax <= 5) niceStep = 5;
+    else niceStep = 10;
+
+    // Scale back up and round up to next nice value
+    const niceUpperBound =
+      Math.ceil(normalizedMax / niceStep) * niceStep * powerOf10;
+
+    return niceUpperBound;
+  };
+
   const yDomain = useMemo(() => {
+    // Helper function to calculate nice axis bounds
+    const calculateNiceAxisBounds = (min: number, max: number) => {
+      // For growth values, handle symmetrically around zero
+      if (valueType === "growth") {
+        const absMax = Math.max(Math.abs(min), Math.abs(max));
+        const niceMax = getNiceUpperBound(absMax);
+        return [-niceMax, niceMax];
+      }
+
+      // For positive values, start from 0 and find nice upper bound
+      const niceMax = getNiceUpperBound(max);
+      return [0, niceMax];
+    };
+    if (visibleData.length === 0) return [0, 100];
+
     const values = visibleData.map((d) => d.value);
     const min = Math.min(...values);
     const max = Math.max(...values);
 
-    if (valueType === "growth") {
-      const absMax = Math.max(Math.abs(min), Math.abs(max));
-      return [-absMax, absMax];
-    }
-
-    return [0, max];
+    return calculateNiceAxisBounds(min, max);
   }, [visibleData, valueType]);
+
+  console.log("GRAPH_CHART yDomain", yDomain);
+  console.log(
+    "GRAPH_CHART max value:",
+    visibleData.length > 0 ? Math.max(...visibleData.map((d) => d.value)) : 0
+  );
 
   const visibleRangeData = useMemo(() => {
     if (!rangeData || !showRange) return null;
@@ -160,6 +240,8 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
     };
     return rangeValues;
   }, [visibleData, rangeData, showRange]);
+
+  console.log("GRAPH_CHART visibleRangeData", visibleRangeData);
 
   return (
     <div className="w-full h-full">
@@ -189,16 +271,8 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
           <ComposedChart data={visibleData}>
             <defs>
               <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor={theme.colors.status.success[currentTheme]}
-                  stopOpacity={0.4}
-                />
-                <stop
-                  offset="95%"
-                  stopColor={theme.colors.status.success[currentTheme]}
-                  stopOpacity={0.1}
-                />
+                <stop offset="5%" stopColor={currentColor} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={currentColor} stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
@@ -241,11 +315,7 @@ const Chart = ({ data, selectedCommodity }: CommodityResultsProps) => {
                 stroke={colours[0]}
               />
             ) : (
-              <Bar
-                dataKey="value"
-                fill={theme.colors.status.success[currentTheme]}
-                stroke={theme.colors.status.success[currentTheme]}
-              />
+              <Bar dataKey="value" fill={currentColor} stroke={currentColor} />
             )}
 
             {showAverage && visibleAverageData && (

@@ -36,6 +36,49 @@ interface StatusColors {
   };
 }
 
+interface CommodityColors {
+  WTI: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  BRENT: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  NATURAL_GAS: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  COPPER: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  ALUMINUM: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  CORN: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  WHEAT: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  SUGAR: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  COFFEE: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+  ALL_COMMODITIES: {
+    light: ColorValue;
+    dark: ColorValue;
+  };
+}
+
 interface ThemeConfig {
   colors: {
     gray: {
@@ -50,6 +93,7 @@ interface ThemeConfig {
     light: ThemeColors;
     dark: ThemeColors;
     status: StatusColors;
+    commodities: CommodityColors;
   };
   button: {
     base: {
@@ -227,6 +271,50 @@ export const theme: ThemeConfig = {
         dark: "#2563eb",
       },
     },
+
+    // Commodity-specific colors (theme-aware)
+    commodities: {
+      WTI: {
+        light: "#4a5568", // Dark gray for light mode
+        dark: "#a0aec0", // Light gray for dark mode
+      },
+      BRENT: {
+        light: "#2d3748", // Darker gray for light mode
+        dark: "#cbd5e0", // Lighter gray for dark mode
+      },
+      NATURAL_GAS: {
+        light: "#2c5282", // Dark blue for light mode
+        dark: "#63b3ed", // Light blue for dark mode
+      },
+      COPPER: {
+        light: "#c05621", // Dark orange for light mode
+        dark: "#fed7aa", // Light orange for dark mode
+      },
+      ALUMINUM: {
+        light: "#718096", // Medium gray for light mode
+        dark: "#e2e8f0", // Very light gray for dark mode
+      },
+      CORN: {
+        light: "#d69e2e", // Dark yellow for light mode
+        dark: "#faf089", // Light yellow for dark mode
+      },
+      WHEAT: {
+        light: "#92400e", // Dark brown for light mode
+        dark: "#fcd34d", // Light golden for dark mode
+      },
+      SUGAR: {
+        light: "#9ca3af", // Medium gray for light mode
+        dark: "#f9fafb", // Almost white for dark mode
+      },
+      COFFEE: {
+        light: "#744210", // Dark brown for light mode
+        dark: "#d2b48c", // Light tan for dark mode
+      },
+      ALL_COMMODITIES: {
+        light: "#059669", // Use success color for light mode
+        dark: "#10b981", // Use success color for dark mode
+      },
+    },
   },
 
   // Component-specific styles
@@ -322,6 +410,7 @@ export const theme: ThemeConfig = {
 export type ThemeMode = "light" | "dark";
 export type ThemeCategory = keyof ThemeColors;
 export type ThemeSubCategory = keyof ColorSet;
+export type CommodityType = keyof CommodityColors;
 
 // Helper function to get theme-aware color
 export const getThemeColor = (
@@ -330,6 +419,14 @@ export const getThemeColor = (
   subcategory: ThemeSubCategory
 ): ColorValue => {
   return theme.colors[mode][category][subcategory];
+};
+
+// Helper function to get commodity color for current theme
+export const getCommodityColor = (
+  mode: ThemeMode,
+  commodity: CommodityType
+): ColorValue => {
+  return theme.colors.commodities[commodity][mode];
 };
 
 // CSS-in-JS helper function

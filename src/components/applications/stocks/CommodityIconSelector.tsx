@@ -82,7 +82,7 @@ const CommodityIconSelector = ({
   };
 
   // Get grid size based on number of commodities
-  const gridCols = Math.min(5, COMMODITY_OPTIONS.length);
+  //   const gridCols = Math.min(5, COMMODITY_OPTIONS.length);
 
   return (
     <div
@@ -102,13 +102,24 @@ const CommodityIconSelector = ({
         <p className="text-sm" style={{ color: textColorSecondary }}>
           Select a commodity to view its price chart and data
         </p>
+        <div
+          className="text-xs p-2 rounded"
+          style={{
+            backgroundColor: theme.colors[currentTheme].background.tertiary,
+            color: textColorSecondary,
+          }}
+        >
+          <strong>Note:</strong> "All" currently fetches individual data for all
+          commodities. A true "All Commodities Index" aggregated metric is
+          planned for future implementation.
+        </div>
       </div>
 
       {/* Commodity Icons Grid */}
       <div className="space-y-3">
         <Label style={{ color: textColorPrimary }}>Available Commodities</Label>
         <div
-          className={`flex gap-4 w-full justify-center items-center`}
+          className={`flex gap-4 w-full justify-start items-center`}
 
           //   className={`grid grid-cols-${gridCols} gap-4 justify-items-center`}
         >
@@ -132,7 +143,7 @@ const CommodityIconSelector = ({
                 <img
                   src={COMMODITY_ICON_MAP[commodity.value]}
                   alt={commodity.label}
-                  className={`object-contain ${
+                  className={`object-contain bg-white ${
                     commodity.value === "ALL_COMMODITIES"
                       ? "w-12 h-12"
                       : "w-10 h-10"
@@ -149,9 +160,13 @@ const CommodityIconSelector = ({
                   fontWeight: isSelected(commodity.value) ? "bold" : "normal",
                 }}
               >
-                {commodity.value === "ALL_COMMODITIES"
-                  ? "All"
-                  : commodity.label.split(" ").slice(0, 2).join(" ")}
+                {(() => {
+                  if (commodity.value === "ALL_COMMODITIES") return "All";
+                  if (commodity.value === "WTI") return "WTI";
+                  if (commodity.value === "BRENT") return "Brent";
+                  if (commodity.value === "NATURAL_GAS") return "Natural Gas";
+                  return commodity.label.split(" ").slice(0, 2).join(" ");
+                })()}
               </span>
             </div>
           ))}
@@ -165,7 +180,7 @@ const CommodityIconSelector = ({
           {loading
             ? "Fetching data..."
             : selectedCommodity === "ALL_COMMODITIES"
-            ? "All commodities selected (10 API calls)"
+            ? "Fetching all individual commodities (10 API calls)"
             : `${
                 COMMODITY_OPTIONS.find((c) => c.value === selectedCommodity)
                   ?.label

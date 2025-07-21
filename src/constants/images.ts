@@ -137,7 +137,7 @@ const PUMPJACK =
 const COFFEE =
   "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753087540/portfolio_hub/icons8-coffee-bean-96_x1p0mv.png";
 const GAS =
-  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086885/portfolio_hub/pumpjack_urxepb.png";
+  "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086882/portfolio_hub/gas_nbcgwh.png";
 const COPPER =
   "https://res.cloudinary.com/dzncmfirr/image/upload/t_cropFrame/v1753086882/portfolio_hub/copper_xklxtt.png";
 const ALUMINIUM =

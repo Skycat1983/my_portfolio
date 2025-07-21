@@ -16,7 +16,7 @@ const ValueTypeToggle = ({
   return (
     <button
       onClick={toggleValueType}
-      className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded-full"
+      className="flex items-center gap-2 px-3 py-1.5 text-sm text-purple-700 bg-purple-100 hover:bg-purple-200 rounded-full"
     >
       {valueType === "accumulated" ? (
         <>

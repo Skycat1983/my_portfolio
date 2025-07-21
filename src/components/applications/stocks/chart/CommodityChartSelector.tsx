@@ -6,14 +6,15 @@ import { COMMODITY_OPTIONS } from "../types";
 interface CommodityChartSelectorProps {
   data: SingleCommodityResponse | AllCommoditiesResponse;
   selectedCommodity?: string;
-  onCommodityChange: (commodity: string) => void;
+  // onCommodityChange: (commodity: string) => void;
 }
 
+// ! unused
 const CommodityChartSelector = ({
   data,
   selectedCommodity,
-  onCommodityChange,
-}: CommodityChartSelectorProps) => {
+}: // onCommodityChange,
+CommodityChartSelectorProps) => {
   const currentTheme = useNewStore((state) => state.theme);
 
   // Get available commodities from the data
@@ -44,7 +45,7 @@ const CommodityChartSelector = ({
       </label>
       <select
         value={selectedCommodity || availableCommodities[0]}
-        onChange={(e) => onCommodityChange(e.target.value)}
+        // onChange={(e) => onCommodityChange(e.target.value)}
         className="px-3 py-1.5 rounded-md border text-sm min-w-32"
         style={{
           backgroundColor: theme.colors[currentTheme].background.primary,

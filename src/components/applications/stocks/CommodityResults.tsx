@@ -79,7 +79,7 @@ const CommodityResults = ({ data, error }: CommodityResultsProps) => {
             borderColor: borderColor,
           }}
         >
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex justify-between items-start mb-4 ">
             <div>
               <h3
                 className="text-xl font-semibold"
@@ -180,49 +180,6 @@ const CommodityResults = ({ data, error }: CommodityResultsProps) => {
   return (
     <div className="space-y-4">
       {/* Summary */}
-      {/* <div
-        className="p-6 rounded-lg border"
-        style={{
-          backgroundColor: bgColorSecondary,
-          borderColor: borderColor,
-        }}
-      >
-        <h3
-          className="text-xl font-semibold mb-4"
-          style={{ color: textColorPrimary }}
-        >
-          All Commodities Summary
-        </h3>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <Label style={{ color: textColorSecondary }}>Total Fetched</Label>
-            <p
-              className="text-2xl font-bold"
-              style={{ color: textColorPrimary }}
-            >
-              {allData.totalCommodities}
-            </p>
-          </div>
-          <div>
-            <Label style={{ color: textColorSecondary }}>Successful</Label>
-            <p
-              className="text-2xl font-bold"
-              style={{ color: theme.colors.status.success[currentTheme] }}
-            >
-              {successfulResults.length}
-            </p>
-          </div>
-          <div>
-            <Label style={{ color: textColorSecondary }}>Errors</Label>
-            <p
-              className="text-2xl font-bold"
-              style={{ color: theme.colors.status.error[currentTheme] }}
-            >
-              {errorResults.length}
-            </p>
-          </div>
-        </div>
-      </div> */}
 
       {/* Error Results */}
       {errorResults.length > 0 && (
@@ -244,6 +201,7 @@ const CommodityResults = ({ data, error }: CommodityResultsProps) => {
       )}
 
       {/* Successful Results Grid */}
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {successfulResults.map((result) => {
           const latestPrice = result.data[0];

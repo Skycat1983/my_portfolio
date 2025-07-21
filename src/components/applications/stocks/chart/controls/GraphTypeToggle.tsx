@@ -16,7 +16,7 @@ const GraphTypeToggle = ({
   return (
     <button
       onClick={toggleGraphType}
-      className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded-full"
+      className="flex items-center gap-2 px-3 py-1.5 text-sm text-green-700 bg-green-100 hover:bg-green-200 rounded-full"
     >
       {graphType === "area" ? (
         <>
