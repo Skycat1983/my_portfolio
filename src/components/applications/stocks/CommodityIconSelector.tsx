@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNewStore } from "@/hooks/useStore";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,15 +17,10 @@ import {
 } from "@/constants/images";
 
 interface CommodityIconSelectorProps {
-  // Legacy props (for backward compatibility)
-  onFetch: (params: { type?: CommodityValue; all?: boolean }) => void;
+  onToggleCommodity: (commodity: CommodityValue) => Promise<void>;
+  selectedCommodities: CommodityValue[];
+  activeFetches: Set<CommodityValue>;
   loading: boolean;
-
-  // New multi-commodity props (optional for backward compatibility)
-  onToggleCommodity?: (commodity: CommodityValue) => Promise<void>;
-  // onAddCommodity?: (commodity: CommodityValue) => Promise<void>;
-  selectedCommodities?: CommodityValue[];
-  activeFetches?: Set<CommodityValue>;
 }
 
 // Map commodities to their respective icons
@@ -44,27 +38,10 @@ const COMMODITY_ICON_MAP: Record<CommodityValue, string> = {
 };
 
 const CommodityIconSelector = ({
-  onFetch,
-  loading,
   onToggleCommodity,
-  // onAddCommodity,
-  selectedCommodities = [],
-  activeFetches = new Set(),
+  selectedCommodities,
+  activeFetches,
 }: CommodityIconSelectorProps) => {
-  // Legacy single selection state (for backward compatibility)
-  const [selectedCommodity, setSelectedCommodity] =
-    useState<CommodityValue>("WTI");
-
-  // Check if we're in multi-commodity mode
-  const isMultiMode = Boolean(
-    onToggleCommodity && selectedCommodities.length >= 0
-  );
-
-  // Get effective selected commodities (multi-mode or legacy single selection)
-  const effectiveSelectedCommodities = isMultiMode
-    ? selectedCommodities
-    : [selectedCommodity];
-
   // Theme system
   const currentTheme = useNewStore((state) => state.theme);
   const bgColorSecondary = theme.colors[currentTheme].background.secondary;
@@ -73,27 +50,15 @@ const CommodityIconSelector = ({
   const borderColor = theme.colors[currentTheme].border.primary;
 
   const handleSelectCommodity = async (commodity: CommodityValue) => {
-    if (isMultiMode && onToggleCommodity) {
-      // Multi-commodity mode: toggle selection
-      await onToggleCommodity(commodity);
-    } else {
-      // Legacy single-commodity mode
-      setSelectedCommodity(commodity);
-
-      if (commodity === "ALL_COMMODITIES") {
-        onFetch({ all: true });
-      } else {
-        onFetch({ type: commodity });
-      }
-    }
+    await onToggleCommodity(commodity);
   };
 
   const isSelected = (commodity: CommodityValue) => {
-    return effectiveSelectedCommodities.includes(commodity);
+    return selectedCommodities.includes(commodity);
   };
 
   const isLoading = (commodity: CommodityValue) => {
-    return isMultiMode ? activeFetches.has(commodity) : loading;
+    return activeFetches.has(commodity);
   };
 
   const getIconOpacity = (commodity: CommodityValue) => {
@@ -139,24 +104,9 @@ const CommodityIconSelector = ({
         </div>
 
         <p className="text-sm" style={{ color: textColorSecondary }}>
-          {isMultiMode
-            ? `Select multiple commodities to compare (${effectiveSelectedCommodities.length} selected) • At least 1 required`
-            : "Select a commodity to view its price chart and data"}
+          Select multiple commodities to compare ({selectedCommodities.length}{" "}
+          selected) • At least 1 required
         </p>
-
-        {!isMultiMode && (
-          <div
-            className="text-xs p-2 rounded"
-            style={{
-              backgroundColor: theme.colors[currentTheme].background.tertiary,
-              color: textColorSecondary,
-            }}
-          >
-            <strong>Note:</strong> "All" currently fetches individual data for
-            all commodities. A true "All Commodities Index" aggregated metric is
-            planned for future implementation.
-          </div>
-        )}
       </div>
 
       {/* Commodity Icons Grid */}
@@ -164,8 +114,8 @@ const CommodityIconSelector = ({
         <Label style={{ color: textColorPrimary }}>Available Commodities</Label>
         <div className="flex gap-4 w-full justify-start items-center flex-wrap">
           {COMMODITY_OPTIONS.map((commodity) => {
-            // Skip ALL_COMMODITIES in multi-mode
-            if (isMultiMode && commodity.value === "ALL_COMMODITIES") {
+            // Skip ALL_COMMODITIES in the unified system
+            if (commodity.value === "ALL_COMMODITIES") {
               return null;
             }
 
@@ -178,22 +128,14 @@ const CommodityIconSelector = ({
                   onClick={() => handleSelectCommodity(commodity.value)}
                   disabled={isLoading(commodity.value)}
                   variant="outline"
-                  className={`p-3 border-2 transition-all duration-200 ${
-                    commodity.value === "ALL_COMMODITIES"
-                      ? "h-20 w-20"
-                      : "h-16 w-16"
-                  }`}
+                  className="p-3 border-2 transition-all duration-200 h-16 w-16"
                   style={getButtonStyle(commodity.value)}
                   title={commodity.label}
                 >
                   <img
                     src={COMMODITY_ICON_MAP[commodity.value]}
                     alt={commodity.label}
-                    className={`object-contain bg-white ${
-                      commodity.value === "ALL_COMMODITIES"
-                        ? "w-12 h-12"
-                        : "w-10 h-10"
-                    }`}
+                    className="object-contain bg-white w-10 h-10"
                     style={{ opacity: getIconOpacity(commodity.value) }}
                   />
                   {isLoading(commodity.value) && (
@@ -221,7 +163,6 @@ const CommodityIconSelector = ({
                   }}
                 >
                   {(() => {
-                    if (commodity.value === "ALL_COMMODITIES") return "All";
                     if (commodity.value === "WTI") return "WTI";
                     if (commodity.value === "BRENT") return "Brent";
                     if (commodity.value === "NATURAL_GAS") return "Natural Gas";
@@ -236,7 +177,7 @@ const CommodityIconSelector = ({
 
       {/* Status Info */}
       <div className="text-sm space-y-1" style={{ color: textColorSecondary }}>
-        {isMultiMode && activeFetches.size > 0 && (
+        {activeFetches.size > 0 && (
           <p>
             <strong>Fetching:</strong> {Array.from(activeFetches).join(", ")}
           </p>

@@ -4,24 +4,15 @@ import CommodityIconSelector from "./CommodityIconSelector";
 import CommodityResults from "./CommodityResults";
 import Chart from "./chart/Chart";
 import type {
-  FetchState,
   CommodityValue,
   SingleCommodityResponse,
-  AllCommoditiesResponse,
   MultiCommodityState,
   CommodityDataEntry,
 } from "./types";
 import theme from "@/styles/theme";
 
 const StocksMain = () => {
-  // Legacy single commodity state (for backward compatibility)
-  const [fetchState, setFetchState] = useState<FetchState>({
-    loading: false,
-    error: null,
-    data: null,
-  });
-
-  // New multi-commodity state management
+  // Unified state management
   const [multiCommodityState, setMultiCommodityState] =
     useState<MultiCommodityState>({});
   const [selectedCommodities, setSelectedCommodities] = useState<
@@ -38,80 +29,7 @@ const StocksMain = () => {
   const textColorPrimary = theme.colors[currentTheme].text.primary;
   const textColorSecondary = theme.colors[currentTheme].text.secondary;
 
-  // Helper function to check if data is a SingleCommodityResponse
-  const isSingleCommodityResponse = (
-    data: SingleCommodityResponse | AllCommoditiesResponse
-  ): data is SingleCommodityResponse => {
-    return "commodity" in data;
-  };
-
-  // Legacy fetch handler (for backward compatibility)
-  const handleFetch = useCallback(
-    async (params: { type?: CommodityValue; all?: boolean }) => {
-      try {
-        setFetchState((prev) => ({ ...prev, loading: true, error: null }));
-
-        // Build query string
-        const searchParams = new URLSearchParams();
-        if (params.all) {
-          searchParams.set("all", "true");
-        } else if (params.type) {
-          searchParams.set("type", params.type);
-        }
-
-        const url = `/api/commodities${
-          searchParams.toString() ? `?${searchParams.toString()}` : ""
-        }`;
-
-        console.log(`Fetching commodity data from: ${url}`);
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const data: SingleCommodityResponse | AllCommoditiesResponse =
-          await response.json();
-
-        console.log("STOCKS_DEBUG handleFetch data", data);
-
-        setFetchState({
-          loading: false,
-          error: null,
-          data,
-        });
-
-        // Also update multi-commodity state if it's a single commodity response
-        if (isSingleCommodityResponse(data) && params.type) {
-          const commodityEntry: CommodityDataEntry = {
-            data: data,
-            fetchedAt: Date.now(),
-            selected: selectedCommodities.includes(params.type),
-          };
-
-          setMultiCommodityState((prev) => ({
-            ...prev,
-            [params.type!]: commodityEntry,
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching commodity data:", error);
-
-        setFetchState({
-          loading: false,
-          error:
-            error instanceof Error ? error.message : "Unknown error occurred",
-          data: null,
-        });
-      }
-    },
-    [selectedCommodities]
-  );
-
-  // New multi-commodity fetch handler
+  // Unified commodity fetch handler
   const handleCommodityFetch = useCallback(
     async (commodity: CommodityValue): Promise<void> => {
       try {
@@ -134,7 +52,7 @@ const StocksMain = () => {
         }
 
         const data: SingleCommodityResponse = await response.json();
-        console.log("STOCKS_DEBUG handleCommodityFetch data", data);
+        console.log("handleCommodityFetch data in StocksMain:", data);
 
         // Update multi-commodity state
         const commodityEntry: CommodityDataEntry = {
@@ -147,36 +65,12 @@ const StocksMain = () => {
           ...prev,
           [commodity]: commodityEntry,
         }));
-
-        // Update legacy state if this commodity is currently selected
-        if (
-          selectedCommodities.length === 1 &&
-          selectedCommodities[0] === commodity
-        ) {
-          setFetchState({
-            loading: false,
-            error: null,
-            data: data,
-          });
-        }
       } catch (error) {
         console.error(`Error fetching commodity data for ${commodity}:`, error);
 
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error occurred";
         setGlobalError(errorMessage);
-
-        // Update legacy state error if this is the only selected commodity
-        if (
-          selectedCommodities.length === 1 &&
-          selectedCommodities[0] === commodity
-        ) {
-          setFetchState((prev) => ({
-            ...prev,
-            loading: false,
-            error: errorMessage,
-          }));
-        }
       } finally {
         // Remove from active fetches
         setActiveFetches((prev) => {
@@ -285,24 +179,14 @@ const StocksMain = () => {
   useEffect(() => {
     console.log("StocksMain mounted - auto-fetching WTI");
     handleCommodityFetch("WTI");
-  }, [handleCommodityFetch]); // Empty dependency array for mount-only effect
+  }, [handleCommodityFetch]);
 
-  console.log("multiCommodityState", multiCommodityState);
-  console.log("selectedCommodities", selectedCommodities);
-  console.log("activeFetches", activeFetches);
+  console.log("multiCommodityState in StocksMain:", multiCommodityState);
+  console.log("selectedCommodities in StocksMain:", selectedCommodities);
+  console.log("activeFetches in StocksMain:", activeFetches);
 
   // Check if we have any loading states
-  const isLoading = activeFetches.size > 0 || fetchState.loading;
-
-  // Get chart data for backward compatibility
-  const getChartData = () => {
-    if (selectedCommodities.length === 1) {
-      const commodity = selectedCommodities[0];
-      const commodityData = multiCommodityState[commodity];
-      return commodityData?.data || fetchState.data;
-    }
-    return fetchState.data;
-  };
+  const isLoading = activeFetches.size > 0;
 
   return (
     <div
@@ -328,16 +212,14 @@ const StocksMain = () => {
 
         {/* Selector */}
         <CommodityIconSelector
-          onFetch={handleFetch} // Legacy compatibility
-          onToggleCommodity={handleToggleCommodity} // New multi-select handler
-          // onAddCommodity={handleAddCommodity}
+          onToggleCommodity={handleToggleCommodity}
           selectedCommodities={selectedCommodities}
           activeFetches={activeFetches}
           loading={isLoading}
         />
 
         {/* Chart Visualization */}
-        {(getChartData() || Object.keys(multiCommodityState).length > 0) && (
+        {Object.keys(multiCommodityState).length > 0 && (
           <div className="space-y-4">
             <h2
               className="text-2xl font-semibold"
@@ -356,16 +238,9 @@ const StocksMain = () => {
               }}
             >
               <Chart
-                data={getChartData()}
-                error={fetchState.error || globalError}
-                selectedCommodity={
-                  selectedCommodities.length === 1
-                    ? selectedCommodities[0]
-                    : undefined
-                }
-                // New props for multi-commodity support
                 multiCommodityData={multiCommodityState}
                 selectedCommodities={selectedCommodities}
+                error={globalError}
               />
             </div>
           </div>
@@ -373,10 +248,9 @@ const StocksMain = () => {
 
         {/* Results */}
         <CommodityResults
-          data={getChartData()}
-          error={fetchState.error || globalError}
           multiCommodityData={multiCommodityState}
           selectedCommodities={selectedCommodities}
+          error={globalError}
         />
       </div>
     </div>
