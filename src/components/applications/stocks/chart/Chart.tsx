@@ -363,7 +363,7 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
 
   return (
     <div className="w-full h-full">
-      <div className="flex justify-center items-center p-4 border-b">
+      <div className="flex justify-center items-center ">
         <AnalysisToolbar
           graphType={graphType}
           toggleGraphType={toggleGraphType}
@@ -384,9 +384,9 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
         />
       </div>
 
-      <div className="p-4">
+      <div className="py-2 flex justify-center items-center w-full">
         <ResponsiveContainer width="100%" height={300}>
-          <ComposedChart data={visibleData}>
+          <ComposedChart data={visibleData} width={1000} height={300}>
             <defs>
               {/* Create gradients for each commodity */}
               {selectedCommodities.map((commodity) => (
@@ -417,7 +417,7 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis domain={yDomain} />
+            <YAxis domain={yDomain} width={30} />
             <Tooltip content={<CustomTooltip />} />
 
             {/* Range reference lines */}

@@ -3,6 +3,7 @@ import { useNewStore } from "@/hooks/useStore";
 import CommodityIconSelector from "./CommodityIconSelector";
 import CommodityResults from "./CommodityResults";
 import Chart from "./chart/Chart";
+import LoadingSpinner from "@/components/atoms/LoadingSpinner";
 import type {
   CommodityValue,
   SingleCommodityResponse,
@@ -22,6 +23,7 @@ const StocksMain = () => {
     new Set()
   );
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const [hasInitialLoad, setHasInitialLoad] = useState(false);
 
   // Theme system
   const currentTheme = useNewStore((state) => state.theme);
@@ -65,12 +67,22 @@ const StocksMain = () => {
           ...prev,
           [commodity]: commodityEntry,
         }));
+
+        // Mark initial load as complete
+        if (!hasInitialLoad) {
+          setHasInitialLoad(true);
+        }
       } catch (error) {
         console.error(`Error fetching commodity data for ${commodity}:`, error);
 
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error occurred";
         setGlobalError(errorMessage);
+
+        // Mark initial load as complete even on error
+        if (!hasInitialLoad) {
+          setHasInitialLoad(true);
+        }
       } finally {
         // Remove from active fetches
         setActiveFetches((prev) => {
@@ -80,7 +92,7 @@ const StocksMain = () => {
         });
       }
     },
-    [selectedCommodities]
+    [selectedCommodities, hasInitialLoad]
   );
 
   // Add commodity to selection
@@ -187,6 +199,8 @@ const StocksMain = () => {
 
   // Check if we have any loading states
   const isLoading = activeFetches.size > 0;
+  const hasData = Object.keys(multiCommodityState).length > 0;
+  const showInitialLoading = !hasInitialLoad && isLoading;
 
   return (
     <div
@@ -210,48 +224,68 @@ const StocksMain = () => {
           </p>
         </div>
 
-        {/* Selector */}
-        <CommodityIconSelector
-          onToggleCommodity={handleToggleCommodity}
-          selectedCommodities={selectedCommodities}
-          activeFetches={activeFetches}
-          loading={isLoading}
-        />
+        {/* Initial Loading State */}
+        {showInitialLoading ? (
+          <div
+            className="p-12 rounded-lg border text-center"
+            style={{
+              backgroundColor: theme.colors[currentTheme].background.secondary,
+              borderColor: theme.colors[currentTheme].border.primary,
+            }}
+          >
+            <LoadingSpinner />
+            <p className="mt-4 text-lg" style={{ color: textColorSecondary }}>
+              Loading commodity data...
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Selector */}
+            <CommodityIconSelector
+              onToggleCommodity={handleToggleCommodity}
+              selectedCommodities={selectedCommodities}
+              activeFetches={activeFetches}
+              loading={isLoading}
+            />
 
-        {/* Chart Visualization */}
-        {Object.keys(multiCommodityState).length > 0 && (
-          <div className="space-y-4">
-            <h2
-              className="text-2xl font-semibold"
-              style={{ color: textColorPrimary }}
-            >
-              Price Chart{" "}
-              {selectedCommodities.length > 1 &&
-                `(${selectedCommodities.length} commodities)`}
-            </h2>
-            <div
-              className="rounded-lg border p-4"
-              style={{
-                backgroundColor:
-                  theme.colors[currentTheme].background.secondary,
-                borderColor: theme.colors[currentTheme].border.primary,
-              }}
-            >
-              <Chart
+            {/* Chart Visualization */}
+            {hasData && (
+              <div className="space-y-4">
+                <h2
+                  className="text-2xl font-semibold"
+                  style={{ color: textColorPrimary }}
+                >
+                  Price Chart{" "}
+                  {selectedCommodities.length > 1 &&
+                    `(${selectedCommodities.length} commodities)`}
+                </h2>
+                <div
+                  className="rounded-lg border p-4"
+                  style={{
+                    backgroundColor:
+                      theme.colors[currentTheme].background.secondary,
+                    borderColor: theme.colors[currentTheme].border.primary,
+                  }}
+                >
+                  <Chart
+                    multiCommodityData={multiCommodityState}
+                    selectedCommodities={selectedCommodities}
+                    error={globalError}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Results */}
+            {hasData && (
+              <CommodityResults
                 multiCommodityData={multiCommodityState}
                 selectedCommodities={selectedCommodities}
                 error={globalError}
               />
-            </div>
-          </div>
+            )}
+          </>
         )}
-
-        {/* Results */}
-        <CommodityResults
-          multiCommodityData={multiCommodityState}
-          selectedCommodities={selectedCommodities}
-          error={globalError}
-        />
       </div>
     </div>
   );
