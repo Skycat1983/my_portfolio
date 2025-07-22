@@ -38,7 +38,7 @@ interface ChartProps {
  * Features:
  * - Theme-aware commodity-specific colors (darker in light mode, lighter in dark mode)
  * - Smart Y-axis domain calculation for nice round axis labels
- * - Support for multi-commodity data
+ * - Support for multi-commodity data with growth/accumulated value types
  * - Dynamic theming integration with unique colors for each commodity
  * - Interactive chart controls (zoom, pan, toggle views)
  */
@@ -55,7 +55,7 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
     selectedCommodities
   );
 
-  // Transform data for chart hooks
+  // Transform data for chart hooks (keeping legacy structure for useGraph)
   const commodityData = useMemo(() => {
     return {
       timeUnits: multiCommodityChartData.timeUnits.map((unit) => ({
@@ -105,19 +105,83 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
     return graphRange[1] < mainData.length - 1;
   }, [graphRange, mainData]);
 
-  // Chart data preparation
-  const chartData = useMemo(() => {
-    return multiCommodityChartData.timeUnits.slice(
+  // Transform data based on valueType (accumulated vs growth)
+  const transformedChartData = useMemo(() => {
+    const timeUnits = multiCommodityChartData.timeUnits.slice(
       graphRange[0],
       graphRange[1] + 1
     );
-  }, [multiCommodityChartData, graphRange]);
 
-  // Multi-commodity average calculation
+    if (valueType === "accumulated") {
+      // Return absolute values as-is
+      return timeUnits;
+    } else {
+      // Calculate growth percentages for each commodity
+      return timeUnits.map((unit, index) => {
+        const transformedUnit = { ...unit };
+
+        selectedCommodities.forEach((commodity) => {
+          const currentValue = unit[`value_${commodity}`];
+
+          if (
+            currentValue !== null &&
+            currentValue !== undefined &&
+            index > 0
+          ) {
+            // Get previous value for growth calculation
+            const globalIndex = graphRange[0] + index;
+            const previousGlobalIndex = globalIndex - 1;
+
+            if (
+              previousGlobalIndex >= 0 &&
+              previousGlobalIndex < multiCommodityChartData.timeUnits.length
+            ) {
+              const previousValue =
+                multiCommodityChartData.timeUnits[previousGlobalIndex][
+                  `value_${commodity}`
+                ];
+
+              if (
+                previousValue !== null &&
+                previousValue !== undefined &&
+                Number(previousValue) !== 0
+              ) {
+                // Calculate percentage change: ((current - previous) / previous) * 100
+                const growthPercentage =
+                  ((Number(currentValue) - Number(previousValue)) /
+                    Number(previousValue)) *
+                  100;
+                transformedUnit[`value_${commodity}`] = growthPercentage;
+                transformedUnit[
+                  `${commodity}_formatted`
+                ] = `${growthPercentage.toFixed(2)}%`;
+              } else {
+                // No previous value or previous value is 0 - set to 0
+                transformedUnit[`value_${commodity}`] = 0;
+                transformedUnit[`${commodity}_formatted`] = "0.00%";
+              }
+            } else {
+              // First data point - no growth to calculate
+              transformedUnit[`value_${commodity}`] = 0;
+              transformedUnit[`${commodity}_formatted`] = "0.00%";
+            }
+          } else if (index === 0) {
+            // First data point in visible range - no growth to calculate
+            transformedUnit[`value_${commodity}`] = 0;
+            transformedUnit[`${commodity}_formatted`] = "0.00%";
+          }
+        });
+
+        return transformedUnit;
+      });
+    }
+  }, [multiCommodityChartData, graphRange, valueType, selectedCommodities]);
+
+  // Multi-commodity average calculation (using transformed data)
   const multiCommodityAverageData = useMemo(() => {
     if (!showAverage || selectedCommodities.length === 0) return null;
 
-    return chartData.map((dataPoint) => {
+    return transformedChartData.map((dataPoint) => {
       // Calculate average across all selected commodities for this time point
       const values: number[] = [];
       selectedCommodities.forEach((commodity) => {
@@ -137,10 +201,10 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
         average: average,
       };
     });
-  }, [chartData, selectedCommodities, showAverage]);
+  }, [transformedChartData, selectedCommodities, showAverage]);
 
   const visibleData = useMemo(() => {
-    const baseData = chartData;
+    const baseData = transformedChartData;
 
     // If showing average, merge average data into the main data
     if (showAverage && multiCommodityAverageData) {
@@ -151,9 +215,10 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
     }
 
     return baseData;
-  }, [chartData, showAverage, multiCommodityAverageData]);
+  }, [transformedChartData, showAverage, multiCommodityAverageData]);
 
   console.log("Chart visibleData:", visibleData);
+  console.log("Chart valueType:", valueType);
 
   // Function to calculate a "nice" upper bound for the y-axis
   const getNiceUpperBound = (maxValue: number): number => {
@@ -281,9 +346,14 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
             COMMODITY_OPTIONS.find((opt) => opt.value === commodity)?.label ||
             commodity;
 
+          const formattedValue =
+            valueType === "growth"
+              ? `${Number(entry.value).toFixed(2)}%`
+              : `$${Number(entry.value).toFixed(2)}`;
+
           return (
             <p key={index} style={{ color: entry.color }}>
-              {commodityLabel}: ${Number(entry.value).toFixed(2)}
+              {commodityLabel}: {formattedValue}
             </p>
           );
         })}
@@ -360,7 +430,9 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
                   strokeWidth={1}
                   strokeOpacity={0.7}
                   label={{
-                    value: `Max: ${visibleRangeData.max.toFixed(0)}`,
+                    value: `Max: ${visibleRangeData.max.toFixed(
+                      valueType === "growth" ? 2 : 0
+                    )}${valueType === "growth" ? "%" : ""}`,
                     position: "right",
                     fill: "#22c55e",
                   }}
@@ -373,7 +445,9 @@ const Chart = ({ multiCommodityData, selectedCommodities }: ChartProps) => {
                   strokeWidth={1}
                   strokeOpacity={0.7}
                   label={{
-                    value: `Min: ${visibleRangeData.min.toFixed(0)}`,
+                    value: `Min: ${visibleRangeData.min.toFixed(
+                      valueType === "growth" ? 2 : 0
+                    )}${valueType === "growth" ? "%" : ""}`,
                     position: "right",
                     fill: "#ef4444",
                   }}
