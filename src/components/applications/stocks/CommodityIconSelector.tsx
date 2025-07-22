@@ -24,7 +24,7 @@ interface CommodityIconSelectorProps {
 
   // New multi-commodity props (optional for backward compatibility)
   onToggleCommodity?: (commodity: CommodityValue) => Promise<void>;
-  onAddCommodity?: (commodity: CommodityValue) => Promise<void>;
+  // onAddCommodity?: (commodity: CommodityValue) => Promise<void>;
   selectedCommodities?: CommodityValue[];
   activeFetches?: Set<CommodityValue>;
 }
@@ -47,7 +47,7 @@ const CommodityIconSelector = ({
   onFetch,
   loading,
   onToggleCommodity,
-  onAddCommodity,
+  // onAddCommodity,
   selectedCommodities = [],
   activeFetches = new Set(),
 }: CommodityIconSelectorProps) => {
@@ -120,23 +120,6 @@ const CommodityIconSelector = ({
     };
   };
 
-  // Clear all selections (multi-mode only) - REMOVED: Always keep at least 1 selected
-  // const handleClearAll = () => { ... }
-
-  // Select all commodities (multi-mode only)
-  const handleSelectAll = async () => {
-    if (isMultiMode && onAddCommodity) {
-      const allCommodities = COMMODITY_OPTIONS.filter(
-        (opt) => opt.value !== "ALL_COMMODITIES"
-      );
-      for (const commodity of allCommodities) {
-        if (!effectiveSelectedCommodities.includes(commodity.value)) {
-          await onAddCommodity(commodity.value);
-        }
-      }
-    }
-  };
-
   return (
     <div
       className="p-6 rounded-lg border space-y-6"
@@ -153,26 +136,6 @@ const CommodityIconSelector = ({
           >
             Commodity Selection
           </h2>
-          {isMultiMode && (
-            <div className="flex gap-2">
-              <Button
-                onClick={handleSelectAll}
-                disabled={
-                  loading ||
-                  effectiveSelectedCommodities.length ===
-                    COMMODITY_OPTIONS.length - 1
-                } // -1 to exclude ALL_COMMODITIES
-                variant="outline"
-                size="sm"
-                style={{
-                  borderColor: borderColor,
-                  color: textColorSecondary,
-                }}
-              >
-                Select All
-              </Button>
-            </div>
-          )}
         </div>
 
         <p className="text-sm" style={{ color: textColorSecondary }}>

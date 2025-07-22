@@ -76,7 +76,7 @@ const StocksMain = () => {
         const data: SingleCommodityResponse | AllCommoditiesResponse =
           await response.json();
 
-        console.log("Commodity data fetched successfully:", data);
+        console.log("STOCKS_DEBUG handleFetch data", data);
 
         setFetchState({
           loading: false,
@@ -134,11 +134,7 @@ const StocksMain = () => {
         }
 
         const data: SingleCommodityResponse = await response.json();
-
-        console.log(
-          `Commodity data fetched successfully for ${commodity}:`,
-          data
-        );
+        console.log("STOCKS_DEBUG handleCommodityFetch data", data);
 
         // Update multi-commodity state
         const commodityEntry: CommodityDataEntry = {
@@ -334,7 +330,7 @@ const StocksMain = () => {
         <CommodityIconSelector
           onFetch={handleFetch} // Legacy compatibility
           onToggleCommodity={handleToggleCommodity} // New multi-select handler
-          onAddCommodity={handleAddCommodity}
+          // onAddCommodity={handleAddCommodity}
           selectedCommodities={selectedCommodities}
           activeFetches={activeFetches}
           loading={isLoading}
