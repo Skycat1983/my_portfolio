@@ -67,6 +67,7 @@ There are lots of applications to use, and plenty of easter eggs to find. Play a
 
 Some features:
 
+• Stocks application, allowing you to view the latest data for a range of commodities, and compare them on a chart. Results are periodically cached with serverless functions and stored in a Firebase Firestore database.
 • A simulated WhatsApp chat interface working in tandem with GeminiAPI, with contacts who respond to your messages and attempted phone calls. 
 • Moveable windows with resizeable borders
 • Saveable documents
