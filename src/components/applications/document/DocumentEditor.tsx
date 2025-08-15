@@ -39,6 +39,9 @@ interface DocumentEditorProps {
 }
 
 export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
+  const unlockSaveDocumentAchievement = useNewStore(
+    (s) => s.unlockSaveDocumentAchievement
+  );
   // ═══════════════════════════════════════════════════════════════════════════════
   // CONTENT STATE
   // ═══════════════════════════════════════════════════════════════════════════════
@@ -156,6 +159,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
       setDocumentLabel(finalLabel);
       setIsModified(false);
       setShowSaveDialog(false); // Close dialog
+      unlockSaveDocumentAchievement();
     },
     [
       content,
@@ -168,6 +172,7 @@ export const DocumentEditor = ({ windowId, nodeId }: DocumentEditorProps) => {
       generateUniqueNodePropertyValue,
       createOneNode,
       addChildToDirectory,
+      unlockSaveDocumentAchievement,
       updateWindowById,
       getNodeByID,
     ]
