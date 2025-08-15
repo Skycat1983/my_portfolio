@@ -1,7 +1,7 @@
 export { default as Chart } from "./Chart";
 export {
   useCommodityData,
-  useMultipleCommodityData,
+  // useMultipleCommodityData,
   useMultiCommodityData,
   hasValidMultiCommodityData,
   getMultiCommodityDateRange,

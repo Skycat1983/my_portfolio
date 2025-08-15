@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type {
   SingleCommodityResponse,
-  AllCommoditiesResponse,
+  // AllCommoditiesResponse,
   MultiCommodityState,
   CommodityValue,
   MultiTimeUnit,
@@ -69,55 +69,55 @@ export const useCommodityData = (
 };
 
 // Hook for handling multiple commodities - returns data for the first successful commodity
-export const useMultipleCommodityData = (
-  allCommoditiesResponse: AllCommoditiesResponse | null
-): TemporalCalculationsResult & { selectedCommodity?: string } => {
-  const result = useMemo(() => {
-    if (!allCommoditiesResponse?.results) {
-      return { timeUnits: [] };
-    }
+// export const useMultipleCommodityData = (
+//   allCommoditiesResponse: AllCommoditiesResponse | null
+// ): TemporalCalculationsResult & { selectedCommodity?: string } => {
+//   const result = useMemo(() => {
+//     if (!allCommoditiesResponse?.results) {
+//       return { timeUnits: [] };
+//     }
 
-    // Find the first successful commodity response
-    const firstSuccessful = allCommoditiesResponse.results.find(
-      (result): result is SingleCommodityResponse => "data" in result
-    );
+//     // Find the first successful commodity response
+//     const firstSuccessful = allCommoditiesResponse.results.find(
+//       (result): result is SingleCommodityResponse => "data" in result
+//     );
 
-    if (!firstSuccessful) {
-      return { timeUnits: [] };
-    }
+//     if (!firstSuccessful) {
+//       return { timeUnits: [] };
+//     }
 
-    // Transform using the single commodity logic
-    const sortedData = [...firstSuccessful.data].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
+//     // Transform using the single commodity logic
+//     const sortedData = [...firstSuccessful.data].sort(
+//       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+//     );
 
-    const timeUnits = sortedData.map((dataPoint, index) => {
-      const value = parseFloat(dataPoint.value);
-      const previousValue =
-        index > 0 ? parseFloat(sortedData[index - 1].value) : null;
+//     const timeUnits = sortedData.map((dataPoint, index) => {
+//       const value = parseFloat(dataPoint.value);
+//       const previousValue =
+//         index > 0 ? parseFloat(sortedData[index - 1].value) : null;
 
-      const growth =
-        previousValue !== null
-          ? ((value - previousValue) / previousValue) * 100
-          : undefined;
+//       const growth =
+//         previousValue !== null
+//           ? ((value - previousValue) / previousValue) * 100
+//           : undefined;
 
-      return {
-        name: formatDateToMonthYear(dataPoint.date),
-        dates: [dataPoint.date, dataPoint.date] as [string, string],
-        accumulated: value,
-        growth: growth,
-        unit: "month" as const,
-      };
-    });
+//       return {
+//         name: formatDateToMonthYear(dataPoint.date),
+//         dates: [dataPoint.date, dataPoint.date] as [string, string],
+//         accumulated: value,
+//         growth: growth,
+//         unit: "month" as const,
+//       };
+//     });
 
-    return {
-      timeUnits,
-      selectedCommodity: firstSuccessful.commodity,
-    };
-  }, [allCommoditiesResponse]);
+//     return {
+//       timeUnits,
+//       selectedCommodity: firstSuccessful.commodity,
+//     };
+//   }, [allCommoditiesResponse]);
 
-  return result;
-};
+//   return result;
+// };
 
 // New hook for handling multiple selected commodities
 export const useMultiCommodityData = (
