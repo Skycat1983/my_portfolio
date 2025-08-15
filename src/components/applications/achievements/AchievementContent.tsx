@@ -19,7 +19,7 @@ export const AchievementContent = () => {
   const clickOnSomethingAchieved = useNewStore(
     (state) => state.clickOnSomethingAchieved
   );
-  const accessAchievements = useNewStore((state) => state.accessAchievements);
+  // const accessAchievements = useNewStore((state) => state.accessAchievements);
   const downloadEggsAchieved = useNewStore(
     (state) => state.downloadEggsAchieved
   );
@@ -51,7 +51,17 @@ export const AchievementContent = () => {
     (state) => state.failedValidationAttempts
   );
   const apologiseToEmily = useNewStore((state) => state.apologiseToEmily);
-
+  const mobileViewAchieved = useNewStore((state) => state.mobileViewAchieved);
+  const resizeWindowAchieved = useNewStore(
+    (state) => state.resizeWindowAchieved
+  );
+  const dragAndDropAchieved = useNewStore((state) => state.dragAndDropAchieved);
+  const saveDocumentAchieved = useNewStore(
+    (state) => state.saveDocumentAchieved
+  );
+  const compareTwoCommoditiesAchieved = useNewStore(
+    (state) => state.compareTwoCommoditiesAchieved
+  );
   const prospectiveEmployerProgress =
     cvCheckedOut && recommendationCheckedOut
       ? 2
@@ -112,18 +122,46 @@ export const AchievementContent = () => {
         ]
       : []),
     {
-      id: "access-achievements",
-      title: "Investigate the Red Notification",
-      description: "You were successfully manipulated 👍",
-      icon: "🏆",
-      unlocked: accessAchievements,
-    },
-    {
       id: "os-switcher",
       title: "OS Explorer",
       description: "Switch between operating systems",
       icon: "💻",
       unlocked: operatingSystemSwitchedAchieved,
+    },
+    {
+      id: "mobile-view",
+      title: "Mobile View",
+      description: "View the website on a mobile device",
+      icon: "📱",
+      unlocked: mobileViewAchieved,
+    },
+    {
+      id: "resize-window",
+      title: "Resize Window",
+      description: "Resize the window",
+      icon: "🔍",
+      unlocked: resizeWindowAchieved,
+    },
+    {
+      id: "drag-and-drop",
+      title: "Drag and Drop",
+      description: "Drag and drop an element",
+      icon: "🔍",
+      unlocked: dragAndDropAchieved,
+    },
+    {
+      id: "save-document",
+      title: "Save Document",
+      description: "Save a document",
+      icon: "🔍",
+      unlocked: saveDocumentAchieved,
+    },
+    {
+      id: "compare-two-commodities",
+      title: "Compare Two Commodities",
+      description: "Compare two commodities",
+      icon: "🔍",
+      unlocked: compareTwoCommoditiesAchieved,
     },
     {
       id: "egg-collector",
@@ -279,12 +317,6 @@ export const AchievementContent = () => {
                             <span>•</span>
                             <span>{achievement.validation.errors[0]}</span>
                           </div>
-                          {/* {achievement.validation.errors.length > 1 && (
-                            <div className="mt-1 text-red-500 italic">
-                              (+{achievement.validation.errors.length - 1} more
-                              issues)
-                            </div>
-                          )} */}
                         </div>
                       </div>
                     )}
@@ -316,19 +348,6 @@ export const AchievementContent = () => {
           </div>
         ))}
       </div>
-
-      {/* Footer */}
-      {/* <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-blue-600 text-lg">💡</span>
-          <h3 className="font-semibold text-blue-800">Pro Tip</h3>
-        </div>
-        <p className="text-sm text-blue-700">
-          Explore the desktop and interact with different elements to unlock
-          more achievements! Each achievement represents a different aspect of
-          the portfolio experience.
-        </p>
-      </div> */}
     </div>
   );
 };
