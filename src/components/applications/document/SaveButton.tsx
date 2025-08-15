@@ -7,11 +7,7 @@ interface SaveButtonProps {
   windowWidth: number;
 }
 
-export const SaveButton = ({
-  isModified,
-  onSave,
-}: // windowWidth,
-SaveButtonProps) => {
+export const SaveButton = ({ isModified, onSave }: SaveButtonProps) => {
   return (
     <Button
       onClick={onSave}
@@ -25,7 +21,6 @@ SaveButtonProps) => {
       title="Save Document"
     >
       <Save size={16} className="" />
-      {/* <span className={`${windowWidth > 1000 ? "block" : "hidden"}`}>Save</span> */}
     </Button>
   );
 };
