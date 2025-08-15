@@ -14,6 +14,9 @@ export interface DragHandlers {
 }
 
 export const useNodeDrag = (): DragHandlers => {
+  const unlockDragAndDropAchievement = useNewStore(
+    (s) => s.unlockDragAndDropAchievement
+  );
   // Track current drop target for visual feedback (highlighting)
   const [currentDropTarget, setCurrentDropTarget] = useState<string | null>(
     null
@@ -142,6 +145,7 @@ export const useNodeDrag = (): DragHandlers => {
       const isValidMove = validateMoveByID(draggedNodeId, targetNodeId);
       if (isValidMove) {
         const success = moveNodeByID(draggedNodeId, targetNodeId);
+        unlockDragAndDropAchievement();
 
         if (!success) {
           console.error("DRAG_DROP_08: ERROR - move operation failed");
@@ -156,7 +160,7 @@ export const useNodeDrag = (): DragHandlers => {
       // Clear drop target highlighting
       setCurrentDropTarget(null);
     },
-    [validateMoveByID, moveNodeByID]
+    [validateMoveByID, moveNodeByID, unlockDragAndDropAchievement]
   ); // Depend on store functions
 
   // Called when drag operation ends (regardless of success)
