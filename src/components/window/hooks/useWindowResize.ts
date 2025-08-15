@@ -5,6 +5,9 @@ import type { Window } from "../windowTypes";
 type ResizeHandle = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
 
 export function useWindowResize(windowId: Window["windowId"]) {
+  const unlockResizeWindowAchievement = useNewStore(
+    (s) => s.unlockResizeWindowAchievement
+  );
   // Get the window data using the proper store method
   const window = useNewStore((s) =>
     s.findWindow((w) => w.windowId === windowId)
@@ -73,6 +76,7 @@ export function useWindowResize(windowId: Window["windowId"]) {
           x: newX,
           y: newY,
         });
+        unlockResizeWindowAchievement();
       }
 
       function onPointerUp() {
@@ -86,7 +90,7 @@ export function useWindowResize(windowId: Window["windowId"]) {
       document.addEventListener("pointermove", onPointerMove);
       document.addEventListener("pointerup", onPointerUp);
     },
-    [window, setWindowBounds, windowId]
+    [window, setWindowBounds, windowId, unlockResizeWindowAchievement]
   );
 
   return { onResizeStart };
