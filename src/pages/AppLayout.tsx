@@ -28,6 +28,9 @@ export const AppLayout = () => {
   const updateLegacyFields = useNewStore((s) => s.updateLegacyFields);
   const deleteWindows = useNewStore((s) => s.deleteWindows);
   const closeWindow = useNewStore((s) => s.closeWindow);
+  const unlockMobileViewAchievement = useNewStore(
+    (s) => s.unlockMobileViewAchievement
+  );
 
   const currentDesktopRootId = getCurrentRootId("main");
 
@@ -69,12 +72,20 @@ export const AppLayout = () => {
 
     // Close finder windows since hierarchy changed
     if (isMobile) {
+      unlockMobileViewAchievement();
       if (operatingSystem !== "mac") {
         toggleOS();
         // we delete the windows because the directory layouts vary for mobile and desktop
       }
     }
-  }, [isMobile, updateLegacyFields, deleteWindows, operatingSystem, toggleOS]);
+  }, [
+    isMobile,
+    updateLegacyFields,
+    deleteWindows,
+    operatingSystem,
+    toggleOS,
+    unlockMobileViewAchievement,
+  ]);
 
   useEffect(() => {
     // Update node legacy fields for new context
