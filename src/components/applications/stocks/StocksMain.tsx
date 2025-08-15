@@ -13,6 +13,9 @@ import type {
 import theme from "@/styles/theme";
 
 const StocksMain = () => {
+  const unlockCompareTwoCommoditiesAchievement = useNewStore(
+    (s) => s.unlockCompareTwoCommoditiesAchievement
+  );
   // Unified state management
   const [multiCommodityState, setMultiCommodityState] =
     useState<MultiCommodityState>({});
@@ -189,9 +192,16 @@ const StocksMain = () => {
 
   // Auto-fetch initial commodity on component mount
   useEffect(() => {
+    if (selectedCommodities.length === 2) {
+      unlockCompareTwoCommoditiesAchievement();
+    }
     console.log("StocksMain mounted - auto-fetching WTI");
     handleCommodityFetch("WTI");
-  }, [handleCommodityFetch]);
+  }, [
+    handleCommodityFetch,
+    selectedCommodities,
+    unlockCompareTwoCommoditiesAchievement,
+  ]);
 
   console.log("multiCommodityState in StocksMain:", multiCommodityState);
   console.log("selectedCommodities in StocksMain:", selectedCommodities);
