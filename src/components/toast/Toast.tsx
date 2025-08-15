@@ -86,6 +86,13 @@ export const Toast = () => {
   );
   const thankEmilyForHelpingMe = useNewStore((s) => s.thankEmilyForHelpingMe);
   const apologiseToEmily = useNewStore((s) => s.apologiseToEmily);
+  const mobileViewAchieved = useNewStore((s) => s.mobileViewAchieved);
+  const resizeWindowAchieved = useNewStore((s) => s.resizeWindowAchieved);
+  const dragAndDropAchieved = useNewStore((s) => s.dragAndDropAchieved);
+  const saveDocumentAchieved = useNewStore((s) => s.saveDocumentAchieved);
+  const compareTwoCommoditiesAchieved = useNewStore(
+    (s) => s.compareTwoCommoditiesAchieved
+  );
 
   useEffect(() => {
     // Only show toast if we have more messages than we've previously notified about
@@ -215,6 +222,75 @@ export const Toast = () => {
     }
   }, [apologiseToEmily, openApplication]);
 
+  useEffect(() => {
+    if (mobileViewAchieved) {
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You viewed the website on a mobile device."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
+    }
+  }, [mobileViewAchieved, openApplication]);
+
+  useEffect(() => {
+    if (resizeWindowAchieved) {
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You resized the window."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
+    }
+  }, [resizeWindowAchieved, openApplication]);
+
+  useEffect(() => {
+    if (dragAndDropAchieved) {
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You dragged and dropped an element."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
+    }
+  }, [dragAndDropAchieved, openApplication]);
+
+  useEffect(() => {
+    if (saveDocumentAchieved) {
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You saved a document."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
+    }
+  }, [saveDocumentAchieved, openApplication]);
+
+  useEffect(() => {
+    if (compareTwoCommoditiesAchieved) {
+      toast.custom((id) => (
+        <ClickableToast
+          icon={<TrophyIcon />}
+          title="Achievement Unlocked!"
+          description="You compared two commodities."
+          onClick={() => openApplication("achievements")}
+          id={id}
+        />
+      ));
+    }
+  }, [compareTwoCommoditiesAchieved, openApplication]);
   // Always render the Toaster component so it can show toasts
   return <Toaster />;
 };

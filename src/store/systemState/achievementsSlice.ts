@@ -10,17 +10,14 @@ import type { SetState } from "@/types/storeTypes";
 // Validation result for Thank Emily achievement
 
 interface AchievementState {
-  thankEmilyForHelpingMe: boolean;
-  thankEmilyValidation: ThankEmilyValidation;
-  failedValidationAttempts: number;
-
-  apologiseToEmily: boolean | null;
-
   // 1. Click on something
   clickOnSomethingAchieved: boolean;
 
-  // 2. Access achievements
-  accessAchievements: boolean;
+  // 2. Thank Emily
+  thankEmilyForHelpingMe: boolean;
+  thankEmilyValidation: ThankEmilyValidation;
+  failedValidationAttempts: number;
+  apologiseToEmily: boolean | null;
 
   // 3. Operating system switcher
   operatingSystemSwitchedAchieved: boolean;
@@ -43,8 +40,12 @@ interface AchievementState {
   // Notification counter for unseen achievements
   unseenAchievements: number;
 
-  //   emailSent: boolean;
-  //   cvDownloaded: number;
+  //! new achievements
+  mobileViewAchieved: boolean;
+  resizeWindowAchieved: boolean;
+  dragAndDropAchieved: boolean;
+  saveDocumentAchieved: boolean;
+  compareTwoCommoditiesAchieved: boolean;
 }
 
 //! schrodinger's achievement: delete your achievements
@@ -60,7 +61,7 @@ interface AchievementAction {
   unlockClickOnSomethingAchievement: () => void;
 
   // 2. Access achievements
-  unlockAccessAchievements: () => void;
+  // unlockAccessAchievements: () => void;
 
   // 3. Operating system switcher
   unlockOperatingSystemAchievement: () => void;
@@ -83,6 +84,13 @@ interface AchievementAction {
 
   resetAchievements: () => void;
 
+  // new achievements
+  unlockMobileViewAchievement: () => void;
+  unlockResizeWindowAchievement: () => void;
+  unlockDragAndDropAchievement: () => void;
+  unlockSaveDocumentAchievement: () => void;
+  unlockCompareTwoCommoditiesAchievement: () => void;
+
   //   sendEmail: () => void;
   //   downloadCV: () => void;
 }
@@ -93,6 +101,10 @@ export type { ThankEmilyValidation };
 export const createAchievementSlice = (
   set: SetState<AchievementSlice>
 ): AchievementSlice => ({
+  // 1. Click on something
+  clickOnSomethingAchieved: false,
+
+  // 2. Thank Emily
   thankEmilyForHelpingMe: false,
   thankEmilyValidation: {
     score: 0,
@@ -103,12 +115,6 @@ export const createAchievementSlice = (
   },
   failedValidationAttempts: 0,
   apologiseToEmily: null,
-
-  // 1. Click on something
-  clickOnSomethingAchieved: false,
-
-  // 2. Access achievements
-  accessAchievements: false,
 
   // 3. Operating system switcher
   operatingSystemSwitchedAchieved: false,
@@ -132,10 +138,13 @@ export const createAchievementSlice = (
   cvCheckedOut: false,
   recommendationCheckedOut: false,
   prospectiveEmployerAchieved: false,
-  //   emailSent: false,
-  //   websiteVisited: false,
-  //   cvDownloaded: 0,
-  //   operatingSystemSwitched: false,
+
+  // new achievements
+  mobileViewAchieved: false,
+  resizeWindowAchieved: false,
+  dragAndDropAchieved: false,
+  saveDocumentAchieved: false,
+  compareTwoCommoditiesAchieved: false,
 
   validateThankEmilyMessage: (message: string) => {
     const validation = validateThankEmilyMessage(message);
@@ -177,16 +186,16 @@ export const createAchievementSlice = (
     });
   },
 
-  unlockAccessAchievements: () => {
-    set((state) => {
-      if (!state.accessAchievements) {
-        return {
-          accessAchievements: true,
-        };
-      }
-      return state;
-    });
-  },
+  // unlockAccessAchievements: () => {
+  //   set((state) => {
+  //     if (!state.accessAchievements) {
+  //       return {
+  //         accessAchievements: true,
+  //       };
+  //     }
+  //     return state;
+  //   });
+  // },
 
   incrementEggsDownloadedAchievement: () => {
     set((state) => {
@@ -301,6 +310,67 @@ export const createAchievementSlice = (
     set(() => ({
       unseenAchievements: 0,
     }));
+  },
+
+  unlockMobileViewAchievement: () => {
+    set((state) => {
+      if (!state.mobileViewAchieved) {
+        return {
+          mobileViewAchieved: true,
+          unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
+  },
+
+  unlockResizeWindowAchievement: () => {
+    set((state) => {
+      console.log("unlockResizeWindowAchievement", state.resizeWindowAchieved);
+      if (!state.resizeWindowAchieved) {
+        return {
+          resizeWindowAchieved: true,
+          unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
+  },
+
+  unlockDragAndDropAchievement: () => {
+    set((state) => {
+      if (!state.dragAndDropAchieved) {
+        return {
+          dragAndDropAchieved: true,
+          unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
+  },
+
+  unlockSaveDocumentAchievement: () => {
+    set((state) => {
+      if (!state.saveDocumentAchieved) {
+        return {
+          saveDocumentAchieved: true,
+          unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
+  },
+
+  unlockCompareTwoCommoditiesAchievement: () => {
+    set((state) => {
+      if (!state.compareTwoCommoditiesAchieved) {
+        return {
+          compareTwoCommoditiesAchieved: true,
+          unseenAchievements: state.unseenAchievements + 1,
+        };
+      }
+      return state;
+    });
   },
 
   resetAchievements: () => {
